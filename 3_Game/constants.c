@@ -69,6 +69,7 @@ const int MENU_TITLE_SCREEN							= 1 << 26;
 const int MENU_XBOX_CONTROLS						= 1 << 27;
 const int MENU_RADIAL_QUICKBAR						= 1 << 28;
 const int MENU_INGAME_XBOX							= 1 << 38;
+const int MENU_ADMINTOOLS							= 1 << 39;
 
 const int GUI_WINDOW_MISSION_LOADER = 1;
 

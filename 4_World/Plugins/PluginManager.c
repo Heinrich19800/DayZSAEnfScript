@@ -49,7 +49,7 @@ class PluginManager
 		RegisterPlugin( "PluginMessageManager",					true, 	true );
 		RegisterPlugin( "PluginLifespan",						true, 	true );
 		RegisterPlugin( "PluginVariables",						true, 	true );
-		RegisterPlugin( "PluginObjectsInteractionManager",		false, 	true );
+		RegisterPlugin( "PluginObjectsInteractionManager",		true, 	true );
 		RegisterPlugin( "PluginRecipesManager",					true, 	true );
 		RegisterPlugin( "PluginTransmissionAgents",				true, 	true );
 		RegisterPlugin( "PluginAdditionalInfo",					true,	true ); //TODO clean up after Gamescom
@@ -58,7 +58,7 @@ class PluginManager
 		// Only In Debug / Internal
 		RegisterPluginDebug( "PluginConfigViewer",				true, 	true );
 		RegisterPluginDebug( "PluginLocalEnscriptHistory",		true, 	true );
-		RegisterPluginDebug( "PluginKeyBinding",				true, 	false );
+		RegisterPluginDebug( "PluginKeyBinding",				true, 	true );
 		RegisterPluginDebug( "PluginDeveloper",					true, 	true );
 		RegisterPluginDebug( "PluginDeveloperSync",				true, 	true );
 		
@@ -73,11 +73,11 @@ class PluginManager
 		RegisterPluginDebug( "PluginDayzPlayerDebug",			true, 	true );
 		RegisterPluginDebug( "PluginDiagMenu",					true, 	true );
 		RegisterPluginDebug( "PluginDayZCreatureAIDebug",		true, 	true );
-		RegisterPluginDebug( "PluginDoorRuler",					true, 	false );
-		RegisterPluginDebug( "PluginPermanentCrossHair",		true,	false );
-		RegisterPluginDebug( "PluginRemotePlayerDebugClient",	true,	false );
-		RegisterPluginDebug( "PluginRemotePlayerDebugServer",	false,	true );
-		RegisterPluginDebug( "PluginDrawCheckerboard",			true,	false );
+		RegisterPluginDebug( "PluginDoorRuler",					true, 	true );
+		RegisterPluginDebug( "PluginPermanentCrossHair",		true,	true );
+		RegisterPluginDebug( "PluginRemotePlayerDebugClient",	true,	true );
+		RegisterPluginDebug( "PluginRemotePlayerDebugServer",	true,	true );
+		RegisterPluginDebug( "PluginDrawCheckerboard",			true,	true );
 		//RegisterPluginDebug( "PluginSoundDebug",				true,	false );
 		
 		GetGame().GetUpdateQueue(CALL_CATEGORY_GAMEPLAY).Insert(this.MainOnUpdate);

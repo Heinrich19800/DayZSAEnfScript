@@ -642,7 +642,12 @@ class MissionGameplay extends MissionBase
 		super.OnKeyPress(key);
 		m_hud.KeyPress(key);
 		
-		/*
+		if ( key == KeyCode.KC_END )
+		{
+			//g_Game.GetUIManager().EnterScriptedMenu(MENU_SCRIPTCONSOLE, NULL);
+			g_Game.GetUIManager().EnterScriptedMenu(MENU_ADMINTOOLS, NULL);
+		}
+		
 		//temporary
 		//Gestures [.]
 		if ( key == KeyCode.KC_PERIOD )
@@ -665,7 +670,7 @@ class MissionGameplay extends MissionBase
 				RadialQuickbarMenu.OpenMenu();
 			}
 		}
-		*/
+		
 	}
 	
 	override void OnKeyRelease(int key)

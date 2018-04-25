@@ -169,7 +169,6 @@ class MainMenu extends UIScriptedMenu
 		if ( w.GetUserID() == ID_FEEDBACK_LINK )
 		{
 			GetGame().OpenURL( "https://feedback.bistudio.com/tag/dayz" );
-			
 			return true;
 		}
 

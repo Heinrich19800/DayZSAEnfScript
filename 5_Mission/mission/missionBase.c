@@ -218,7 +218,10 @@ class MissionBase extends Mission
 			break;
 		case MENU_RADIAL_QUICKBAR:
 			menu = new RadialQuickbarMenu;
-			break;			
+			break;
+		case MENU_ADMINTOOLS:
+			menu = new AdminTools;
+			break;				
 		}
 
 		if (menu)

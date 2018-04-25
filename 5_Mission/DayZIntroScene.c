@@ -151,8 +151,9 @@ class DayZIntroScene: Managed
 	
 		if (world && date.Count() >= 5)
 		{
-			world.SetDate(date.Get(0), date.Get(1), date.Get(2), date.Get(3), date.Get(4));
-			//world.SetWeather(overcast, -1, -1, 0);
+			//world.SetDate(date.Get(0), date.Get(1), date.Get(2), date.Get(3), date.Get(4));
+			world.SetDate(1990, 12, 12, 16, 0);
+			//world.SetWeather(overcast, 10, 10, 0);
 			//world.SetAperture(aperture);
 			/*
 			// todo
@@ -326,7 +327,7 @@ class DayZIntroScene: Managed
 			return;
 		}
 		
-		PlayerBase.CastTo(m_demoUnit, m_data.CreateCharacterPerson(characterID));
+		//PlayerBase.CastTo(m_demoUnit, m_data.CreateCharacterPerson(characterID));
 		
 		if (m_demoUnit)
 		{
