@@ -159,9 +159,9 @@ class PlayerBase extends ManBase
 			m_AgentPool = new PlayerAgentPool(this); // agent pool manager
 			m_BleedingManager = new BleedingSourcesManager(this);
 			m_ModuleObjectsInteractionManager = PluginObjectsInteractionManager.Cast( GetPlugin(PluginObjectsInteractionManager) );
-			//m_Environment = new Environment(this);//environment effects on player
+			m_Environment = new Environment(this);//environment effects on player
 			m_ModifiersManager = new ModifiersManager(this); // player modifiers 
-			//m_ItemsGenerator = new ItemsGenerator(this);// jtomasik - generaters stones around player, disabled due to possible performance cost on server 
+			m_ItemsGenerator = new ItemsGenerator(this);// jtomasik - generaters stones around player, disabled due to possible performance cost on server 
 		}
 		m_StateManager = new StateManager(this); // state manager
 		m_ModuleRecipesManager = PluginRecipesManager.Cast(GetPlugin(PluginRecipesManager));
@@ -181,12 +181,12 @@ class PlayerBase extends ManBase
 		}
 
 		m_ActionManager = NULL;
-		//m_VehicleManager = new VehicleManager(this,m_ActionManager);	
+		m_VehicleManager = new VehicleManager(this,m_ActionManager);	
 		
 		m_ConfigEmotesProfile = PluginConfigEmotesProfile.Cast( GetPlugin(PluginConfigEmotesProfile) );
 		
-		if ( GetDayZGame().IsDebug() )
-		{
+		//if ( GetDayZGame().IsDebug() )
+		//{
 			PluginConfigDebugProfileFixed m_ConfigDebugProfileFixed = PluginConfigDebugProfileFixed.Cast( GetPlugin(PluginConfigDebugProfileFixed) );
 			PluginConfigDebugProfile m_ConfigDebugProfile = PluginConfigDebugProfile.Cast( GetPlugin(PluginConfigDebugProfile) );
 			PluginDeveloper m_Developer = PluginDeveloper.Cast( GetPlugin(PluginDeveloper) );
@@ -228,7 +228,7 @@ class PlayerBase extends ManBase
 					}
 				}
 			}
-		}
+		//}
 		
 		m_ModulePlayerStatus	= PluginPlayerStatus.Cast( GetPlugin(PluginPlayerStatus) );
 		m_ModuleLifespan		= PluginLifespan.Cast( GetPlugin( PluginLifespan ) );
@@ -828,14 +828,14 @@ class PlayerBase extends ManBase
 	//---------------------------------------------------------------------------------------------------------------------------
 	void OnPlayerLoaded()
 	{
-		if ( GetGame().IsDebug() )
-		{
+		//if ( GetGame().IsDebug() )
+		//{
 			if ( !GetGame().IsMultiplayer()  &&  GetGame().GetPlayer()  &&  GetGame().GetPlayer().GetID() == this.GetID() )
 			{
 				PluginSceneManager scene_editor = PluginSceneManager.Cast( GetPlugin(PluginSceneManager) );
 				scene_editor.InitLoad();
 			}
-		}
+		//}
 	
 		if ( m_HUD )
 		{
@@ -2092,16 +2092,18 @@ class PlayerBase extends ManBase
 			break;
 			*/
 		}
-#ifdef DEVELOPER
+//#ifdef DEVELOPER
 			PluginDeveloper module_rc = PluginDeveloper.Cast( GetPlugin(PluginDeveloper) );
 			if(module_rc) module_rc.OnRPC(this, rpc_type, ctx);
 			
 			PluginDeveloperSync module_rcs = PluginDeveloperSync.Cast( GetPlugin(PluginDeveloperSync) );
 			if(module_rcs) module_rcs.OnRPC(this, rpc_type, ctx);
 			
+			/*
 			PluginDiagMenu plugin_diag_menu = PluginDiagMenu.Cast( GetPlugin(PluginDiagMenu) );
 			if(plugin_diag_menu) plugin_diag_menu.OnRPC(this, rpc_type, ctx);
-#endif
+			*/
+//#endif
 	}
 	
 	// -------------------------------------------------------------------------

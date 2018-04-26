@@ -15,8 +15,8 @@ class ItemsGenerator //Makes sure there is always one small Items near player if
 		m_Players = new array<Man>;
 		m_ItemsToGenerate = new TStringArray;
 		m_ItemsToGenerate.Insert("SmallStone");
-		//m_ItemsToGenerate.Insert("WoodenStick");
-		//m_ItemsToGenerate.Insert("Apple");
+		m_ItemsToGenerate.Insert("WoodenStick");
+		m_ItemsToGenerate.Insert("Apple");
 	}
 	
 	void ~ItemsGenerator()

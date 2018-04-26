@@ -327,7 +327,7 @@ class DayZIntroScene: Managed
 			return;
 		}
 		
-		//PlayerBase.CastTo(m_demoUnit, m_data.CreateCharacterPerson(characterID));
+		PlayerBase.CastTo(m_demoUnit, m_data.CreateCharacterPerson(characterID));
 		
 		if (m_demoUnit)
 		{

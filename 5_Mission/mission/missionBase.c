@@ -87,7 +87,7 @@ class NotificationMessage
 class MissionBase extends Mission
 {
 	PluginDeveloper 		m_ModuleDeveloper;
-	PluginKeyBinding		m_ModuleKeyBinding
+	PluginKeyBinding		m_ModuleKeyBinding;
 	PluginAdditionalInfo	m_ModuleServerInfo;
 	
 	ref NotificationMessage m_notification_widget;
@@ -218,10 +218,7 @@ class MissionBase extends Mission
 			break;
 		case MENU_RADIAL_QUICKBAR:
 			menu = new RadialQuickbarMenu;
-			break;
-		case MENU_ADMINTOOLS:
-			menu = new AdminTools;
-			break;				
+			break;			
 		}
 
 		if (menu)
@@ -286,52 +283,44 @@ class MissionBase extends Mission
 	{
 		super.OnKeyPress(key);
 		
-		if ( GetGame().IsDebug() )
-		{
-			if ( PluginKeyBinding.instance != NULL )
+			if ( m_ModuleKeyBinding.instance != NULL )
 			{
-				PluginKeyBinding.instance.OnKeyPress(key);
+				m_ModuleKeyBinding.instance.OnKeyPress(key);
 			}
-		}
+	
 	}
 
 	override void OnKeyRelease(int key)
 	{
 		super.OnKeyRelease(key);
 		
-		if ( GetGame().IsDebug() )
-		{
-			if ( PluginKeyBinding.instance != NULL )
+			if ( m_ModuleKeyBinding.instance != NULL )
 			{
-				PluginKeyBinding.instance.OnKeyRelease(key);
+				m_ModuleKeyBinding.instance.OnKeyRelease(key);
 			}
-		}
+	
 	}
 	
 	override void OnMouseButtonPress(int button)
 	{
 		super.OnMouseButtonPress(button);
 		
-		if ( GetGame().IsDebug() )
-		{
-			if ( PluginKeyBinding.instance != NULL )
+			if ( m_ModuleKeyBinding.instance != NULL )
 			{
-				PluginKeyBinding.instance.OnMouseButtonPress(button);
+				m_ModuleKeyBinding.instance.OnMouseButtonPress(button);
 			}
-		}
+	
 	}
 	
 	override void OnMouseButtonRelease(int button)
 	{
 		super.OnMouseButtonRelease(button);
 		
-		if ( GetGame().IsDebug() )
-		{
-			if ( PluginKeyBinding.instance != NULL )
+			if ( m_ModuleKeyBinding.instance != NULL )
 			{
-				PluginKeyBinding.instance.OnMouseButtonRelease(button);
+				m_ModuleKeyBinding.instance.OnMouseButtonRelease(button);
 			}
-		}
+	
 	}
 
 	override void OnEvent(EventType eventTypeId, Param params)

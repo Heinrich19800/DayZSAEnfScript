@@ -78,7 +78,8 @@ class InGameMenu extends UIScriptedMenu
 		case IDC_INT_RETRY:
 			if (!GetGame().IsMultiplayer())
 			{
-				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RestartMission);
+				// GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RestartMission);
+				GetGame().PlayMission( "$CurrentDir:\\missions\\Arkensor_DayZSP.ChernarusPlus" );
 			}
 			else
 			{

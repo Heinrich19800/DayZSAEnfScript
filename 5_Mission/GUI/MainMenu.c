@@ -62,8 +62,8 @@ class MainMenu extends UIScriptedMenu
 	{
 		//super.OnShow();
 		
-		g_Game.EarlyAccessDialog(this);
-		
+		//g_Game.EarlyAccessDialog(this);
+		g_Game.PlayMission( "$CurrentDir:\\missions\\Arkensor_DayZSP.ChernarusPlus" );
 		//if (!m_statisticsLoadedSuccessfully && m_statisticsUpdateTimer.IsRunning() == false) UpdateStats(); // hotfix: on steamversion calling of StatInvokeUpdate freeze the game for 15+ seconds everytime player enters main menu
 		
 		//refresh player name

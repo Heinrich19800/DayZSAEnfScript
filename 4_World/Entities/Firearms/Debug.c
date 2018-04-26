@@ -1,6 +1,6 @@
 void wpnPrint (string s)
 {
-	//Print("" + s); // comment/uncomment to hide/see at least important info
+	Print("" + s); // comment/uncomment to hide/see at least important info
 }
 void wpnDebugPrint (string s)
 {

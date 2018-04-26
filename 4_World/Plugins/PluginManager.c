@@ -56,24 +56,24 @@ class PluginManager
 		RegisterPlugin( "PluginConfigEmotesProfile",			true, 	true );
 		
 		// Only In Debug / Internal
-		RegisterPluginDebug( "PluginConfigViewer",				true, 	true );
-		RegisterPluginDebug( "PluginLocalEnscriptHistory",		true, 	true );
-		RegisterPluginDebug( "PluginKeyBinding",				true, 	true );
-		RegisterPluginDebug( "PluginDeveloper",					true, 	true );
-		RegisterPluginDebug( "PluginDeveloperSync",				true, 	true );
+		RegisterPlugin( "PluginConfigViewer",				true, 	true );
+		RegisterPlugin( "PluginLocalEnscriptHistory",		true, 	true );
+		RegisterPlugin( "PluginKeyBinding",				true, 	true );
+		RegisterPlugin( "PluginDeveloper",					true, 	true );
+		RegisterPlugin( "PluginDeveloperSync",				true, 	true );
 		
-		RegisterPluginDebug( "PluginSceneManager",				true, 	true );
-		RegisterPluginDebug( "PluginConfigScene",				true, 	true );
-		RegisterPluginDebug( "PluginMissionConfig",				true, 	true );
-		RegisterPluginDebug( "PluginConfigEmotesProfile",		true, 	true );
-		RegisterPluginDebug( "PluginConfigDebugProfile",		true, 	true );
-		RegisterPluginDebug( "PluginConfigDebugProfileFixed",	true, 	true );
+		RegisterPlugin( "PluginSceneManager",				true, 	true );
+		RegisterPlugin( "PluginConfigScene",				true, 	true );
+		RegisterPlugin( "PluginMissionConfig",				true, 	true );
+		RegisterPlugin( "PluginConfigEmotesProfile",		true, 	true );
+		RegisterPlugin( "PluginConfigDebugProfile",		true, 	true );
+		RegisterPlugin( "PluginConfigDebugProfileFixed",	true, 	true );
 		
-		RegisterPluginDebug( "PluginItemDiagnostic",			true, 	true );
-		RegisterPluginDebug( "PluginDayzPlayerDebug",			true, 	true );
-		RegisterPluginDebug( "PluginDiagMenu",					true, 	true );
+		RegisterPlugin( "PluginItemDiagnostic",			true, 	true );
+		RegisterPlugin( "PluginDayzPlayerDebug",			true, 	true );
+		RegisterPlugin( "PluginDiagMenu",					true, 	true );
 		RegisterPluginDebug( "PluginDayZCreatureAIDebug",		true, 	true );
-		RegisterPluginDebug( "PluginDoorRuler",					true, 	true );
+		RegisterPlugin( "PluginDoorRuler",					true, 	true );
 		RegisterPluginDebug( "PluginPermanentCrossHair",		true,	true );
 		RegisterPluginDebug( "PluginRemotePlayerDebugClient",	true,	true );
 		RegisterPluginDebug( "PluginRemotePlayerDebugServer",	true,	true );

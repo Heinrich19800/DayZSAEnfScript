@@ -82,7 +82,7 @@ class PluginDiagMenu extends PluginBase
 	bool m_StaminaDisabled			= false;
 	bool m_MeleeBlockStance			= false;
 	bool m_MeleeFight				= false;
-	bool m_EnvironmentStats			= false;
+	bool m_EnvironmentStats			= true;
 	bool m_DrawCheckerboard			= false;
 	float m_SpecialtyLevel			= 0;
 	float m_LifespanLevel			= 0;

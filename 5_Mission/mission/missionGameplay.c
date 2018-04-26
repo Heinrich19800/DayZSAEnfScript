@@ -9,6 +9,8 @@ class MissionGameplay extends MissionBase
 	float 	m_volume_VOIP;
 	float 	m_volume_radio;
 	bool	m_initialized;
+	
+	PlayerBase m_player;
 	bool	m_invUpdateThisFrame;
 	protected bool		m_IsOpenPauseMenu;
 	protected UIManager	m_UIManager;
@@ -40,6 +42,17 @@ class MissionGameplay extends MissionBase
 	protected const int 			HOLD_LIMIT_TIME	= 300; //ms
 	protected int					m_ActionDownTime;
 	protected int					m_ActionUpTime;
+	
+	PlayerBase m_oPlayer;
+	bool m_bDebugMonitor = false;
+	bool m_IsCtrlHolding = false;
+	bool m_IsWinHolding = false;
+	bool m_IsLeftAltHolding = false;
+	bool m_IsRightAltHolding = false;
+	bool m_IsLeftShiftHolding = false;
+	bool m_IsRightShiftHolding = false;
+	
+	PluginDeveloper plugin_developer = PluginDeveloper.Cast( GetPlugin(PluginDeveloper) );
 	
 	void MissionGameplay()
 	{
@@ -133,6 +146,13 @@ class MissionGameplay extends MissionBase
 		m_volume_music = GetGame().GetSoundScene().GetMusicVolume();
 		m_volume_VOIP = GetGame().GetSoundScene().GetVOIPVolume();
 		m_volume_radio = GetGame().GetSoundScene().GetRadioVolume();
+		
+		vector pos = "3615 0 8525";
+		
+		m_oPlayer = PlayerBase.Cast(GetGame().CreatePlayer(NULL, GetGame().CreateRandomPlayer(), pos, 0, "NONE"));//Creates random player
+		
+		GetGame().SelectPlayer(NULL, m_oPlayer);
+		
 	}
 	
 	UIManager GetUIManager()
@@ -143,9 +163,12 @@ class MissionGameplay extends MissionBase
 	override void OnMissionStart()
 	{
 		//does not display HUD until player is fully loaded
-		//m_hud_root_widget.Show(true);
-		GetUIManager().ShowUICursor(false);
+		m_hud_root_widget.Show(true);
+		GetUIManager().ShowUICursor(true);
 		g_Game.SetMissionState( DayZGame.MISSION_STATE_GAME );
+		
+		CreateDebugMonitor();
+		m_debugMonitor.Hide();
 	}
 	
 	void InitInventory()
@@ -202,6 +225,8 @@ class MissionGameplay extends MissionBase
 		//m_inventory_menu_new = inventory;
 		InspectMenuNew inspect = InspectMenuNew.Cast( m_UIManager.FindMenu(MENU_INSPECT) );
 		Input input = GetGame().GetInput();
+		
+		UpdateDebugMonitor();
 		
 		//TODO should be switchable
 		if (playerPB && playerPB.enterNoteMenuRead)
@@ -637,17 +662,190 @@ class MissionGameplay extends MissionBase
 		UpdateDebugMonitor();
 	}
 	
+	bool CTRL()
+	{
+		return m_IsCtrlHolding;
+	}
+	
+	bool WIN()
+	{
+		return m_IsWinHolding;
+	}
+	
+	bool SHIFT()
+	{
+		return ( m_IsLeftShiftHolding || m_IsRightShiftHolding );
+	}
+	
+	bool ALT()
+	{
+		return ( m_IsLeftAltHolding || m_IsRightAltHolding );
+	}
+	
+		vector GetCursorPos()
+	{
+		vector rayStart = GetGame().GetCurrentCameraPosition();
+		vector rayEnd = rayStart + GetGame().GetCurrentCameraDirection() * 10000;		
+		vector hitPos;
+		vector hitNormal;
+		int hitComponentIndex;		
+		DayZPhysics.RaycastRV(rayStart, rayEnd, hitPos, hitNormal, hitComponentIndex, NULL, NULL, m_oPlayer);
+		
+		return hitPos;
+	}
+	
+		string GetRandomChildFromBaseClass( string strConfigName, string strBaseClass )
+	{
+		string child_name = "";
+		int count = GetGame().ConfigGetChildrenCount ( strConfigName );
+		array<string> class_names = new array<string>;
+
+		for (int p = 0; p < count; p++)
+		{
+			GetGame().ConfigGetChildName ( strConfigName, p, child_name );
+			
+			if ( GetGame().IsKindOf(child_name, strBaseClass ) )
+			{
+				class_names.Insert(child_name);
+			}
+		}
+		
+		return class_names.GetRandomElement();
+	}
+	
 	override void OnKeyPress(int key)
 	{
 		super.OnKeyPress(key);
 		m_hud.KeyPress(key);
 		
-		if ( key == KeyCode.KC_END )
+		if( GetGame().GetUIManager().GetMenu() )
 		{
-			//g_Game.GetUIManager().EnterScriptedMenu(MENU_SCRIPTCONSOLE, NULL);
-			g_Game.GetUIManager().EnterScriptedMenu(MENU_ADMINTOOLS, NULL);
+			return;
 		}
 		
+		switch( key )
+		{
+			case KeyCode.KC_LCONTROL:
+			{
+				m_IsCtrlHolding = true;
+				break;
+			}
+			
+			case KeyCode.KC_LWIN:
+			{
+				m_IsWinHolding = true;
+				break;
+			}
+			
+			case KeyCode.KC_LMENU:
+			{
+				m_IsLeftAltHolding = true;
+				break;	
+			}
+			
+			case KeyCode.KC_RMENU:
+			{
+				m_IsRightAltHolding = true;
+				break;
+			}
+			
+			case KeyCode.KC_LSHIFT:
+			{
+				m_IsLeftShiftHolding = true;
+				break:
+			}
+			
+			case KeyCode.KC_RSHIFT:
+			{
+				m_IsRightShiftHolding = true;
+				break:
+			}
+		
+			case KeyCode.KC_O:
+			{
+				if( CTRL() )
+				{
+					GetGame().CreateObject( "Animal_CanisLupus_Grey", GetCursorPos(), false, true );
+				}
+				else if( SHIFT() )
+				{
+					GetGame().CreateObject( GetRandomChildFromBaseClass( "cfgVehicles", "AnimalBase" ), GetCursorPos(), false, true );
+				}
+				else
+				{
+					GetGame().CreateObject( GetRandomChildFromBaseClass( "cfgVehicles", "DayZInfected" ), GetCursorPos(), false, true );
+				}
+				
+				break;
+			}
+
+			case KeyCode.KC_R:
+			{
+				EntityAI oWeapon = m_oPlayer.GetHumanInventory().GetEntityInHands();
+				
+				if( oWeapon )
+				{
+					Magazine oMag = ( Magazine ) oWeapon.GetAttachmentByConfigTypeName( "DefaultMagazine" );
+					
+					if( oMag && oMag.IsMagazine() )
+					{
+						oMag.LocalSetAmmoMax();
+					}					
+					
+					Object oSupressor = ( Object ) oWeapon.GetAttachmentByConfigTypeName( "SuppressorBase" );
+					
+					if( oSupressor )
+					{
+						oSupressor.SetHealth( oSupressor.GetMaxHealth( "", "" ) );
+					}
+				}
+
+				break;
+			}
+		
+			
+			case KeyCode.KC_N:
+			{
+				EntityAI oCar = EntityAI.Cast( GetGame().CreateObject( "CivilianSedan", GetCursorPos(), false, true ) );
+				
+				oCar.GetInventory().CreateAttachment( "CivSedanWheel" );
+				oCar.GetInventory().CreateAttachment( "CivSedanWheel" );
+				oCar.GetInventory().CreateAttachment( "CivSedanWheel" );
+				oCar.GetInventory().CreateAttachment( "CivSedanWheel" );
+				oCar.GetInventory().CreateAttachment( "CarBattery" );
+				oCar.GetInventory().CreateAttachment( "CarRadiator" );
+				oCar.GetInventory().CreateAttachment( "EngineBelt" );
+				oCar.GetInventory().CreateAttachment( "SparkPlug" );
+				oCar.GetInventory().CreateAttachment( "CivSedanHood" );
+				oCar.GetInventory().CreateAttachment( "CivSedanTrunk" );
+				oCar.GetInventory().CreateAttachment( "CivSedanDoors_Driver" );
+				oCar.GetInventory().CreateAttachment( "CivSedanDoors_CoDriver" );
+				oCar.GetInventory().CreateAttachment( "CivSedanDoors_BackLeft" );
+				oCar.GetInventory().CreateAttachment( "CivSedanDoors_BackRight" );
+				
+				oCar.SetAllowDamage( false );
+				
+				break;
+			}
+			
+			case KeyCode.KC_B:
+			{
+				Print( m_debugMonitor );
+				
+				if( m_bDebugMonitor )
+				{
+					m_debugMonitor.Hide();
+					m_bDebugMonitor = false;
+				}
+				else
+				{
+					m_debugMonitor.Show();
+					m_bDebugMonitor = true;
+				}
+				
+				break;
+			}
+		}	
 		//temporary
 		//Gestures [.]
 		if ( key == KeyCode.KC_PERIOD )
@@ -677,7 +875,48 @@ class MissionGameplay extends MissionBase
 	{
 		super.OnKeyRelease(key);
 		
-		/*
+		switch( key )
+		{
+			case KeyCode.KC_LCONTROL:
+			{
+				m_IsCtrlHolding = false;
+				break;
+			}
+			
+			
+			case KeyCode.KC_LWIN:
+			{
+				m_IsWinHolding = false;
+				break;
+			}
+			
+			
+			case KeyCode.KC_LMENU:
+			{
+				m_IsLeftAltHolding = false;
+				break;
+			}
+						
+			
+			case KeyCode.KC_RMENU:
+			{
+				m_IsRightAltHolding = false;
+				break;
+			}
+			
+			case KeyCode.KC_LSHIFT:
+			{
+				m_IsLeftShiftHolding = false;
+				break:
+			}
+			
+			case KeyCode.KC_RSHIFT:
+			{
+				m_IsRightShiftHolding = false;
+				break:
+			}
+		}
+		
 		//temporary
 		//Gestures [.]
 		if ( key == KeyCode.KC_PERIOD )
@@ -700,7 +939,7 @@ class MissionGameplay extends MissionBase
 				RadialQuickbarMenu.CloseMenu();
 			}
 		}
-		*/
+		
 	}
 	
 	override void OnEvent(EventType eventTypeId, Param params)
@@ -1058,14 +1297,10 @@ class MissionGameplay extends MissionBase
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 		if (player)
 		{
-			DebugMonitorValues values = player.GetDebugMonitorValues();
-			if (values)
-			{
-				m_debugMonitor.SetHealth(values.GetHealth());
-				m_debugMonitor.SetBlood(values.GetBlood());
-				m_debugMonitor.SetLastDamage(values.GetLastDamage());
-				m_debugMonitor.SetPosition(player.GetPosition());
-			}
+				m_debugMonitor.SetHealth( player.GetHealth( "","" ) );
+				m_debugMonitor.SetBlood(  player.GetHealth( "","Blood" ) );
+				m_debugMonitor.SetLastDamage( "from penis" );
+				m_debugMonitor.SetPosition( player.GetPosition() );
 		}
 	}
 	

@@ -199,10 +199,10 @@ class PluginDeveloperSync extends PluginBase
 	//================================================================ 
 	void OnRPC( PlayerBase player, int rpc_type, ParamsReadContext ctx )
 	{
-		if ( !GetGame().IsDebug() )
-		{
-			return;
-		}
+		//if ( !GetGame().IsDebug() )
+		//{
+		//	return;
+		//}
 		
 		switch( rpc_type )
 		{

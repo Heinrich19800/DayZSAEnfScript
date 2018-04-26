@@ -54,6 +54,7 @@ class PluginSceneManager extends PluginBase
 		m_RulerPoints	= new array<vector>;
 		m_RulerLines	= new array<Shape>;
 		m_RulerSpheres	= new array<Shape>;
+		EditorToggle();
 	}
 
 	//==========================================

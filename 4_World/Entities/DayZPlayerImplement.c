@@ -1432,7 +1432,7 @@ class DayZPlayerImplement extends DayZPlayer
 				SoundObjectBuilder builder = sound_event.GetSoundBuilder();
 				builder.SetVariable("quantity", quantity);
 				builder.SetVariable("interior", IsSoundInsideBuilding());
-				PlaySound(builder.BuildSoundObject());
+				PlaySound(builder.BuildSoundObject()); // PLAY SOUND WEAPONS AND EVENTS
 			}
 			
 			if(GetGame().IsServer() || !GetGame().IsMultiplayer())

@@ -16,7 +16,7 @@ class PluginSoundDebug extends PluginBase
 		m_TickTimer = NULL;
 	}
 	
-	/*void Show()
+	void Show()
 	{
 		m_TickTimer = new Timer();
 		m_TickTimer.Run(0.1, this, "OnGUITimer", NULL, true);
@@ -25,7 +25,7 @@ class PluginSoundDebug extends PluginBase
 	void Hide()
 	{
 		m_TickTimer = NULL;
-	}*/
+	}
 	
 	void OnGUITimer()
 	{

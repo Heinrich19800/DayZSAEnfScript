@@ -59,10 +59,10 @@ class DeveloperTeleport
 	
 	static void OnRPC(PlayerBase player, int rpc_type, ParamsReadContext ctx)
 	{
-		if ( !GetGame().IsDebug() )
-		{
-			return;
-		}
+		//if ( !GetGame().IsDebug() )
+		//{
+		//	return;
+		//}
 	
 		if ( rpc_type == ERPCs.DEV_RPC_TELEPORT )
 		{
