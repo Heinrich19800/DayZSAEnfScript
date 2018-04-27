@@ -12,7 +12,7 @@ class Refridgerator extends ItemBase
 	{
 		// TO DO: Slow down or stop the aging of food inside of the fridge when such functionality is created.
 		
-		m_SoundLoopEntity = PlaySoundLoop("powerFridgeLoop", 30); // using placeholder sound
+		m_SoundLoopEntity = PlaySoundLoop("powerGeneratorLoop", 50); // using placeholder sound
 	}
 	
 	override void OnWork( float consumed_energy )

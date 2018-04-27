@@ -87,7 +87,7 @@ class NotificationMessage
 class MissionBase extends Mission
 {
 	PluginDeveloper 		m_ModuleDeveloper;
-	PluginKeyBinding		m_ModuleKeyBinding;
+	PluginKeyBinding		m_ModuleKeyBinding
 	PluginAdditionalInfo	m_ModuleServerInfo;
 	
 	ref NotificationMessage m_notification_widget;
@@ -107,11 +107,13 @@ class MissionBase extends Mission
 		//TODO clea up after Gamescom
 		m_ModuleServerInfo = PluginAdditionalInfo.Cast( GetPlugin(PluginAdditionalInfo) );
 		//
+		PPEffects.ResetAll();
 	}
 
 	void ~MissionBase()
 	{
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(this.CheckNotification);
+		PPEffects.ResetAll();
 		PluginManagerDelete();
 	}
 	
@@ -283,44 +285,52 @@ class MissionBase extends Mission
 	{
 		super.OnKeyPress(key);
 		
-			if ( m_ModuleKeyBinding.instance != NULL )
+		if ( GetGame().IsDebug() )
+		{
+			if ( PluginKeyBinding.instance != NULL )
 			{
-				m_ModuleKeyBinding.instance.OnKeyPress(key);
+				PluginKeyBinding.instance.OnKeyPress(key);
 			}
-	
+		}
 	}
 
 	override void OnKeyRelease(int key)
 	{
 		super.OnKeyRelease(key);
 		
-			if ( m_ModuleKeyBinding.instance != NULL )
+		if ( GetGame().IsDebug() )
+		{
+			if ( PluginKeyBinding.instance != NULL )
 			{
-				m_ModuleKeyBinding.instance.OnKeyRelease(key);
+				PluginKeyBinding.instance.OnKeyRelease(key);
 			}
-	
+		}
 	}
 	
 	override void OnMouseButtonPress(int button)
 	{
 		super.OnMouseButtonPress(button);
 		
-			if ( m_ModuleKeyBinding.instance != NULL )
+		if ( GetGame().IsDebug() )
+		{
+			if ( PluginKeyBinding.instance != NULL )
 			{
-				m_ModuleKeyBinding.instance.OnMouseButtonPress(button);
+				PluginKeyBinding.instance.OnMouseButtonPress(button);
 			}
-	
+		}
 	}
 	
 	override void OnMouseButtonRelease(int button)
 	{
 		super.OnMouseButtonRelease(button);
 		
-			if ( m_ModuleKeyBinding.instance != NULL )
+		if ( GetGame().IsDebug() )
+		{
+			if ( PluginKeyBinding.instance != NULL )
 			{
-				m_ModuleKeyBinding.instance.OnMouseButtonRelease(button);
+				PluginKeyBinding.instance.OnMouseButtonRelease(button);
 			}
-	
+		}
 	}
 
 	override void OnEvent(EventType eventTypeId, Param params)

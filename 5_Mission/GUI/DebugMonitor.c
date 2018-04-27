@@ -71,10 +71,5 @@ class DebugMonitor
 	{
 		m_WidgetRoot.Show(false);
 	}
-	
-	void Show() 
-	{
-		m_WidgetRoot.Show(true);
-	}
 };
 	

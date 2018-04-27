@@ -51,6 +51,8 @@ class MainMenu extends UIScriptedMenu
 		RichTextWidget news_feed_widget = RichTextWidget.Cast( layoutRoot.FindAnyWidget( "NewsFeedRichtext" ) );
 		news_feed_widget.SetText( news_feed_text );
 		
+		GetGame().GetUIManager().ScreenFadeOut(0);
+		PPEffects.ResetAll();
 		// NotificationMessage m_notification_widget = new NotificationMessage( layoutRoot ); 
 		return layoutRoot;
 	}
@@ -62,8 +64,8 @@ class MainMenu extends UIScriptedMenu
 	{
 		//super.OnShow();
 		
-		//g_Game.EarlyAccessDialog(this);
-		g_Game.PlayMission( "$CurrentDir:\\missions\\Arkensor_DayZSP.ChernarusPlus" );
+		g_Game.EarlyAccessDialog(this);
+		
 		//if (!m_statisticsLoadedSuccessfully && m_statisticsUpdateTimer.IsRunning() == false) UpdateStats(); // hotfix: on steamversion calling of StatInvokeUpdate freeze the game for 15+ seconds everytime player enters main menu
 		
 		//refresh player name
@@ -169,6 +171,7 @@ class MainMenu extends UIScriptedMenu
 		if ( w.GetUserID() == ID_FEEDBACK_LINK )
 		{
 			GetGame().OpenURL( "https://feedback.bistudio.com/tag/dayz" );
+			
 			return true;
 		}
 
