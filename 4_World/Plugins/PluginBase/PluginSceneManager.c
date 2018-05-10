@@ -76,11 +76,19 @@ class PluginSceneManager extends PluginBase
 		
 		if ( GetSelectedSceneObject() )
 		{
-			GetSelectedSceneObject().AddRotation(GetRotationAngle() * wheel);
+			if (GetDayZGame().IsLeftCtrlDown()) {
+				vector v = GetSelectedSceneObject().GetPosition();
+				PlayerBase.Cast(GetGame().GetPlayer()).MessageStatus(wheel.ToString());
+				v[1] = v[1] + wheel*0.005;
+				GetSelectedSceneObject().SetPosition(v, false);
+			} else {
+				GetSelectedSceneObject().AddRotation(GetRotationAngle() * wheel);
+			}
 		}
 		
 		EditorUpdate();
 	}
+
 
 	//==========================================
 	// OnUIEditorOpened
@@ -263,7 +271,7 @@ class PluginSceneManager extends PluginBase
 			
 			if ( DayZPhysics.RaycastRV(from, to, contact_pos, contact_dir, contact_component, NULL, NULL, NULL, false, true) )   
 			{
-				GetSelectedSceneObject().SetPosition(contact_pos);
+				GetSelectedSceneObject().SetPosition(contact_pos, true);
 			}
 			
 			EditorUpdate();
@@ -547,7 +555,7 @@ class PluginSceneManager extends PluginBase
 		{
 			vector v = selected_obj.GetPosition();
 			v[0] = value;
-			selected_obj.SetPosition(v);
+			selected_obj.SetPosition(v, true);
 			
 			EditorUpdate();
 		}
@@ -564,7 +572,7 @@ class PluginSceneManager extends PluginBase
 		{
 			vector v = selected_obj.GetPosition();
 			v[1] = value;
-			selected_obj.SetPosition(v);
+			selected_obj.SetPosition(v, false);
 			
 			EditorUpdate();
 		}
@@ -581,7 +589,7 @@ class PluginSceneManager extends PluginBase
 		{
 			vector v = selected_obj.GetPosition();
 			v[2] = value;
-			selected_obj.SetPosition(v);
+			selected_obj.SetPosition(v, true);
 			
 			EditorUpdate();
 		}
@@ -1145,7 +1153,7 @@ class PluginSceneManager extends PluginBase
 	{
 		if ( GetGame().IsMultiplayer() )
 		{
-			return;
+			// return;
 		}
 		
 		array<ref SceneObject> objects = GetSceneObjects();

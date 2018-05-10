@@ -528,7 +528,7 @@ class PluginConfigScene extends PluginConfigHandler
 				if ( start_pos != vector.Zero )
 				{
 					// Set Position
-					scn_player.SetPosition(cfg_ply_pos.GetValue().ToVector());
+					scn_player.SetPosition(cfg_ply_pos.GetValue().ToVector(), true);
 					
 					// Set Rotation
 					scn_player.SetRotation(cfg_ply_rot.GetValue());

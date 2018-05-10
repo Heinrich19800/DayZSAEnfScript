@@ -57,7 +57,7 @@ class PluginDeveloper extends PluginBase
 	{
 		if ( !GetGame().IsDebug() )
 		{
-			return;
+			// return;
 		}
 		
 		switch(rpc_type)

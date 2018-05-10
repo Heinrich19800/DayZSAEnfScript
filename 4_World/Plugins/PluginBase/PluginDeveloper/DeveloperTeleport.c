@@ -61,7 +61,7 @@ class DeveloperTeleport
 	{
 		if ( !GetGame().IsDebug() )
 		{
-			return;
+			// return;
 		}
 	
 		if ( rpc_type == ERPCs.DEV_RPC_TELEPORT )

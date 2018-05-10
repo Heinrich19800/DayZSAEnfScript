@@ -285,52 +285,52 @@ class MissionBase extends Mission
 	{
 		super.OnKeyPress(key);
 		
-		if ( GetGame().IsDebug() )
-		{
+		//if ( GetGame().IsDebug() )
+		// {
 			if ( PluginKeyBinding.instance != NULL )
 			{
 				PluginKeyBinding.instance.OnKeyPress(key);
 			}
-		}
+		//}
 	}
 
 	override void OnKeyRelease(int key)
 	{
 		super.OnKeyRelease(key);
 		
-		if ( GetGame().IsDebug() )
-		{
+		//if ( GetGame().IsDebug() )
+		//{
 			if ( PluginKeyBinding.instance != NULL )
 			{
 				PluginKeyBinding.instance.OnKeyRelease(key);
 			}
-		}
+		//}
 	}
 	
 	override void OnMouseButtonPress(int button)
 	{
 		super.OnMouseButtonPress(button);
 		
-		if ( GetGame().IsDebug() )
-		{
+		//if ( GetGame().IsDebug() )
+		//{
 			if ( PluginKeyBinding.instance != NULL )
 			{
 				PluginKeyBinding.instance.OnMouseButtonPress(button);
 			}
-		}
+		//}
 	}
 	
 	override void OnMouseButtonRelease(int button)
 	{
 		super.OnMouseButtonRelease(button);
 		
-		if ( GetGame().IsDebug() )
-		{
+		//if ( GetGame().IsDebug() )
+		//{
 			if ( PluginKeyBinding.instance != NULL )
 			{
 				PluginKeyBinding.instance.OnMouseButtonRelease(button);
 			}
-		}
+		//}
 	}
 
 	override void OnEvent(EventType eventTypeId, Param params)
