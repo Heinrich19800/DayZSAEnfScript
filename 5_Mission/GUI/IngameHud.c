@@ -852,16 +852,19 @@ class IngameHud extends Hud
 		}
 	}
 	
-	void ToggleHud( bool show )
+	void ToggleHud( bool show, bool ignore_state = false )
 	{
 		//You can add more widgets to toggle here
 		SetLeftStatsVisibility( show );
 		m_Badges.Show( show );
 		m_Notifiers.Show( show );
-		m_HudState = show;
-
-		//! save it to profiles
-		g_Game.SetProfileOption( EDayZProfilesOptions.HUD, show );
+		
+		if( !ignore_state )
+		{
+			m_HudState = show;
+			//! save it to profiles
+			g_Game.SetProfileOption( EDayZProfilesOptions.HUD, show );
+		}
 	}
 	
 	bool GetQuickBarState()

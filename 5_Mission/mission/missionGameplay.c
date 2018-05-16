@@ -112,8 +112,8 @@ class MissionGameplay extends MissionBase
 		
 		// init hud ui
 		
-		//if ( GetGame().IsDebug() )
-		//{
+		if ( GetGame().IsDebug() )
+		{
 			m_hud_debug = new HudDebug;
 			
 			if ( !m_hud_debug.IsInitialized() )
@@ -122,7 +122,7 @@ class MissionGameplay extends MissionBase
 				
 				Debug.SetEnabledLogs(PluginConfigDebugProfile.GetInstance().GetLogsEnabled());
 			}
-		//}
+		}
 
 		//AIBehaviourHL.RegAIBehaviour("zombie2",AIBehaviourHLZombie2,AIBehaviourHLDataZombie2);
 		//RegBehaviour("zombie2",AIBehaviourHLZombie2,AIBehaviourHLDataZombie2);
@@ -642,7 +642,7 @@ class MissionGameplay extends MissionBase
 	{
 		super.OnKeyPress(key);
 		m_hud.KeyPress(key);
-
+		
 		/*
 		//temporary
 		//Gestures [.]

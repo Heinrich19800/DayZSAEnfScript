@@ -400,7 +400,7 @@ class SceneObject
 	//========================================
 	// SetPosition
 	//========================================
-	void SetPosition(vector pos, bool surface)
+	void SetPosition(vector pos)
 	{
 		if (m_ObjectPtr) 
 		{
@@ -414,8 +414,7 @@ class SceneObject
 				m_ObjectPtr.SetPosition(pos);
 			}
 		}
-		// Whoever thought of calling this bloody method here is an idiot.
-		if (surface) PlaceOnSurface();
+		PlaceOnSurface();
 		EditorShapeUpdatePos();
 	}
 	
@@ -479,7 +478,7 @@ class SceneObject
 	//========================================
 	void SetPositionAsString(string string_pos)
 	{
-		SetPosition(string_pos.ToVector(), true);
+		SetPosition(string_pos.ToVector());
 	}
 	
 	//========================================

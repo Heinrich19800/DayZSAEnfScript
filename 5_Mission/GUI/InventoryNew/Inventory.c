@@ -728,6 +728,7 @@ class Inventory: ContainerBase
 				//hud.SetSpecialtyMeterVisibility( true ); specialty meter temporary disabled
 				hud.SetSpecialtyMeterVisibility( false );
 				hud.HideQuickbar( true, true );
+				hud.ToggleHud( true, true );
 			}
 		}
 
@@ -786,6 +787,8 @@ class Inventory: ContainerBase
 				{
 					hud.ShowQuickbar();
 				}
+				
+				hud.ToggleHud( hud.GetHudState(), true );
 			}
 		}
 		ItemManager.GetInstance().SetSelectedItem( NULL, NULL );

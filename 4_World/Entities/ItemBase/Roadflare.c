@@ -82,7 +82,7 @@ class Roadflare : ItemBase
 		m_BurningState = RoadflareBurningState.INITIAL_BURN;
 		
 		// Disabled temporarily, need new particle
-		m_RandomSparksTimer.Run( Math.RandomFloatInclusive(1, 3), this, "OnRandomSparks", NULL, false);	
+		//m_RandomSparksTimer.Run( Math.RandomFloatInclusive(1, 3), this, "OnRandomSparks", NULL, false);	
 	
 	}
 	

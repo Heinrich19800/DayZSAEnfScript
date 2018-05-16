@@ -759,7 +759,7 @@ class PlayerBase extends ManBase
 		}
 	}
 	
-	bool IsHoldingBreath()
+	override bool IsHoldingBreath()
 	{
 		return m_IsHoldingBreath;
 	}	
@@ -825,14 +825,14 @@ class PlayerBase extends ManBase
 	//---------------------------------------------------------------------------------------------------------------------------
 	void OnPlayerLoaded()
 	{
-		// if ( GetGame().IsDebug() )
-		// {
+		if ( GetGame().IsDebug() )
+		{
 			if ( !GetGame().IsMultiplayer()  &&  GetGame().GetPlayer()  &&  GetGame().GetPlayer().GetID() == this.GetID() )
 			{
 				PluginSceneManager scene_editor = PluginSceneManager.Cast( GetPlugin(PluginSceneManager) );
 				scene_editor.InitLoad();
 			}
-		// }
+		}
 	
 		if ( m_HUD )
 		{
@@ -940,10 +940,11 @@ class PlayerBase extends ManBase
 					ScriptInputUserData ctx = new ScriptInputUserData;
 					ctx.Write(INPUT_UDT_ADVANCED_PLACEMENT);
 					ctx.Send();
-
-					PlacingCancelLocal();
 				}
-			}		
+			}	
+			
+			PlacingCancelLocal();
+				
 		}
 		else
 		{
@@ -1523,7 +1524,13 @@ class PlayerBase extends ManBase
 		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER )
 			return;
 
+		if( GetInventory().IsInventoryLocked() )
+			return;
+		
 		if( IsRaised() || GetCommand_Melee() || IsSwimming() || IsClimbingLadder() )
+			return;
+		
+		if (!ScriptInputUserData.CanStoreInputUserData())
 			return;
 		
 		
@@ -1594,8 +1601,12 @@ class PlayerBase extends ManBase
 	//---------------------------------------------------------
 	void OnQuickBarContinuousUseStart(int slotClicked)
 	{
+		if ( GetInventory().IsInventoryLocked() )
+			return;
+		
 		if ( IsSwimming() || IsClimbingLadder() || GetCommand_Melee())
 			return;
+		
 		EntityAI quickBarEntity = GetQuickBarEntity(slotClicked - 1);
 
 		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT)
@@ -2090,16 +2101,16 @@ class PlayerBase extends ManBase
 			break;
 			*/
 		}
-//#ifdef DEVELOPER
+#ifdef DEVELOPER
 			PluginDeveloper module_rc = PluginDeveloper.Cast( GetPlugin(PluginDeveloper) );
 			if(module_rc) module_rc.OnRPC(this, rpc_type, ctx);
 			
 			PluginDeveloperSync module_rcs = PluginDeveloperSync.Cast( GetPlugin(PluginDeveloperSync) );
 			if(module_rcs) module_rcs.OnRPC(this, rpc_type, ctx);
 			
-			//PluginDiagMenu plugin_diag_menu = PluginDiagMenu.Cast( GetPlugin(PluginDiagMenu) );
-			//if(plugin_diag_menu) plugin_diag_menu.OnRPC(this, rpc_type, ctx);
-//#endif
+			PluginDiagMenu plugin_diag_menu = PluginDiagMenu.Cast( GetPlugin(PluginDiagMenu) );
+			if(plugin_diag_menu) plugin_diag_menu.OnRPC(this, rpc_type, ctx);
+#endif
 	}
 	
 	// -------------------------------------------------------------------------
@@ -2887,13 +2898,15 @@ class PlayerBase extends ManBase
 			
 			return true;
 		}
-		else
+		return false;
+		// note: player is now killed in db right after the actual kill happens 
+		/*else
 		{
 			GetHive().CharacterKill(this);
 			Debug.Log("Player "+this.ToString()+ " saved as dead");
 			
 			return false;
-		}		
+		}*/		
 	}
 
 	// agent transfer

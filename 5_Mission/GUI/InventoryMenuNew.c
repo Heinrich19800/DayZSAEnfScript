@@ -66,7 +66,7 @@ class InventoryMenuNew extends UIScriptedMenu
 		#else
 			super.OnShow();
 			m_IsOpened = true;
-			PPEffects.SetBlurInventory(0.25);
+			PPEffects.SetBlurInventory(1);
 			main_container.Show( false );
 			m_Inventory.OnShow();
 		#endif

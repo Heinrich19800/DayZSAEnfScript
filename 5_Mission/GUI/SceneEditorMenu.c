@@ -344,7 +344,7 @@ class SceneEditorMenu extends UIScriptedMenu
 	//============================================
 	override bool UseMouse()
 	{
-		return true;
+		return false;
 	}
 
 	//============================================
@@ -352,7 +352,7 @@ class SceneEditorMenu extends UIScriptedMenu
 	//============================================
 	override bool UseKeyboard()
 	{
-		return true;
+		return false;
 	}
 	
 	// System Events
@@ -590,7 +590,7 @@ class SceneEditorMenu extends UIScriptedMenu
 					if ( m_SelectedObjectIsPreset )
 					{
 						// SpawnPresetOnGround
-						SetPreset( true, m_SelectedObject );
+						;//SetPreset( true, m_SelectedObject, spawn_type, distance );
 					}
 					else
 						m_Developer.SpawnEntityOnCursorDir( PlayerBase.Cast( GetGame().GetPlayer() ), m_SelectedObject, health, quantity, distance );

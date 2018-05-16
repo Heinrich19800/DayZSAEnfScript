@@ -26,7 +26,7 @@ void DayZPlayerTypeCreate(DayZPlayerType pType)
 	pType.SetAimLimits(-85, 85, -180, 180);		
 
 	//! camera shoot params
-	pType.SetCameraShootParams(250, 0.1);
+	pType.SetCameraShootParams(250, 0.01);
 	
 
 	//--------------------------------------------------------------
