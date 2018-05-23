@@ -117,7 +117,11 @@ class GridContainer: ContainerBase
 
 	override void SetLayoutName()
 	{
+		#ifdef PLATFORM_XBOX
+		m_LayoutName = WidgetLayoutName.GridContainerXbox;
+		#else
 		m_LayoutName = WidgetLayoutName.GridContainer;
+		#endif
 	}
 	
 	void SetEntity( EntityAI entity )

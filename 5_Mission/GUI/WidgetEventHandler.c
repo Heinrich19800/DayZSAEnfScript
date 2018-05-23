@@ -11,6 +11,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 	protected ref map<Widget, ref Param> m_OnDraggingOver;
 	protected ref map<Widget, ref Param> m_OnMouseEnter;
 	protected ref map<Widget, ref Param> m_OnMouseButtonLeave;
+	protected ref map<Widget, ref Param> m_OnClick;
 	protected ref map<Widget, ref Param> m_OnDoubleClick;
 	protected ref map<Widget, ref Param> m_OnController;
 
@@ -31,91 +32,113 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 		m_OnDraggingOver = new map<Widget, ref Param>;
 		m_OnMouseEnter = new map<Widget, ref Param>;
 		m_OnMouseButtonLeave = new map<Widget, ref Param>;
+		m_OnClick = new map<Widget, ref Param>;
 		m_OnDoubleClick = new map<Widget, ref Param>;
 		m_OnController = new map<Widget, ref Param>;
 	}
 	
-	void RegisterOnMouseButtonDown( Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnMouseButtonDown( Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnMouseButtonDownRegister.Insert( w, param );
 	}
 
-	void RegisterOnMouseButtonUp( Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnMouseButtonUp( Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnMouseButtonUpRegister.Insert( w, param );
 	}
 
-	void RegisterOnMouseWheel( Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnMouseWheel( Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnMouseWheel.Insert( w, param );
 	}
 	
-	void RegisterOnDropReceived( Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnDropReceived( Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnDropReceived.Insert( w, param );
 	}
 	
-	void RegisterOnDrag( Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnDrag( Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnDrag.Insert( w, param );
 	}
 	
-	void RegisterOnDrop( Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnDrop( Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnDrop.Insert( w, param );
 	}
 	
-	void RegisterOnDraggingOver( Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnDraggingOver( Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnDraggingOver.Insert( w, param );
 	}
 	
-	void RegisterOnMouseEnter(Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnMouseEnter(Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnMouseEnter.Insert( w, param );
 	}
 	
-	void RegisterOnMouseLeave(Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnMouseLeave(Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnMouseButtonLeave.Insert( w, param );
 	}
-
-	void RegisterOnDoubleClick(Widget w, ContainerBase eventHandler, string functionName )
+	
+	void RegisterOnClick(Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
+		m_OnClick.Insert( w, param );
+	}
+
+	void RegisterOnDoubleClick(Widget w, Managed eventHandler, string functionName )
+	{
+		w.SetHandler( this );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnDoubleClick.Insert( w, param );
 	}
 	
-	void RegisterOnController(Widget w, ContainerBase eventHandler, string functionName )
+	void RegisterOnController(Widget w, Managed eventHandler, string functionName )
 	{
 		w.SetHandler( this );
 		SetFocus( w );
-		Param param = new Param2<ContainerBase, string>( eventHandler, functionName );
+		Param param = new Param2<Managed, string>( eventHandler, functionName );
 		m_OnController.Insert( w, param );
 	}
 
+	override bool OnClick(Widget w, int x, int y, int button)
+	{
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnClick.Get( w ) );
+		if( param == NULL )
+		{
+			return false;
+		}
+
+		Param param2 = new Param4<Widget, int, int, int>( w, x, y, button );
+		GetGame().GameScript.CallFunctionParams( param.param1, param.param2, NULL, param2 );
+
+		return true;
+	}
+	
 	override bool OnDoubleClick(Widget w, int x, int y, int button)
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnDoubleClick.Get( w ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnDoubleClick.Get( w ) );
 		if( param == NULL )
 		{
 			return false;
@@ -129,7 +152,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 	
 	override bool OnController( Widget w, int control, int value )
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnController.Get( w ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnController.Get( w ) );
 		if( param == NULL )
 		{
 			return false;
@@ -143,7 +166,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 
 	override bool OnMouseLeave(Widget w, Widget enterW, int x, int y)
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnMouseButtonLeave.Get( w ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnMouseButtonLeave.Get( w ) );
 		if( param == NULL )
 		{
 			return false;
@@ -157,7 +180,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 	
 	override bool OnMouseEnter( Widget w, int x, int y )
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnMouseEnter.Get( w ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnMouseEnter.Get( w ) );
 		if( param == NULL )
 		{
 			return false;
@@ -171,7 +194,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 
 	override bool OnMouseButtonDown( Widget w, int x, int y, int button )
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnMouseButtonDownRegister.Get( w ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnMouseButtonDownRegister.Get( w ) );
 		if( param == NULL )
 		{
 			return false;
@@ -185,7 +208,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 	
 	override bool OnMouseButtonUp( Widget w, int x, int y, int button )
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnMouseButtonUpRegister.Get( w ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnMouseButtonUpRegister.Get( w ) );
 		if( param == NULL )
 		{
 			return false;
@@ -199,7 +222,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 	
 	override bool OnDrag(Widget w, int x, int y)
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnDrag.Get( w ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnDrag.Get( w ) );
 		if( param == NULL )
 		{
 			return false;
@@ -213,7 +236,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 	
 	override bool OnDrop(Widget w, int x, int y, Widget reciever)
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnDrop.Get( w ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnDrop.Get( w ) );
 		if( param == NULL )
 		{
 			return false;
@@ -227,7 +250,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 	
 	override bool OnDraggingOver(Widget w, int x, int y, Widget reciever)
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnDraggingOver.Get( reciever ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnDraggingOver.Get( reciever ) );
 		if( param == NULL )
 		{
 			return false;
@@ -246,7 +269,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 			return false;
 		}
 		Param p = m_OnDropReceived.Get( reciever );
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( p );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( p );
 		if( param == NULL )
 		{
 			return false;
@@ -260,7 +283,7 @@ class WidgetEventHandler: ScriptedWidgetEventHandler
 
 	override bool OnMouseWheel(Widget  w, int  x, int  y, int wheel)
 	{
-		Param2<ContainerBase, string> param = Param2<ContainerBase, string>.Cast( m_OnMouseWheel.Get( w ) );
+		Param2<Managed, string> param = Param2<Managed, string>.Cast( m_OnMouseWheel.Get( w ) );
 		if( param == NULL )
 		{
 			return false;

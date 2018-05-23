@@ -45,8 +45,8 @@ class Inventory: ContainerBase
 		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "LeftPanel" ),  this, "DraggingOverLeftPanel" );
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "RightPanel" ),  this, "OnRightPanelDropReceived" );
 		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "RightPanel" ),  this, "DraggingOverRightPanel" );
-		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "CharacterPanel" ),  this, "OnRightPanelDropReceived" );
-		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "CharacterPanel" ),  this, "DraggingOverRightPanel" );
+		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "CharacterPanel" ),  this, "OnCenterPanelDropReceived" );
+		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "CharacterPanel" ),  this, "DraggingOverCenterPanel" );
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "HandsPanel" ),  this, "OnHandsPanelDropReceived" );
 		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "HandsPanel" ),  this, "DraggingOverHandsPanel" );
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "InventoryWindow" ),  this, "OnLeftPanelDropReceived" );
@@ -267,9 +267,50 @@ class Inventory: ContainerBase
 			if( item )
 			{
 				PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
-				if( player && ( player.GetInventory().CanAddEntityToInventory( item ) && !player.GetInventory().HasEntityInInventory( item ) ) || player.GetHumanInventory().HasEntityInHands( item ) )
+				if( player && ( player.GetInventory().CanAddEntityToInventory( item ) ) || player.GetHumanInventory().HasEntityInHands( item ) )
 				{
 					player.PredictiveTakeEntityToInventory( FindInventoryLocationType.CARGO | FindInventoryLocationType.ATTACHMENT, item );
+				}
+			}
+		}
+	}
+	
+	void OnCenterPanelDropReceived( Widget w, int x, int y, Widget receiver )
+	{
+		if( w )
+		{
+			ItemPreviewWidget ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( "Render" ) );
+			if( !ipw )
+			{
+				string name = w.GetName();
+				name.Replace( "PanelWidget", "Render" );
+				ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
+				if( !ipw )
+				{
+					ipw = ItemPreviewWidget.Cast( w );
+					if( !ipw )
+					{
+						return;
+					}
+				}
+			}
+	
+			EntityAI item = ipw.GetItem();
+			if( item )
+			{
+				PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+				if( player && ( player.GetInventory().CanAddAttachment( item ) ) || player.GetHumanInventory().HasEntityInHands( item ) )
+				{
+					player.PredictiveTakeEntityAsAttachment( item );
+				}
+				else
+				{
+					int slot_id = item.GetInventory().GetSlotId();
+					EntityAI slot_item = player.GetInventory().FindAttachment( slot_id );
+					if( slot_item && player.GetInventory().CanSwapEntities( item, slot_item ) )
+					{
+						player.GetInventory().SwapEntities( InventoryMode.PREDICTIVE, item, slot_item );
+					}
 				}
 			}
 		}
@@ -339,10 +380,10 @@ class Inventory: ContainerBase
 			EntityAI item = ipw.GetItem();
 			PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 			
-			if( player && item && ( player.GetInventory().CanAddEntityToInventory( item ) && !player.GetInventory().HasEntityInInventory( item ) ) || player && item && player.GetHumanInventory().HasEntityInHands( item ) )
+			if( player && item && ( ( player.GetInventory().CanAddEntityToInventory( item ) ) || ( player.GetHumanInventory().HasEntityInHands( item ) ) ) )
 			{
 				InventoryLocation inv_loc = new InventoryLocation;
-				player.GetInventory().FindFreeLocationFor( item , FindInventoryLocationType.ANY, inv_loc );
+				player.GetInventory().FindFreeLocationFor( item, FindInventoryLocationType.ANY, inv_loc );
 	
 				ItemManager.GetInstance().HideDropzones();
 				GetMainPanel().FindAnyWidget( "RightPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
@@ -357,6 +398,63 @@ class Inventory: ContainerBase
 			else if( item )
 			{
 				ItemManager.GetInstance().ShowSourceDropzone( item );
+				ColorManager.GetInstance().SetColor( w, ColorManager.RED_COLOR );
+			}
+		}
+	}
+	
+	void DraggingOverCenterPanel( Widget w, int x, int y, Widget receiver )
+	{
+		if( w )
+		{
+			ItemPreviewWidget ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( "Render" ) );
+			if( !ipw )
+			{
+				string name = w.GetName();
+				name.Replace( "PanelWidget", "Render" );
+				ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
+				if( !ipw )
+				{
+					ipw = ItemPreviewWidget.Cast( w );
+					if( !ipw )
+					{
+						return;
+					}
+				}
+			}
+			
+			EntityAI item = ipw.GetItem();
+			PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+			
+			if( player && item )
+			{
+				int slot_id = item.GetInventory().GetSlotId();
+				EntityAI slot_item = player.GetInventory().FindAttachment( slot_id );
+				
+				bool can_take =( player.GetInventory().CanAddAttachment( item ) || ( slot_item && player.GetInventory().CanSwapEntities( item, slot_item ) ) );
+				if( can_take )
+				{
+					InventoryLocation inv_loc = new InventoryLocation;
+					player.GetInventory().FindFreeLocationFor( item, FindInventoryLocationType.ATTACHMENT, inv_loc );
+		
+					ItemManager.GetInstance().HideDropzones();
+					GetMainPanel().FindAnyWidget( "RightPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+					if( inv_loc.GetType() == 4 )
+					{
+						ItemManager.GetInstance().HideDropzones();
+						GetMainPanel().FindAnyWidget( "HandsPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+					}
+		
+					ColorManager.GetInstance().SetColor( w, ColorManager.GREEN_COLOR );
+				}
+				else
+				{
+					ItemManager.GetInstance().ShowSourceDropzone( item );
+					ColorManager.GetInstance().SetColor( w, ColorManager.RED_COLOR );
+				}
+			}
+			else
+			{
 				ColorManager.GetInstance().SetColor( w, ColorManager.RED_COLOR );
 			}
 		}
@@ -725,8 +823,7 @@ class Inventory: ContainerBase
 			IngameHud hud = IngameHud.Cast( mission.GetHud() );
 			if ( hud )
 			{
-				//hud.SetSpecialtyMeterVisibility( true ); specialty meter temporary disabled
-				hud.SetSpecialtyMeterVisibility( false );
+				hud.SetSpecialtyMeterVisibility( true );
 				hud.HideQuickbar( true, true );
 				hud.ToggleHud( true, true );
 			}

@@ -263,8 +263,23 @@ class PluginDayzPlayerDebug extends PluginBase
 		}	
 	}
 
+	int 	m_CurrentMode = 0;
+
 	//!
 	void ToggleDebugWindowEvent()
+	{
+		m_CurrentMode++;
+		if (m_CurrentMode > 2)
+		{
+			m_CurrentMode = 0;
+		}
+
+		ToggleDebugWindowSetMode(m_CurrentMode);
+	}
+
+
+	//!
+	void ToggleDebugWindowEventOld()
 	{
 		//! act:0 foc:0 -> act:1 foc:0
 		//! act:1 foc:0 -> act:0 foc:0
@@ -280,6 +295,8 @@ class PluginDayzPlayerDebug extends PluginBase
 			ReleaseFocus();
 		}
 	}
+
+
 
 	void ToggleDebugWindowEventP()
 	{
@@ -320,7 +337,7 @@ class PluginDayzPlayerDebug extends PluginBase
 
 		if (!m_MainWnd)
 		{
-			m_MainWnd = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_playerdebug/day_z_playerdebug.layout");
+			m_MainWnd = GetGame().GetWorkspace().CreateWidgets("gui/layouts/debug/day_z_playerdebug.layout");
 			m_MainWnd.SetHandler(m_pUIHandler);
 			m_MainWnd.Show(false);
 		}
@@ -564,6 +581,7 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("L CMD_ACTION_DRINKPOT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_DRINKPOT, false), 0);
 			m_ActionsSelector.AddItem("L CMD_ACTION_EMPTYPOT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_EMPTYPOT, false), 0);
 			m_ActionsSelector.AddItem("L CMD_ACTION_EATFRUIT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_EATFRUIT, false), 0);
+			m_ActionsSelector.AddItem("L CMD_ACTION_TAKETEMPSELF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_TAKETEMPSELF, false), 0);
 		}
 
         //! one time
@@ -642,6 +660,7 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("FB L CMD_ACTION_INTERACTITEM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_INTERACTITEM, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L CMD_ACTION_POURCAN", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_POURCAN, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L CMD_ACTION_EATFRUIT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_EATFRUIT, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB L CMD_ACTION_TAKETEMPSELF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_TAKETEMPSELF, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			
 			
 			
@@ -1034,10 +1053,22 @@ class PluginDayzPlayerDebug extends PluginBase
 		}
 	}
 
-
 	//---------------------------------------------------
     // Global handler to handle commands from player
 
+	bool		IsWeaponChange(out string pNewWeapon, out int pHideSlot, out int pShowSlot)
+	{
+		if (m_Weapons)
+		{
+			m_Weapons.IsWeaponChange(pNewWeapon, pHideSlot, pShowSlot);
+		}
+		
+		return false;
+	}
+
+
+	//---------------------------------------------------
+    // Global handler to handle commands from player
 
 	void 	CommandHandler()
 	{

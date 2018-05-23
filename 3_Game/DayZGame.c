@@ -9,7 +9,7 @@ class LoadingScreen
 	TextWidget m_TextWidgetTitle;
 	TextWidget m_TextWidgetError;
 	ImageWidget m_ImageWidgetBackground;
-
+	
 	int m_Counter;
 	
 	void LoadingScreen(DayZGame game)
@@ -291,6 +291,8 @@ class DayZGame extends CGame
 	float 	m_volume_radio;
 	
 	ref TIntArray demounit = new TIntArray;
+	
+	static ref ScriptInvoker Event_OnRPC = new ScriptInvoker();
 
 	// CGame override functions
 	void DayZGame()
@@ -936,7 +938,9 @@ class DayZGame extends CGame
 	// ------------------------------------------------------------
 	override void OnRPC(PlayerIdentity sender, Object target, int rpc_type, ParamsReadContext ctx)
 	{
-		//Print("DayZGame::OnRPC");
+		Event_OnRPC.Invoke( sender, target, rpc_type, ctx );
+		
+		//Print("["+ GetGame().GetTime().ToString() +"] => DayZGame::OnRPC = "+ rpc_type);
 		if (target)
 		{
 			// call rpc on target
@@ -1083,7 +1087,7 @@ class DayZGame extends CGame
 		Print(isWater);
 		Print(ammoType);
 		*/
-		
+		/*
 		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
 		{
 			if ( directHit  &&  !directHit.IsInherited(Man)  &&  !directHit.IsInherited(DayZCreature) )
@@ -1105,58 +1109,16 @@ class DayZGame extends CGame
 				p3.SetOrientation(surfNormalAng3);
 			}
 		}
+		*/
 	}
 	
 	// ------------------------------------------------------------
 	void FirearmEffects(Object directHit, int componentIndex, string surface, vector pos, vector surfNormal,
 		 vector exitPos, vector inSpeed, vector outSpeed, bool isWater, bool deflected, string ammoType) 
 	{
-		/*
-		float inSpeedf = inSpeed.Length();
-		float outSpeedf = outSpeed.Length();
-	
-		Print("FirearmEffects");
-		Print("##################################");
-		Print(directHit);
-		Print(componentIndex);
-		Print(surface);
-		Print(pos);
-		Print(surfNormal);
-		Print(exitPos);	
-		Print(inSpeedf);
-		Print(outSpeedf);
-		Print(isWater);
-		Print(deflected);
-		Print(ammoType);	
-		
 		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
 		{
-			ImpactMaterials.EvaluateImpactEffect(surface, pos, ImpactTypes.UNKNOWN, surfNormal, exitPos, inSpeed, outSpeed, deflected, ammoType);
-		}
-		
-		*/
-		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
-		{
-			if ( directHit  &&  !directHit.IsInherited(Man)  &&  !directHit.IsInherited(DayZCreature) )
-			{
-				Particle p1 = Particle.Play(ParticleList.IMPACT_TEST, pos);
-				vector surfNormalAngl1 = surfNormal.VectorToAngles();
-				surfNormalAngl1 = surfNormalAngl1 + "0 270 0";
-				p1.SetOrientation(surfNormalAngl1);
-			}
-			else if ( !directHit )
-			{
-				Particle p2 = Particle.Play(ParticleList.IMPACT_TEST, pos);
-				vector surfNormalAng2 = surfNormal.VectorToAngles();
-				surfNormalAng2 = surfNormalAng2 + "0 270 0";
-				p2.SetOrientation(surfNormalAng2);
-			}
-			else
-			{
-				Particle p3 = Particle.Play(ParticleList.BLOOD_SPLAT, pos);
-				vector surfNormalAng3 = surfNormal.VectorToAngles();
-				p3.SetOrientation(surfNormalAng3);
-			}
+			ImpactMaterials.EvaluateImpactEffect(directHit, surface, pos, ImpactTypes.UNKNOWN, surfNormal, exitPos, inSpeed, outSpeed, deflected, ammoType);
 		}
 	}
 	
@@ -1164,38 +1126,9 @@ class DayZGame extends CGame
 	void CloseCombatEffects(Object directHit, int componentIndex, string surface, vector pos, vector surfNormal,
 		 bool isWater, string ammoType) 
 	{
-		/*Print("CloseCombatEffects");
-		Print("##################################");
-		Print(directHit);
-		Print(componentIndex);
-		Print(surface);
-		Print(pos);
-		Print(surfNormal);
-		Print(isWater);
-		Print(ammoType);*/
-		
-		//ImpactMaterials.EvaluateImpactEffect(surface, pos, ImpactTypes.MELEE, surfNormal, "0 0 0", "0 0 0", "0 0 0", false, ammoType);
-		
 		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
 		{
-			if ( directHit  &&  !directHit.IsInherited(Man)  &&  !directHit.IsInherited(DayZCreature) )
-			{
-				Particle p1 = Particle.Play(ParticleList.IMPACT_TEST, pos);
-				vector surfNormalAngl1 = surfNormal.VectorToAngles();
-				p1.SetOrientation(surfNormalAngl1);
-			}
-			else if ( !directHit )
-			{
-				Particle p2 = Particle.Play(ParticleList.IMPACT_TEST, pos);
-				vector surfNormalAng2 = surfNormal.VectorToAngles();
-				p2.SetOrientation(surfNormalAng2);
-			}
-			else
-			{
-				Particle p3 = Particle.Play(ParticleList.BLOOD_SPLAT, pos);
-				vector surfNormalAng3 = surfNormal.VectorToAngles();
-				p3.SetOrientation(surfNormalAng3);
-			}
+			ImpactMaterials.EvaluateImpactEffect(directHit, surface, pos, ImpactTypes.MELEE, "0 0 0", "0 0 0", "0 0 0", "0 0 0", false, ammoType);
 		}
 	}
 	

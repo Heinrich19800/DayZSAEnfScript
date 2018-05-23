@@ -13,7 +13,7 @@ class TitleScreenMenu extends UIScriptedMenu
 	
 	override Widget Init()
 	{
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_title_screen.layout");
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/xbox/day_z_title_screen.layout");
 		
 		MissionMainMenu mission = MissionMainMenu.Cast( g_Game.GetMission() );
 		m_scene = mission.GetIntroScene();
@@ -33,13 +33,6 @@ class TitleScreenMenu extends UIScriptedMenu
 		}
 		
 		return layoutRoot;
-	}
-		
-	override bool OnController(Widget w, int control, int value)
-	{
-		super.OnController(w, control, value);
-		
-		return false;
 	}
 	
 	override void Update(float timeslice)
@@ -66,10 +59,10 @@ class TitleScreenMenu extends UIScriptedMenu
 	#else
 		if (xboxEvent == ACTIVE_GAMEPAD_SET)
 		{
-			bool isUser = IsGamepadUser();
+			bool isUser = GetGame().IsUserByGamepad();
 			if (!isUser)
 			{
-				ShowAccountPicker();
+				GetGame().ShowAccountPicker();
 			}
 			return true;
 		}
@@ -81,7 +74,7 @@ class TitleScreenMenu extends UIScriptedMenu
 		}
 		else if (xboxEvent == CLOSED_USER_PICKER)
 		{
-			ResetGamepads();
+			GetGame().GetInput().ResetActiveGamepad();
 			return true;
 		}
 	#endif

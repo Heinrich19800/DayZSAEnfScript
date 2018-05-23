@@ -448,6 +448,18 @@
 				<Key ID="options_tab_controls">
 					<English>CONTROLS</English>
 				</Key>
+				<Key ID="xbox_control_mapping_info_screen_movement">
+					<English>Movement</English>
+				</Key>
+				<Key ID="xbox_control_mapping_info_screen_weapons_and_actions">
+					<English>Weapons and Actions</English>
+				</Key>
+				<Key ID="xbox_control_mapping_info_screen_inventory">
+					<English>Inventory</English>
+				</Key>
+				<Key ID="xbox_control_mapping_info_screen_menus">
+					<English>Menus</English>
+				</Key>
 				<Container name="Game">
 					<Key ID="options_game_general">
 						<English>GENERAL</English>

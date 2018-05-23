@@ -104,8 +104,6 @@ class Roadflare : ItemBase
 		
 		if (m_BurningState == RoadflareBurningState.INITIAL_BURN)
 		{
-			SetTemperature(30, true);
-			
 			if (burning_time >= INITIAL_BURNING_STATE_TIME)
 			{
 				m_BurningState = RoadflareBurningState.MAIN_BURN;
@@ -113,16 +111,10 @@ class Roadflare : ItemBase
 		}
 		else if(m_BurningState == RoadflareBurningState.MAIN_BURN)
 		{
-			SetTemperature(50, true);
-			
 			if ( burning_time >= GetCompEM().GetEnergyMax() - FINAL_BURNING_STATE_TIME )
 			{
 				m_BurningState = RoadflareBurningState.FINAL_BURN;
 			}
-		}
-		else if(m_BurningState == RoadflareBurningState.FINAL_BURN)
-		{
-			SetTemperature(40, true);
 		}
 		
 		if ( GetGame().IsServer() )
@@ -133,7 +125,6 @@ class Roadflare : ItemBase
 			if ( container_EAI  &&  container_EAI.IsInherited(ItemBase)  &&  !container_EAI.IsInherited(TripwireTrap) )
 			{
 				ItemBase container_IB = ItemBase.Cast( container_EAI );
-				container_IB.SetTemperature(100);
 				
 				int c_size = container_IB.GetItemSize();
 				if (c_size == 0)

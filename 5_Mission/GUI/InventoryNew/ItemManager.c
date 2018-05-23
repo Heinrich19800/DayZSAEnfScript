@@ -18,7 +18,7 @@ class ItemManager
 	
 	protected HandsPreview m_HandsPreview;
 	
-	protected const float TOOLTIP_DELAY = 0.75; // in seconds
+	protected const float TOOLTIP_DELAY = 0.25; // in seconds
 	
 	void ItemManager( Widget root )
 	{
@@ -326,8 +326,6 @@ class ItemManager
 						{
 							color_widget.SetColor( ColorManager.BASE_COLOR );
 						}
-
-						//color_widget.SetAlpha( 0.3 );
 					}
 				}
 			}

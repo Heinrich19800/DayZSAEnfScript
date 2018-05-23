@@ -14,6 +14,7 @@ class InventorySlots
 	 *   InventorySlots.MASK
 	 *   InventorySlots.EYEWEAR
 	 *   InventorySlots.HANDS
+	 *   InventorySlots.LEFTHAND
 	 *   InventorySlots.GLOVES
 	 *   InventorySlots.ARMBAND
 	 *   InventorySlots.VEST

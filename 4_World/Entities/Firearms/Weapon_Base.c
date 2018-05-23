@@ -23,15 +23,6 @@ class Weapon_Base extends Weapon
 	protected bool m_receivedSyncFromRemote; /// if remote weapon, this flag waits for first stable state sync
 	protected ref PropertyModifiers m_PropertyModifierObject;
 	protected int m_RecoilSeed;
-	
-	// Overheating effect
-	bool 					m_IsOverheatingEffectActive;
-	float					m_OverheatingShots;
-	ref Timer 				m_CheckOverheating;
-	static const int 		OVERHEAT_EFFECT_SHOTS = 5; // After these many shots, the overheating effect begins
-	static const int 		OVERHEAT_EFFECT_SHOTS_LIMIT = 60; // Limits the number of shots that will be tracked
-	static const float 		OVERHEAT_EFFECT_SHOTS_DECAY_INT = 1; // Timer's interval for decrementing overheat effect's lifespan
-	ref array <Particle> 	m_OverheatingParticles;
 
 	void Weapon_Base ()
 	{
@@ -146,118 +137,21 @@ class Weapon_Base extends Weapon
 		
 		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
 		{
-			// MUZZLE FLASH EFFECT
+			// Muzzle flash & overheating effects
 			ItemBase suppressor = GetAttachedSuppressor();
 			ItemBase.PlayFireParticles(this, ammoType, this, suppressor, "CfgWeapons" );
-	
+			IncreaseOverheating(this, ammoType, this, suppressor, "CfgWeapons");
+			
 			if (suppressor)
 			{
 				ItemBase.PlayFireParticles(this, ammoType, suppressor, NULL, "CfgVehicles" );
+				suppressor.IncreaseOverheating(this, ammoType, this, suppressor, "CfgVehicles");
 			}
-			
-			// OVERHEATING EFFECT
-			IncreaseOverheating(this, ammoType, this, suppressor, "CfgWeapons");
 		}
 		
 		#ifdef DEVELOPER
 		MiscGameplayFunctions.UnlimitedAmmoDebugCheck(this);
 		#endif
-	}
-	
-	void IncreaseOverheating(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
-	{
-		m_OverheatingShots++;
-		
-		if (!m_CheckOverheating)
-				m_CheckOverheating = new Timer( CALL_CATEGORY_GAMEPLAY );
-		
-		m_CheckOverheating.Stop();
-		m_CheckOverheating.Run(OVERHEAT_EFFECT_SHOTS_DECAY_INT, this, "OnOverheatingDecay");
-		
-		CheckOverheating(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
-	}
-	
-	void CheckOverheating(ItemBase weapon = null, string ammoType = "", ItemBase muzzle_owner = null, ItemBase suppressor = null, string config_to_search = "")
-	{
-		if (m_OverheatingShots >= OVERHEAT_EFFECT_SHOTS  &&  !IsOverheatingEffectActive())
-		{
-			StartOverheating(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
-		}
-		
-		if (m_OverheatingShots < OVERHEAT_EFFECT_SHOTS  &&  IsOverheatingEffectActive())
-		{
-			StopOverheating(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
-		}
-		
-		if (m_OverheatingShots > OVERHEAT_EFFECT_SHOTS_LIMIT)
-		{
-			m_OverheatingShots = OVERHEAT_EFFECT_SHOTS_LIMIT;
-		}
-	}
-	
-	bool IsOverheatingEffectActive()
-	{
-		return m_IsOverheatingEffectActive;
-	}
-	
-	void OnOverheatingDecay()
-	{
-		m_OverheatingShots--;
-		
-		if (m_OverheatingShots == 0)
-		{
-			m_CheckOverheating.Stop();
-		}
-		else
-		{
-			if (!m_CheckOverheating)
-				m_CheckOverheating = new Timer( CALL_CATEGORY_GAMEPLAY );
-			
-			m_CheckOverheating.Stop();
-			m_CheckOverheating.Run(OVERHEAT_EFFECT_SHOTS_DECAY_INT, this, "OnOverheatingDecay");
-		}
-		
-		CheckOverheating(this, "", this);
-	}
-
-	void StartOverheating(ItemBase weapon = null, string ammoType = "", ItemBase muzzle_owner = null, ItemBase suppressor = null, string config_to_search = "")
-	{
-		m_IsOverheatingEffectActive = true;
-		ItemBase.PlayOverheatingParticles(this, ammoType, this, suppressor, "CfgWeapons" );
-	}
-	
-	void StopOverheating(ItemBase weapon = null, string ammoType = "", ItemBase muzzle_owner = null, ItemBase suppressor = null, string config_to_search = "")
-	{
-		m_IsOverheatingEffectActive = false;
-		ItemBase.StopOverheatingParticles(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
-	}
-	
-	void RegisterOverheatingParticle(Particle p)
-	{
-		if (!m_OverheatingParticles)
-			m_OverheatingParticles = new array <Particle>;
-		
-		m_OverheatingParticles.Insert(p);
-	}
-	
-	void KillAllOverheatingParticles()
-	{
-		if (m_OverheatingParticles)
-		{
-			for (int i = m_OverheatingParticles.Count(); i > 0; i--)
-			{
-				int id = i - 1;
-				Particle p = m_OverheatingParticles.Get(id);
-				
-				if (p)
-				{
-					p.Stop();
-					m_OverheatingParticles.Remove(id);
-				}
-			}
-			
-			delete m_OverheatingParticles;
-		}
 	}
 	
 	void SyncSelectionState (bool has_bullet, bool has_mag)

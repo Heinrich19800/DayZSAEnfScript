@@ -2,7 +2,7 @@ class ContainerBase: ScriptedWidgetEventHandler
 {
 	protected Widget			m_MainPanel;
 	protected Widget			m_ParentWidget;
-	protected ContainerBase		m_Parent;
+	 ContainerBase		m_Parent;
 	protected string			m_LayoutName;
 	int							m_FocusedRow = 0;
 	int							m_FocusedColumn = 0;

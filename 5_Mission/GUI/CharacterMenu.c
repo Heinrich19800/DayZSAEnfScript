@@ -32,8 +32,8 @@ class CharacterMenu extends UIScriptedMenu
 		MainMenu menu;
 		if (m_scene)
 		{
-			//m_scene.m_camera.LookAt(Vector(m_scene.m_demoPos[0] + Math.Cos(m_scene.angle + m_scene.angle_offset + Math.PI*4/3), m_scene.m_demoPos[1] + 0.75, m_scene.m_demoPos[2] + Math.Sin(m_scene.angle + m_scene.angle_offset + Math.PI*4/3)));
-			m_scene.m_camera.LookAt(m_scene.target);
+			//m_scene.m_Camera.LookAt(Vector(m_scene.m_DemoPos[0] + Math.Cos(m_scene.angle + m_scene.angle_offset + Math.PI*4/3), m_scene.m_DemoPos[1] + 0.75, m_scene.m_DemoPos[2] + Math.Sin(m_scene.angle + m_scene.angle_offset + Math.PI*4/3)));
+			m_scene.m_Camera.LookAt(m_scene.m_Target);
 			//m_scene.angle_offset = 0;
 			
 			//sets name to widget in main menu
@@ -65,7 +65,7 @@ class CharacterMenu extends UIScriptedMenu
 		MissionMainMenu mission;
 		Class.CastTo(mission,  g_Game.GetMission() );
 		m_scene = mission.GetIntroScene();
-		m_scene.m_camera.LookAt(Vector(m_scene.m_demoPos[0],m_scene.m_demoPos[1] + 1,m_scene.m_demoPos[2]));
+		m_scene.m_Camera.LookAt(Vector(m_scene.m_DemoPos[0],m_scene.m_DemoPos[1] + 1,m_scene.m_DemoPos[2]));
 		//DefaultCharacterScreen();
 		Class.CastTo(m_name_widget ,layoutRoot.FindAnyWidget("CharacterNameEdit"));
 		m_name_widget.SetText(g_Game.GetPlayerGameName());
@@ -81,6 +81,9 @@ class CharacterMenu extends UIScriptedMenu
 		}
 		
 		ShowMenuButtons(g_Game.IsNewCharacter());
+		
+		LockControls();
+		
 		return layoutRoot;
 	}
 	
@@ -90,7 +93,7 @@ class CharacterMenu extends UIScriptedMenu
 		
 	override bool OnClick(Widget w, int x, int y, int button)
 	{
-		if (m_scene.m_disableClick)
+		if (m_scene.m_DisableClick)
 		{
 			return false;
 		} 
@@ -101,11 +104,11 @@ class CharacterMenu extends UIScriptedMenu
 		case IDC_OK:
 			//m_scene.SaveDefaultCharacter();
 			//Close();
-			if (m_scene && m_scene.m_demoUnit)
+			if (m_scene && m_scene.m_DemoUnit)
 			{
 				//saves demounit for further use
 				m_scene.SaveCharName();
-				if (m_scene.m_demoUnit.GetInventory().FindAttachment(InventorySlots.BODY) && m_scene.CurrentCharacterID() == -1)		m_scene.SetCharacterInfo();
+				if (m_scene.m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY) && m_scene.CurrentCharacterID() == -1)		m_scene.SetCharacterInfo();
 				
 				if (!g_Game.IsNewCharacter()) 		GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectLastSession");
 				else 								GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectBestServer");
@@ -114,8 +117,8 @@ class CharacterMenu extends UIScriptedMenu
 			return true;
 			
 		case IDC_CANCEL:
-			//g_Game.ObjectDelete(m_scene.m_demoUnit);
-			//m_scene.m_demoUnit = NULL;
+			//g_Game.ObjectDelete(m_scene.m_DemoUnit);
+			//m_scene.m_DemoUnit = NULL;
 			m_scene.SaveCharName();
 			Close();
 			return true;
@@ -250,7 +253,7 @@ class CharacterMenu extends UIScriptedMenu
 		
 		//g_Game.FormatString(m_scene.m_format, params, character);
 		m_scene.CreateNewCharacter(character);
-		if (m_scene.m_demoUnit)
+		if (m_scene.m_DemoUnit)
 		{
 			m_scene.SetAttachment(m_scene.m_shirtList.Get(m_topIndex), InventorySlots.BODY);
 			m_scene.SetAttachment(m_scene.m_pantsList.Get(m_pantsIndex), InventorySlots.LEGS);
@@ -273,7 +276,7 @@ class CharacterMenu extends UIScriptedMenu
 				//Print(InventorySlots.GetSlotIdFromString("BACK"));
 			}
 			
-			m_scene.m_disableClick = true;
+			m_scene.m_DisableClick = true;
 			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(m_scene.SceneCharacterSetPos, 250);
 		}
 	}

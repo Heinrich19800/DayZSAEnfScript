@@ -90,7 +90,7 @@ class InventoryContainerVicinity: InventoryContainer
 							view = new InventoryViewGridContainer(this, e, InventoryViewProperties.ATTACHMENTS | InventoryViewProperties.CARGOS);
 							m_views.Set(e, view );
 						}
-						else if ( GetGame().IsInventoryTreeLocked(EntityAI.Cast( obj ), player) && e.IsInherited(TentBase) )
+						else if ( e.IsInherited(TentBase) )
 						{
 							view = new InventoryViewGridContainer(this, e, InventoryViewProperties.ATTACHMENTS | InventoryViewProperties.CARGOS);
 							m_views.Set(e, view );

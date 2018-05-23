@@ -236,11 +236,6 @@ class ProxyInventory extends ObjectTyped
 };
 
 //-----------------------------------------------------------------------------
-class ProxyCrew extends Entity
-{
-};
-
-//-----------------------------------------------------------------------------
 class ProxySubpart extends Entity
 {
 };
@@ -472,8 +467,6 @@ enum EventType
 	ChatMessageEventTypeID,
 	//! params: \ref ChatChannelEventParams
 	ChatChannelEventTypeID,
-	//! params: \ref SQFConsoleEventParams
-	SQFConsoleEventTypeID,
 	//! params: \ref PreloadEventParams
 	PreloadEventTypeID,
 	//! params: \ref ClientNewEventParams
@@ -496,6 +489,8 @@ enum EventType
 	ScriptLogEventTypeID,
 	//! params: \ref VONStateEventParams
 	VONStateEventTypeID,
+	//! no params
+	VONMissingPrivilegeEventTypeID,
 	//! params: \ref SetFreeCameraEventParams
 	SetFreeCameraEventTypeID,
 	//! params: \ref MPConnectionLostEventParams

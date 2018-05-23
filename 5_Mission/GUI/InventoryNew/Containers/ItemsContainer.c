@@ -39,6 +39,11 @@ class ItemsContainer: Container
 		}
 	}
 	
+	int GetItemCount()
+	{
+		return m_EntitiesMap.Count();
+	}
+	
 	void AddItem( Icon icon )
 	{	
 		if( !m_EntitiesMap.Contains( icon.GetObject().GetID() ) )
@@ -69,6 +74,17 @@ class ItemsContainer: Container
 	bool ContainsEntity( EntityAI entity )
 	{
 		return m_EntitiesMap.Contains( entity.GetID() );
+	}
+	
+	void RecomputeItemPositions()
+	{
+		for( int i = 0; i < m_EntitiesMap.Count(); i++ )
+		{
+			Icon icon = m_EntitiesMap.GetElement( i );
+			icon.SetPos( (i % 4)*2, (i / 4)*2 );
+			icon.m_posX = (i % 4)*2;
+			icon.m_posY = (i / 4)*2;
+		}
 	}
 	
 	void UpdateItemsTemperature()

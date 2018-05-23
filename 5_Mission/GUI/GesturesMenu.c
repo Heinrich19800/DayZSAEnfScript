@@ -102,14 +102,14 @@ class GesturesMenu extends UIScriptedMenu
 	//============================================
 	override Widget Init()
 	{
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/day_z_gestures.layout" );
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/radial_menu/radial_gestures/day_z_gestures.layout" );
 		m_GestureItemCardPanel = layoutRoot.FindAnyWidget( RadialMenu.RADIAL_ITEM_CARD_CONTAINER );
 
 		//register gestures menu
 		RadialMenu.GetInstance().RegisterClass( this );
 		
 		//set radial menu properties
-		RadialMenu.GetInstance().SetWidgetProperties( "gui/layouts/day_z_gesture_delimiter.layout" );
+		RadialMenu.GetInstance().SetWidgetProperties( "gui/layouts/radial_menu/radial_gestures/day_z_gesture_delimiter.layout" );
 		
 		//create content (widgets) for items
 		RefreshGestures();
@@ -214,7 +214,7 @@ class GesturesMenu extends UIScriptedMenu
 			GestureMenuItem gesture_item = m_GestureItems.Get( i );
 			
 			//create item card
-			Widget gesture_item_card_widget = Widget.Cast( GetGame().GetWorkspace().CreateWidgets( "gui/layouts/day_z_gesture_item_card.layout", m_GestureItemCardPanel ) );
+			Widget gesture_item_card_widget = Widget.Cast( GetGame().GetWorkspace().CreateWidgets( "gui/layouts/radial_menu/radial_gestures/day_z_gesture_item_card.layout", m_GestureItemCardPanel ) );
 			gesture_item.SetRadialItemCard( gesture_item_card_widget );
 			
 			//set text

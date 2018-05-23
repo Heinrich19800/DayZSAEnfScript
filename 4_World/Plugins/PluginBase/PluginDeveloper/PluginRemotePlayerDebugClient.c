@@ -36,8 +36,8 @@ class PluginRemotePlayerDebugClient extends PluginBase
 	{
 		for(int i = 0; i < MAX_SIMULTANIOUS_PLAYERS; i++)
 		{
-			m_RootWidget[i] = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_debug_remoteinfo.layout");
-			m_RootWidgetDamage[i] = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_debug_remoteinfo_damage.layout");
+			m_RootWidget[i] = GetGame().GetWorkspace().CreateWidgets("gui/layouts/debug/day_z_debug_remoteinfo.layout");
+			m_RootWidgetDamage[i] = GetGame().GetWorkspace().CreateWidgets("gui/layouts/debug/day_z_debug_remoteinfo_damage.layout");
 			m_DamageListWidgets[i] = TextListboxWidget.Cast(m_RootWidgetDamage[i].FindAnyWidget("TextListboxWidget1"));
 			m_StatListWidgets[i] = TextListboxWidget.Cast(m_RootWidget[i].FindAnyWidget("TextListboxWidget0"));
 			m_DistanceWidget[i] = TextWidget.Cast(m_RootWidget[i].FindAnyWidget("TextWidget0"));

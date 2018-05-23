@@ -210,7 +210,16 @@ class StaminaHandler
 				m_Stamina = m_Player.GetStatStamina().Get();
 
 			m_PlayerLoad = m_Player.GetPlayerLoad();
-			m_StaminaCap =  Math.Max((STAMINA_MAX - ((m_PlayerLoad/STAMINA_KG_TO_GRAMS) * STAMINA_KG_TO_STAMINAPERCENT_PENALTY)),STAMINA_MIN_CAP);
+
+			//! StaminaCap calculation starts when PlayerLoad exceeds STAMINA_WEIGHT_LIMIT_THRESHOLD
+			if (m_PlayerLoad >= STAMINA_WEIGHT_LIMIT_THRESHOLD)
+			{
+				m_StaminaCap =  Math.Max((STAMINA_MAX - (((m_PlayerLoad - STAMINA_WEIGHT_LIMIT_THRESHOLD)/STAMINA_KG_TO_GRAMS) * STAMINA_KG_TO_STAMINAPERCENT_PENALTY)),STAMINA_MIN_CAP);
+			}
+			else
+			{
+				m_StaminaCap = STAMINA_MAX;
+			}
 			
 			// Calculates stamina gain/loss based on movement and load
 			m_Player.GetMovementState(m_State);

@@ -122,7 +122,7 @@ class ItemWithCargo: ClosableContainer
 		h.SetItemPreview( m_Entity );
 
 		m_CargoGrid = new CargoGrid( entity, m_ItemsContainer );
-
+		m_CargoGrid.SetParent(this);
 		( Container.Cast( m_Parent) ).Insert(this);
 		//((Container)m_Parent).Refresh();
 		Refresh();
@@ -173,7 +173,9 @@ class ItemWithCargo: ClosableContainer
 		{
 			return false;
 		}
+		
 		EntityAI item = GetItemPreviewItem( w );
+		
 		if( !item )
 		{
 			return false;
@@ -181,7 +183,7 @@ class ItemWithCargo: ClosableContainer
 
 		int color;
 		int idx = 0;
-		if( m_Entity.GetInventory().CanAddEntityInCargoEx( item, 0, x, y ) )
+		if( m_Entity && m_Entity.GetInventory().CanAddEntityInCargoEx( item, 0, x, y ) )
 		{
 			ItemManager.GetInstance().HideDropzones();
 			if( m_Entity.GetHierarchyParent() == GetGame().GetPlayer() )
@@ -208,7 +210,10 @@ class ItemWithCargo: ClosableContainer
 		{
 			string name = w.GetName();
 			name.Replace( "PanelWidget", "Col" );
-			w.FindAnyWidget( name ).SetColor( color );
+			if( w.FindAnyWidget( name ) )
+			{
+				w.FindAnyWidget( name ).SetColor( color );
+			}
 		}
 
 		return true;
@@ -281,7 +286,7 @@ class ItemWithCargo: ClosableContainer
 		{
 			return;
 		}
-
+		
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 		if( ( m_Entity.GetInventory().CanAddEntityInCargo( item ) && (!player.GetInventory().HasEntityInInventory( item ) || !m_Entity.GetInventory().HasEntityInCargo( item )) ) || player.GetHumanInventory().HasEntityInHands( item ) )
 		{
@@ -312,9 +317,14 @@ class ItemWithCargo: ClosableContainer
 		}
 
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
-		if( ( m_Entity.GetInventory().CanAddEntityInCargo( item ) && (!player.GetInventory().HasEntityInInventory( item ) || !m_Entity.GetInventory().HasEntityInCargo( item )) ) || player.GetHumanInventory().HasEntityInHands( item ) )
+		if( GetEntity() )
 		{
-			player.PredictiveTakeEntityToTargetCargo(m_Entity, item);
+			bool can_add = m_Entity.GetInventory().CanAddEntityInCargo( item );
+			bool in_cargo = !player.GetInventory().HasEntityInInventory( item ) || !m_Entity.GetInventory().HasEntityInCargo( item );
+			if( can_add && in_cargo )
+			{
+				player.PredictiveTakeEntityToTargetCargo(m_Entity, item);
+			}
 		}
 	}
 

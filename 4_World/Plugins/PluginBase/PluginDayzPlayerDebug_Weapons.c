@@ -60,12 +60,21 @@ class PluginDayzPlayerDebug_Weapons
 	Weapon_Base							m_CurrentWeapon;
 	EditBoxWidget 						m_SetInitStateI;
 	ButtonWidget						m_SetInitStateB;
+	ButtonWidget						m_WeaponChange;
+	ButtonWidget						m_WeaponHide;
+	EditBoxWidget 						m_WeaponSlotH;
+	EditBoxWidget 						m_WeaponSlotS;
 
 	// command handler properties
 	int 								m_CH_WeapAction			= -1;
 	int 								m_CH_WeapActionType		= -1;
 	int 								m_CH_LastWeapAction		= -1;
 	int 								m_CH_LastWeapActionType	= -1;
+
+	string 								m_CH_WeaponChangeI;
+	int 								m_CH_WeaponChangeSlotH = -1;
+	int 								m_CH_WeaponChangeSlotS = -1;
+
 	//---------------------------------------------------
 	// 
 
@@ -183,6 +192,11 @@ class PluginDayzPlayerDebug_Weapons
 
 		m_SetInitStateI	= EditBoxWidget.Cast( m_MainWnd.FindAnyWidget("WeapInitStateI") );
 		m_SetInitStateB	= ButtonWidget.Cast( m_MainWnd.FindAnyWidget("WeapInitStateB") );
+
+		m_WeaponChange 	= ButtonWidget.Cast( m_MainWnd.FindAnyWidget("WeapChange") );
+		m_WeaponHide 	= ButtonWidget.Cast( m_MainWnd.FindAnyWidget("WeapHide") );
+		m_WeaponSlotH 	= EditBoxWidget.Cast( m_MainWnd.FindAnyWidget("WeaponChangeSlotH") );
+		m_WeaponSlotS 	= EditBoxWidget.Cast( m_MainWnd.FindAnyWidget("WeaponChangeSlotS") );
 
 
 		m_WidgetActionEvents.SetText("Events:"); 
@@ -332,9 +346,60 @@ class PluginDayzPlayerDebug_Weapons
 			HumanCommandWeapons 	hcw = player.GetCommandModifier_Weapons();
 			hcw.SetInitState(frameI);			
 		}
+		else if (w == m_WeaponChange)
+		{
+		    Print("Weapon Change pressed");
+
+			Dispatcher d = GetDispatcher();
+			if (d == null)
+			{
+				Print("No dispatcher - cannot get selected weapon");
+				return false;
+			}
+
+			Param		p = d.CallMethod(CALL_ID_SCR_CNSL_GETSELECTEDITEM, null);
+			if (p == null)
+			{
+				Print("No selected object");
+				return false;
+			}
+
+			Param1<string> p1 = Param1<string>.Cast(p);
+			Print(p1.param1);
+
+			m_CH_WeaponChangeI 		= p1.param1;
+			m_CH_WeaponChangeSlotH 	= m_WeaponSlotH.GetText().ToInt();
+			m_CH_WeaponChangeSlotS 	= m_WeaponSlotS.GetText().ToInt();			
+		}
+		else if (w == m_WeaponHide)
+		{
+			m_CH_WeaponChangeI 		= "";
+			m_CH_WeaponChangeSlotH 	= m_WeaponSlotH.GetText().ToInt();
+			m_CH_WeaponChangeSlotS 	= m_WeaponSlotS.GetText().ToInt();			
+		}
 		
 	
 		return false;
+	}
+
+	//---------------------------------------------------
+    // Global handler to handle commands from player
+
+	bool		IsWeaponChange(out string pNewWeapon, out int pHideSlot, out int pShowSlot)
+	{
+		if (m_CH_WeaponChangeSlotH == -1)
+		{
+			return false;
+		}
+
+		pNewWeapon 	= m_CH_WeaponChangeI;
+		pHideSlot	= m_CH_WeaponChangeSlotH;
+		pShowSlot	= m_CH_WeaponChangeSlotS;
+
+		m_CH_WeaponChangeSlotH = -1;
+		m_CH_WeaponChangeSlotS = -1;
+
+		return true;
 	}
 
 

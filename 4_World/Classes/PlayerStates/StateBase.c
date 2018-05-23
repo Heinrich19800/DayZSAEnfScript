@@ -217,6 +217,7 @@ class StateBase
 	{
 		//m_SoundObject = GetGame().CreateSoundOnObject(GetPlayer(), sound, 0, false);
 		m_SoundObject = GetPlayer().PlaySound( sound, 0);
+		PrintString("sample length:" + m_SoundObject.GetSoundLength().ToString() );
 		m_PlayedSound = true;
 	}
 

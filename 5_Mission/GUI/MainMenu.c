@@ -52,7 +52,6 @@ class MainMenu extends UIScriptedMenu
 		news_feed_widget.SetText( news_feed_text );
 		
 		GetGame().GetUIManager().ScreenFadeOut(0);
-		PPEffects.ResetAll();
 		// NotificationMessage m_notification_widget = new NotificationMessage( layoutRoot ); 
 		return layoutRoot;
 	}
@@ -76,14 +75,14 @@ class MainMenu extends UIScriptedMenu
 	{
 		super.OnClick( w, x, y, button);
 		
-		if (m_scene && m_scene.m_disableClick)
+		if (m_scene && m_scene.m_DisableClick)
 		{
 			return false;
 		}
 		
 		if (w.GetName() == "RandomCharacter")
 		{
-			m_scene.m_disableClick = true;
+			m_scene.m_DisableClick = true;
 			m_scene.ChangeCharacter(-1);
 			
 			//GetGame().GetPlayerName(m_scene.m_player_name);
@@ -97,9 +96,9 @@ class MainMenu extends UIScriptedMenu
 				case IDC_MAIN_NEXT_CHARACTER:
 					m_scene.SaveCharName();
 					m_scene.ChangeCharacter(m_scene.NextCharacterID());
-					if (m_scene.m_demoUnit)
+					if (m_scene.m_DemoUnit)
 					{
-						m_scene.m_disableClick = true;
+						m_scene.m_DisableClick = true;
 						GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(m_scene.SceneCharacterSetPos, 250);
 						//GetGame().GetPlayerName(m_scene.m_player_name);
 						m_name_widget.SetText(g_Game.GetPlayerGameName());
@@ -110,9 +109,9 @@ class MainMenu extends UIScriptedMenu
 				case IDC_MAIN_PREV_CHARACTER:
 					m_scene.SaveCharName();
 					m_scene.ChangeCharacter(m_scene.PrevCharacterID());
-					if (m_scene.m_demoUnit) 
+					if (m_scene.m_DemoUnit) 
 					{
-						m_scene.m_disableClick = true;
+						m_scene.m_DisableClick = true;
 						GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(m_scene.SceneCharacterSetPos, 250);
 						//GetGame().GetPlayerName(m_scene.m_player_name);
 						m_name_widget.SetText(g_Game.GetPlayerGameName());
@@ -129,7 +128,7 @@ class MainMenu extends UIScriptedMenu
 					m_scene.SaveCharName();
 					g_Game.GetUIManager().EnterServerBrowser(this);
 					//saves demounit for further use
-					if (m_scene && m_scene.m_demoUnit && m_scene.m_demoUnit.GetInventory().FindAttachment(InventorySlots.BODY) && m_scene.CurrentCharacterID() == -1)		m_scene.SetCharacterInfo();
+					if (m_scene && m_scene.m_DemoUnit && m_scene.m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY) && m_scene.CurrentCharacterID() == -1)		m_scene.SetCharacterInfo();
 					return true;
 				break;
 		
@@ -145,10 +144,10 @@ class MainMenu extends UIScriptedMenu
 		}
 		else if (w.GetUserID() == IDC_MAIN_PLAY)
 		{
-			if (m_scene && m_scene.m_demoUnit)
+			if (m_scene && m_scene.m_DemoUnit)
 			{
 				//saves demounit for further use
-				if (m_scene.m_demoUnit.GetInventory().FindAttachment(InventorySlots.BODY) && m_scene.CurrentCharacterID() == -1)		m_scene.SetCharacterInfo();
+				if (m_scene.m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY) && m_scene.CurrentCharacterID() == -1)		m_scene.SetCharacterInfo();
 				m_scene.SaveCharName();
 				if (!g_Game.IsNewCharacter()) 		GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectLastSession");
 				else 								GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectBestServer");
@@ -268,23 +267,23 @@ class MainMenu extends UIScriptedMenu
 		m_GlobalStatsTextListBox.ClearItems();
 
 		// NEW STATS API
-		if ( m_scene && m_scene.m_demoUnit )
+		if ( m_scene && m_scene.m_DemoUnit )
 		{
 			string lvalue = "";
 			string lname = "";
 			
 			lname = "Play time";
-			m_scene.m_demoUnit.StatGetAsTime("playtime", lvalue);
+			m_scene.m_DemoUnit.StatGetAsTime("playtime", lvalue);
 			int line_index = m_GlobalStatsTextListBox.AddItem(lname, NULL, 0);
 			m_GlobalStatsTextListBox.SetItem(line_index, lvalue, NULL, 1);
 			
 			string debug_string = "";
-			float fvalue = m_scene.m_demoUnit.StatGet("playtime");
+			float fvalue = m_scene.m_DemoUnit.StatGet("playtime");
 			debug_string = "playtime: " + fvalue.ToString();
 			//Print(debug_string);
 			
 			lname = "Distance traveled";
-			m_scene.m_demoUnit.StatGetCounter("dist", lvalue);
+			m_scene.m_DemoUnit.StatGetCounter("dist", lvalue);
 			line_index = m_GlobalStatsTextListBox.AddItem(lname, NULL, 0);
 			m_GlobalStatsTextListBox.SetItem(line_index, lvalue, NULL, 1);
 			

@@ -493,8 +493,18 @@ class StateManager
 				ctx.Read(p3);
 				bool is_primary = p3.param1;
 				
-				if(is_primary)  m_StateQueueServerDbgPrimary.Insert(p3);//   m_StateQueueServerDbg.Insert(p3);				
-				else 			m_StateQueueServerDbgSecondary.Insert(p3);
+				
+				if(is_primary)  
+				{
+					m_StateQueueServerDbgPrimary.Insert(p3);//   m_StateQueueServerDbg.Insert(p3);
+				}
+				else
+				{
+					m_StateQueueServerDbgSecondary.Insert(p3);
+				}
+				PrintString("elements m_StateQueueServerDbgPrimary:" + m_StateQueueServerDbgPrimary.Count());
+				PrintString("elements m_StateQueueServerDbgSecondary:" + m_StateQueueServerDbgSecondary.Count());
+				
 			}
 			/*
 			for(i = 0; i < secondary_states_count; i++)

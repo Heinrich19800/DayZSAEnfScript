@@ -301,27 +301,18 @@ class Debug
 		
 	static private void LogMessage(string level, string plugin, string entity, string author, string label, string message)
 	{
-		if( CGame.IsDoNoLogs() ) return;
-		bool is_server_log = false;
-		if (GetGame() == NULL) return;		
-		
-		// Is server
-		if ( GetGame().IsServer() && GetGame().IsMultiplayer() )
+		if (GetGame() == NULL || GetGame().IsDebug() == false || CGame.IsDoNoLogs())
 		{
-			is_server_log = true;
+			return;		
 		}
 		
-		// Is debug mod
-		if ( GetGame().IsDebug() == false )
-		{
-			return;
-		}
+		bool is_server_log = ( GetGame().IsServer() && GetGame().IsMultiplayer() );
 		
 		// Script Console checkbox
 		if ( !is_server_log && IsLogsEnabled() == false )
 		{
 			return;
-		}
+		}		
 		
 		// Formation output to external file
 		// %date{MM-dd HH:mm:ss} | %Enviroment | %Level | %Module | %Entity | %Author | %Label | %Message | %CallStack	
@@ -349,7 +340,7 @@ class Debug
 		{
 			SaveLog(msg);
 			Param1<string> msg_p = new Param1<string>(msg);
-			CallMethod(CALL_ID_SEND_LOG, msg_p); 
+			CallMethod(CALL_ID_SEND_LOG, msg_p);
 		}
 		else
 		{

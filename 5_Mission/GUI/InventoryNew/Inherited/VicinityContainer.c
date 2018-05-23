@@ -338,7 +338,7 @@ class VicinityContainer: CollapsibleContainer
 			return;
 		}
 
-		if( GetGame().GetPlayer().CanDropEntity( ipw.GetItem() ) )
+		if( ipw.GetItem() && GetGame().GetPlayer().CanDropEntity( ipw.GetItem() ) )
 		{
 			ColorManager.GetInstance().SetColor( w, ColorManager.GREEN_COLOR );
 			ItemManager.GetInstance().HideDropzones();
@@ -494,20 +494,23 @@ class VicinityContainer: CollapsibleContainer
 		{
 			return;
 		}
+		
 		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( "Render" ) );
+		
 		if( !ipw )
 		{
 			string name = w.GetName();
 			name.Replace( "PanelWidget", "Render" );
 			ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
 		}
+		
 		if( !ipw )
 		{
 			ipw = ItemPreviewWidget.Cast( w );
 		}
 
 		EntityAI item = ipw.GetItem();
-		if( !ipw.IsInherited( ItemPreviewWidget ) || item == NULL || m_ShowedItemIcons.Find( item ) != -1 )
+		if( !ipw.IsInherited( ItemPreviewWidget ) || !item || m_ShowedItemIcons.Find( item ) != -1 )
 		{
 			return;
 		}
@@ -577,7 +580,7 @@ class VicinityContainer: CollapsibleContainer
 		for( i = 0; i < objects.Count(); i++ )
 		{
 			Object obj = objects.Get( i );
-			bool showable_item = !objects.Get( i ).IsAnyInherited( { ScriptedEntity, Building, Camera, PlantSuper, ZombieBase, PASReceiver, DayZAnimal } );
+			bool showable_item = !objects.Get( i ).IsAnyInherited( { ScriptedEntity, Building, Camera, PlantSuper, PASReceiver, DayZAnimal, UndergroundStash } );
 			if ( player.GetInventory().IsPlaceholderEntity(obj) )
 				continue; // noproxy: ignore body placeholder
 			if (obj.GetParent())

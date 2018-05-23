@@ -1,7 +1,22 @@
+enum WaveKind 
+{
+	WAVEEFFECT,
+	WAVEEFFECTEX,
+	WAVESPEECH,
+	WAVEMUSIC,
+	WAVESPEECHEX,
+	WAVEENVIRONMENT,
+	WAVEENVIRONMENTEX,
+	WAVEWEAPONS,
+	WAVEWEAPONSEX,
+	WAVEATTALWAYS,
+	WAVEUI
+}
+
 class AbstractSoundScene
 {
-	proto native AbstractWave Play2D(SoundObject soundObject);
-	proto native AbstractWave Play3D(SoundObject soundObject);
+	proto native AbstractWave Play2D(SoundObject soundObject, SoundObjectBuilder soundBuilder);
+	proto native AbstractWave Play3D(SoundObject soundObject, SoundObjectBuilder soundBuilder);
 	proto native SoundObject BuildSoundObject(SoundObjectBuilder soundObjectbuilder);
 
 	proto native float GetRadioVolume();
@@ -39,18 +54,9 @@ class SoundObjectBuilder
 class SoundObject
 {
 	void SoundObject(SoundParams soundParams);
-
-	AbstractWave Play2D()
-	{
-		return GetGame().GetSoundScene().Play2D(this);
-	}
-	
-	AbstractWave Play3D()
-	{
-		return GetGame().GetSoundScene().Play3D(this);
-	}
 	
 	proto native void SetPosition(vector position);
+	proto native void SetKind(WaveKind kind);
 	proto native void Initialize(SoundParams soundParams);
 }
 
@@ -67,31 +73,33 @@ class SoundParams
 class AbstractWave
 {
 	proto native void Play();
-				 void PlayWithOffset(float offset) { Play(); SetStartOffset(offset); }
+	void PlayWithOffset(float offset) { Play(); SetStartOffset(offset); }
 	//proto native void Mute();
 	proto native void Stop();
+	proto native void Restart();
 	proto native void SetStartOffset(float offset);
 	proto native float GetLength();
 	proto native void Repeat(int count);
-	proto native float GetCurrPosition();
+	proto native void SetVolume(float value);
+	//proto native float GetCurrPosition();
 	
-				void OnPlay()
-				{
-					//Print("[lukasikjak] AbstractWave::OnPlay");
-				}
-				
-				void OnStop()
-				{
-					//Print("[lukasikjak] AbstractWave::OnStop");
-				}
-				
-				void OnLoad()
-				{
-					//Print("[lukasikjak] AbstractWave::OnLoad");
-				}
-				
-				void OnEnd()
-				{
-					//Print("[lukasikjak] AbstractWave::OnEnd");
-				}
+	void OnPlay()
+	{
+		//Print("[lukasikjak] AbstractWave::OnPlay");
+	}
+	
+	void OnStop()
+	{
+		//Print("[lukasikjak] AbstractWave::OnStop");
+	}
+	
+	void OnLoad()
+	{
+		//Print("[lukasikjak] AbstractWave::OnLoad");
+	}
+	
+	void OnEnd()
+	{
+		//Print("[lukasikjak] AbstractWave::OnEnd");
+	}
 }

@@ -13,6 +13,10 @@ class Armband_ColorBase extends Clothing
 	override bool CanPutAsAttachment( EntityAI parent )
 	{
 		if(!super.CanPutAsAttachment(parent)) {return false;}
-		return true;
+		if ( GetQuantity() <= 1 )
+		{
+			return true;
+		}
+		return false;
 	}
 }

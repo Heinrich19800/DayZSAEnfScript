@@ -5,6 +5,25 @@ class UndergroundStash extends ItemBase
 	
 	ItemBase 	m_StashedItem;
 	
+	void UndergroundStash()
+	{
+		SetEventMask(EntityEvent.INIT);
+	}
+	
+	void EOnInit(IEntity other, int extra) //!EntityEvent.INIT
+	{
+		vector pos = GetPosition();
+		this.SetOrientation( GetGame().GetSurfaceOrientation(pos[0], pos[2]) );
+	}
+	
+	void PlaceOnGround()
+	{
+		vector pos = GetPosition();
+		pos[1] = GetGame().SurfaceY(pos[0], pos[2]);
+		pos[1] = pos[1] + 0.025;
+		SetPosition(pos);
+	}
+	
 	void SetStashedItem(ItemBase item)
 	{
 		m_StashedItem = item;

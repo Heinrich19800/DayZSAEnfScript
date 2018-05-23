@@ -1,6 +1,5 @@
 class SoftSkillsManager
 {	
-	//SoftSkillsManager members
 	protected PlayerBase			m_Player;
 	protected float 				m_SpecialtyLevel;
 	protected float 				m_RoughLevel;
@@ -19,7 +18,6 @@ class SoftSkillsManager
 
 	protected ref Timer 			m_CoolDownTimer = new Timer();
 
-	//debug window members
 	protected float 				m_IsDebugMode;
 	protected float 				m_CoolDownValue;
 	protected float 				m_LastUAValue;
@@ -32,13 +30,12 @@ class SoftSkillsManager
 
 	protected ref Timer 			m_SynchTimer;
 
-	//Constructor
 	void SoftSkillsManager( PlayerBase player )
 	{
 		m_Player = player;
 		m_IsCoolDown = false;
 		m_IsLinear = false;
-		m_IsActive = false;
+		m_IsActive = true;
 		m_IsDebugMode = false;
 	}
 
@@ -48,9 +45,8 @@ class SoftSkillsManager
 		SynchSpecialtyLevel();
 	}
 
-	//Destructor
 	void ~SoftSkillsManager()
-	{
+	{		
 		delete m_CoolDownTimer;
 	}
 
@@ -241,6 +237,12 @@ class SoftSkillsManager
 		return adjusted_time;	
 	}
 
+	// ----------------------------------------------------------------------------------------
+	PlayerBase GetSoftSkillsPlayer()
+	{
+		return m_Player;
+	}
+	
 	// ----------------------------------------------------------------------------------------
 	void SetSpecialtyLevel( float specialty_level )
 	{
@@ -487,8 +489,12 @@ class SoftSkillsManager
 	void StopSynchTimer()
 	{
 		SetIsDebug( false );
-		m_SynchTimer.Stop();
-		delete m_SynchTimer;
+		
+		if( m_SynchTimer )
+		{
+			m_SynchTimer.Stop();
+			delete m_SynchTimer;
+		}
 	}
 		
 	// ----------------------------------------------------------------------------------------
@@ -524,9 +530,9 @@ class SoftSkillManagerDebug
 	TextWidget IsCoolDown;
 
 	void SoftSkillManagerDebug( SoftSkillsManager softskill_manager )
-	{		
+	{					
 		m_SoftSkillManager = softskill_manager;
-		m_PanelSoftSkills = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_hud_debug_softskills.layout");
+		m_PanelSoftSkills = GetGame().GetWorkspace().CreateWidgets("gui/layouts/debug/day_z_hud_debug_softskills.layout");
 		
 		GetGame().GetUpdateQueue(CALL_CATEGORY_SYSTEM).Insert(this.OnUpdate);
 
@@ -550,10 +556,14 @@ class SoftSkillManagerDebug
 		IsCoolDown.Show( true );
 	}
 	
-	void ~SoftSkillManagerDebug( PlayerBase player )
-	{
+	void ~SoftSkillManagerDebug()
+	{		
+		if ( GetGame() )
+		{
+			GetGame().GetUpdateQueue(CALL_CATEGORY_SYSTEM).Remove(this.OnUpdate);
+		}
+		
 		delete m_PanelSoftSkills;
-		GetGame().GetUpdateQueue(CALL_CATEGORY_SYSTEM).Remove(this.OnUpdate);
 	}
 
 	SoftSkillsManager GetActiveSoftSkillManager()
@@ -563,14 +573,21 @@ class SoftSkillManagerDebug
 	
 	void OnUpdate()
 	{
-		SpecialtyTotal.SetText( "Specialty level: " + GetActiveSoftSkillManager().GetSpecialtyLevel() );
-		SpecialtyChange.SetText( "Specialty change: " + GetActiveSoftSkillManager().GetLastUAValue() );
-		ComponentBonusBefore.SetText( "Component/craft default: " + GetActiveSoftSkillManager().GetComponentBonusBefore() );
-		ComponentBonusAfter.SetText( "Component/craft with bonus: " + GetActiveSoftSkillManager().GetComponentBonusAfter() );
-		GeneralBonusBefore.SetText( "General default: " + GetActiveSoftSkillManager().GetGeneralBonusBefore() );
-		GeneralBonusAfter.SetText( "General with bonus: " + GetActiveSoftSkillManager().GetGeneralBonusAfter() );
-		CoolDown.SetText( "CoolDown value: " + GetActiveSoftSkillManager().GetCoolDownValue() );
-		IsCoolDown.SetText( "Cooldown active: " + GetActiveSoftSkillManager().IsCoolDown() );
+		if ( GetActiveSoftSkillManager().GetSoftSkillsPlayer().IsAlive() )
+		{
+			SpecialtyTotal.SetText( "Specialty level: " + GetActiveSoftSkillManager().GetSpecialtyLevel() );
+			SpecialtyChange.SetText( "Specialty change: " + GetActiveSoftSkillManager().GetLastUAValue() );
+			ComponentBonusBefore.SetText( "Component/craft default: " + GetActiveSoftSkillManager().GetComponentBonusBefore() );
+			ComponentBonusAfter.SetText( "Component/craft with bonus: " + GetActiveSoftSkillManager().GetComponentBonusAfter() );
+			GeneralBonusBefore.SetText( "General default: " + GetActiveSoftSkillManager().GetGeneralBonusBefore() );
+			GeneralBonusAfter.SetText( "General with bonus: " + GetActiveSoftSkillManager().GetGeneralBonusAfter() );
+			CoolDown.SetText( "CoolDown value: " + GetActiveSoftSkillManager().GetCoolDownValue() );
+			IsCoolDown.SetText( "Cooldown active: " + GetActiveSoftSkillManager().IsCoolDown() );
+		}
+		else
+		{
+			delete this;
+		}
 	}
 
 }

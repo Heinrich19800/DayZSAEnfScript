@@ -22,9 +22,6 @@ class ActionBandageSelf: ActionContinuousBase
 		m_MessageSuccess = "I have bandaged myself.";
 		m_MessageFail = "I have moved and bandaging was canceled.";
 		m_MessageCancel = "I stopped bandaging.";
-		m_Sounds.Insert("bandage_0");
-		m_Sounds.Insert("bandage_1");
-		m_Sounds.Insert("bandage_2");	
 		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
 	}
 

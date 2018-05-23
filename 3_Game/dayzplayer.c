@@ -85,7 +85,7 @@ class DayZPlayerCamera
 // *************************************************************************************
 class DayZPlayerTypeStepSoundLookupTable
 {
-	SoundObject GetSoundObject(int eventId, int pMovement, int pSurfaceHash, AnimBootsType pBoots)
+	SoundObjectBuilder GetSoundBuilder(int eventId, int pMovement, int pSurfaceHash, AnimBootsType pBoots)
 	{
 		return null;
 	}
@@ -96,7 +96,7 @@ class DayZPlayerTypeStepSoundLookupTable
 // *************************************************************************************
 class DayZPlayerTypeAttachmentSoundLookupTable
 {
-	SoundObject GetSoundObject(int eventId, string slotName, int attachmentHash)
+	SoundObjectBuilder GetSoundBuilder(int eventId, string slotName, int attachmentHash)
 	{
 		return null;
 	}
@@ -179,7 +179,10 @@ class DayZPlayerType
 	//! sets aim limits for a player
 	proto native 	void SetCameraShootParams(float pRayDistance, float pRayRadius);
 
+	//!----------------------------------------------------
+	// bone indices
 
+	proto native	int  GetHeadBoneIdx();
 
 	//!----------------------------------------------------
 	// event handling
@@ -361,6 +364,15 @@ enum DayZPlayerConstants
 	MOVEMENTIDX_RUN		= 2,
 	MOVEMENTIDX_SPRINT  = 3,
 
+	//! vehicle classes
+	VEHICLECLASS_CAR,
+	VEHICLECLASS_HELI,
+
+	//! vehicle seats
+	VEHICLESEAT_DRIVER,
+	VEHICLESEAT_CODRIVER,
+	VEHICLESEAT_PASSENGER_L,
+	VEHICLESEAT_PASSENGER_R,
 
     //! ---------------------------------------------------------
     //! ---------------------- COMMAND IDs ----------------------
@@ -378,6 +390,7 @@ enum DayZPlayerConstants
 	COMMANDID_LADDER,	// type is int (overridden from C++) - ladder
 	COMMANDID_UNCONSCIOUS,	// type is int (overridden from C++) - unconscious
 	COMMANDID_SWIM,			// type is int (overridden from C++) - swimming
+	COMMANDID_VEHICLE,		// type is int (overridden from C++) - vehicle
 
 
 	//! modifier commands - additive behaviour 
@@ -394,6 +407,7 @@ enum DayZPlayerConstants
     //! ---------------------------------------------------------
 
 	//! internal action commands used in HumanCommandActionCallback.InternalCommand()
+	CMD_ACTIONINT_INTERRUPT		= -2,	//!< secondary ending
 	CMD_ACTIONINT_END2			= -1,	//!< secondary ending
 	CMD_ACTIONINT_END			= 0, 	//!< end action
 	CMD_ACTIONINT_ACTION		= 1, 	//!< one time secondary action within an action
@@ -427,6 +441,7 @@ enum DayZPlayerConstants
 	CMD_ACTIONMOD_DRINKPOT = 15,				// erc,cro			[end]
 	CMD_ACTIONMOD_EMPTYPOT = 16,				// erc,cro			[end]
 	CMD_ACTIONMOD_EATFRUIT = 17,				// erc,cro			[end]
+	CMD_ACTIONMOD_TAKETEMPSELF = 18,			// erc,cro			[end]
 	
 	// onetime 
 	CMD_ACTIONMOD_LICKBATTERY = 100,    		// erc,cro,pne
@@ -500,6 +515,9 @@ enum DayZPlayerConstants
 	CMD_ACTIONFB_INTERACTITEM = 87,				// cro				[end]
 	CMD_ACTIONFB_POURCAN = 88,					// erc, cro			[end]
 	CMD_ACTIONFB_EATFRUIT = 89,					// pne				[end]
+	CMD_ACTIONFB_HACKBUSH = 90,					// erc				[end]
+	CMD_ACTIONFB_HACKTREE = 91,					// erc				[end]
+	CMD_ACTIONFB_TAKETEMPSELF = 92,				// pne				[end]
 	
 	// onetime 
 	CMD_ACTIONFB_LICKBATTERY = 100,    			// pne

@@ -42,6 +42,7 @@ class EmoteManager
 	protected int			m_BelayedEmoteID;
 	protected int			m_PreviousGestureID;
 	protected int			m_CurrentGestureID;
+	protected int 			m_LastMask;
 	protected bool			m_MouseButtonPressed;
 	protected bool 			m_PlayerDies;
 	protected bool 			m_controllsLocked;
@@ -111,6 +112,12 @@ class EmoteManager
 					m_BelayedEmote = true;
 					m_BelayedEmoteID = m_HIC.IsGestureSlot();
 				}
+			}
+			
+			//HOTFIX for stance changing in additive emotes
+			if (m_LastMask != -1 && m_Player.IsPlayerInStance(DayZPlayerConstants.STANCEMASK_PRONE))
+			{
+				m_Callback.Cancel();
 			}
 		}
 		else
@@ -205,10 +212,18 @@ class EmoteManager
 		{
 			m_bEmoteIsPlaying = true;
 			
+			//TODO handle in some better, system way. Handling case-by-case is clumsy, at best.
 			switch ( id )
 			{
 				case ID_EMOTE_GREETING :
-					CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_GREETING,DayZPlayerConstants.STANCEMASK_PRONE | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					if (!m_Player.IsPlayerInStance(DayZPlayerConstants.STANCEMASK_PRONE))
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_GREETING,DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					}
+					else
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREFB_GREETING,DayZPlayerConstants.STANCEMASK_PRONE,true);
+					}
 				break;
 			
 				case ID_EMOTE_SOS :
@@ -217,12 +232,26 @@ class EmoteManager
 				break;
 			
 				case ID_EMOTE_HEART :
-					CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_HEART,DayZPlayerConstants.STANCEMASK_PRONE | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					if (!m_Player.IsPlayerInStance(DayZPlayerConstants.STANCEMASK_PRONE))
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_HEART,DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					}
+					else
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREFB_HEART,DayZPlayerConstants.STANCEMASK_PRONE,true);
+					}
 					HideItemInHands();
 				break;
 			
 				case ID_EMOTE_TAUNT :
-					CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_TAUNT,DayZPlayerConstants.STANCEMASK_PRONE | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					if (!m_Player.IsPlayerInStance(DayZPlayerConstants.STANCEMASK_PRONE))
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_TAUNT,DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					}
+					else
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREFB_TAUNT,DayZPlayerConstants.STANCEMASK_PRONE,true);
+					}
 				break;
 			
 				case ID_EMOTE_LYINGDOWN :
@@ -231,11 +260,25 @@ class EmoteManager
 				break;
 			
 				case ID_EMOTE_TAUNTKISS :
-					CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_TAUNTKISS,DayZPlayerConstants.STANCEMASK_PRONE | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					if (!m_Player.IsPlayerInStance(DayZPlayerConstants.STANCEMASK_PRONE))
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_TAUNTKISS,DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					}
+					else
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREFB_TAUNTKISS,DayZPlayerConstants.STANCEMASK_PRONE,true);
+					}
 				break;
 			
 				case ID_EMOTE_POINT :
-					CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_POINT,DayZPlayerConstants.STANCEMASK_PRONE | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					if (!m_Player.IsPlayerInStance(DayZPlayerConstants.STANCEMASK_PRONE))
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_POINT,DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					}
+					else
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREFB_POINT,DayZPlayerConstants.STANCEMASK_PRONE,true);
+					}
 					//m_bEmoteIsPlaying = false;
 				break;
 				
@@ -244,7 +287,14 @@ class EmoteManager
 				break;
 			
 				case ID_EMOTE_THUMB :
-					CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_THUMB,DayZPlayerConstants.STANCEMASK_PRONE | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					if (!m_Player.IsPlayerInStance(DayZPlayerConstants.STANCEMASK_PRONE))
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREMOD_THUMB,DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT,false);
+					}
+					else
+					{
+						CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREFB_POINT,DayZPlayerConstants.STANCEMASK_PRONE,true);
+					}
 				break;
 			
 				case ID_EMOTE_THROAT :
@@ -441,7 +491,8 @@ class EmoteManager
 	{
 		if ( m_Player )
 		{
-			if (  fullbody )
+			m_LastMask = -1;
+			if ( fullbody )
 			{
 				Class.CastTo(m_Callback, m_Player.StartCommand_Action(id,callbacktype,mask));
 				m_Callback.m_IsFullbody = true;
@@ -449,6 +500,7 @@ class EmoteManager
 			}
 			else if (m_Player.IsPlayerInStance(mask))
 			{
+				m_LastMask = mask;  //probably not prone now
 				Class.CastTo(m_Callback, m_Player.AddCommandModifier_Action(id,callbacktype));
 			}
 		}

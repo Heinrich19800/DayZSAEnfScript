@@ -169,5 +169,8 @@ class Input
 	
 	//! return true if was deflected button.
 	proto bool				GetGamepadThumbDirection(GamepadButton thumbButton, out float angle, out float value);
+	
+	//! reset active gamepad on Xbox
+	proto native void		ResetActiveGamepad();
 };
 

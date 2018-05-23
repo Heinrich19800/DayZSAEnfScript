@@ -803,11 +803,6 @@ class GameInventory
 		InventoryLocation src1, src2, dst1, dst2;
 		if (GameInventory.MakeSrcAndDstForSwap(item1, item2, src1, src2, dst1, dst2))
 		{
-			dst1.Copy(src1);
-			dst1.CopyLocationFrom(src2);
-			dst2.Copy(src2);
-			dst2.CopyLocationFrom(src1);
-
 			Print("[inv] Swap(" + typename.EnumToString(InventoryMode, mode) + ") src1=" + src1.DumpToString() + "dst1=" + dst1.DumpToString() +  "src2=" + src2.DumpToString() + "dst2=" + dst2.DumpToString());
 
 			switch (mode)

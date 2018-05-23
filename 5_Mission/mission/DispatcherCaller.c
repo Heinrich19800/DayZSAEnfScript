@@ -39,6 +39,19 @@ class DispatcherCaller extends Dispatcher
 			scripted_console.HistoryForward();
 		}
 	}
+
+	private Param ScriptConsoleGetSelectedItem()
+	{
+		UIScriptedMenu ui_menu = GetGame().GetUIManager().GetMenu();
+		if ( ui_menu.GetID() == MENU_SCRIPTCONSOLE )
+		{
+			ScriptConsole scripted_console = ScriptConsole.Cast( ui_menu );
+			scripted_console.GetCurrentItemName();
+		}
+
+		return null;
+	}
+
 		
 	private void SceneEditorCommand(Param params)
 	{
@@ -81,6 +94,8 @@ class DispatcherCaller extends Dispatcher
 		case CALL_ID_HIDE_INVENTORY:
 			MissionGameplayHideInventory();
 			break;
+		case CALL_ID_SCR_CNSL_GETSELECTEDITEM:
+			return new Param1<string>(ScriptConsole.GetLastSelectedObject());
 		}
 		
 		return null;

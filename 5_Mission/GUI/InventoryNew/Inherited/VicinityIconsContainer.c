@@ -64,7 +64,7 @@ class VicinityIconsContainer: Container
 		
 		Icon hands_icon = ItemManager.GetInstance().GetHandsPreview().GetIcon();
 		
-		if( item_in_hands && ent )
+		if( item_in_hands && ent && hands_icon )
 		{
 			hands_icon.CombineItems( item_in_hands, ent );
 		}

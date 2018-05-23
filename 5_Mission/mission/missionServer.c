@@ -6,7 +6,7 @@ class MissionServer extends MissionBase
 {
 	ref array<Man> m_Players;
 	ref map<PlayerBase, ref LogoutInfo> m_LogoutPlayers;
-	
+	const int SCHEDULER_PLAYERS_PER_TICK = 5;
 	int m_currentPlayer;
 	int m_top = -1;
 	int m_bottom = -1;
@@ -224,12 +224,18 @@ class MissionServer extends MissionBase
 	{
 		Debug.Log("InvokeOnConnect:"+this.ToString(),"Connect");
 		if( player ) player.OnConnect();
+		
+		// Send list of players at all clients
+		SyncEvents.SendPlayerList();
 	}
 
-	void InvokeOnDisconnect(PlayerBase player)
+	void InvokeOnDisconnect( PlayerBase player )
 	{
 		Debug.Log("InvokeOnDisconnect:"+this.ToString(),"Connect");
 		if( player ) player.OnDisconnect();
+		
+		// Send list of players at all clients
+		SyncEvents.SendPlayerList();
 	}
 
 	void OnPreloadEvent(PlayerIdentity identity, out bool useDB, out vector pos, out float yaw, out int queueTime)
@@ -419,21 +425,19 @@ class MissionServer extends MissionBase
 	
 	void TickScheduler(float timeslice)
 	{
-		GetGame().GetWorld().GetPlayerList(m_Players);//REWORK.V: this is kind of bad, as we construct this array on every single tick: programmers are fine with this, but lets see if we can construct our own static array, will also fix duplicate ticks when players disconnect
-
-		if(m_currentPlayer >= m_Players.Count() )
+		GetGame().GetWorld().GetPlayerList(m_Players);
+		if( m_Players.Count() == 0 ) return;
+		for(int i = 0; i < SCHEDULER_PLAYERS_PER_TICK; i++)
 		{
-			m_currentPlayer = 0;
-		} 
-		//actual code for player ticks
-		if( m_Players.Count() != 0 )
-		{
-
+			if(m_currentPlayer >= m_Players.Count() )
+			{
+				m_currentPlayer = 0;
+			}
+			//PrintString(m_currentPlayer.ToString());
 			PlayerBase currentPlayer = PlayerBase.Cast(m_Players.Get(m_currentPlayer));
+			
 			currentPlayer.OnTick();
 			m_currentPlayer++;
-			
 		}
-		
 	}
 }

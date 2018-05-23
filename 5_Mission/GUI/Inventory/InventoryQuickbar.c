@@ -167,6 +167,10 @@ class InventoryQuickbar: InventoryGridController
 						name = w.GetName();
 						name.Replace( "PanelWidget", "Col" );
 						w.FindAnyWidget( name ).SetColor( color );
+						if( w.FindAnyWidget( name ) )
+						{
+							w.FindAnyWidget( name ).SetColor( color );
+						}
 					}
 				}				
 			}
@@ -188,7 +192,10 @@ class InventoryQuickbar: InventoryGridController
 					{
 						name = w.GetName();
 						name.Replace( "PanelWidget", "Col" );
-						w.FindAnyWidget( name ).SetColor( color );
+						if( w.FindAnyWidget( name ) )
+						{
+							w.FindAnyWidget( name ).SetColor( color );
+						}
 					}
 				}
 			}

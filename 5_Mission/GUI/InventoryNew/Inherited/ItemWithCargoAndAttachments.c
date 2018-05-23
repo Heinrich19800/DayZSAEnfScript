@@ -403,7 +403,7 @@ class ItemWithCargoAndAttachments: ClosableContainer
 
 		int color;
 		int idx = 0;
-		if( m_Entity.GetInventory().CanAddEntityInCargoEx( item, idx, x, y ) )
+		if( m_Entity && m_Entity.GetInventory().CanAddEntityInCargoEx( item, idx, x, y ) )
 		{
 			color = ColorManager.GREEN_COLOR;
 		}
@@ -420,7 +420,10 @@ class ItemWithCargoAndAttachments: ClosableContainer
 		{
 			string name = w.GetName();
 			name.Replace( "PanelWidget", "Col" );
-			w.FindAnyWidget( name ).SetColor( color );
+			if( w.FindAnyWidget( name ) )
+			{
+				w.FindAnyWidget( name ).SetColor( color );
+			}
 		}
 
 		return true;
@@ -447,15 +450,61 @@ class ItemWithCargoAndAttachments: ClosableContainer
 		string name = receiver.GetName();
 		name.Replace("PanelWidget", "Render");
 		ItemPreviewWidget receiver_iw = ItemPreviewWidget.Cast( receiver.FindAnyWidget(name) );
-		if(receiver_iw)
-		receiver_item = receiver_iw.GetItem();
+		if( receiver_iw )
+			receiver_item = receiver_iw.GetItem();
 
 		Weapon_Base wpn;
 		Magazine mag;
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
-		if ( Class.CastTo(wpn,  m_Entity ) && Class.CastTo(mag,  item ) )
+		if( m_Entity )
 		{
-			if( player.GetWeaponManager().CanAttachMagazine( wpn, mag ) )
+			if ( Class.CastTo(wpn,  m_Entity ) && Class.CastTo(mag,  item ) )
+			{
+				if( player.GetWeaponManager().CanAttachMagazine( wpn, mag ) )
+				{
+					ItemManager.GetInstance().HideDropzones();
+					if( m_Entity.GetHierarchyParent() == GetGame().GetPlayer() )
+					{
+						ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "RightPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+					}
+					else
+					{
+						ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "LeftPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+					}
+					ColorManager.GetInstance().SetColor( w, ColorManager.GREEN_COLOR );
+				}
+			}
+			else if( receiver_item )
+			{
+				if ( ( ItemBase.Cast( receiver_item ) ).CanBeCombined( ItemBase.Cast( item )) )
+				{
+					ItemManager.GetInstance().HideDropzones();
+					if( m_Entity.GetHierarchyParent() == GetGame().GetPlayer() )
+					{
+						ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "RightPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+					}
+					else
+					{
+						ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "LeftPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+					}
+					ColorManager.GetInstance().SetColor( w, ColorManager.COMBINE_COLOR );
+				}
+				else if( GameInventory.CanSwapEntities( receiver_item, item ) )
+				{
+					ItemManager.GetInstance().HideDropzones();
+					if( m_Entity.GetHierarchyParent() == GetGame().GetPlayer() )
+					{
+						ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "RightPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+					}
+					else
+					{
+						ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "LeftPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+					}
+					ColorManager.GetInstance().SetColor( w, ColorManager.SWAP_COLOR );
+				}
+			}
+			else
+			if( m_Entity.GetInventory().CanAddAttachment( item ) )
 			{
 				ItemManager.GetInstance().HideDropzones();
 				if( m_Entity.GetHierarchyParent() == GetGame().GetPlayer() )
@@ -468,10 +517,7 @@ class ItemWithCargoAndAttachments: ClosableContainer
 				}
 				ColorManager.GetInstance().SetColor( w, ColorManager.GREEN_COLOR );
 			}
-		}
-		else if( receiver_item )
-		{
-			if ( ( ItemBase.Cast( receiver_item ) ).CanBeCombined( ItemBase.Cast( item )) )
+			else if( ( m_Entity.GetInventory().CanAddEntityInCargo( item ) && (!player.GetInventory().HasEntityInInventory( item ) || !m_Entity.GetInventory().HasEntityInCargo( item )) ) || player.GetHumanInventory().HasEntityInHands( item ) )
 			{
 				ItemManager.GetInstance().HideDropzones();
 				if( m_Entity.GetHierarchyParent() == GetGame().GetPlayer() )
@@ -482,54 +528,13 @@ class ItemWithCargoAndAttachments: ClosableContainer
 				{
 					ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "LeftPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
 				}
-				ColorManager.GetInstance().SetColor( w, ColorManager.COMBINE_COLOR );
-			}
-			else if( GameInventory.CanSwapEntities( receiver_item, item ) )
-			{
-				ItemManager.GetInstance().HideDropzones();
-				if( m_Entity.GetHierarchyParent() == GetGame().GetPlayer() )
-				{
-					ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "RightPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
-				}
-				else
-				{
-					ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "LeftPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
-				}
-				ColorManager.GetInstance().SetColor( w, ColorManager.SWAP_COLOR );
-			}
-		}
-		else
-		if( m_Entity.GetInventory().CanAddAttachment( item ) )
-		{
-			ItemManager.GetInstance().HideDropzones();
-			if( m_Entity.GetHierarchyParent() == GetGame().GetPlayer() )
-			{
-				ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "RightPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+				ColorManager.GetInstance().SetColor( w, ColorManager.GREEN_COLOR );
 			}
 			else
 			{
-				ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "LeftPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
+				ItemManager.GetInstance().ShowSourceDropzone( item );
+				ColorManager.GetInstance().SetColor( w, ColorManager.RED_COLOR );
 			}
-			ColorManager.GetInstance().SetColor( w, ColorManager.GREEN_COLOR );
-		}
-		else if( ( m_Entity.GetInventory().CanAddEntityInCargo( item ) && (!player.GetInventory().HasEntityInInventory( item ) || !m_Entity.GetInventory().HasEntityInCargo( item )) ) || player.GetHumanInventory().HasEntityInHands( item ) )
-		{
-			ItemManager.GetInstance().HideDropzones();
-			if( m_Entity.GetHierarchyParent() == GetGame().GetPlayer() )
-			{
-				ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "RightPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
-			}
-			else
-			{
-				ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "LeftPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
-			}
-			ColorManager.GetInstance().SetColor( w, ColorManager.GREEN_COLOR );
-		}
-		else
-		{
-			ItemManager.GetInstance().ShowSourceDropzone( item );
-			ColorManager.GetInstance().SetColor( w, ColorManager.RED_COLOR );
 		}
 	}
-
 }

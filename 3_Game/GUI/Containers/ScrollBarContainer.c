@@ -13,7 +13,7 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 	protected float		m_position;
 	protected bool		m_scrolling;
 	protected float		m_scrolling_start_pos;
-	protected int			m_scrolling_mouse_pos;
+	protected int		m_scrolling_mouse_pos;
 		
 	void ~ScrollBarContainer()
 	{
@@ -23,24 +23,39 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 	
 	void ScrollFixedAmount( bool down, float amount )
 	{
-		float diff = m_content_height - m_root_height;
+		float diff = m_root_height / m_content_height;
 		float one_percent = diff / 100;
-		float percents = amount / one_percent;
+		float percents = amount / m_content_height;
 		//float step = (1.0 / (m_content_height - m_root_height)) * WHEEL_STEP;
-		float step = (percents/100) + 0.05;
+		float step = (percents/100);
 		if(down)
-		m_position += 1 * step;
+		m_position += 1 * ( percents + 0.05 );
 		else
-		m_position -= 1 * step;
+		m_position -= 1 * ( percents + 0.05 );
 		
 		if (m_position < 0) m_position = 0;
-		if (m_position > 1) m_position = 1;
-		 Update();
+		if (m_position > 1 - diff) m_position = 1 - diff;
+		Update();
+	}
+	
+	void ScrollToPos( float pos )
+	{
+		float diff = m_root_height / m_content_height;
+		float percents = pos / m_content_height;
+
+		m_position = percents;
+		
+		if (m_position < 0)
+			m_position = 0;
+		if (m_position > 1 - diff)
+			m_position = 1 - diff;
+		Update();
 	}
 	
 	void ScrollToBottom()
 	{
-		m_position = 1;
+		float diff = m_root_height / m_content_height;
+		m_position = 1 - diff;
 		Update();
 	}
 	
@@ -48,6 +63,13 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 	{
 		m_position = 0;
 		Update();
+	}
+	
+	float GetContentYPos()
+	{
+		float x, y;
+		Content.GetPos(x, y);
+		return y;
 	}
 	
 	float GetRootHeight()
@@ -81,11 +103,18 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 		Scroller.Show(true);
 		Scroller.GetSize(width, height);
 		Scroller.SetSize(width, scroller_height);
-		Scroller.SetPos(0, m_position * (m_root_height - scroller_height));
+
+		float pos = ( -m_content_height * m_position );
+		
+		if( pos <= -diff )
+			pos = -diff;
+		
+		Scroller.SetPos(0, -pos);
+		
 		if(Invert)
-		Content.SetPos(0, -(diff + (-diff * m_position)));
+			Content.SetPos(0, -(diff + (-diff * m_position)));
 		else
-		Content.SetPos(0, (-diff * m_position));
+			Content.SetPos(0, pos);
 	}
 
 	void OnWidgetScriptInit(Widget w)

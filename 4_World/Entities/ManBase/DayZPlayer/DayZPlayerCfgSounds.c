@@ -29,7 +29,7 @@ class DayZPlayerTypeStepSoundLookupTableImpl extends DayZPlayerTypeStepSoundLook
 		}
 	}
 
-	override SoundObject GetSoundObject(int eventId, int pMovement, int pSurfaceHash, AnimBootsType pBoots)
+	override SoundObjectBuilder GetSoundBuilder(int eventId, int pMovement, int pSurfaceHash, AnimBootsType pBoots)
 	{
 		SoundLookupTable table = m_pSoundTables.Get(eventId);
 		if(table == NULL)
@@ -83,7 +83,7 @@ class DayZPlayerTypeStepSoundLookupTableImpl extends DayZPlayerTypeStepSoundLook
 			soundBuilder.SetVariable("boots", 1);
 		}
 		
-		return soundBuilder.BuildSoundObject();
+		return soundBuilder;
 	}
 
 	autoptr map<int, ref StepSoundLookupTable> m_pSoundTableInstances;//unique tables
@@ -126,7 +126,7 @@ class DayZPlayerTypeAttachmentSoundLookupTableImpl extends DayZPlayerTypeAttachm
 		}
 	}
 	
-	override SoundObject GetSoundObject(int eventId, string slotName, int attachmentHash)
+	override SoundObjectBuilder GetSoundBuilder(int eventId, string slotName, int attachmentHash)
 	{
 		SoundLookupTable table = m_pSoundTables.Get((slotName + eventId).Hash());
 		if(table == NULL)
@@ -136,7 +136,7 @@ class DayZPlayerTypeAttachmentSoundLookupTableImpl extends DayZPlayerTypeAttachm
 		if(soundBuilder == NULL)
 			return NULL;
 		
-		return soundBuilder.BuildSoundObject();
+		return soundBuilder;
 	}
 	
 	autoptr map<int, ref AttachmentSoundLookupTable> m_pSoundTableInstances;
@@ -151,9 +151,9 @@ void DayZPlayerTypeRegisterSounds(DayZPlayerType pType)
 	pType.RegisterStepEvent("Step", 0.2);
 
 	pType.RegisterSoundEvent("Sound", -1);
-	pType.RegisterSoundEvent("SoundWeapon", -1);
+	pType.RegisterSoundEvent("SoundWeapon", 0.2);
 	if(GetGame().IsClient() || !GetGame().IsMultiplayer())//attachments don't generate noise, so we can ignore them on server
-		pType.RegisterSoundEvent("SoundAttachment", -1);
+		pType.RegisterSoundEvent("SoundAttachment", 0.2);
 	
 	//pType.RegisterParticleEvent("Particle", -1);
 

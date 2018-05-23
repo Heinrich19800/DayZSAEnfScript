@@ -5,6 +5,7 @@ class WidgetLayoutName
 	const string InventoryIconContainer = "gui/layouts/inventory_new/inventory_icons_container.layout";
 	const string HandsPreview = "gui/layouts/inventory_new/hands_preview.layout";
 	const string GridContainer = "gui/layouts/inventory_new/grid_container.layout";
+	const string GridContainerXbox = "gui/layouts/inventory_new/grid_container_xbox.layout";
 	const string CollapsibleHeader = "gui/layouts/inventory_new/collapsible_header.layout";
 	const string ClosableHeader = "gui/layouts/inventory_new/closable_header.layout";
 	const string HandsHeader = "gui/layouts/inventory_new/hands_header.layout";

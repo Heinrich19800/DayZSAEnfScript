@@ -177,6 +177,19 @@ class CGame
 	@param name output value
 	*/
 	proto void					GetPlayerName(out string name);
+	
+	/**
+   \brief Gets current player name. If length of player name is grater than maxLength, then it is omitted and append ellipsis
+	@param maxLength - max chars in name
+	@param name - output value of player name with 'maxLength' characters and then ellipsis "..."
+	*/
+	proto void					GetPlayerNameShort(int maxLength, out string name);
+	
+	/**
+   \brief Gets current player uid. Only on xbox.
+	@param activeUserUID output value of player UID.
+	*/
+	proto void					GetUID(out string activeUserUID);
 
 	/**
   \brief Sets current player name
@@ -252,25 +265,32 @@ class CGame
 	*/
 	string GetModelName(string class_name)
 	{
-		string cfg = "CfgVehicles " + class_name + " model";
-		string model_path;
-		GetGame().ConfigGetText(cfg, model_path); 
-		int to_substring_end = model_path.Length() - 4; // -4 to leave out the '.p3d' suffix
-		int to_substring_start = 0;
-		
-		// Currently we have model path. To get the name out of it we need to parse this string from the end and stop at the first found '\' sign
-		for (int i = to_substring_end; i > 0; i--)
+		if ( class_name != "" )
 		{
-			string sign = model_path.Get(i);
-			if ( sign == "\\" )
+			string cfg = "CfgVehicles " + class_name + " model";
+			string model_path;
+			if ( GetGame().ConfigGetText(cfg, model_path) )
 			{
-				to_substring_start = i + 1;
-				break
+				int to_substring_end = model_path.Length() - 4; // -4 to leave out the '.p3d' suffix
+				int to_substring_start = 0;
+				
+				// Currently we have model path. To get the name out of it we need to parse this string from the end and stop at the first found '\' sign
+				for (int i = to_substring_end; i > 0; i--)
+				{
+					string sign = model_path.Get(i);
+					if ( sign == "\\" )
+					{
+						to_substring_start = i + 1;
+						break
+					}
+				}
+				
+				string model_name = model_path.Substring(to_substring_start, to_substring_end - to_substring_start);
+				return model_name;
 			}
 		}
 		
-		string model_name = model_path.Substring(to_substring_start, to_substring_end - to_substring_start);
-		return model_name;
+		return "UNKNOWN_P3D_FILE";
 	}
 	
 	/**
@@ -436,8 +456,6 @@ class CGame
 	proto native vector ObjectWorldToModel(Object obj, vector worldPos);
 	//! returns true if player can access item's cargo/attachments (check only distance)
 	proto native bool		IsObjectAccesible(EntityAI item, Man player);
-	//! returns true if player can access item's cargo/attachments (check only inventory conditions)
-	proto native bool		IsInventoryTreeLocked(EntityAI item, EntityAI player);	
 
 	// input
 	proto native Input	GetInput();
@@ -460,7 +478,9 @@ class CGame
 	// support
 	//! Delevoper only: Executes Enforce Script expression, if there is an error, is printed into the script console
 	proto native bool 	ExecuteEnforceScript(string expression, string mainFnName);
-
+	//! Delevoper only: Dump all script allocations
+	proto native void	DumpInstances(bool csvFormatting);
+	
 	proto native bool 	ScriptTest();
 	//! Get list of all debug modes
 	proto native void		GetDiagModeNames(out TStringArray diag_names);
@@ -584,6 +604,13 @@ class CGame
 	proto native void		Chat(string text, string colorClass);
 	proto native void		ChatMP(Man recipient, string text, string colorClass);
 	proto native void		ChatPlayer(ChatChannel channel, string text);
+	/**
+	 \brief Mutes voice of source player to target player
+	@param sourceVoice uid of source player
+	@param targetVoice uid of target player
+	*/
+	proto native void		MutePlayer(string sourceVoice, string targetVoice, bool mute);
+	
 	//! Returns current chat channel.
 	//proto native ChatChannel ChatGetChannel();
 
@@ -654,6 +681,15 @@ class CGame
 	proto native bool		SurfaceIsPond(float x, float z);
 	
 	proto native void 		UpdatePathgraphRegion(vector regionMin, vector regionMax);
+	
+	//! Returns tilt of the ground on the given position in degrees, so you can use this value to rotate any item according to terrain.
+	vector 					GetSurfaceOrientation(float x, float z)
+	{
+		vector normal = GetGame().SurfaceGetNormal(x, z);
+		vector angles = normal.VectorToAngles();
+		angles[1] = angles[1]+270; // This fixes rotation of item
+		return angles;
+	}
 	
 	void 					UpdatePathgraphRegionByObject(Object object)
 	{
@@ -879,4 +915,21 @@ class CGame
 	bool IsInventoryOpen()
 	{
 	}
+
+	//! Creates client services for a local user,
+	/*
+		Expected errors:
+			NOT_FOUND - the user with the uid was not found. Must be signed in on the local machine.
+			BAD_SCRIPT - script linking error. Ask programmers for assistance.
+	
+		@param services on success, contains a BiosClientServices object for the user identified by uid.
+		@return EBiosError indicating result;
+	*/
+	proto EBiosError CreateClientServices(out ref BiosClientServices services, string uid);
+	
+	//! Show account picker on xbox for select active user
+	proto native void ShowAccountPicker();
+	
+	//! @return true if user is known by gamepad on xbox
+	proto native bool IsUserByGamepad();
 };

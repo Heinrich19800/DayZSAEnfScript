@@ -42,8 +42,7 @@ class OptionsMenu extends UIScriptedMenu
 	{
 		//m_Options = new GameOptions;
 		
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_optionsNEW.layout");
-		//layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_options.layout");
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_options.layout");
 		
 		m_context_menu = new ContextMenu;
 		m_context_menu.Init(layoutRoot);
@@ -133,6 +132,8 @@ class OptionsMenu extends UIScriptedMenu
 		
 		RegisterProfileOptionWidgets();
 		//InitProfileSettings();
+		
+		LockControls();
 		
 		return layoutRoot;
 	}

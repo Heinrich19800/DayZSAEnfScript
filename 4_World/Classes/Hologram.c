@@ -181,51 +181,39 @@ class Hologram
 	{	
 		bool is_surface_water = IsSurfaceWater( m_Projection.GetPosition() );		
 		
-		if( !IsCollidingBBox() )
+		if( IsCollidingBBox() || IsCollidingPlayer() || IsCollidingBase() || IsCollidingGPlot() || IsCollidingZeroPos() || IsBehindObstacle() )
 		{
-			if( !IsCollidingPlayer() )
+			SetIsColliding( true );							
+		}	
+		else
+		{
+			if( IsProjectionTrap() )
 			{
-				if( !IsCollidingBase() )
+				if( m_Projection.IsInherited( TrapSpawnBase ) )
 				{
-					if( !IsCollidingGPlot() )
-					{
-						if( !IsCollidingZeroPos() )
-						{
-							if( IsProjectionTrap() )
-							{
-								if( m_Projection.IsInherited( TrapSpawnBase ) )
-								{
-									TrapSpawnBase trap_spawn_base;
-									Class.CastTo(trap_spawn_base,  m_Projection );
-									SetIsColliding( !trap_spawn_base.IsPlaceableAtPosition( m_Projection.GetPosition() ) );
-								}
-								else
-								{
-									TrapBase trap_base;
-									Class.CastTo(trap_base,  m_Projection );
-									SetIsColliding( !trap_base.IsPlaceableAtPosition( m_Projection.GetPosition() ) );
-								}
-							}
-							else
-							{
-								if( is_surface_water )
-								{
-									SetIsColliding( true );
-								}
-								else
-								{
-									SetIsColliding( false );
-								}				
-							}
-
-							return;	
-						}						
-					}
+					TrapSpawnBase trap_spawn_base;
+					Class.CastTo(trap_spawn_base,  m_Projection );
+					SetIsColliding( !trap_spawn_base.IsPlaceableAtPosition( m_Projection.GetPosition() ) );
+				}
+				else
+				{
+					TrapBase trap_base;
+					Class.CastTo(trap_base,  m_Projection );
+					SetIsColliding( !trap_base.IsPlaceableAtPosition( m_Projection.GetPosition() ) );
 				}
 			}
-		}	
-
-		SetIsColliding( true );
+			else
+			{
+				if( is_surface_water )
+				{
+					SetIsColliding( true );
+				}
+				else
+				{
+					SetIsColliding( false );
+				}				
+			}
+		}
 	}
 	
 	bool IsCollidingBBox()
@@ -355,11 +343,11 @@ class Hologram
 			//Print("obj_right_far hit: " + obj_right_far );
 		}
 			
-		if( IsBaseStatic( obj_left_close, obj_right_close, obj_left_far, obj_right_far ) )
+		if ( IsBaseStatic( obj_left_close, obj_right_close, obj_left_far, obj_right_far ) )
 		{
-			if( IsBaseIntact( obj_left_close, obj_right_close, obj_left_far, obj_right_far ) )
+			if ( IsBaseIntact( obj_left_close, obj_right_close, obj_left_far, obj_right_far ) )
 			{
-				if( IsBaseFlat( contact_pos_left_close, contact_pos_right_close, contact_pos_left_far, contact_pos_right_far ) )
+				if ( IsBaseFlat( contact_pos_left_close, contact_pos_right_close, contact_pos_left_far, contact_pos_right_far ) )
 				{ 	
 					//Print("The base is static object and the base is intact and the base is flat");	
 					return false;	
@@ -373,7 +361,7 @@ class Hologram
 
 	bool IsCollidingGPlot()
 	{
-		if( m_IsCollidingGPlot )
+		if ( m_IsCollidingGPlot )
 		{
 			//Print("NOT suitable terrain for garden plot");
 			return true; 
@@ -389,7 +377,7 @@ class Hologram
 	{
 		vector origin = Vector(0, 0, 0,);
 
-		if( GetProjectionPosition() == origin )
+		if ( GetProjectionPosition() == origin )
 		{
 			//Print("NOT able to place, projection in origin");
 			return true; 
@@ -399,6 +387,27 @@ class Hologram
 			//Print("Projection not in origin");
 			return false;
 		}
+	}
+	
+	bool IsBehindObstacle()
+	{
+		vector parent_pos = GetParentEntity().GetPosition();
+		vector headingDirection = MiscGameplayFunctions.GetHeadingVector(m_Player);
+		array<Object> coneObjects = new array<Object>;
+		float c_MaxTargetDistance = 0.5;
+		float c_ConeAngle = 30.0;
+	 	float c_ConeHeightMin = -0.5;
+	 	float c_ConeHeightMax = 2;
+		int PLAYER_AND_PARENT = 2;
+				
+		DayZPlayerUtils.GetEntitiesInCone(parent_pos, headingDirection, c_ConeAngle, c_MaxTargetDistance, c_ConeHeightMin, c_ConeHeightMax, coneObjects);
+				
+		if ( coneObjects.Count() > PLAYER_AND_PARENT )
+		{
+			return true;	
+		}
+		
+		return false;	
 	}
 	
 	bool IsBaseStatic( Object under_left_close, Object under_right_close, Object under_left_far, Object under_right_far )

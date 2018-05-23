@@ -451,8 +451,8 @@ class Pistol_Base extends Weapon_Base
 		m_fsm.AddTransition(new WeaponTransition(Reload_CD01, _fin_,   CC11));
 			Reload_CD01.AddTransition(new WeaponTransition(Reload_CD01.m_start ,    _abt_,   CD01));
 			Reload_CD01.AddTransition(new WeaponTransition(Reload_CD01.m_detach,    _abt_,   CD00));
-			Reload_CD01.AddTransition(new WeaponTransition(Reload_CD01.m_getNew,    _abt_,   CD00));
-			Reload_CD01.AddTransition(new WeaponTransition(Reload_CD01.m_storeOld,  _abt_,   CD00));
+			Reload_CD01.AddTransition(new WeaponTransition(Reload_CD01.m_hideOld,   _abt_,   CD00));
+			Reload_CD01.AddTransition(new WeaponTransition(Reload_CD01.m_swapMags,  _abt_,   CD00));
 			Reload_CD01.AddTransition(new WeaponTransition(Reload_CD01.m_attach,    _abt_,   CD01));
 			Reload_CD01.AddTransition(new WeaponTransition(Reload_CD01.m_onCK,      _abt_,   CC01));
 			Reload_CD01.AddTransition(new WeaponTransition(Reload_CD01.m_chamber,   _abt_,   CC11));
@@ -462,8 +462,8 @@ class Pistol_Base extends Weapon_Base
 		m_fsm.AddTransition(new WeaponTransition(Reload_CC11, _fin_,   CC11));
 			Reload_CC11.AddTransition(new WeaponTransition(Reload_CC11.m_start ,    _abt_,   CC11));
 			Reload_CC11.AddTransition(new WeaponTransition(Reload_CC11.m_detach,    _abt_,   CC10));
-			Reload_CC11.AddTransition(new WeaponTransition(Reload_CC11.m_getNew,    _abt_,   CC10));
-			Reload_CC11.AddTransition(new WeaponTransition(Reload_CC11.m_storeOld,  _abt_,   CC10));
+			Reload_CC11.AddTransition(new WeaponTransition(Reload_CC11.m_hideOld,   _abt_,   CC10));
+			Reload_CC11.AddTransition(new WeaponTransition(Reload_CC11.m_swapMags,  _abt_,   CC10));
 			Reload_CC11.AddTransition(new WeaponTransition(Reload_CC11.m_attach,    _abt_,   CC11));
 
 		m_fsm.AddTransition(new WeaponTransition(  CC01, __S__, Reload_CC01)); // CLO/b0/m1 swap with empty mag (no chamber)
@@ -471,8 +471,8 @@ class Pistol_Base extends Weapon_Base
 		m_fsm.AddTransition(new WeaponTransition(Reload_CC01, _fin_,   CC11));
 			Reload_CC01.AddTransition(new WeaponTransition(Reload_CC01.m_start ,    _abt_,   CC01));
 			Reload_CC01.AddTransition(new WeaponTransition(Reload_CC01.m_detach,    _abt_,   CC00));
-			Reload_CC01.AddTransition(new WeaponTransition(Reload_CC01.m_getNew,    _abt_,   CC00));
-			Reload_CC01.AddTransition(new WeaponTransition(Reload_CC01.m_storeOld,  _abt_,   CC00));
+			Reload_CC01.AddTransition(new WeaponTransition(Reload_CC01.m_hideOld,   _abt_,   CC00));
+			Reload_CC01.AddTransition(new WeaponTransition(Reload_CC01.m_swapMags,  _abt_,   CC00));
 			Reload_CC01.AddTransition(new WeaponTransition(Reload_CC01.m_attach,    _abt_,   CC01));
 			Reload_CC01.AddTransition(new WeaponTransition(Reload_CC01.m_onCK,      _abt_,   CC01));
 			Reload_CC01.AddTransition(new WeaponTransition(Reload_CC01.m_chamber,   _abt_,   CC11));
@@ -482,8 +482,8 @@ class Pistol_Base extends Weapon_Base
 		m_fsm.AddTransition(new WeaponTransition(Reload_OD01, _fin_,   CC11));
 			Reload_OD01.AddTransition(new WeaponTransition(Reload_OD01.m_start ,    _abt_,   OD01));
 			Reload_OD01.AddTransition(new WeaponTransition(Reload_OD01.m_detach,    _abt_,   OD00));
-			Reload_OD01.AddTransition(new WeaponTransition(Reload_OD01.m_getNew,    _abt_,   OD00));
-			Reload_OD01.AddTransition(new WeaponTransition(Reload_OD01.m_storeOld,  _abt_,   OD00));
+			Reload_OD01.AddTransition(new WeaponTransition(Reload_OD01.m_hideOld,   _abt_,   OD00));
+			Reload_OD01.AddTransition(new WeaponTransition(Reload_OD01.m_swapMags,  _abt_,   OD00));
 			Reload_OD01.AddTransition(new WeaponTransition(Reload_OD01.m_attach,    _abt_,   OD01));
 			Reload_OD01.AddTransition(new WeaponTransition(Reload_OD01.m_onCK,      _abt_,   CC01));
 			Reload_OD01.AddTransition(new WeaponTransition(Reload_OD01.m_chamber,   _abt_,   CC11));
@@ -492,8 +492,8 @@ class Pistol_Base extends Weapon_Base
 		m_fsm.AddTransition(new WeaponTransition(Reload_CJ11, _fin_,   CJ11));
 			Reload_CJ11.AddTransition(new WeaponTransition(Reload_CJ11.m_start ,    _abt_,   CJ11));
 			Reload_CJ11.AddTransition(new WeaponTransition(Reload_CJ11.m_detach,    _abt_,   CJ10));
-			Reload_CJ11.AddTransition(new WeaponTransition(Reload_CJ11.m_getNew,    _abt_,   CJ10));
-			Reload_CJ11.AddTransition(new WeaponTransition(Reload_CJ11.m_storeOld,  _abt_,   CJ10));
+			Reload_CJ11.AddTransition(new WeaponTransition(Reload_CJ11.m_hideOld,   _abt_,   CJ10));
+			Reload_CJ11.AddTransition(new WeaponTransition(Reload_CJ11.m_swapMags,  _abt_,   CJ10));
 			Reload_CJ11.AddTransition(new WeaponTransition(Reload_CJ11.m_attach,    _abt_,   CJ11));
 
 

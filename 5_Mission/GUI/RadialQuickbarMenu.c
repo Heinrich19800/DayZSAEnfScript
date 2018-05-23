@@ -109,14 +109,14 @@ class RadialQuickbarMenu extends UIScriptedMenu
 	//============================================
 	override Widget Init()
 	{
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/radial_quickbar/radial_quickbar_menu.layout" );
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/radial_menu/radial_quickbar/radial_quickbar_menu.layout" );
 		m_ItemCardPanel = layoutRoot.FindAnyWidget( RadialMenu.RADIAL_ITEM_CARD_CONTAINER );
 
 		//register gestures menu
 		RadialMenu.GetInstance().RegisterClass( this );
 		
 		//set radial menu properties
-		RadialMenu.GetInstance().SetWidgetProperties( "gui/layouts/radial_quickbar/radial_quickbar_delimiter.layout" );
+		RadialMenu.GetInstance().SetWidgetProperties( "gui/layouts/radial_menu/radial_quickbar/radial_quickbar_delimiter.layout" );
 
 		//create content (widgets) for items
 		RefreshQuickbar();
@@ -164,7 +164,7 @@ class RadialQuickbarMenu extends UIScriptedMenu
 			RadialQuickbarItem quickbar_item = m_Items.Get( i );
 			
 			//create item card
-			Widget item_card_widget = Widget.Cast( GetGame().GetWorkspace().CreateWidgets( "gui/layouts/radial_quickbar/radial_quickbar_item_card.layout", m_ItemCardPanel ) );
+			Widget item_card_widget = Widget.Cast( GetGame().GetWorkspace().CreateWidgets( "gui/layouts/radial_menu/radial_quickbar/radial_quickbar_item_card.layout", m_ItemCardPanel ) );
 			quickbar_item.SetRadialItemCard( item_card_widget );
 			
 			//get content panels

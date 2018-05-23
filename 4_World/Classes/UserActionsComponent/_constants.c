@@ -9,7 +9,8 @@ const int INPUT_UDT_INVENTORY					= 7;
 const int INPUT_UDT_ADVANCED_PLACEMENT			= 8;
 const int INPUT_UDT_WEAPON_REMOTE_SYNC			= 9;
 const int INPUT_UDT_WEAPON_REMOTE_EVENT			= 10;
-
+const int INPUT_UDT_USER_MUTE_XBOX				= 11;
+const int INPUT_UDT_USER_SYNC_PERMISSIONS		= 12;
 
 const int AC_UNCATEGORIZED						= 0;
 const int AC_SINGLE_USE							= 1;
@@ -262,6 +263,7 @@ const int AT_CLOSE_CAR_DOORS = 1042;
 const int AT_OPEN_CAR_DOORS = 1043;
 const int AT_WASH_HANDS_WELL_ONE = 1044;
 const int AT_WASH_HANDS_WATER_ONE = 1045;
+const int AT_GETOUT_TRANSPORT = 1046;
 
 //weapons
 const int AT_WPN_ATTACH_MAGAZINE = 1501;

@@ -230,47 +230,36 @@ class ActionTargetsCursor extends ObjectFollower
 		GetTarget();
 		GetActions();
 
-		if(m_Target && !GetGame().IsInventoryOpen())
+		if(m_Target && m_AM.GetRunningAction() == null && !GetGame().IsInventoryOpen())
 		{
-			if(IsActionRunning(m_Interact) || IsActionRunning(m_Single) || IsActionRunning(m_Continuous))
+			//! cursor with fixed position
+			if ( m_FixedOnPosition || m_Target.GetObject() == null )
 			{
-				//Print(">> action already running");
-				m_Root.Show(false);
+				//Print(">> fixed widget");
 				m_CachedObject.Invalidate(true);
-				m_IsCached = false;
+				BuildFixedCursor();
+				m_Root.Show(true);
 				m_FixedOnPosition = false;
+				return;
 			}
 			else
 			{
-				//! cursor with fixed position
-				if ( m_FixedOnPosition || m_Target.GetObject() == null )
+				//! build cursor for new target
+				if ( m_Target.GetObject() != m_CachedObject.Get() )
 				{
-					//Print(">> fixed widget");
+					//Print(">> non-cached widget");
 					m_CachedObject.Invalidate(true);
-					BuildFixedCursor();
+					BuildFloatingCursor(true);
 					m_Root.Show(true);
-					m_FixedOnPosition = false;
 					return;
 				}
+				//! use cached version for known target - recalculate onscreen pos only
 				else
 				{
-					//! build cursor for new target
-					if ( m_Target.GetObject() != m_CachedObject.Get() )
-					{
-						//Print(">> non-cached widget");
-						m_CachedObject.Invalidate(true);
-						BuildFloatingCursor(true);
-						m_Root.Show(true);
-						return;
-					}
-					//! use cached version for known target - recalculate onscreen pos only
-					else
-					{
-						//Print(">> cached widget");
-						BuildFloatingCursor(false);
-						m_Root.Show(true);
-						return;
-					}
+					//Print(">> cached widget");
+					BuildFloatingCursor(false);
+					m_Root.Show(true);
+					return;
 				}
 			}
 		}
@@ -554,17 +543,6 @@ class ActionTargetsCursor extends ObjectFollower
 				
 		m_Single = m_AM.GetSingleUseAction();
 		m_Continuous = m_AM.GetContinuousAction();
-	}
-
-	private bool IsActionRunning(ActionBase action)
-	{
-		if ( !action ) return false;
-
-		int actionState = m_AM.GetActionState(action);
-		if(actionState != UA_NONE)
-			return true;
-		
-		return false;
 	}
 
 	private void GetTarget()

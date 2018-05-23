@@ -1178,6 +1178,7 @@ class ComponentEnergyManager : Component
 				local EntityAI device = plugged_devices.Get(i);
 				if ( device != original_caller ) // original_caller check here prevents infinite loops
 				{
+					device.GetCompEM().UpdateCanWork();
 					device.GetCompEM().DeviceUpdate();
 					device.GetCompEM().StartUpdates();
 					device.GetCompEM().WakeUpWholeBranch( original_caller );

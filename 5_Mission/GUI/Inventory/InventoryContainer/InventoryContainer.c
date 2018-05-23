@@ -37,7 +37,7 @@ bool CanShowItemInInventory(PlayerBase player, Object obj)
 	}
 	
 	// Check only for non TentBase objects if they have locked inventory
-	if ( !obj.IsInherited(TentBase) && GetGame().IsInventoryTreeLocked(EntityAI.Cast( obj ), EntityAI.Cast( player ) ) )
+	if ( !obj.IsInherited(TentBase) )
 	{
 		return false;
 	}

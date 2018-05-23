@@ -25,6 +25,7 @@ enum DiagMenuIDs
 	DM_ITEM_DEBUG_ACTIONS_SHOW,
 	DM_PLAYER_STATS_LOG_ENABLE,
 	DM_ACTION_TARGETS_MENU,
+	DM_ACTION_TARGETS_NEW,
 	DM_ACTION_TARGETS_DEBUG,
 	DM_ACTION_TARGETS_SELPOS_DEBUG,
 	DM_LIFESPAN_MENU,
@@ -49,6 +50,7 @@ enum DiagMenuIDs
 	DM_DISPLAY_PLAYER_INFO,
 	DM_DRAW_CHECKERBOARD,
 	DM_BULLET_IMPACT,
+	DM_PRESENCE_NOTIFIER_DBG,
 };
 
 enum DebugActionType
@@ -84,6 +86,7 @@ class PluginDiagMenu extends PluginBase
 	bool m_MeleeFight				= false;
 	bool m_EnvironmentStats			= false;
 	bool m_DrawCheckerboard			= false;
+	bool m_PresenceNotifierDebug	= false;
 	float m_SpecialtyLevel			= 0;
 	float m_LifespanLevel			= 0;
 	int  m_DayzPlayerDebugMenu		= -1;
@@ -186,6 +189,7 @@ class PluginDiagMenu extends PluginBase
 					//---------------------------------------------------------------
 					// LEVEL 3
 					//---------------------------------------------------------------
+					DiagMenu.RegisterBool(DiagMenuIDs.DM_ACTION_TARGETS_NEW, "", "New AT Selection", "Action Targets", true);
 					DiagMenu.RegisterBool(DiagMenuIDs.DM_ACTION_TARGETS_DEBUG, "", "Show Debug", "Action Targets");
 					DiagMenu.RegisterBool(DiagMenuIDs.DM_ACTION_TARGETS_SELPOS_DEBUG, "", "Show selection pos debug", "Action Targets");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_PERMANENT_CROSSHAIR, "", "Enable permanent crosshair", "Misc");
@@ -193,6 +197,7 @@ class PluginDiagMenu extends PluginBase
 				DiagMenu.RegisterRange(DiagMenuIDs.DM_DISPLAY_PLAYER_INFO, "", "Display Player Info", "Misc", "0,2,0,1");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_ENVIRONMENT_DEBUG_ENABLE, "", "Show Environment stats", "Misc");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_DRAW_CHECKERBOARD, "", "Draw Checkerboard on screen", "Misc");
+				DiagMenu.RegisterBool(DiagMenuIDs.DM_PRESENCE_NOTIFIER_DBG, "", "Show Presence to AI dbg", "Misc");
 			//---------------------------------------------------------------
 			// LEVEL 1
 			//---------------------------------------------------------------
@@ -261,6 +266,7 @@ class PluginDiagMenu extends PluginBase
 		CheckDisplayMenu();
 		CheckDrawCheckerboard();
 		CheckBulletImpact();
+		CheckPresenceNotifierDebug();
 	}
 	//---------------------------------------------
 	void CheckModifiers()
@@ -876,6 +882,18 @@ class PluginDiagMenu extends PluginBase
 		else
 		{
 			if(m_DrawCheckerboard) m_DrawCheckerboard = false;
+		}
+	}
+
+	void CheckPresenceNotifierDebug()
+	{
+		if(DiagMenu.GetBool(DiagMenuIDs.DM_PRESENCE_NOTIFIER_DBG))
+		{
+			if(!m_PresenceNotifierDebug) m_PresenceNotifierDebug = true;
+		}
+		else
+		{
+			if(m_PresenceNotifierDebug) m_PresenceNotifierDebug = false;
 		}
 	}
 	

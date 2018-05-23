@@ -1,6 +1,21 @@
+class JsonControlMappingInfo
+{
+	int m_TabID;
+	int m_TextWidgetID;
+	string m_ButtonName;
+	string m_InfoText;
+}
+
 class ControlsXbox extends UIScriptedMenu
 {
 	protected ImageWidget 	m_ControlsLayoutImage;
+	protected ButtonWidget	m_MovementWidget;
+	protected ButtonWidget	m_WeaponsAndActionsWidget;
+	protected ButtonWidget	m_InventoryWidget;
+	protected ButtonWidget	m_MenusWidget;
+	protected int 					m_SelectedTab;
+	protected const int 		TABS_COUNT = 4;
+	protected ImageWidget 	m_tab_images[TABS_COUNT];
 	
 	//============================================
 	// ControlsXbox
@@ -26,14 +41,241 @@ class ControlsXbox extends UIScriptedMenu
 	{
 		GetGame().GetUIManager().Back();
 	}
+	
+	void DrawConnectingLines()
+	{
+		ref array<ref JsonControlMappingInfo> control_mapping_info = new array<ref JsonControlMappingInfo>;
+		ref array<ref array <ref JsonControlMappingInfo>> tab_array = new array<ref array <ref JsonControlMappingInfo>>;
 		
+		map<string, ref array<int>> button_marker_groups_unflitred = new map<string, ref array<int>>;
+		map<string, ref array<int>> button_marker_groups = new map<string, ref array<int>>;
+		
+		float text_widget_pos_x, text_widget_pos_y;
+		float text_widget_width, text_widget_height;
+		float dot_pos_x, dot_pos_y;
+		float dot_width, dot_height;
+		float draw_pos_x, draw_pos_y;
+		
+		CanvasWidget canvas_widget = layoutRoot.FindAnyWidget("CanvasWidget");
+		control_mapping_info  = GetControlMappingInfo();
+		
+		for( int i = 0; i < 4; i++ )
+		{
+			tab_array.Insert( new array<ref JsonControlMappingInfo> );
+			for( int j = 0; j < 20; j++ )
+			{
+				tab_array[i].Insert( NULL );
+			}
+		}
+		
+		// insert json info to array by index, so it is sorted
+		for ( i = 0; i < control_mapping_info.Count(); i++ )
+		{
+			JsonControlMappingInfo info = control_mapping_info.Get( i );
+			tab_array[info.m_TabID][info.m_TextWidgetID] = info;
+		}
+		
+		// create group of buttons which are connected together with line
+		for( int l = 0; l < control_mapping_info.Count(); l++ )
+		{
+			JsonControlMappingInfo info1 = control_mapping_info[l];
+			string button_name = info1.m_ButtonName;
+			int text_widget_id = info1.m_TextWidgetID;
+			if( info1.m_TabID != m_SelectedTab )
+			{
+				continue;
+			}
+			if( !button_marker_groups_unflitred.Contains( button_name) )
+			{
+				button_marker_groups_unflitred.Insert( button_name, new ref array<int> );
+				button_marker_groups_unflitred.Get( button_name ).Insert( text_widget_id );
+			}
+			else
+			{
+				button_marker_groups_unflitred.Get( button_name ).Insert( text_widget_id );
+			}
+		}
+		
+		// we want groups which are bigger than 1
+		for( l = 0; l < button_marker_groups_unflitred.Count(); l++ )
+		{
+			if( button_marker_groups_unflitred.GetElement( l ).Count() > 1 )
+			{
+				string key = button_marker_groups_unflitred.GetKey( l );
+				button_marker_groups.Insert( button_marker_groups_unflitred.GetKey( l ), button_marker_groups_unflitred.Get( key ) );
+			}
+		}
+		
+		// hide all button markers
+		Widget xbox_controls_image = layoutRoot.FindAnyWidget( "XboxControlsImage" );
+		Widget child = xbox_controls_image.GetChildren();
+		child.Show(false);
+		while( child.GetSibling() )
+		{
+			child = child.GetSibling();
+			child.Show(false);
+		}
+		
+		// draw connecting lines 
+		for( l = 0; l <  button_marker_groups.Count(); l++ )
+		{
+			text_widget_pos_x = 0;
+			text_widget_pos_y = 0;
+			text_widget_width = 0;
+			text_widget_height = 0;
+			float group_point_x = 0, group_point_y = 0;
+			float first_x = 0, first_y = 0;
+			
+			ref array<int> element = button_marker_groups.GetElement( l );
+			string key_name = button_marker_groups.GetKey( l );
+			Widget button_marker_widget = layoutRoot.FindAnyWidget( "button_marker_" + key_name );
+			
+			for( int g = 0; g < element.Count(); g++ )
+			{
+				Widget panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + element[g] );
+				panel_widget.GetScreenPos( text_widget_pos_x, text_widget_pos_y );
+				panel_widget.GetScreenSize( text_widget_width, text_widget_height );
+				
+				if( g == 0 )
+				{
+					if( element[0] < 10 )
+					{
+						first_x = text_widget_pos_x + text_widget_width +50;
+					}
+					else
+					{
+						first_x = text_widget_pos_x - 50;
+					}
+					first_y = text_widget_pos_y + text_widget_height/2;
+					
+				}
+				group_point_x += text_widget_pos_x;
+				group_point_y += text_widget_pos_y;
+				if( element[0] < 10 )
+				{
+					canvas_widget.DrawLine( text_widget_pos_x + text_widget_width - 1, text_widget_pos_y + text_widget_height/2, text_widget_pos_x + text_widget_width +50, text_widget_pos_y + text_widget_height/2, 2, ARGBF( 0.6, 1, 1, 1 ) );
+				}
+				else
+				{
+					canvas_widget.DrawLine( text_widget_pos_x, text_widget_pos_y + text_widget_height/2, text_widget_pos_x - 50, text_widget_pos_y + text_widget_height/2, 2, ARGBF( 0.6, 1, 1, 1 ) );
+				}
+			}
+			if( element[0] < 10 )
+			{
+				group_point_x = group_point_x/element.Count() + text_widget_width + 50;
+			}
+			else
+			{
+				group_point_x = group_point_x/element.Count() - 50;
+			}
+			group_point_y = group_point_y/element.Count() + text_widget_height/2;
+			
+			button_marker_widget.GetScreenPos( dot_pos_x, dot_pos_y );
+			button_marker_widget.GetScreenSize( dot_width, dot_height );
+			
+			canvas_widget.DrawLine( group_point_x, group_point_y, dot_pos_x+dot_width/2, group_point_y, 2, ARGBF( 0.6, 1, 1, 1 ) );
+			canvas_widget.DrawLine( dot_pos_x+dot_width/2, group_point_y, dot_pos_x+dot_width/2, dot_pos_y, 2, ARGBF( 0.6, 1, 1, 1 ) );
+			
+			if( element[0] < 10 )
+			{
+				canvas_widget.DrawLine( first_x, first_y, text_widget_pos_x + text_widget_width +50, text_widget_pos_y + text_widget_height/2, 2, ARGBF( 0.6, 1, 1, 1 ) );
+			}
+			else
+			{
+				canvas_widget.DrawLine( first_x, first_y, text_widget_pos_x - 50, text_widget_pos_y + text_widget_height/2, 2, ARGBF( 0.6, 1, 1, 1 ) );
+			}
+		}
+		
+		for( l = 0; l < tab_array[m_SelectedTab].Count(); l++ )
+		{
+			if( tab_array[m_SelectedTab][l] != NULL )
+			{
+				panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + l );
+				TextWidget text_widget = panel_widget.FindAnyWidget( "TextWidget" + l );
+				button_marker_widget = layoutRoot.FindAnyWidget( "button_marker_" + tab_array[m_SelectedTab][l].m_ButtonName );
+				text_widget.SetText( tab_array[m_SelectedTab][l].m_InfoText );
+				panel_widget.Show( true );
+				button_marker_widget.Show( true );
+				if( !button_marker_groups.Contains(tab_array[m_SelectedTab][l].m_ButtonName ))
+				{
+					panel_widget.GetScreenPos( text_widget_pos_x, text_widget_pos_y );
+					panel_widget.GetScreenSize( text_widget_width,text_widget_height );
+					
+					button_marker_widget.GetScreenPos( dot_pos_x, dot_pos_y );
+					button_marker_widget.GetScreenSize( dot_width, dot_height );
+					
+					draw_pos_y = text_widget_pos_y + text_widget_height / 2;
+					if( l < 10 )
+					{
+						draw_pos_x = text_widget_pos_x + text_widget_width - 1;
+					}
+					else
+					{
+						draw_pos_x = text_widget_pos_x;
+					}
+					canvas_widget.DrawLine( draw_pos_x, draw_pos_y, dot_pos_x+dot_width/2, draw_pos_y, 2, ARGBF( 0.6, 1, 1, 1 ) );
+					canvas_widget.DrawLine( dot_pos_x+dot_width/2, draw_pos_y, dot_pos_x+dot_width/2, dot_pos_y+dot_height/2, 2, ARGBF( 0.6, 1, 1, 1 ) );	
+				}
+			}
+			else
+			{
+				panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + l );
+				panel_widget.Show( false );
+			}
+		}
+	}
+	
+	protected array<ref JsonControlMappingInfo> GetControlMappingInfo()
+	{
+		array<ref JsonControlMappingInfo> control_mapping_info = new array<ref JsonControlMappingInfo>;
+		
+		string file_path =	"Xbox\\ControlMappingInfo.json";
+		FileHandle file_handle = OpenFile(file_path, FileMode.READ);
+		JsonSerializer js = new JsonSerializer();
+		
+		string js_error = "";
+		string line_content = "";
+		string content = "";
+		if ( file_handle )
+		{
+			while ( FGets( file_handle,  line_content ) > 0 )
+			{
+				content += line_content;
+			}
+			CloseFile( file_handle );
+			
+			if ( js.ReadFromString( control_mapping_info, content, js_error ) )
+			{
+				return control_mapping_info;
+			}
+			else
+			{
+				Print("JSON ERROR => [ControlMappingInfo.json]: "+ js_error);
+				DumpStack();
+			}
+		}
+		
+		return control_mapping_info;
+	}
+	
 	//============================================
 	// Init
 	//============================================
 	override Widget Init()
 	{
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/day_z_xbox_controls.layout" );
-		m_ControlsLayoutImage = ImageWidget.Cast( layoutRoot.FindAnyWidget( "XboxControlsImage" ) );
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/xbox/control_mapping_info_screen.layout" );
+		m_MovementWidget = layoutRoot.FindAnyWidget("MovementButtonWidget");
+		m_WeaponsAndActionsWidget = layoutRoot.FindAnyWidget("WeaponsAndActionsButtonWidget");;
+		m_InventoryWidget = layoutRoot.FindAnyWidget("InventoryButtonWidget");;
+		m_MenusWidget = layoutRoot.FindAnyWidget("MenusButtonWidget");
+		
+		m_tab_images[0] = ImageWidget.Cast( layoutRoot.FindAnyWidget("MovementTabBackdropImageWidget") );
+		m_tab_images[1] = ImageWidget.Cast( layoutRoot.FindAnyWidget("WeaponsAndActionsBackdropImageWidget") );
+		m_tab_images[2] = ImageWidget.Cast( layoutRoot.FindAnyWidget("InventoryTabBackdropImageWidget") );
+		m_tab_images[3] = ImageWidget.Cast( layoutRoot.FindAnyWidget("MenusTabBackdropImageWidget") );
+		
+		SetFocus( m_MovementWidget );
+		/*m_ControlsLayoutImage = ImageWidget.Cast( layoutRoot.FindAnyWidget( "XboxControlsImage" ) );
 		
 #ifdef PLATFORM_XBOX
 		m_ControlsLayoutImage.LoadImageFile( 0, "{F12419054D147408}Gui/textures/day_z_xbox_controls.edds" );
@@ -41,11 +283,80 @@ class ControlsXbox extends UIScriptedMenu
 		
 #ifdef PLATFORM_PS4
 		m_ControlsLayoutImage.LoadImageFile( 0, "{8CC5531F7A593B80}Gui/textures/dayz_ps4_controls.edds" );
-#endif
+#endif*/
 		PPEffects.SetBlurMenu( 0.6 );
+		DrawConnectingLines();
 		return layoutRoot;
 	}
 		
+	void SelectTab( int number )
+	{
+		CanvasWidget canvas_widget = layoutRoot.FindAnyWidget("CanvasWidget");
+		m_SelectedTab = number;
+		canvas_widget.Clear();
+		DrawConnectingLines();
+		switch ( m_SelectedTab )
+		{
+			case 0:
+				SetFocus( m_MovementWidget );
+			break;
+			case 1:
+				SetFocus( m_WeaponsAndActionsWidget );
+			break;
+			case 2:
+				SetFocus( m_InventoryWidget );
+			break;
+			case 3:
+				SetFocus( m_MenusWidget );
+			break;
+		}
+		
+		for ( int i = 0; i < TABS_COUNT; i++ )
+		{
+			ImageWidget backdrop = m_tab_images[i];
+			if ( backdrop )
+			{
+				backdrop.Show(i == number);
+			}
+		}
+	}
+	
+	override void Update( float timeslice )
+	{
+		if( GetGame().GetInput().GetActionDown( UAUITabLeft, false ) )
+		{
+			SelectPreviousTab();
+		}
+		
+		//RIGHT BUMPER - TAB RIGHT
+		if( GetGame().GetInput().GetActionDown( UAUITabRight, false ) )
+		{
+			SelectNextTab();
+		}
+	}
+	
+	void SelectPreviousTab()
+	{
+		int currTab = m_SelectedTab;
+		currTab = (currTab - 1) % TABS_COUNT;
+		if (currTab < 0)
+		{
+			currTab = TABS_COUNT - 1;
+		}
+		
+		SelectTab(currTab);
+		return;
+
+	}
+	
+	void SelectNextTab()
+	{
+		int currTab = m_SelectedTab;
+		currTab = (currTab + 1) % TABS_COUNT;
+		
+		SelectTab(currTab);
+	}
+	
 	//============================================
 	// Events
 	//============================================	
@@ -66,6 +377,23 @@ class ControlsXbox extends UIScriptedMenu
 	override bool OnClick(Widget w, int x, int y, int button)
 	{
 		super.OnClick(w, x, y, button);
+		
+		if( w == m_MovementWidget )
+		{
+			SelectTab( 0 );
+		}
+		else if( w == m_WeaponsAndActionsWidget )
+		{
+			SelectTab( 1 );
+		}
+		else if( w == m_InventoryWidget )
+		{
+			SelectTab( 2 );
+		}
+		else if( w == m_MenusWidget )
+		{
+			SelectTab( 3 );
+		}
 		
 		return false;
 	}		

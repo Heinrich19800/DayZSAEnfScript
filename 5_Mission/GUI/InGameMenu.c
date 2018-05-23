@@ -4,6 +4,19 @@ class InGameMenu extends UIScriptedMenu
 	{
 		//nic
 	}
+	
+	void ~InGameMenu()
+	{
+		Mission mission = GetGame().GetMission();
+		if ( mission )
+		{
+			IngameHud hud = IngameHud.Cast( mission.GetHud() );
+			if ( hud )
+			{
+				hud.ToggleHud( true, true );
+			}
+		}
+	}
 
 	override Widget Init()
 	{
@@ -52,6 +65,15 @@ class InGameMenu extends UIScriptedMenu
 		delete restart_btn;
 	#endif
 
+		Mission mission = GetGame().GetMission();
+		if ( mission )
+		{
+			IngameHud hud = IngameHud.Cast( mission.GetHud() );
+			if ( hud )
+			{
+				hud.ToggleHud( false, true );
+			}
+		}
 		return layoutRoot;
 	}
 

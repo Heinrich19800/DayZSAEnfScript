@@ -11,27 +11,29 @@ const int DISPLAY_STATUS_UPDATE_INTERVAL = 1000;
  * \desc constants User Interface
  * @{
  */
-const int IDC_OK								= 1;
-const int IDC_CANCEL						= 2;
-const int IDC_RESTART						= 5;
+const int IDC_OK					= 1;
+const int IDC_CANCEL				= 2;
+const int IDC_RESTART				= 5;
 
 const int IDC_MAIN_NEXT_CHARACTER	= 50;
 const int IDC_MAIN_PREV_CHARACTER	= 51;
 
-const int IDC_MAIN_OPTIONS      = 102;
-const int IDC_MAIN_MULTIPLAYER  = 105;
-const int IDC_MAIN_QUIT         = 106;
+const int IDC_MAIN_OPTIONS      	= 102;
+const int IDC_MAIN_MULTIPLAYER  	= 105;
+const int IDC_MAIN_QUIT         	= 106;
 const int IDC_MAIN_CONTINUE			= 114;
-const int IDC_MAIN_PLAY         = 142;
+const int IDC_MAIN_PLAY         	= 142;
 const int IDC_MAIN_CHARACTER		= 143;
+const int IDC_MAIN_ONLINE			= 124;
 const int IDC_MULTI_REFRESH			= 123;
 
-const int IDC_BOOK_VIEWER_PREV  = 102;
-const int IDC_BOOK_VIEWER_NEXT  = 103;
+
+const int IDC_BOOK_VIEWER_PREV  	= 102;
+const int IDC_BOOK_VIEWER_NEXT  	= 103;
 
 //! ingame menu
-const int IDC_INT_RETRY					= 105;
-const int IDC_INT_EXIT					= 107;
+const int IDC_INT_RETRY				= 105;
+const int IDC_INT_EXIT				= 107;
 /** @}*/
 
 /**
@@ -305,6 +307,7 @@ const float STAMINA_MELEE_HEAVY_THRESHOLD = STAMINA_DRAIN_MELEE_HEAVY; // in uni
 const float STAMINA_MELEE_EVADE_THRESHOLD = 8; // in units
 const float STAMINA_REGEN_COOLDOWN_DEPLETION = 0.45; // in secs (how much time we will spend in cooldown before the stamina will starts with regeneration)
 const float STAMINA_REGEN_COOLDOWN_EXHAUSTION = 0.5;
+const float STAMINA_WEIGHT_LIMIT_THRESHOLD = 5000; //! in grams (weight where the player is not penalized by stamina)
 const float STAMINA_KG_TO_GRAMS = 1000; //for kg to g conversion
 const float STAMINA_SYNC_RATE = 1; //in secs
 const float STAMINA_MAX = 100;

@@ -16,7 +16,7 @@ class UIPropertyAttachment
 		
 		m_ComboItems = new TStringArray;
 		
-		m_WgtThis = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_scene_editor/day_z_scene_editor_attachment.layout", m_WgtRoot);
+		m_WgtThis = GetGame().GetWorkspace().CreateWidgets("gui/layouts/scene_editor/day_z_scene_editor_attachment.layout", m_WgtRoot);
 		m_WgtComboBox	= XComboBoxWidget.Cast( m_WgtThis.FindAnyWidget("combo_box") );
 		m_WgtSlotName	= TextWidget.Cast( m_WgtThis.FindAnyWidget("txt_slot_name") );
 	}

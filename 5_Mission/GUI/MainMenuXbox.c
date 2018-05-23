@@ -73,6 +73,8 @@ class MainMenuXbox extends UIScriptedMenu
 	const int COMBO_DEMO_WEATHER 		= 2;
 	const int COMBO_DEMO_TIME_OF_DAY 	= 3;
 	const int BUTTON_PLAY_ONLINE		= 200;	
+	const int BUTTON_XBOX_CONTROLS		= 201;
+	
 	void MainMenuXbox()
 	{
 		m_fade_timer = new WidgetFadeTimer;
@@ -117,7 +119,7 @@ class MainMenuXbox extends UIScriptedMenu
 
 	override Widget Init()
 	{
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_mainmenu_xbox.layout");
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/xbox/day_z_mainmenu_xbox.layout");
 		
 		MissionMainMenu mission = MissionMainMenu.Cast( g_Game.GetMission() );
 		m_scene = mission.GetIntroScene();
@@ -126,14 +128,14 @@ class MainMenuXbox extends UIScriptedMenu
 		string version;
 		GetGame().GetVersion( version );
 		TextWidget version_widget = TextWidget.Cast( layoutRoot.FindAnyWidget( "VersionText" ) );
-		version_widget.SetText( version );
+		version_widget.SetText( "#main_menu_version " + version );
 
 		//set player name
 		TextWidget player_name_widget = TextWidget.Cast( layoutRoot.FindAnyWidget( "PlayerNameText" ) );
 		string player_name;
 		GetGame().GetPlayerName( player_name );
 		player_name_widget.SetText( player_name );
-
+		
 		//set possible game parameters
 		m_WidgetDemoClasses 	= XComboBoxWidget.Cast( layoutRoot.FindAnyWidget( "CharacterXCombo" ) );
 		FillXComboWidget( m_WidgetDemoClasses, m_ListDemoClasses );
@@ -146,16 +148,13 @@ class MainMenuXbox extends UIScriptedMenu
 		m_WidgetDemoTimeOfDay 	= XComboBoxWidget.Cast( layoutRoot.FindAnyWidget( "TimeOfDayXCombo" ) );
 		FillXComboWidget( m_WidgetDemoTimeOfDay, m_ListDemoTimeOfDay );
 		m_WidgetDemoTimeOfDay.SetCurrentItem( g_DemoTimeOfDay );
-		
-#ifdef PREVIEW_BUILD		
-		m_WidgetDemoClasses.Show( false );
-		m_WidgetDemoWeather.Show( false );
-		m_WidgetDemoTimeOfDay.Show( false );
-		
-		ButtonWidget change_server = ButtonWidget.Cast( layoutRoot.FindAnyWidget("ChangeServer") );
-		change_server.Show( false );
-#endif
 
+#ifdef DEVELOPER
+		Widget debug_panel = layoutRoot.FindAnyWidget("DebugPanel");
+		debug_panel.Show( true );
+#endif
+		
+		GetGame().GetUIManager().ScreenFadeOut(0);
 		return layoutRoot;
 	}
 
@@ -195,9 +194,13 @@ class MainMenuXbox extends UIScriptedMenu
 		switch (w.GetUserID())
 		{
 			case IDC_MAIN_OPTIONS:
-				EnterScriptedMenu(MENU_XBOX_CONTROLS);
+				EnterScriptedMenu(MENU_OPTIONS);
 				return true;
 			break;
+			case BUTTON_XBOX_CONTROLS:
+				EnterScriptedMenu(MENU_XBOX_CONTROLS);
+				return true;
+			break;			
 			case IDC_MAIN_MULTIPLAYER:
 				GetGame().GetUIManager().EnterServerBrowser( this );
 				return true;
@@ -211,31 +214,15 @@ string mission_path = "missions\\xbox_gdc.Staroye_pr";
 				#endif
 				GetGame().PlayMission( mission_path );
 				return true;
-			case BUTTON_PLAY_ONLINE:		//Connect to server
-				string ip;
-				int port;
-				string password;
-				GetXboxConnectParams( ip, port, password );
-				GetGame().Connect( this, ip, port, password );
+			case BUTTON_PLAY_ONLINE:		//open server browser
+				GetGame().GetUIManager().EnterServerBrowser( this );
 				return true;				
 			break;				
 		}
 		
 		return false;
 	}
-	
-	override bool OnController(Widget w, int control, int value)
-	{
-		super.OnController(w, control, value);
 
-		if (control == ControlID.CID_BACK && value != 0)
-		{
-			ResetGamepads();
-			return true;
-		}
-		
-		return false;
-	}
 	//============================================
 	// Game parameters
 	//============================================	
@@ -250,6 +237,8 @@ string mission_path = "missions\\xbox_gdc.Staroye_pr";
 		}
 	}
 	
+	//Not needed anymore
+	/*
 	protected void GetXboxConnectParams( out string ip, out int port, out string password )
 	{
 		//read json string from file
@@ -275,6 +264,16 @@ string mission_path = "missions\\xbox_gdc.Staroye_pr";
 		ip = xbox_con_params.m_IP;
 		port = xbox_con_params.m_Port;
 		password = xbox_con_params.m_Password;
+	}
+	*/
+	
+	override void Update(float timeslice)
+	{
+		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
+		{
+			GetGame().GetInput().ResetActiveGamepad();
+		}
+		
 	}
 	
 	//============================================

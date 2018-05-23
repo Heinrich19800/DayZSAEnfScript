@@ -1,6 +1,6 @@
 void fsmDebugPrint (string s)
 {
-	Print("" + s); // comment/uncomment to hide/see debug logs
+	//Print("" + s); // comment/uncomment to hide/see debug logs
 }
 void fsmDebugSpam (string s)
 {

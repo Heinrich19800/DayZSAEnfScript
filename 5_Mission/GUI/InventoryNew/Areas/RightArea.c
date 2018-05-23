@@ -115,7 +115,6 @@ class RightArea: Container
 			scroll_bar_container.ScrollToBottom();
 		}
 		m_PlayerContainer.SetPreviousActive();
-		
 	}
 	
 	override bool IsActive()

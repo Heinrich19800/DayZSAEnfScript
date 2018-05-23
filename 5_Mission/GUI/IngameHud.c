@@ -40,7 +40,12 @@ class IngameHud extends Hud
 	protected ref WidgetFadeTimer m_fade_timer_quickbar;
 	protected ref WidgetFadeTimer m_fade_timer_walkie_talkie;
 	protected ref WidgetFadeTimer m_fade_timer_walkie_talkie_text;
+	
+	protected ref Timer m_Timer_VON_Permission_Notify;
+	protected ref WidgetFadeTimer m_Fade_Timer_VON_Permission_Notify;
+	
 	protected ProgressBarWidget m_stamina;
+	protected Widget m_VON_Permission_Notify_Widget;
 	protected Widget m_stamina_background;
 	protected Widget m_specializationPanel;
 	protected Widget m_specializationIcon;
@@ -110,6 +115,10 @@ class IngameHud extends Hud
 		 m_fade_timer_quickbar = new WidgetFadeTimer;
 		 m_fade_timer_walkie_talkie = new WidgetFadeTimer;
  		 m_fade_timer_walkie_talkie_text = new WidgetFadeTimer;
+		
+		m_Fade_Timer_VON_Permission_Notify = new WidgetFadeTimer;
+		m_Timer_VON_Permission_Notify = new Timer(CALL_CATEGORY_GUI);
+		
 		m_hide_timer = new Timer(CALL_CATEGORY_GUI);
 		m_vehicle_timer = new Timer( CALL_CATEGORY_GAMEPLAY );
 		//m_zeroing_and_weaponmode_timer = new Timer( CALL_CATEGORY_GAMEPLAY );
@@ -183,6 +192,7 @@ class IngameHud extends Hud
 		m_stanceCar = m_HudPanelWidget.FindAnyWidget("StanceCar");
 		m_stancePanel = m_HudPanelWidget.FindAnyWidget("StancePanel");
 		m_ActionTarget = m_HudPanelWidget.FindAnyWidget("ActionTargetsCursorWidget");
+		m_VON_Permission_Notify_Widget = m_HudPanelWidget.FindAnyWidget("VONDeniedNotfication");
 		Class.CastTo(m_BloodType, m_HudPanelWidget.FindAnyWidget("BloodType") );
 		
 		// state notifiers
@@ -303,11 +313,11 @@ class IngameHud extends Hud
 	
 	override void ShowWalkieTalkie( int fadeOutSeconds )
 	{
-			m_WalkieTalkie.Show(true);
-			m_fade_timer_walkie_talkie.Stop();
-			m_fade_timer_walkie_talkie_text.Stop();
-			m_fade_timer_walkie_talkie.FadeOut( m_WalkieTalkie.FindAnyWidget("Icon") , fadeOutSeconds );
-			m_fade_timer_walkie_talkie_text.FadeOut( m_WalkieTalkie.FindAnyWidget("Text") , fadeOutSeconds );
+		m_WalkieTalkie.Show(true);
+		m_fade_timer_walkie_talkie.Stop();
+		m_fade_timer_walkie_talkie_text.Stop();
+		m_fade_timer_walkie_talkie.FadeOut( m_WalkieTalkie.FindAnyWidget("Icon") , fadeOutSeconds );
+		m_fade_timer_walkie_talkie_text.FadeOut( m_WalkieTalkie.FindAnyWidget("Text") , fadeOutSeconds );
 	}
 	
 	override void SetWalkieTalkieText( string text )
@@ -315,6 +325,24 @@ class IngameHud extends Hud
 		TextWidget txt;
 		Class.CastTo(txt, m_WalkieTalkie.FindAnyWidget("Text"));
 		txt.SetText(text);
+	}
+	
+	void ShowVONMissingPrivilegeNotify()
+	{
+		if( m_Timer_VON_Permission_Notify.IsRunning() )
+		{
+			m_Timer_VON_Permission_Notify.Stop();
+		}
+		else
+		{
+			m_Fade_Timer_VON_Permission_Notify.FadeIn( m_VON_Permission_Notify_Widget, 1, true );
+		}
+		m_Timer_VON_Permission_Notify.Run( 7.0, this, "HideVONMissingPrivilegeNotify" );
+	}
+	
+	void HideVONMissingPrivilegeNotify()
+	{
+		m_Fade_Timer_VON_Permission_Notify.FadeOut( m_VON_Permission_Notify_Widget, 1, false );
 	}
 	
 	override void SetCursorIcon( string icon )
@@ -617,6 +645,7 @@ class IngameHud extends Hud
 
 	bool KeyPress(int key)
 	{
+		return false;
 	}
 	
 	void ZeroingKeyPress()

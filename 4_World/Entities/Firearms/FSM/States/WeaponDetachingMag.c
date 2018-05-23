@@ -18,9 +18,11 @@ class WeaponDetachingMag_Store extends WeaponStateBase
 			InventoryLocation il = new InventoryLocation;
 			if (m_magazine.GetInventory().GetCurrentInventoryLocation(il))
 			{
-				if (GameInventory.LocationRemoveEntity(il))
+				InventoryLocation lhand = new InventoryLocation;
+				lhand.SetAttachment(e.m_player, m_magazine, InventorySlots.LEFTHAND);
+				if (GameInventory.LocationSyncMoveEntity(il, lhand))
 				{
-					wpnDebugPrint("[wpnfsm] WeaponDetachingMag_Store, ok - magazine removed from inv");
+					wpnDebugPrint("[wpnfsm] WeaponDetachingMag_Store, ok - magazine removed from inv (inv->LHand)");
 				}
 				else
 					Error("[wpnfsm] WeaponDetachingMag_Store, error - cannot remove mag from inv");
@@ -36,14 +38,10 @@ class WeaponDetachingMag_Store extends WeaponStateBase
 	{
 		if (m_magazine && m_dst)
 		{
-			//bool is_single_or_server = !GetGame().IsMultiplayer() || GetGame().IsServer();
-			if (!GetGame().IsMultiplayer() || GetGame().IsServer())
-			{
-				if (DayZPlayerUtils.HandleDropMagazine(e.m_player, m_magazine))
-					wpnDebugPrint("[wpnfsm] WeaponDetachingMag_Store, ok - aborting, detached magazine dropped to ground");
-				else
-					Error("[wpnfsm] WeaponDetachingMag_Store, error - cannot abort detaching of magazine");
-			}
+			if (DayZPlayerUtils.HandleDropMagazine(e.m_player, m_magazine))
+				wpnDebugPrint("[wpnfsm] WeaponDetachingMag_Store, ok - aborting, detached magazine dropped to ground");
+			else
+				Error("[wpnfsm] WeaponDetachingMag_Store, error - cannot abort detaching of magazine");
 
 			m_weapon.SelectionMagazineHide(); // force hide on abort
 		}
@@ -56,9 +54,11 @@ class WeaponDetachingMag_Store extends WeaponStateBase
 
 	override void OnExit (WeaponEventBase e)
 	{
-		if (GameInventory.LocationAddEntity(m_dst))
+		InventoryLocation lhand = new InventoryLocation;
+		lhand.SetAttachment(e.m_player, m_magazine, InventorySlots.LEFTHAND);
+		if (GameInventory.LocationSyncMoveEntity(lhand, m_dst))
 		{
-			wpnDebugPrint("[wpnfsm] WeaponDetachingMag_Store, ok - stored detached magazine");
+			wpnDebugPrint("[wpnfsm] WeaponDetachingMag_Store, ok - stored detached magazine (LHand->dst)");
 		}
 		else
 		{

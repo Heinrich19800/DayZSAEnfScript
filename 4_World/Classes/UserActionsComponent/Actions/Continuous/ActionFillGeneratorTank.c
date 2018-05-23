@@ -59,7 +59,7 @@ class ActionFillGeneratorTank: ActionContinuousBase
 	{
 		Object targetObject = target.GetObject();
 		PowerGenerator generator = PowerGenerator.Cast(targetObject);
-		Param1<float> nacdata = acdata;
+		Param1<float> nacdata = Param1<float>.Cast( acdata );
 		int consumed_fuel = generator.AddFuel( nacdata.param1 );
 		item.AddQuantity( -consumed_fuel );
 

@@ -1,67 +1,21 @@
-enum DayZInfectedConstants
+class ZombieBase extends DayZInfected
 {
-	//! anim commands
-	COMMANDID_MOVE,
-	COMMANDID_VAULT,
-	COMMANDID_DEATH,
-	COMMANDID_HIT,
-	COMMANDID_ATTACK,
-	
-	//! mind states
-	MINDSTATE_CALM,
-	MINDSTATE_DISTURBED,
-	MINDSTATE_ALERTED,
-	MINDSTATE_CHASE,
-	MINDSTATE_FIGHT
-};
-
-class DayZInfectedCommandMove
-{
-	proto native void SetStanceVariation(int pStanceVariation);
-	proto native void SetIdleState(int pIdleState);
-}
-
-class DayZInfectedCommandVault
-{
-	proto native bool WasLand();
-}
-
-class DayZInfectedCommandAttack
-{
-	proto native bool WasHit();
-}
-
-class DayZInfected extends DayZCreatureAI
-{	
-	proto native DayZInfectedType GetDayZInfectedType();
-	proto native DayZInfectedInputController GetInputController();	
-	proto native DayZInfectedCommandMove StartCommand_Move();	
-	proto native DayZInfectedCommandVault StartCommand_Vault(int pType);	
-	proto native void StartCommand_Death();
-	proto native void StartCommand_Hit(float pType, int pDirection);
-	proto native DayZInfectedCommandAttack StartCommand_Attack(EntityAI pTarget, int pType, float pSubtype);
-	
-	proto native bool CanAttackToPosition(vector pTargetPosition);
-	
-	proto native DayZInfectedCommandMove GetCommand_Move();
-	proto native DayZInfectedCommandVault GetCommand_Vault();
-	proto native DayZInfectedCommandAttack GetCommand_Attack();
-	
 	//! server / singleplayer properties
 	private int m_StanceVariation = 0;
 	private int m_LastMindState = -1;
 	
 	private bool m_KnuckleLand = false;
 	private float m_KnuckleOutTimer = 0;
-	
+
 	//-------------------------------------------------------------
-	void DayZInfected()
+	void ZombieBase()
 	{
+		Print("ZombieBase contructor");
 		SetEventMask(EntityEvent.INIT);
 	}
 	
 	//-------------------------------------------------------------
-	void ~DayZInfected()
+	void ~ZombieBase()
 	{
 #ifdef PLATFORM_XBOX
 		StaroyeInfectedRespawner.Event_OnInfectedDespawn(this);
@@ -132,6 +86,12 @@ class DayZInfected extends DayZCreatureAI
 			return;
 		};
 
+		//! crawl transition
+		if( HandleCrawlTransition(pCurrentCommandID) )
+		{
+			return;
+		}
+		
 		//! damage hits
 		if( HandleDamageHit(pCurrentCommandID) )
 		{
@@ -409,6 +369,53 @@ class DayZInfected extends DayZCreatureAI
 		
 	//-------------------------------------------------------------
 	//!
+	//! Crawl transition
+	//! 
+	
+	int m_CrawlTransition = -1;
+	
+	bool HandleCrawlTransition(int pCurrentCommandID)
+	{
+		if( m_CrawlTransition != -1 )
+		{
+			StartCommand_Crawl(m_CrawlTransition);
+			
+			m_CrawlTransition = -1;
+			return true;
+		}
+
+		return pCurrentCommandID == DayZInfectedConstants.COMMANDID_CRAWL;
+	}
+	
+	bool EvaluateCrawlTransitionAnimation(EntityAI pSource, string pComponent, string pAmmoType, out int pAnimType)
+	{
+		pAnimType = -1;
+		if( pComponent == "LeftLeg" )
+			pAnimType = 0;
+		else if( pComponent == "RightLeg" )
+			pAnimType = 2;
+		
+		if( pAnimType != -1 )
+		{
+			vector targetDirection = GetDirection();
+			vector toSourceDirection = (pSource.GetPosition() - GetPosition());
+
+			targetDirection[1] = 0;
+			toSourceDirection[1] = 0;
+
+			targetDirection.Normalize();
+			toSourceDirection.Normalize();
+
+			float cosFi = vector.Dot(targetDirection, toSourceDirection);
+			if( cosFi >= 0 ) // front
+				pAnimType++;
+		}
+		
+		return pAnimType != -1;
+	}
+	
+	//-------------------------------------------------------------
+	//!
 	//! Damage hits
 	//! 
 	
@@ -430,9 +437,9 @@ class DayZInfected extends DayZCreatureAI
 	}
 
 	//! selects animation type and direction based on damage system data
-	bool EvaluateDamageHitAnimation(EntityAI pSource, string pComponent, string ammoType, out float pAnimType, out int pAnimHitDir)
+	bool EvaluateDamageHitAnimation(EntityAI pSource, string pComponent, string pAmmoType, out float pAnimType, out int pAnimHitDir)
 	{
-		pAnimType = GetGame().ConfigGetInt("cfgAmmo " + ammoType + " hitAnimation");
+		pAnimType = GetGame().ConfigGetInt("cfgAmmo " + pAmmoType + " hitAnimation");
 				
 		//! direction
 		float dirAngle = ComputeHitDirectionAngle(pSource);
@@ -502,14 +509,22 @@ class DayZInfected extends DayZCreatureAI
 	{
 		super.EEHitBy(damageResult, damageType, source, component, ammo, modelPos);
 		
+		int crawlTransitionType = -1;
+		if( EvaluateCrawlTransitionAnimation(source, component, ammo, crawlTransitionType) )
+		{
+			m_CrawlTransition = crawlTransitionType;
+			return;
+		}
+		
 		if( EvaluateDamageHitAnimation(source, component, ammo, m_DamageHitType, m_DamageHitDirection) )
 		{
 			m_DamageHitToProcess = true;
+			return;
 		}
 	}
 	
 	override void EEHitByRemote(int damageType, EntityAI source, string component, string ammo, vector modelPos)
 	{
 		super.EEHitByRemote(damageType, source, component, ammo, modelPos);
-	}
+	}	
 }

@@ -15,7 +15,10 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		PARTICLE_SMALL_SMOKE 	= ParticleList.BARREL_SMALL_SMOKE;
 		PARTICLE_NORMAL_SMOKE	= ParticleList.BARREL_NORMAL_SMOKE;
 		PARTICLE_FIRE_END 		= ParticleList.BARREL_FIRE_END;
-		PARTICLE_STEAM_END		= ParticleList.BARREL_FIRE_STEAM_2END;		
+		PARTICLE_STEAM_END		= ParticleList.BARREL_FIRE_STEAM_2END;
+		
+		//synchronized variables
+		RegisterNetSyncVariableBool( "m_IsOpened" );
 	}
 	
 	override bool IsBarrelWithHoles()
@@ -216,6 +219,8 @@ class BarrelHoles_ColorBase extends FireplaceBase
 	void SetOpenState( bool state )
 	{
 		m_IsOpened = state;
+		
+		Synchronize();
 	}
 	
 	override void Open()

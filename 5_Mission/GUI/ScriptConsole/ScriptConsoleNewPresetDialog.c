@@ -11,7 +11,7 @@ class ScriptConsoleNewPresetDialog extends UIScriptedMenu
 
 	override Widget Init()
 	{
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/script_console_dialog_preset.layout");
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/script_console/script_console_dialog_preset.layout");
 		m_Editbox = EditBoxWidget.Cast( layoutRoot.FindAnyWidget("PrimaryEditBox") );
 		m_Label = TextWidget.Cast( layoutRoot.FindAnyWidget("WindowLabel") );
 		m_Label.SetText("NEW PRESET");

@@ -38,6 +38,46 @@ class Object extends IEntity
 		return NULL;
 	}
 	
+	/**
+	\brief Creates a explosion by ammoType in config of object. If object dont have this parameter ("ammoType" like grenade) explsotion is default "G_GrenadeHand"
+		\return \p void
+		@code
+			ItemBase item = GetGame().GetPlayer().CreateInInventory("GrenadeRGD5");
+			
+			item.Explode();
+		@endcode
+	*/
+	void Explode(string ammoType = "")
+	{
+		
+		if (ammoType == "")
+			ammoType = this.ConfigGetString("ammoType");
+		
+		if (ammoType == "")
+			ammoType = "Dummy_Heavy";
+		
+		if ( GetGame().IsServer() )
+		{
+			DamageSystem.ExplosionDamage(this, NULL, ammoType, GetPosition());
+		}
+		
+		if ( !GetGame().IsMultiplayer()  ||  GetGame().IsServer() )
+		{
+			string path = "cfgAmmo " + ammoType + " particle";
+			string particle_path;
+			GetGame().ConfigGetText(path, particle_path);
+			
+			int particle_ID = ParticleList.GetParticleID(ParticleList.GetPathToParticles() + particle_path);
+			
+			if (particle_ID > 0)
+			{
+				Particle.Play(particle_ID, GetPosition());
+			}
+		}
+		
+		GetGame().ObjectDelete(this);
+	}
+	
 	//! returns action component name by given component index
 	proto native string GetActionComponentName(int componentIndex);
 
@@ -606,9 +646,18 @@ class Object extends IEntity
 	@param directHitModelPos local position of hit
 	@param damageCoef multiplier of applied damage
 	*/
-	proto native void   ProcessDirectDamage(int damageType, EntityAI source, string componentName, string ammoName, vector modelPos, float damageCoef = 1.0);
+	proto native void ProcessDirectDamage(int damageType, EntityAI source, string componentName, string ammoName, vector modelPos, float damageCoef = 1.0);
 	
+	/**
+  \brief Obtains a list of nammes of all object's damage zones
+	@param list of names
+	*/
+	proto native void GetDamageZones(out TStringArray dmgZones);
 	
+	/**
+  \brief Obtains name of damage zone based on index of specific component
+	@param index of the component
+	*/
 	proto native string GetDamageZoneNameByComponentIndex(int componentIndex);
 	
 	/**

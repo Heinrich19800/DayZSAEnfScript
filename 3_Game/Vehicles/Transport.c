@@ -45,13 +45,9 @@ class Transport extends EntityAI
 
 	override void GetInteractActions(out TIntArray actions)
 	{
-		if (m_InteractActions)
+		for ( int i = 0; i < m_InteractActions.Count(); i++ )
 		{
-			for ( int i = 0; i < m_InteractActions.Count(); i++ )
-			{
-				Print(m_InteractActions.Get(i));
-				actions.Insert(m_InteractActions.Get(i));
-			}
+			actions.Insert(m_InteractActions.Get(i));
 		}
 	}
 	
@@ -67,16 +63,16 @@ class Transport extends EntityAI
 	proto native Human CrewMember( int posIdx );
 
 	//! Reads entry point and direction into vehicle on given position in model space.
-	proto native void CrewEntry( int posIdx, out vector pos, out vector dir );
+	proto void CrewEntry( int posIdx, out vector pos, out vector dir );
 
 	//! Reads entry point and direction into vehicle on given position in world space.
-	proto native void CrewEntryWS( int posIdx, out vector pos, out vector dir );
+	proto void CrewEntryWS( int posIdx, out vector pos, out vector dir );
 
 	//! Returns crew transformation indside vehicle in model space
-	proto native void CrewTransform( int posIdx, out vector mat[4] );
+	proto void CrewTransform( int posIdx, out vector mat[4] );
 
 	//! Returns crew transformation indside vehicle in world space
-	proto native void CrewTransformWS( int posIdx, out vector mat[4] );
+	proto void CrewTransformWS( int posIdx, out vector mat[4] );
 
 	//! Performs transfer of player from world into vehicle on given position.
 	proto native void CrewGetIn( Human player, int posIdx );

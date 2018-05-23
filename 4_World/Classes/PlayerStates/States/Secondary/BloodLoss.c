@@ -2,7 +2,7 @@ class BloodLoss extends StateBase
 {
 	Material m_MatGauss;
 	const int BLUR_DURATION = 3000;
-
+	float m_BloodSet;
 	//this is just for the state parameters set-up and is called even if the state doesn't execute, don't put any gameplay code in here
 	override void OnInit()
 	{
@@ -21,10 +21,13 @@ class BloodLoss extends StateBase
 
 	override void OnUpdateClient(PlayerBase player, float deltatime)
 	{
-		//PPEffects.SetOverlayColor(1,0,0,1);
-		if( player.GetTransferValues() ) float blood = player.GetTransferValues().GetBlood();
+		if( player.GetTransferValues() && player.GetTransferValues().GetBlood() != m_BloodSet ) 
+		{
+				m_BloodSet = player.GetTransferValues().GetBlood();
+				PPEffects.SetBloodSaturation(m_BloodSet);
+		}
 		
-		PPEffects.SetBloodSaturation(blood);
+		
 	}
 	
 	//!gets called once on an state which is being activated

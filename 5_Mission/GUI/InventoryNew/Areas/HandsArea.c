@@ -14,10 +14,6 @@ class HandsArea: ContainerBase
 		m_MainPanel.GetScript( m_Spacer );
 		m_MainPanel.Update();
 		m_Spacer.Update();
-
-		//WidgetEventHandler.GetInstance().RegisterOnDropReceived( root_panel.GetParent().FindAnyWidget("DropzoneX"),  m_HandsContainer, "OnDropReceivedFromHeader" );
-		//WidgetEventHandler.GetInstance().RegisterOnDraggingOver( root_panel.GetParent().FindAnyWidget("DropzoneX"),  m_HandsContainer, "DraggingOverHeader" );
-		//DraggingOverHeader
 	}
 
 	override void SetActive( bool active )

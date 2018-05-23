@@ -76,13 +76,11 @@ class DisplayStatus
 				m_LastTick = GetGame().GetTime();
 			}
 		}
-		else
+		if( GetGame().IsClient() || !GetGame().IsMultiplayer() )
 		{
 			ImmediateUpdate();
 			DisplayPresence();
 		}
-		
-		
 	}
 
 	DisplayElement GetElement(int id)

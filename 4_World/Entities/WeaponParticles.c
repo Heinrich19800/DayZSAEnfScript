@@ -4,7 +4,7 @@
 	This system plays effect(s) on any weapon that is fired/jammed/ruined/...
 */
 
-class WeaponParticlesBase
+class WeaponParticlesBase // This class represents every particle effect you see in config within OnFire or OnOverheating events
 {
 	bool			m_IlluminateWorld;
 	bool			m_IgnoreIfSuppressed;
@@ -135,14 +135,13 @@ class WeaponParticlesBase
 								
 								Particle p = Particle.Play( particle_id, muzzle_owner, local_pos, particle_ori );
 								
-								Weapon_Base weapon_WB = Weapon_Base.Cast(weapon);
-								OnParticleCreated(weapon_WB, p);
+								OnParticleCreated(muzzle_owner, p);
 								
 								// HACK: This temporarily fixes DAYZ-30268 until New Hierarchy is implemented + propper Lights API is developed
 								if (m_IlluminateWorld)
 								{
 									vector global_pos = muzzle_owner.ModelToWorld(local_pos + Vector(-0.2, 0, 0));
-									Object light = g_Game.CreateObject( "Light", global_pos, true );
+									Object light = GetGame().CreateObject( "Light", global_pos, true );
 								}
 							}
 						}
@@ -152,18 +151,14 @@ class WeaponParticlesBase
 		}
 	}
 	
-	void OnParticleCreated(Weapon_Base weapon, Particle p)
+	void OnParticleCreated(ItemBase muzzle_owner, Particle p)
 	{
 		
 	}
 	
 	void OnDeactivate(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
 	{
-		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
-		{
-			Weapon_Base weapon_WB = Weapon_Base.Cast(weapon);
-			weapon_WB.KillAllOverheatingParticles();
-		}
+		
 	}
 	
 	
@@ -252,9 +247,17 @@ class WeaponParticlesOnFire : WeaponParticlesBase {}
 // OVERHEATING particles
 class WeaponParticlesOnOverheating: WeaponParticlesBase 
 {
-	override void OnParticleCreated(Weapon_Base weapon, Particle p)
+	override void OnParticleCreated(ItemBase muzzle_owner, Particle p)
 	{
-		weapon.RegisterOverheatingParticle(p);
+		muzzle_owner.RegisterOverheatingParticle(p);
+	}
+	
+	override void OnDeactivate(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
+	{
+		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
+		{
+			weapon.KillAllOverheatingParticles();
+		}
 	}
 }
 

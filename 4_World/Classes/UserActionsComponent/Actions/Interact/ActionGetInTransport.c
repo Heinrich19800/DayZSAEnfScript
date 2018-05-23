@@ -40,8 +40,8 @@ class ActionGetInTransport: ActionInteractBase
 		if ( !Class.CastTo(m_transport, target.GetObject()) )
 			return false;
 
-		if ( !IsInReach(player, target, UAMaxDistances.DEFAULT) )
-			return false;
+		//if ( !IsInReach(player, target, UAMaxDistances.DEFAULT) )
+		//	return false;
 
 		int componentIndex = target.GetComponentIndex();
 		//Print( " component( " + componentIndex + " ) " );
@@ -62,6 +62,26 @@ class ActionGetInTransport: ActionInteractBase
 		return true;
 	}
 
+	override void Start( PlayerBase player, ActionTarget target, ItemBase item )
+	{
+		HumanCommandVehicle vehCommand = player.StartCommand_Vehicle(m_transport, m_crewIdx, DayZPlayerConstants.VEHICLESEAT_DRIVER);
+		if( vehCommand )
+		{
+			vehCommand.SetVehicleType(3);
+		}
+		m_transport.CrewGetIn(player, m_crewIdx);
+	}
+	
+	override bool IsLocal()
+	{
+		return true;
+	}
+	
+	override bool IsInstant()
+	{
+		return true;
+	}
+/*	
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
 	{
 		if ( m_crewIdx >= 0 )
@@ -71,5 +91,5 @@ class ActionGetInTransport: ActionInteractBase
 	{
 		if ( m_crewIdx >= 0 )
 			m_transport.CrewGetIn(player, m_crewIdx);
-	}
+	}*/
 };

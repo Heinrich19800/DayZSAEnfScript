@@ -1,173 +1,106 @@
-//WIP
-//Very ugly and unfinished script!
-
-/*
-Postup vyberu partiklu:
-	1- Zisti Surface material
-	2- Zisti Impact Type (enter, ricochet, exit, melee)
-	3- Zisti Projectile type (bullet alebo item)
-	4- Zisti Absorbed force
-	
-	
-	
-		Zistime co je surface. Napriklad Hit_Gravel.
-		Vstupime do DB efektov pre Hit_Gravel.
-		Zistime Impact Type.
-		V DB pre Hit_Gravel pristupime do Impact Type. Ak nie je, tak STOP.
-		V DB > Hit_Gravel > Impact Type > zistime ci je definovana vynimka pre aktualny projektil. Ak nie, tak pouzi default.
-		DB > Hit_Gravel > Impact Type > PROJEKTIL > PlayEffect(id, absorbed_force, ...)
-		
-
-*/
-
 enum ImpactTypes
 {
 	UNKNOWN;
-	ENTER;
-	EXIT;
+	STOP;
+	PENETRATE;
 	RICOCHET;
 	MELEE;
 }
 
 class ImpactMaterials
 {
-	/*
-	Hit_Gravel
-	Hit_Concrete
-	Hit_Dirt
-	Hit_Foliage
-	Hit_Wood
-	Hit_Metal
-	Hit_Glass
-	*/
+	ref static map<string, typename> 	m_ImpactEffect;
+	static int 							m_LastRegisteredMaterial = 0;
 	
-	/*ref static map<string, Effect> 	m_Materials;
-	static int m_LastRegisteredMaterial = 0;
-	
-	static int CONCRETE = RegisterSurface("Hit_Concrete");
+	// Surface effects
+	static int CONCRETE 					= RegisterSurface("Hit_Concrete");
+	static int GRAVEL 						= RegisterSurface("Hit_Gravel");
+	static int DIRT 						= RegisterSurface("Hit_Dirt");
+	static int FOLIAGE 						= RegisterSurface("Hit_Foliage");
+	static int WOOD 						= RegisterSurface("Hit_Wood");
+	static int METAL 						= RegisterSurface("Hit_Metal");
+	static int GLASS 						= RegisterSurface("Hit_Glass");
+	static int RUBBER 						= RegisterSurface("Hit_Rubber");
+	static int PLASTER 						= RegisterSurface("Hit_Plaster");
+	static int MEATBONES					= RegisterSurface("Hit_MeatBones");
+	static int MEATBONES_SHOVEL				= RegisterSurface("Hit_MeatBones_MeleeShovel");
+	static int MEATBONES_PIPEWRENCH			= RegisterSurface("Hit_MeatBones_MeleePipeWrench");
+	static int MEATBONES_WRENCH				= RegisterSurface("Hit_MeatBones_MeleeWrench");
+	static int MEATBONES_FIST				= RegisterSurface("Hit_MeatBones_MeleeFist");
+	static int UNDEFINED 					= RegisterSurface("Hit_Undefined");
 	
 	static int RegisterSurface(string surface)
 	{
-		if (!m_Materials)
-			m_Materials = new map<string, Effect>;
+		if (!m_ImpactEffect)
+			m_ImpactEffect = new map<string, typename>;
 		
-		m_Materials.Insert(surface, new Effect);
+		m_ImpactEffect.Insert(surface, surface.ToType());
 		 
 		return ++m_LastRegisteredMaterial;
-	}*/
+	}
 	
-	static void EvaluateImpactEffect(string surface, vector pos, int impact_type, vector surfNormal, vector exitPos, vector inSpeed, vector outSpeed, bool deflected, string ammoType)
+	static typename GetImpactEffect(string surface, string ammoType)
 	{
-		// Get all effects for the surface type
-		//Effect effect = m_Materials.Get(surface);
+		string key = surface + "_" + ammoType;
 		
-		// Evaluate impact type (ENTER, EXIT, RICOCHET, MELEE). This section works only for bullets. Melee evaluation is handled in engine.
+		typename eff_type = m_ImpactEffect.Get(key);
+		
+		if (eff_type)
+			return eff_type;
+		else
+		{
+			return m_ImpactEffect.Get(surface);
+		}
+	}
+	
+	static void EvaluateImpactEffect(Object directHit, string surface, vector pos, int impact_type, vector surfNormal, vector exitPos, vector inSpeed, vector outSpeed, bool deflected, string ammoType)
+	{
+		Print(ammoType);
+		
 		if (impact_type == ImpactTypes.UNKNOWN)
-			impact_type = ImpactTypes.ENTER;
+			impact_type = ImpactTypes.STOP;
 		
 		if (deflected)
 			impact_type = ImpactTypes.RICOCHET;
 		else if (outSpeed)
-			impact_type = ImpactTypes.EXIT;
+			impact_type = ImpactTypes.PENETRATE;
 		
 		
+		EffBulletImpactBase eff = GetImpactEffect(surface, ammoType).Spawn();
 		
-		
-		
-		
-		float inSpeedf = inSpeed.Length();
-		float outSpeedf = outSpeed.Length();
-		
-		Particle p;
-		vector surfNormalAngl1;
-		
-		if (deflected)
+		if (!eff) // handle undefined surface
 		{
-			p = Particle.Play(ParticleList.IMPACT_TEST_RICOCHET, pos);
-			surfNormalAngl1 = surfNormal.VectorToAngles();
-			surfNormalAngl1 = surfNormalAngl1 + "0 270 0";
-			p.SetOrientation(surfNormalAngl1);
-			p.SetParameter(0, EmitorParam.VELOCITY, inSpeedf/90);
+			eff = EffBulletImpactBase.Cast( surface.ToType().Spawn() );
 			
-			p = Particle.Play(ParticleList.IMPACT_TEST_ENTER, pos);
-			surfNormalAngl1 = inSpeed.VectorToAngles();
-			surfNormalAngl1 = surfNormalAngl1 + "0 90 0";
-			p.SetOrientation(surfNormalAngl1);
-			p.SetParameter(0, EmitorParam.VELOCITY_RND, inSpeedf/30);
-			
-			if (outSpeedf > 0)
+			if (eff)
 			{
-				p = Particle.Play(ParticleList.IMPACT_TEST_EXIT, pos);
-				surfNormalAngl1 = outSpeed.VectorToAngles();
-				surfNormalAngl1 = surfNormalAngl1 + "0 -90 0";
-				p.SetOrientation(surfNormalAngl1);
-				p.SetParameter(-1, EmitorParam.VELOCITY_RND, outSpeedf/30);
+				RegisterSurface(surface);
+				string error = "Warning! Unregistered surface for bullet impact effect (" + surface + "). Register this surface in ImpactEffects.c for better optimization.";
+				Error(error);
+			}
+			else
+			{
+				if (directHit)
+				{
+					string classname = directHit.ClassName();
+					string displayname = directHit.GetDisplayName();
+					string object_type = directHit.GetType();
+					
+					if (object_type == "")
+						object_type = "OBJECT_WITHOUT_CONFIG_CLASS";
+					
+					string error2 = "Error! Object '" + object_type + "' with model file: " + directHit.GetModelName() + ".p3d has undefined 'Hit_...' material! Thus cannot play appropriate impact effect.";
+					Print(error2);
+					string undefined_surface = "Hit_Undefined";
+					eff = GetImpactEffect(undefined_surface, ammoType).Spawn();
+				}
 			}
 		}
-		else
+		
+		if (eff)
 		{
-			EffBulletImpactTest eff = new EffBulletImpactTest();
-			//m_eff = new EffBulletImpactTest();
-			
-			surfNormalAngl1 = inSpeed.VectorToAngles();
-			surfNormalAngl1 = surfNormalAngl1 + "0 90 0";
-			
-			SEffectManager.PlayInWorld( eff, pos, surfNormalAngl1 );
-			p = eff.GetParticle();
-			p.SetParameter(0, EmitorParam.VELOCITY_RND, inSpeedf/30);
-			
-			if (outSpeedf > 0)
-			{
-				p = Particle.Play(ParticleList.IMPACT_TEST_EXIT, exitPos);
-				surfNormalAngl1 = outSpeed.VectorToAngles();
-				surfNormalAngl1 = surfNormalAngl1 + "0 -90 0";
-				p.SetOrientation(surfNormalAngl1);
-				p.SetParameter(-1, EmitorParam.VELOCITY_RND, outSpeedf/30);
-			}
+			eff.EvaluateEffect(pos, impact_type, surfNormal, exitPos, inSpeed, outSpeed, ammoType);
+			SEffectManager.PlayInWorld( eff, pos );
 		}
 	}
-}
-
-class ImpactEffectBase
-{
-	void ImpactEffectBase()
-	{
-		
-	}
-	
-	
-
-	//============================
-	//        IMPACT TYPES        
-	//============================
-	
-	void OnImpactUniversal()
-	{
-		
-	}
-	
-	void OnImpactEnter()
-	{
-		OnImpactUniversal();
-	}
-	
-	void OnImpactExit()
-	{
-		OnImpactUniversal();
-	}
-	
-	void OnImpactRicochet()
-	{
-		OnImpactUniversal();
-	}
-	
-	void OnImpactMelee()
-	{
-		OnImpactUniversal();
-	}
-}
-
-class ImpactEffectConcrete : ImpactEffectBase
-{
-	
 }

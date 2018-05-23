@@ -25,7 +25,7 @@ class ScriptConsole extends UIScriptedMenu
 	override Widget Init()
 	{
 		int i;
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/script_console.layout");
+		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/script_console/script_console.layout");
 
 		m_Tabs[TAB_ITEMS] = layoutRoot.FindAnyWidget("ItemsPanel");
 		m_Tabs[TAB_CONFIGS] = layoutRoot.FindAnyWidget("ConfigsPanel");
@@ -504,6 +504,7 @@ class ScriptConsole extends UIScriptedMenu
 			m_SelectedObjectText.SetText( "Object : " + GetCurrentObjectName() );
 
 			m_SelectedObject = GetCurrentObjectName();
+			m_LastSelectedObject = m_SelectedObject;
 			m_SelectedObjectIsPreset = false;
 			return true;
 		}
@@ -1378,6 +1379,12 @@ class ScriptConsole extends UIScriptedMenu
 		}
 	}
 
+	//!
+	static string	GetLastSelectedObject()
+	{
+		return m_LastSelectedObject;
+	}
+
 	private ref Timer m_TimerRefreshPlayerPosEditBoxes = NULL;
 
 	int m_selected_tab;
@@ -1420,6 +1427,7 @@ class ScriptConsole extends UIScriptedMenu
 	EditBoxWidget m_SpawnDistanceEditBox;
 	TextWidget m_SelectedObjectText;
 	string m_SelectedObject;
+	static string m_LastSelectedObject;
 	bool m_SelectedObjectIsPreset;
 	TextListboxWidget m_ObjectsTextListbox;
 

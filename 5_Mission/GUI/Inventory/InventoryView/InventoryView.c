@@ -1276,7 +1276,7 @@ class InventoryView: InventoryViewBase
 		
 		bool is_view = grid.IsInherited( InventoryView );
 		if ( dragged_item ) return 0;
-		// int color = InventoryGrid.ITEM_COLOR_NORMAL;
+		
 		int color = InventoryGrid.ITEM_COLOR_TRANSPARENT;
 		if ( is_view ) 
 		{
@@ -1289,7 +1289,7 @@ class InventoryView: InventoryViewBase
 			color = InventoryGrid.ITEM_COLOR_NORMAL;
 		}
 
-		if( item.IsInherited( InventoryItem)  ) 
+		if( item.IsInherited( InventoryItem )  ) 
 		{
 			ItemBase item_base = ItemBase.Cast( item );
 			float temperature = item_base.GetTemperature();

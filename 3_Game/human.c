@@ -475,6 +475,16 @@ class HumanCommandSwim
 
 
 // *************************************************************************************
+// ! HumanCommandVehicle vehicle
+// *************************************************************************************
+class HumanCommandVehicle
+{	
+	proto native void				SetVehicleType(int pVehicleType);
+}
+
+
+
+// *************************************************************************************
 // ! HumanCommandFullBodyDamage - full body damages
 // *************************************************************************************
 class HumanCommandFullBodyDamage
@@ -492,6 +502,8 @@ enum WeaponActions
 	CHAMBERING_LOADER 	= 3,
 	UNJAMMING			= 4,
 	FIRE 				= 5,
+	HIDE 				= 6,
+	SHOW 				= 7,
 };
 //! action types
 /// reload action types
@@ -576,6 +588,17 @@ enum WeaponActionFireTypes
 	FIRE_JAM							= 5
 };
 
+enum WeaponHideShowTypes
+{
+	//!	fire action types
+	HIDESHOW_SLOT_LEFTBODY				= 0,
+	HIDESHOW_SLOT_RIGHBODY				= 1,
+	HIDESHOW_SLOT_LEFTBACK 				= 2,
+	HIDESHOW_SLOT_RIGHTBACK 			= 3,
+};
+
+
+
 string WeaponActionTypeToString (int A, int AT)
 {
 	switch (A)
@@ -614,6 +637,7 @@ enum WeaponEvents
 	UNJAMMED,
 	HAMMER_UNCOCKED,
 	HAMMER_COCKED
+	CHANGE_HIDE,
 };
 
 
@@ -663,6 +687,7 @@ class HumanCommandWeapons
 		RegisterEvent("Weapon_Unjammed", WeaponEvents.UNJAMMED);
 		RegisterEvent("Weapon_Hammer_Uncocked", WeaponEvents.HAMMER_UNCOCKED);
 		RegisterEvent("Weapon_Hammer_Cocked", WeaponEvents.HAMMER_COCKED);
+		RegisterEvent("Weapon_Change_Hide", WeaponEvents.CHANGE_HIDE);
 	}
 
 	//----------------------------------------------------
@@ -830,6 +855,14 @@ class Human extends Man
 	proto native 	HumanCommandSwim			StartCommand_Swim();
 
 	proto native 	HumanCommandSwim 			GetCommand_Swim();
+
+
+	//!----- VEHICLE -----
+
+	//! starts command - vehicle
+	proto native 	HumanCommandVehicle			StartCommand_Vehicle(Transport pTransport, int pTransportPositionIndex, int pVehicleSeat);
+
+	proto native 	HumanCommandVehicle			GetCommand_Vehicle();
 
 
 	//!----- Death -----

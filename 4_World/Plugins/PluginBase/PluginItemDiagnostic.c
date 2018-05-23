@@ -184,7 +184,7 @@ class PluginItemDiagnostic extends PluginBase
 	
 	void InitializeWidgets()
 	{
-		if(!m_DebugRootWidget) m_DebugRootWidget = GetGame().GetWorkspace().CreateWidgets("gui/layouts/debug_item.layout");
+		if(!m_DebugRootWidget) m_DebugRootWidget = GetGame().GetWorkspace().CreateWidgets("gui/layouts/debug/debug_item.layout");
 		m_DebugAgentListWidget = TextListboxWidget.Cast(m_DebugRootWidget.FindAnyWidget("w_Agents"));
 		m_DebugFloatsListWidget = TextListboxWidget.Cast(m_DebugRootWidget.FindAnyWidget("w_Floats"));
 		m_DebugStringsListWidget = TextListboxWidget.Cast(m_DebugRootWidget.FindAnyWidget("w_Strings"));

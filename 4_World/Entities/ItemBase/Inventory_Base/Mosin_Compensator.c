@@ -1,4 +1,4 @@
-class MP5_Compensator extends Inventory_Base
+class Mosin_Compensator extends Inventory_Base
 {
 	override bool CanPutAsAttachment( EntityAI parent )
 	{

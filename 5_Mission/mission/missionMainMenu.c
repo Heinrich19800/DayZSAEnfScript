@@ -24,7 +24,7 @@ class MissionMainMenu extends MissionBase
 		{
 #ifdef PLATFORM_XBOX
 			m_mainmenu = TitleScreenMenu.Cast( g_Game.GetUIManager().EnterScriptedMenu(MENU_TITLE_SCREEN, NULL) );
-			m_mainmenu.ResetGamepads();
+			GetGame().GetInput().ResetActiveGamepad();
 #else
 			m_mainmenu = UIScriptedMenu.Cast( g_Game.GetUIManager().EnterScriptedMenu(MENU_MAIN, NULL) );
 #endif

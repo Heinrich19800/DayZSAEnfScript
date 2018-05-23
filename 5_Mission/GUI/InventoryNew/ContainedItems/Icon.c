@@ -1107,8 +1107,20 @@ class Icon: ContainerBase
 		int column = m_posY;
 		float x, y, icon_x, icon_y;
 		Container parent = Container.Cast( m_Parent );
-		w.FindAnyWidget( "Icon0" ).GetChildren().GetScreenSize( icon_x, icon_y );
-		parent.Get( 0 ).GetMainPanel().GetPos( x, y );
+		if( w.FindAnyWidget( "Icon0" ) )
+		{
+			w.FindAnyWidget( "Icon0" ).GetChildren().GetScreenSize( icon_x, icon_y );
+		}
+		else
+		{
+			m_Parent.m_Parent.m_Parent.GetMainPanel().GetScreenSize( icon_x, icon_y );
+			icon_x = icon_x / 10;
+		}
+			
+		if( parent )
+		{
+			parent.Get( 0 ).GetMainPanel().GetPos( x, y );
+		}
 
 		for ( int i = 0; i < m_sizeX; i++ )
 		{
@@ -1368,7 +1380,7 @@ class Icon: ContainerBase
 		icon_x = x_content / 10;
 		icon_y = x_content / 10;
 
-		if( !m_HandsIcon )
+		if( parent && !m_HandsIcon )
 		{
 			parent.Get( 0 ).GetMainPanel().GetPos( x, y );
 			GetMainPanel().GetPos( this_x, this_y );

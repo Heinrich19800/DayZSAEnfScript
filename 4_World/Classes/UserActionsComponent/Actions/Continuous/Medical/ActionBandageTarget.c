@@ -18,10 +18,6 @@ class ActionBandageTarget: ActionContinuousBase
 		m_MessageSuccess = "Player finished bandaging you.";
 		m_MessageFail = "Player moved and bandaging was canceled.";
 		m_MessageCancel = "You stopped bandaging.";
-		//m_Animation = "BANDAGET";
-		m_Sounds.Insert("bandage_0");
-		m_Sounds.Insert("bandage_1");
-		m_Sounds.Insert("bandage_2");
 		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
 		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BANDAGETARGET;

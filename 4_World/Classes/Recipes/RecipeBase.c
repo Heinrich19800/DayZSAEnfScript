@@ -455,7 +455,7 @@ class RecipeBase
 	{
 		if( item1 == NULL || item2 == NULL )
 		{
-			Debug.Log("recipe invalid, at least one of the ingredients is NULL","recipes");
+			Error("recipe invalid, at least one of the ingredients is NULL");
 			return false;
 		}
 		
@@ -463,7 +463,7 @@ class RecipeBase
 		
 		if( !IsRecipeAnywhere() && (item1 != item_in_hand && item2 != item_in_hand) )
 		{
-			Debug.Log("recipe invalid, not 'IsRecipeAnywhere' and neither ingredience is in hands","recipes");
+			Error("recipe invalid, not 'IsRecipeAnywhere' and neither ingredience is in hands");
 			return false;			
 		}
 		
@@ -482,7 +482,7 @@ class RecipeBase
 		if( item1 == NULL || item2 == NULL )
 		{
 			Error("CheckRecipe: recipe invalid, at least one of the ingredients is NULL");
-			Debug.Log("recipe invalid, at least one of the ingredients is NULL","recipes");
+			//Debug.Log("recipe invalid, at least one of the ingredients is NULL","recipes");
 			return;
 		}
 		OnSelected(item1,item2,player);

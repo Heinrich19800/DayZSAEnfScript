@@ -8,6 +8,7 @@ const CallID CALL_ID_SCR_CNSL_GET_SQF_WATCHER			= 4;
 const CallID CALL_ID_SCR_CNSL_SET_SQF_WATCHER_RESULT	= 5;
 const CallID CALL_ID_SCENE_EDITOR_COMMAND				= 6;
 const CallID CALL_ID_HIDE_INVENTORY						= 7;
+const CallID CALL_ID_SCR_CNSL_GETSELECTEDITEM			= 8;
 
 class Dispatcher
 {	
@@ -32,7 +33,7 @@ void SetDispatcher(Dispatcher dispatcher)
 	g_Dispatcher = dispatcher;
 }
 
-Param CallMethod(CallID call_id, Param params)
+Param CallMethod( CallID call_id, Param params )
 {
 	Dispatcher dis = GetDispatcher();
 	if ( dis )

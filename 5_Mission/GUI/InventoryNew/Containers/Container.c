@@ -370,8 +370,27 @@ class Container: ContainerBase
 				c.UpdateSpacer();
 			}
 		}
+		
 		m_Spacer.Update();
-				if(m_SpacerBody)
-		m_SpacerBody.Update();
+		if(m_SpacerBody)
+			m_SpacerBody.Update();
+	}
+	
+	void HideContent()
+	{
+		GetMainPanel().SetAlpha( 0 );
+		for( int i = 1; i < m_Body.Count(); i++ )
+		{
+			m_Body.Get( i ).OnHide();
+		}
+	}
+	
+	void ShowContent()
+	{
+		GetMainPanel().SetAlpha( 1 );
+		for( int i = 1; i < m_Body.Count(); i++ )
+		{
+			m_Body.Get( i ).OnShow();
+		}
 	}
 }

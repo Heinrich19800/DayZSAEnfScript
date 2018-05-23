@@ -46,25 +46,47 @@ class AITargetCallbacksPlayer : AITargetCallbacks
 		m_Player.GetMovementState(state);
 		
 		float mod = 1.0;
+		float speedCoef = 1.0;
+		float stanceCoef = 1.0;
+		float playerVisCoef = 1.0;
+		
+		//! player speed mofifications
+		switch(state.m_iMovement)
+		{
+			case DayZPlayerConstants.MOVEMENT_RUN:
+				speedCoef = 0.66;
+				break;
+				
+			case DayZPlayerConstants.MOVEMENT_WALK:
+				speedCoef = 0.33;
+				break;
+				
+			case DayZPlayerConstants.MOVEMENT_IDLE:
+				speedCoef = 0.11;
+				break;
+		}
 
 		//! stance modification
 		switch(state.m_iStanceIdx)
 		{
-		case DayZPlayerConstants.STANCEIDX_CROUCH:
-		case DayZPlayerConstants.STANCEIDX_RAISEDCROUCH:
-			mod *= 0.66;
-			break;
-			
-		case DayZPlayerConstants.STANCEIDX_PRONE:
-		case DayZPlayerConstants.STANCEIDX_RAISEDPRONE:
-			mod *= 0.33;
-			break;
+			case DayZPlayerConstants.STANCEIDX_CROUCH:
+			case DayZPlayerConstants.STANCEIDX_RAISEDCROUCH:
+				stanceCoef = 0.66;
+				break;
+				
+			case DayZPlayerConstants.STANCEIDX_PRONE:
+			case DayZPlayerConstants.STANCEIDX_RAISEDPRONE:
+				stanceCoef = 0.33;
+				break;
 		}
 		
-		//! clothes modification
+		//! player visibility modification (from cloths)
+		playerVisCoef = m_Player.GetVisibilityCoef();
+
+		//! mean value of the coefs
+		mod = (speedCoef + stanceCoef + playerVisCoef) / 3;
 		
-		
-		return mod; 
+		return mod;
 	}
 
 	private PlayerBase m_Player;

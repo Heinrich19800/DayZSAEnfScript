@@ -45,17 +45,18 @@ class PluginKeyBinding extends PluginBase
 		//					|constants.h					|constants.h			|constants.h		|only plugin name		|only function					|								|
 		//					|MENU_***						|KeyCode.KC_***			|KeyCode.KC_***		|						|in plugin						|								|
 		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LWIN		,KeyCode.KC_F1		,"PluginDeveloper"		,"ToggleHelpScreen" 			,"[LWin]+[F1]"					,"Show/Hide help screen");
-		RegisterKeyBind(	 MENU_NONE|MENU_SCRIPTCONSOLE	,KeyCode.KC_LWIN		,KeyCode.KC_GRAVE	,"PluginDeveloper"		,"ToggleScriptConsole" 			,"[LWin]+[~]"					,"Show/Hide this script console");
-		RegisterKeyBind(	 MENU_NONE|MENU_SCRIPTCONSOLE	,KeyCode.KC_RWIN		,KeyCode.KC_GRAVE	,"PluginDeveloper"		,"ToggleScriptConsole" 			,"[RWin]+[~]"					,"Show/Hide this script console");
-		RegisterKeyBind(	 MENU_NONE|MENU_SCENE_EDITOR	,KeyCode.KC_LWIN		,KeyCode.KC_TAB		,"PluginSceneManager"	,"EditorToggle"					,"[LWin]+[TAB]"					,"Show/Hide Scripted Scene Editor");
-		RegisterKeyBind(	 MENU_NONE|MENU_SCENE_EDITOR	,KeyCode.KC_RWIN		,KeyCode.KC_TAB		,"PluginSceneManager"	,"EditorToggle"					,"[RWin]+[TAB]"					,"Show/Hide Scripted Scene Editor");
-		RegisterKeyBind(	 MENU_MAIN						,KeyCode.KC_LWIN 		,KeyCode.KC_E		,"PluginDeveloper"		,"ToggleMissionLoader"			,"[Win]+[E]"					,"Show/Hide mission loader");
-		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_RSHIFT		,-1					,"PluginDeveloper"		,"SpawnFromClipboard"			,"[Right Shift]"				,"Ingame => Spawn item from clipboard");
-		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_INSERT		,-1					,"PluginDeveloper"		,"TeleportAtCursor"				,"[Insert]"		 				,"Ingame => Teleport player to cursor position");
-		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_NEXT		,-1					,"PluginDeveloper"		,"ToggleGodModeThisPlayer"		,"[Page Down]"					,"Ingame => Toggle god mode");
-		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_HOME		,-1					,"PluginDeveloper"		,"ToggleFreeCamera"				,"[Home]"						,"Ingame => Toggle free camera, teleport player on free camera position");
-		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_DIVIDE		,-1					,"PluginDeveloper"		,"ToggleFreeCameraBackPos"		,"[Divide numeric]"				,"Ingame => Toggle free camera, back on position");
+		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LCONTROL	,KeyCode.KC_F1		,"PluginDeveloper"		,"ToggleHelpScreen" 			,"[LCTRL]+[F1]"					,"Show/Hide help screen");
+		RegisterKeyBind(	 MENU_NONE|MENU_SCRIPTCONSOLE	,KeyCode.KC_LCONTROL	,KeyCode.KC_GRAVE	,"PluginDeveloper"		,"ToggleScriptConsole" 			,"[LCTRL]+[~]"					,"Show/Hide this script console");
+		RegisterKeyBind(	 MENU_NONE|MENU_SCRIPTCONSOLE	,KeyCode.KC_RCONTROL	,KeyCode.KC_GRAVE	,"PluginDeveloper"		,"ToggleScriptConsole" 			,"[RCTRL]+[~]"					,"Show/Hide this script console");
+		RegisterKeyBind(	 MENU_NONE|MENU_SCENE_EDITOR	,KeyCode.KC_LCONTROL	,KeyCode.KC_TAB		,"PluginSceneManager"	,"EditorToggle"					,"[LCTRL]+[TAB]"				,"Show/Hide Scripted Scene Editor");
+		RegisterKeyBind(	 MENU_NONE|MENU_SCENE_EDITOR	,KeyCode.KC_RCONTROL	,KeyCode.KC_TAB		,"PluginSceneManager"	,"EditorToggle"					,"[RCTRL]+[TAB]"				,"Show/Hide Scripted Scene Editor");
+		RegisterKeyBind(	 MENU_MAIN						,KeyCode.KC_LCONTROL	,KeyCode.KC_E		,"PluginDeveloper"		,"ToggleMissionLoader"			,"[LCtrl]+[E]"					,"Show/Hide mission loader");
+		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_RSHIFT		,-1					,"PluginDeveloper"		,"SpawnFromClipboard"			,"[Right Shift]"				,"Spawn item from clipboard");
+		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_INSERT		,-1					,"PluginDeveloper"		,"TeleportAtCursor"				,"[Insert]"		 				,"Teleport player to cursor position");
+		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_NEXT		,-1					,"PluginDeveloper"		,"ToggleGodModeThisPlayer"		,"[Page Down]"					,"Toggle god mode");
+		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_HOME		,-1					,"PluginDeveloper"		,"ToggleFreeCamera"				,"[Home]"						,"Toggle free camera and teleport player to its position");
+		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_DIVIDE		,-1					,"PluginDeveloper"		,"ToggleFreeCameraBackPos"		,"[Divide numeric]"				,"Toggle free camera, no player teleport");
+		
 		RegisterKeyBind(	 MENU_SCRIPTCONSOLE				,KeyCode.KC_PRIOR		,-1					,"PluginDeveloper"		,"ScriptHistoryBack"			,"[Page Up]"					,"Debug Console => Script history back");
 		RegisterKeyBind(	 MENU_SCRIPTCONSOLE				,KeyCode.KC_NEXT		,-1					,"PluginDeveloper"		,"ScriptHistoryNext"			,"[Page Down]"					,"Debug Console => Script history next");	
 		RegisterKeyBind(	 MENU_SCENE_EDITOR				,KeyCode.KC_DELETE		,-1					,"PluginSceneManager"	,"DeleteSelectedObject"			,"[Delete]"						,"Scene Editor => Delete current selected object");	
@@ -65,10 +66,11 @@ class PluginKeyBinding extends PluginBase
 		RegisterKeyBind(	 MENU_SCENE_EDITOR				,KeyCode.KC_LCONTROL	,KeyCode.KC_E		,"PluginSceneManager"	,"RulerToggle"					,"[LCtrl]+[E]"					,"Scene Editor => Enable/Disable addition of ruler points");
 		RegisterKeyBind(	 MENU_SCENE_EDITOR				,KeyCode.KC_LCONTROL	,KeyCode.KC_PRIOR	,"PluginRecipesManager"	,"CallbackGenerateCache"		,"[LCtrl]+[BACKSPACE]"			,"PluginRecipesManager => Generate recipe cache and save it to file");
 		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LCONTROL	,KeyCode.KC_DECIMAL	,"PluginItemDiagnostic"	,"ToggleDebugWindowEvent"		,"[LCtrl]+[DECIMAL]"			,"Close the Item Debug window");
-		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LWIN		,KeyCode.KC_NUMPAD0	,"PluginDayzPlayerDebug","ToggleDebugWindowEvent"		,"[LWin]+[NUMPAD0]"				,"Open/Close Player debug window");
-		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LWIN		,KeyCode.KC_DECIMAL	,"PluginDayzPlayerDebug","ToggleDebugWindowEventP"		,"[LWin]+[DECIMAL]"				,"Open/Close Player debug window");
-		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_LWIN		,KeyCode.KC_NUMPAD9	,"PluginDeveloperSync"	,"ToggleFocus"					,"[LWin]+[NUMPAD9]"				,"Toggle game focus");
-		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_LWIN		,KeyCode.KC_SCROLL	,"PluginDoorRuler"		,"CheckInit"					,"[LWin]+[SCROLL LOCK]"			,"Enable Door Ruler");
+		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LCONTROL	,KeyCode.KC_NUMPAD0	,"PluginDayzPlayerDebug","ToggleDebugWindowEvent"		,"[LCtrl]+[NUMPAD0]"			,"Open/Close Player debug window");
+		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LCONTROL	,KeyCode.KC_DECIMAL	,"PluginDayzPlayerDebug","ToggleDebugWindowEventP"		,"[LCtrl]+[DECIMAL]"			,"Open/Close Player debug window");
+		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_LCONTROL	,KeyCode.KC_NUMPAD9	,"PluginDeveloperSync"	,"ToggleFocus"					,"[LCtrl]+[NUMPAD9]"			,"Toggle game focus");
+		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_LCONTROL	,KeyCode.KC_SCROLL	,"PluginDoorRuler"		,"CheckInit"					,"[LCtrl]+[SCROLL LOCK]"		,"Enable Door Ruler");
+		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_LCONTROL	,KeyCode.KC_RBRACKET,"PluginCharPlacement"	,"CheckInit"					,"[LCtrl]+[)]"					,"Enable CharPlacer");
 		//--------------------------------------------------------------------------------------------------------------------------------------------------------------
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

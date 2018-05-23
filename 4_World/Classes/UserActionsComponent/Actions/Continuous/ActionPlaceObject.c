@@ -17,7 +17,6 @@ class ActionPlaceObject: ActionContinuousBase
 		m_CommandUID		= DayZPlayerConstants.CMD_ACTIONFB_BERRIES;
 		m_FullBody			= true;
 		m_StanceMask		= DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
-
 		m_SpecialtyWeight 	= ROUGH_SPECIALTY_WEIGHT;
 	}
 	
@@ -111,9 +110,7 @@ class ActionPlaceObject: ActionContinuousBase
 	}
 		
 	override void OnInterruptServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
-	{
-		player.PlacingCancelServer();
-		
+	{		
 		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
 		{	
 			player.PlacingCancelServer();
@@ -127,10 +124,18 @@ class ActionPlaceObject: ActionContinuousBase
 
 	override void OnCompleteLoopServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
 	{	
+		EntityAI entity_for_placing = EntityAI.Cast( item );
+		
+		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
+		{	
+			player.GetHologramServer().PlaceEntity( entity_for_placing, player.GetLocalProjectionPosition(), player.GetLocalProjectionOrientation() );
+			player.GetHologramServer().CheckPowerSource();
+			player.PlacingCompleteServer();
+		}
+		
+		//local singleplayer
 		if( !GetGame().IsMultiplayer() && GetGame().IsServer() )
 		{	
-			//local singleplayer
-			EntityAI entity_for_placing = EntityAI.Cast( item );
 			vector position = player.GetHologramLocal().GetProjectionPosition();
 			vector orientation = player.GetHologramLocal().GetProjectionOrientation();
 			vector rotation_matrix[3];
@@ -146,6 +151,12 @@ class ActionPlaceObject: ActionContinuousBase
 				destination.SetGroundEx( entity_for_placing, position, direction );
 				entity_for_placing.LocalTakeToDst( source, destination );
 			}
+			
+			player.GetHologramLocal().PlaceEntity( entity_for_placing, player.GetHologramLocal().GetProjectionPosition(), player.GetHologramLocal().GetProjectionOrientation() );
+			player.PlacingCompleteLocal();
+			
+			entity_for_placing.OnPlacementComplete( player );
+			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 		}
 	}
 	
@@ -153,22 +164,8 @@ class ActionPlaceObject: ActionContinuousBase
 	{	
 		EntityAI entity_for_placing = EntityAI.Cast( item );
 
-		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
-		{	
-			player.GetHologramServer().PlaceEntity( entity_for_placing, player.GetLocalProjectionPosition(), player.GetLocalProjectionOrientation() );
-			player.GetHologramServer().CheckPowerSource();
-			player.PlacingCompleteServer();
-			entity_for_placing.OnPlacementComplete( player );
-			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-		}
-		else
-		{
-			//local singleplayer
-			player.GetHologramLocal().PlaceEntity( entity_for_placing, player.GetHologramLocal().GetProjectionPosition(), player.GetHologramLocal().GetProjectionOrientation() );
-			player.PlacingCompleteLocal();
-			entity_for_placing.OnPlacementComplete( player );
-			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-		}
+		entity_for_placing.OnPlacementComplete( player );
+		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 
 	override void OnCompleteLoopClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
@@ -189,13 +186,6 @@ class ActionPlaceObject: ActionContinuousBase
 			destination.SetGroundEx( entity_for_placing, position, direction );
 			entity_for_placing.PredictiveTakeToDst( source, destination );
 		}
-	}
-	
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{	
-		EntityAI entity_for_placing = EntityAI.Cast( item );
-
-		entity_for_placing.OnPlacementComplete( player );
 	}
 	
 	override void WriteToContext(ParamsWriteContext ctx,ActionTarget target)

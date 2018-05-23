@@ -134,12 +134,12 @@ class LeftArea: Container
 		{
 			scroll_bar_container;
 			GetMainPanel().GetParent().GetScript( scroll_bar_container );
-			active_container.SetNextActive( );
+			active_container.SetNextActive();
 			
 			float amount = active_container.GetFocusedContainerHeight() + active_container.GetFocusedContainerYPos();
 			if( amount > scroll_bar_container.GetRootHeight() )
 			{
-				scroll_bar_container.ScrollFixedAmount( true, active_container.GetFocusedContainerHeight() );
+				scroll_bar_container.ScrollToPos( amount );
 			}
 		}
 	}
@@ -178,7 +178,7 @@ class LeftArea: Container
 			GetMainPanel().GetParent().GetScript( scroll_bar_container );
 			if( amount > scroll_bar_container.GetRootHeight() )
 			{
-				scroll_bar_container.ScrollFixedAmount( false, active_container.GetFocusedContainerHeight() );
+				scroll_bar_container.ScrollToPos( amount );
 			}
 			if( active_container.IsFirstContainerFocused() )
 			{

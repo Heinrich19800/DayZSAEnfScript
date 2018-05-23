@@ -767,7 +767,7 @@ class PlayerContainer: CollapsibleContainer
 
 		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( GetItemPreviewWidget( w ) );
 
-		if( !ipw.IsInherited( ItemPreviewWidget ) )
+		if( !ipw )
 		{
 			return;
 		}
@@ -852,67 +852,70 @@ class PlayerContainer: CollapsibleContainer
 			{
 				int slot_id = entity.GetInventory().GetSlotId();
 				ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_InventorySlots.Get( slot_id ) );
-				string name2 = ipw.GetParent().GetName();
-				ipw.Show( true );
-				ipw.GetParent().Show( true );
-				name2.Replace( "PanelWidget", "GhostSlot" );
-				ipw.GetParent().GetParent().FindAnyWidget( name2 ).Show( false );
-				ipw.SetItem( entity );
-				showed_player_ghost_entities.Insert( entity );
-
-				name2.Replace( "GhostSlot", "AmmoIcon" );
-				Weapon_Base wpn;
-				if ( Class.CastTo(wpn,  ipw.GetItem() ) )
+				if( ipw && ipw.GetParent() )
 				{
-					int mi = wpn.GetCurrentMuzzle();
-					ipw.GetParent().GetParent().FindAnyWidget( name2 ).Show( wpn.IsChamberFull( mi )  );
-				}
-
-				ClosableContainer conta = ClosableContainer.Cast( m_ShowedItemsIDs.Get( ipw.GetParent().GetUserID() ) );
-				string config = "CfgVehicles " + entity.GetType() + " GUIInventoryAttachmentsProps";
-				if( conta && conta.IsInherited( ClosableContainer ) )
-				{
-					bool show_radial_icon = conta.IsOpened() && ( entity.GetInventory().GetCargo() || entity.GetSlotsCountCorrect() > 0 ) && !GetGame().ConfigIsExisting( config );
-					name2.Replace( "AmmoIcon", "RadialIcon" );
-					ipw.FindAnyWidget( name2 ).Show( !show_radial_icon );
-					name2.Replace( "RadialIcon", "RadialIconClosed" );
-					ipw.FindAnyWidget( name2 ).Show( show_radial_icon );
-				}
-
-				if( m_ShowedItems.Contains( entity ) == false )
-				{
-					string name;
-					if( entity.GetSlotsCountCorrect() > 0 )
+					string name2 = ipw.GetParent().GetName();
+					ipw.Show( true );
+					ipw.GetParent().Show( true );
+					name2.Replace( "PanelWidget", "GhostSlot" );
+					ipw.GetParent().GetParent().FindAnyWidget( name2 ).Show( false );
+					ipw.SetItem( entity );
+					showed_player_ghost_entities.Insert( entity );
+	
+					name2.Replace( "GhostSlot", "AmmoIcon" );
+					Weapon_Base wpn;
+					if ( Class.CastTo(wpn,  ipw.GetItem() ) )
 					{
-						ItemWithCargoAndAttachments iwca = new ItemWithCargoAndAttachments( this );
-						iwca.SetEntity( entity );
-						new_showed_items.Insert( entity, iwca );
-						showed_items_IDs.Insert( entity.GetID(), iwca );
-						ipw.GetParent().SetUserID( entity.GetID() );
-						WidgetEventHandler.GetInstance().RegisterOnMouseButtonUp( ipw.GetParent(),  this, "ToggleWidget" );
-
-						name = ipw.GetName();
-						name.Replace( "Icon", "RadialIcon" );
-						ipw.GetParent().FindAnyWidget( name ).Show( true );
+						int mi = wpn.GetCurrentMuzzle();
+						ipw.GetParent().GetParent().FindAnyWidget( name2 ).Show( wpn.IsChamberFull( mi )  );
 					}
-					else if( entity.GetInventory().GetCargo() )
+	
+					ClosableContainer conta = ClosableContainer.Cast( m_ShowedItemsIDs.Get( ipw.GetParent().GetUserID() ) );
+					string config = "CfgVehicles " + entity.GetType() + " GUIInventoryAttachmentsProps";
+					if( conta && conta.IsInherited( ClosableContainer ) )
 					{
-						ItemWithCargo iwc = new ItemWithCargo( this );
-						iwc.SetEntity( entity );
-						new_showed_items.Insert( entity, iwc );
-						showed_items_IDs.Insert( entity.GetID(), iwc );
-						ipw.GetParent().SetUserID( entity.GetID() );
-						WidgetEventHandler.GetInstance().RegisterOnMouseButtonUp( ipw.GetParent(),  this, "ToggleWidget" );
-
-						name = ipw.GetName();
-						name.Replace( "Icon", "RadialIcon" );
-						ipw.GetParent().FindAnyWidget( name ).Show(true);
+						bool show_radial_icon = conta.IsOpened() && ( entity.GetInventory().GetCargo() || entity.GetSlotsCountCorrect() > 0 ) && !GetGame().ConfigIsExisting( config );
+						name2.Replace( "AmmoIcon", "RadialIcon" );
+						ipw.FindAnyWidget( name2 ).Show( !show_radial_icon );
+						name2.Replace( "RadialIcon", "RadialIconClosed" );
+						ipw.FindAnyWidget( name2 ).Show( show_radial_icon );
 					}
-				}
-				else
-				{
-					new_showed_items.Insert( entity, m_ShowedItems.Get( entity ) );
-					showed_items_IDs.Insert( entity.GetID(), m_ShowedItemsIDs.Get( entity.GetID() ) );
+	
+					if( m_ShowedItems.Contains( entity ) == false )
+					{
+						string name;
+						if( entity.GetSlotsCountCorrect() > 0 )
+						{
+							ItemWithCargoAndAttachments iwca = new ItemWithCargoAndAttachments( this );
+							iwca.SetEntity( entity );
+							new_showed_items.Insert( entity, iwca );
+							showed_items_IDs.Insert( entity.GetID(), iwca );
+							ipw.GetParent().SetUserID( entity.GetID() );
+							WidgetEventHandler.GetInstance().RegisterOnMouseButtonUp( ipw.GetParent(),  this, "ToggleWidget" );
+	
+							name = ipw.GetName();
+							name.Replace( "Icon", "RadialIcon" );
+							ipw.GetParent().FindAnyWidget( name ).Show( true );
+						}
+						else if( entity.GetInventory().GetCargo() )
+						{
+							ItemWithCargo iwc = new ItemWithCargo( this );
+							iwc.SetEntity( entity );
+							new_showed_items.Insert( entity, iwc );
+							showed_items_IDs.Insert( entity.GetID(), iwc );
+							ipw.GetParent().SetUserID( entity.GetID() );
+							WidgetEventHandler.GetInstance().RegisterOnMouseButtonUp( ipw.GetParent(),  this, "ToggleWidget" );
+	
+							name = ipw.GetName();
+							name.Replace( "Icon", "RadialIcon" );
+							ipw.GetParent().FindAnyWidget( name ).Show(true);
+						}
+					}
+					else
+					{
+						new_showed_items.Insert( entity, m_ShowedItems.Get( entity ) );
+						showed_items_IDs.Insert( entity.GetID(), m_ShowedItemsIDs.Get( entity.GetID() ) );
+					}
 				}
 			}
 		}

@@ -91,6 +91,7 @@ class MissionBase extends Mission
 	PluginAdditionalInfo	m_ModuleServerInfo;
 	
 	ref NotificationMessage m_notification_widget;
+	ref WidgetEventHandler 	m_WidgetEventHandler;
 	
 	ref array<PlayerBase> m_DummyPlayers = new array<PlayerBase>;
 	
@@ -102,12 +103,15 @@ class MissionBase extends Mission
 
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.CheckNotification, 15000, true);
 
+		m_WidgetEventHandler = new WidgetEventHandler;
+		
 		//Debug.DestroyAllShapes();
 
 		//TODO clea up after Gamescom
 		m_ModuleServerInfo = PluginAdditionalInfo.Cast( GetPlugin(PluginAdditionalInfo) );
 		//
 		PPEffects.ResetAll();
+		SoundSetMap.Init();
 	}
 
 	void ~MissionBase()
@@ -130,7 +134,11 @@ class MissionBase extends Mission
 #ifdef PLATFORM_PS4
 			menu = new MainMenuXbox;
 #else
-			menu = new MainMenu;
+	#ifdef NEW_UI
+				menu = new MainMenuNew;
+	#else
+				menu = new MainMenu;
+	#endif
 #endif
 #endif	
 			break;
@@ -149,7 +157,15 @@ class MissionBase extends Mission
 			menu = new CharacterMenu;
 			break;
 		case MENU_OPTIONS:
+#ifdef PLATFORM_XBOX
+			menu = new OptionsMenuXbox;
+#else
+#ifdef PLATFORM_PS4
+			menu = new OptionsMenuXbox;
+#else
 			menu = new OptionsMenu;
+#endif
+#endif
 			break;
 		case MENU_ASSIGNMENT:
 			menu = new AssignmentMenu;
@@ -409,7 +425,6 @@ class MissionBase extends Mission
 	{
 		m_DummyPlayers.Insert(PlayerBase.Cast( player ));
 	}
-	
 }
 
 class MissionDummy extends MissionBase

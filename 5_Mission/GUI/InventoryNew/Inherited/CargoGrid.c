@@ -4,35 +4,54 @@ class CargoGrid
 	ItemsContainer m_ItemsContainer;
 	ref array<int> m_ShowedItems;
 	ref array<GridContainer> m_Rows;
-
+	Container m_Parent;
+	
+	void SetParent( Container parent )
+	{
+		m_Parent = parent;
+	}
 	void CargoGrid( EntityAI entity, ItemsContainer items_container )
 	{
 		m_Entity = entity;
 		m_ItemsContainer = items_container;
 		m_ShowedItems = new array<int>;
 		m_Rows =  new array<GridContainer>;
+		
+		RecomputeGridHeight();
+	}
+	
+	void RecomputeGridHeight()
+	{
+		for( int i = 0; i < m_Rows.Count(); i++ )
+		{
+			delete m_Rows.Get( i ).GetMainPanel();
+			m_ItemsContainer.Remove( m_Rows.Get( i ) );
+		}
+		m_Rows.Clear();
+		
+			//START - Init grid rows
+			Print( m_ItemsContainer.GetItemCount() );
+			
+			#ifdef PLATFORM_XBOX
+			int cargo_height = ((m_ItemsContainer.GetItemCount() / 4)*2) + 2;
+			#else
+			int cargo_height = 	m_Entity.GetInventory().GetCargo().GetHeight();
+			#endif
 
-		//START - Init grid rows
-			for ( int j = 0; j < entity.GetInventory().GetCargo().GetHeight(); j++ )
+			for ( int j = 0; j < cargo_height; j++ )
 			{
-				GridContainer row = new GridContainer( items_container );
+				GridContainer row = new GridContainer( m_ItemsContainer );
 				row.SetNumber( j );
-				row.SetEntity( entity );
-				row.SetWidth( entity.GetInventory().GetCargo().GetWidth() );
-				items_container.Insert( row );
+				row.SetEntity( m_Entity );
+				row.SetWidth( m_Entity.GetInventory().GetCargo().GetWidth() );
+				m_ItemsContainer.Insert( row );
 				m_Rows.Insert( row );
 			}
+		
+		m_ItemsContainer.Refresh();
 		//END - Init grid rows
-
-		//START - Add cargo items icons
-			if( items_container.Count() > 0 )
-			{
-				for ( j = 0; j < entity.GetInventory().GetCargo().GetItemCount(); j++ )
-				{
-					InitIcon( j );
-				}
-			}
-		//END - Add cargo items icons
+		
+		
 	}
 	
 	void Remove()
@@ -204,7 +223,7 @@ class CargoGrid
 		if( m_Entity )
 		{
 			ref array<int> showed_items = new array<int>;
-
+			
 			//START - Add new item Icons
 				for ( int j = 0; j < m_Entity.GetInventory().GetCargo().GetItemCount(); j++ )
 				{
@@ -223,6 +242,11 @@ class CargoGrid
 					{
 						m_ItemsContainer.RemoveItem( showed_item );
 						ItemManager.GetInstance().HideTooltip();
+						#ifdef PLATFORM_XBOX
+						RecomputeGridHeight();
+						m_Parent.Refresh();
+						m_ItemsContainer.RecomputeItemPositions();
+						#endif
 					}
 				}
 			//END - Remove removed item Icons
@@ -236,17 +260,29 @@ class CargoGrid
 		EntityAI item = m_Entity.GetInventory().GetCargo().GetItem( index );
 		if( !m_ItemsContainer.ContainsEntity( item ) )
 		{
+			#ifdef PLATFORM_XBOX
+			RecomputeGridHeight();
+			m_Parent.Refresh();
+			( Container.Cast( m_Parent.m_Parent.m_Parent ) ).UpdateBodySpacers();
+			#endif
 			int pos_x, pos_y, size_x, size_y;
 			m_Entity.GetInventory().GetCargo().GetItemSize( index, size_x, size_y );
 			m_Entity.GetInventory().GetCargo().GetItemPos( index, pos_x, pos_y );
 
 			Icon icon = new Icon( m_ItemsContainer );
 			icon.Init( item );
+			#ifdef PLATFORM_XBOX
+			icon.SetSize( 2, 2 );
+			icon.SetPos( (m_ItemsContainer.GetItemCount() % 4)*2, (m_ItemsContainer.GetItemCount() / 4)*2 );
+			icon.m_posX = (m_ItemsContainer.GetItemCount() % 4)*2;
+			icon.m_posY = (m_ItemsContainer.GetItemCount() / 4)*2;
+			icon.SetCargoPos( index );
+			#else
 			icon.SetSize( size_x, size_y );
 			icon.SetPos( pos_x, pos_y );
 			icon.m_posX = pos_x;
 			icon.m_posY = pos_y;
-			icon.SetCargoPos( index );
+			#endif
 			m_ItemsContainer.AddItem( icon );
 		}
 

@@ -7,6 +7,7 @@ class ParticleList
 	
 	// REGISTER ALL PARTICLES BELOW:
 	
+	static const int INVALID						= -1;
 	static const int PARTICLE_TEST					= RegisterParticle("smoke_small_generator_01");
 	
 	// FIREPLACE
@@ -57,7 +58,10 @@ class ParticleList
 
 	// PLAYER
 	static const int BLEEDING_SOURCE				= RegisterParticle("blood_test");
-	static const int BLOOD_SPLAT					= RegisterParticle("blood_medium_01_upscaled");
+	static const int BLOOD_SPLAT					= RegisterParticle("blood_medium_01");
+	static const int BLOOD_SURFACE_DROPS			= RegisterParticle("blood_surface_drops");
+	static const int BLOOD_SURFACE_CHUNKS			= RegisterParticle("blood_surface_chunks");
+	static const int VOMIT							= RegisterParticle("character_vomit_01");
 	
 	// GUNS
 	static const int GUN_MUZZLE_FLASH_SVD_STAR		= RegisterParticle("weapon_shot_Flame_3D_4star");
@@ -80,17 +84,53 @@ class ParticleList
 	
 	static const int GUN_CZ61						= RegisterParticle("weapon_shot_cz61_01");
 	static const int GUN_LONG_WINDED_SMOKE			= RegisterParticle("weapon_shot_winded_smoke");
-	static const int IMPACT_TEST					= RegisterParticle("bullet_impact_placeholder");
-	static const int IMPACT_TEST2					= RegisterParticle("_test_orientation_02");
-	static const int IMPACT_TEST_ENTER				= RegisterParticle("impacts/_test_impact_enter_debug");
-	static const int IMPACT_TEST_RICOCHET			= RegisterParticle("impacts/_test_impact_ricochet_debug");
-	static const int IMPACT_TEST_EXIT				= RegisterParticle("impacts/_test_impact_exit_debug");
 	static const int SMOKING_BARREL					= RegisterParticle("smoking_barrel");
+	static const int SMOKING_BARREL_SMALL			= RegisterParticle("smoking_barrel_small");
 	
-	
+	// BULLET & MELEE IMPACTS
+	static const int IMPACT_TEST					= RegisterParticle("impacts/bullet_impact_placeholder");
+	static const int IMPACT_TEST_RICOCHET			= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_TEST2					= RegisterParticle("_test_orientation_02");
+	static const int IMPACT_TEST_ENTER_DEBUG		= RegisterParticle("impacts/_test_impact_enter_debug");
+	static const int IMPACT_TEST_RICOCHET_DEBUG		= RegisterParticle("impacts/_test_impact_ricochet_debug");
+	static const int IMPACT_TEST_EXIT_DEBUG			= RegisterParticle("impacts/_test_impact_exit_debug");
+	static const int IMPACT_WOOD_ENTER				= RegisterParticle("impacts/hit_wood_ent_01");
+	static const int IMPACT_WOOD_RICOCHET			= RegisterParticle("impacts/hit_wood_ric_01");
+	static const int IMPACT_WOOD_EXIT				= RegisterParticle("impacts/hit_wood_ext_01");
+	static const int IMPACT_CONCRETE_ENTER			= RegisterParticle("impacts/bullet_impact_placeholder");
+	static const int IMPACT_CONCRETE_RICOCHET		= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_CONCRETE_EXIT			= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_FOLIAGE_ENTER			= RegisterParticle("impacts/hit_wood_ent_01");
+	static const int IMPACT_FOLIAGE_RICOCHET		= RegisterParticle("impacts/hit_wood_ric_01");
+	static const int IMPACT_FOLIAGE_EXIT			= RegisterParticle("impacts/hit_wood_ext_01");
+	static const int IMPACT_DIRT_ENTER				= RegisterParticle("impacts/hit_wood_ent_01");
+	static const int IMPACT_DIRT_RICOCHET			= RegisterParticle("impacts/hit_wood_ric_01");
+	static const int IMPACT_DIRT_EXIT				= RegisterParticle("impacts/hit_wood_ext_01");
+	static const int IMPACT_RUBBER_ENTER			= RegisterParticle("impacts/bullet_impact_placeholder");
+	static const int IMPACT_RUBBER_RICOCHET			= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_RUBBER_EXIT				= RegisterParticle("impacts/bullet_impact_placeholder");
+	static const int IMPACT_GRAVEL_ENTER			= RegisterParticle("impacts/hit_wood_ent_01");
+	static const int IMPACT_GRAVEL_RICOCHET			= RegisterParticle("impacts/hit_wood_ric_01");
+	static const int IMPACT_GRAVEL_EXIT				= RegisterParticle("impacts/hit_wood_ext_01");
+	static const int IMPACT_PLASTER_ENTER			= RegisterParticle("impacts/hit_wood_ent_01");
+	static const int IMPACT_PLASTER_RICOCHET		= RegisterParticle("impacts/hit_wood_ric_01");
+	static const int IMPACT_PLASTER_EXIT			= RegisterParticle("impacts/hit_wood_ext_01");
+	static const int IMPACT_METAL_ENTER				= RegisterParticle("impacts/bullet_impact_placeholder");
+	static const int IMPACT_METAL_RICOCHET			= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_METAL_EXIT				= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_MEAT_ENTER				= RegisterParticle("impacts/bullet_impact_placeholder");
+	static const int IMPACT_MEAT_RICOCHET			= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_MEAT_EXIT				= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_MEATBONES_ENTER			= RegisterParticle("blood_medium_01");
+	static const int IMPACT_MEATBONES_RICOCHET		= RegisterParticle("blood_medium_01_upscaled");
+	static const int IMPACT_MEATBONES_EXIT			= RegisterParticle("blood_medium_01_upscaled");
+	static const int IMPACT_GLASS_ENTER				= RegisterParticle("impacts/bullet_impact_placeholder");
+	static const int IMPACT_GLASS_RICOCHET			= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_GLASS_EXIT				= RegisterParticle("impacts/bullet_riochet_placeholder");
 	
 	// EXPLOSIONS
-	static const int EXPLOSION_TEST					= RegisterParticle("explosion_placeholder");
+	static const int EXPLOSION_TEST					= RegisterParticle("explosion_landmine_01");
+	static const int EXPLOSION_TEST_SIMPLE			= RegisterParticle("explosion_placeholder");
 	
 	
 	
@@ -105,7 +145,7 @@ class ParticleList
 		if (!m_ParticlePaths)
 			m_ParticlePaths = new map<int, string>;
 		
-		m_ParticlePaths.Insert(++m_lastID, root_path + file_name);
+		m_ParticlePaths.Insert(m_lastID++, root_path + file_name);
 		return m_lastID;
 	}
 	

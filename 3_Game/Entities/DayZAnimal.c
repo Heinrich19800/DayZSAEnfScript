@@ -48,7 +48,7 @@ class DayZCreatureAI extends DayZCreature
 		return AnimBootsType.None;
 	}
 	
-	AbstractWave PlaySound(SoundObject so)
+	AbstractWave PlaySound(SoundObject so, SoundObjectBuilder sob)
 	{
 		if(so == NULL)
 		{
@@ -56,7 +56,7 @@ class DayZCreatureAI extends DayZCreature
 		}
 		
 		so.SetPosition(GetPosition());
-		AbstractWave wave = so.Play3D();
+		AbstractWave wave = GetGame().GetSoundScene().Play3D(so, sob);
 		return wave;
 	}
 	
@@ -115,8 +115,10 @@ class DayZCreatureAI extends DayZCreature
 	{
 		if(GetGame().IsClient() || !GetGame().IsMultiplayer())
 		{
-			SoundObject soundObject = sound_event.GetSoundObject(GetPosition());
-			PlaySound(soundObject);
+			SoundObjectBuilder objectBuilder = sound_event.GetSoundBuilder();
+			objectBuilder.UpdateEnvSoundControllers(GetPosition());
+			SoundObject soundObject = objectBuilder.BuildSoundObject();
+			PlaySound(soundObject, objectBuilder);
 		}
 		
 		if(GetGame().IsServer() || !GetGame().IsMultiplayer())
@@ -137,7 +139,7 @@ class DayZCreatureAI extends DayZCreature
 			soundBuilder.UpdateEnvSoundControllers(GetPosition());
 			SoundObject soundObject = soundBuilder.BuildSoundObject();
 
-			PlaySound(soundObject);
+			PlaySound(soundObject, soundBuilder);
 		}
 		
 		if(GetGame().IsServer() || !GetGame().IsMultiplayer())

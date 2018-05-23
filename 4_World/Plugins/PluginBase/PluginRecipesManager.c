@@ -366,13 +366,27 @@ class PluginRecipesManager extends PluginBase
 	{
 		m_Ingredients[0] = item_a;
 		m_Ingredients[1] = item_b;
-		if( !item_a || !item_b ) return;
+		
+		if( !item_a || !item_b ) 
+		{
+			Error("PerformRecipeServer - one of the items null !!");
+			return;
+		}
 		SortIngredientsInRecipe(id, 2,m_Ingredients, m_sortedIngredients);
 
 		bool is_recipe_valid = CheckRecipe(id,m_sortedIngredients[0],m_sortedIngredients[1],player);
 		bool passed_sanity_check = RecipeSanityCheck(2,m_sortedIngredients,player);
 		
-		if(!is_recipe_valid || !passed_sanity_check) return;
+		if( !is_recipe_valid )
+		{
+			Error("PerformRecipeServer - recipe not valid !!");
+			return;
+		}
+		if( !passed_sanity_check )
+		{
+			Error("PerformRecipeServer - recipe failed to pass sanity check !!");
+			return;
+		}
 		RecipeBase ptrRecipe = m_RecipeList[id];
 		ptrRecipe.PerformRecipe(m_sortedIngredients[0],m_sortedIngredients[1],player);
 		//player.RequestCraftingDisable();
@@ -624,7 +638,10 @@ class PluginRecipesManager extends PluginBase
 		{
 			check_sum_vectical = check_sum_vectical | m_IngredientBitMask[z];//vertical sum
 			check_sum_vectical = check_sum_vectical | m_BitsResults[z];//vertical sum
-			if((m_IngredientBitMask[z] | m_BitsResults[z]) == 0) return false;//horizontal check
+			if((m_IngredientBitMask[z] | m_BitsResults[z]) == 0) 
+			{
+				return false;//horizontal check
+			}
 		}
 		
 		if( check_sum_vectical != (Math.Pow(2, num_of_ingredients) - 1)) return false;//vertical check

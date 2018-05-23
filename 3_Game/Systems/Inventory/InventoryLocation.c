@@ -154,6 +154,8 @@ class InventoryLocation
 	 * @NOTE	IsValid returns false afterwards
 	 **/
 	proto native void Reset ();
+	
+	proto native bool CompareLocationOnly (notnull InventoryLocation other);
 
 	/**
 	 * @fn		Copy

@@ -36,11 +36,21 @@ class ItemBase extends InventoryItem
 	// Declarations
 	void TransferModifiers( PlayerBase reciever );
 	
-	// Weapon muzzle flash particle effects
-	ref static map<int, ref array<ref WeaponParticlesOnFire>> m_MuzzleFlashOnFire;
-	ref static map<int, ref array<ref WeaponParticlesOnOverheating>> m_OverheatingEffect;
+	
+	// Weapons & suppressors particle effects
+	ref static map<int, ref array<ref WeaponParticlesOnFire>> m_OnFireEffect;
+	ref map<int, ref array<ref WeaponParticlesOnOverheating>> m_OnOverheatingEffect;
 	ref static map<string, int> m_WeaponTypeToID;
 	static int m_LastRegisteredWeaponID = 0;
+	
+	// Overheating effects
+	bool 					m_IsOverheatingEffectActive;
+	float					m_OverheatingShots;
+	ref Timer 				m_CheckOverheating;
+	int 					m_ShotsToStartOverheating = 0; // After these many shots, the overheating effect begins
+	int 					m_MaxOverheatingValue = 0; // Limits the number of shots that will be tracked
+	float 					m_OverheatingDecayInterval = 1; // Timer's interval for decrementing overheat effect's lifespan
+	ref array <Particle> 	m_OverheatingParticles;
 	
 	// -------------------------------------------------------------------------
 	void ItemBase()
@@ -56,7 +66,11 @@ class ItemBase extends InventoryItem
 		if (HasMuzzle())
 		{
 			LoadParticleConfigOnFire( GetMuzzleID() );
-			LoadParticleConfigOnOverheating( GetMuzzleID() );
+			
+			if ( m_ShotsToStartOverheating == 0 )
+			{
+				LoadParticleConfigOnOverheating( GetMuzzleID() );
+			}
 		}
 	}
 	
@@ -86,10 +100,10 @@ class ItemBase extends InventoryItem
 	// Loads muzzle flash particle configuration from config and saves it to a map for faster access
 	void LoadParticleConfigOnFire(int id)
 	{
-		if (!m_MuzzleFlashOnFire)
-			m_MuzzleFlashOnFire = new map<int, ref array<ref WeaponParticlesOnFire>>;
+		if (!m_OnFireEffect)
+			m_OnFireEffect = new map<int, ref array<ref WeaponParticlesOnFire>>;
 		
-		if ( !m_MuzzleFlashOnFire.Contains(id) )
+		if ( !m_OnFireEffect.Contains(id) )
 		{
 			string config_to_search = "CfgVehicles";
 			
@@ -112,40 +126,163 @@ class ItemBase extends InventoryItem
 			}
 			
 			
-			m_MuzzleFlashOnFire.Insert(id, WPOF_array);
+			m_OnFireEffect.Insert(id, WPOF_array);
 		}
 	}
 	
 	// Loads muzzle flash particle configuration from config and saves it to a map for faster access
 	void LoadParticleConfigOnOverheating(int id)
 	{
-		if (!m_OverheatingEffect)
-			m_OverheatingEffect = new map<int, ref array<ref WeaponParticlesOnOverheating>>;
+		if (!m_OnOverheatingEffect)
+			m_OnOverheatingEffect = new map<int, ref array<ref WeaponParticlesOnOverheating>>;
 		
-		if ( !m_OverheatingEffect.Contains(id) )
+		if ( !m_OnOverheatingEffect.Contains(id) )
 		{
 			string config_to_search = "CfgVehicles";
 			
 			if (IsInherited(Weapon))
-				config_to_search = "CfgWeapons";	
+				config_to_search = "CfgWeapons";
 			
 			string muzzle_owner_config = config_to_search + " " + GetType() + " ";
 			string config_OnOverheating_class = muzzle_owner_config + "Particles " + "OnOverheating ";
 			
-			int config_OnOverheating_subclass_count = GetGame().ConfigGetChildrenCount(config_OnOverheating_class);
-			ref array<ref WeaponParticlesOnOverheating> WPOOH_array = new array<ref WeaponParticlesOnOverheating>;
-			
-			for (int i = 0; i < config_OnOverheating_subclass_count; i++)
+			if (GetGame().ConfigIsExisting(config_OnOverheating_class))
 			{
-				string particle_class = "";
-				GetGame().ConfigGetChildName(config_OnOverheating_class, i, particle_class);
-				string config_OnOverheating_entry = config_OnOverheating_class + particle_class;
-				WeaponParticlesOnOverheating WPOF = new WeaponParticlesOnOverheating(this, config_OnOverheating_entry);
-				WPOOH_array.Insert(WPOF);
+				
+				m_ShotsToStartOverheating = GetGame().ConfigGetFloat(config_OnOverheating_class + "shotsToStartOverheating");
+				
+				if (m_ShotsToStartOverheating == 0)
+				{
+					m_ShotsToStartOverheating = -1; // This prevents futher readings from config for future creations of this item
+					string error = "Error reading config " + GetType() + ">Particles>OnOverheating - Parameter shotsToStartOverheating is configured wrong or is missing! Its value must be 1 or higher!";
+					Error(error);
+					return;
+				}
+				
+				m_OverheatingDecayInterval = GetGame().ConfigGetFloat(config_OnOverheating_class + "overheatingDecayInterval");
+				m_MaxOverheatingValue = GetGame().ConfigGetFloat(config_OnOverheating_class + "maxOverheatingValue");
+				
+				
+				
+				int config_OnOverheating_subclass_count = GetGame().ConfigGetChildrenCount(config_OnOverheating_class);
+				ref array<ref WeaponParticlesOnOverheating> WPOOH_array = new array<ref WeaponParticlesOnOverheating>;
+				
+				for (int i = 0; i < config_OnOverheating_subclass_count; i++)
+				{
+					string particle_class = "";
+					GetGame().ConfigGetChildName(config_OnOverheating_class, i, particle_class);
+					string config_OnOverheating_entry = config_OnOverheating_class + particle_class;
+					int  entry_type = GetGame().ConfigGetType(config_OnOverheating_entry);
+					
+					if ( entry_type == CT_CLASS )
+					{
+						WeaponParticlesOnOverheating WPOF = new WeaponParticlesOnOverheating(this, config_OnOverheating_entry);
+						WPOOH_array.Insert(WPOF);
+					}
+				}
+				
+				
+				m_OnOverheatingEffect.Insert(id, WPOOH_array);
+			}
+		}
+	}
+	
+	void IncreaseOverheating(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
+	{
+		m_OverheatingShots++;
+		
+		if (!m_CheckOverheating)
+				m_CheckOverheating = new Timer( CALL_CATEGORY_GAMEPLAY );
+		
+		m_CheckOverheating.Stop();
+		m_CheckOverheating.Run(m_OverheatingDecayInterval, this, "OnOverheatingDecay");
+		
+		CheckOverheating(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
+	}
+	
+	void CheckOverheating(ItemBase weapon = null, string ammoType = "", ItemBase muzzle_owner = null, ItemBase suppressor = null, string config_to_search = "")
+	{
+		if (m_OverheatingShots >= m_ShotsToStartOverheating  &&  !IsOverheatingEffectActive())
+		{
+			StartOverheating(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
+		}
+		
+		if (m_OverheatingShots < m_ShotsToStartOverheating  &&  IsOverheatingEffectActive())
+		{
+			StopOverheating(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
+		}
+		
+		if (m_OverheatingShots > m_MaxOverheatingValue)
+		{
+			m_OverheatingShots = m_MaxOverheatingValue;
+		}
+	}
+	
+	bool IsOverheatingEffectActive()
+	{
+		return m_IsOverheatingEffectActive;
+	}
+	
+	void OnOverheatingDecay()
+	{
+		m_OverheatingShots--;
+		
+		if (m_OverheatingShots <= 0)
+		{
+			m_CheckOverheating.Stop();
+			m_OverheatingShots = 0;
+		}
+		else
+		{
+			if (!m_CheckOverheating)
+				m_CheckOverheating = new Timer( CALL_CATEGORY_GAMEPLAY );
+			
+			m_CheckOverheating.Stop();
+			m_CheckOverheating.Run(m_OverheatingDecayInterval, this, "OnOverheatingDecay");
+		}
+		
+		CheckOverheating(this, "", this);
+	}
+
+	void StartOverheating(ItemBase weapon = null, string ammoType = "", ItemBase muzzle_owner = null, ItemBase suppressor = null, string config_to_search = "")
+	{
+		m_IsOverheatingEffectActive = true;
+		ItemBase.PlayOverheatingParticles(this, ammoType, this, suppressor, "CfgWeapons" );
+	}
+	
+	void StopOverheating(ItemBase weapon = null, string ammoType = "", ItemBase muzzle_owner = null, ItemBase suppressor = null, string config_to_search = "")
+	{
+		m_IsOverheatingEffectActive = false;
+		ItemBase.StopOverheatingParticles(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
+	}
+	
+	void RegisterOverheatingParticle(Particle p)
+	{
+		if (!m_OverheatingParticles)
+			m_OverheatingParticles = new array <Particle>;
+		
+		m_OverheatingParticles.Insert(p);
+	}
+	
+	void KillAllOverheatingParticles()
+	{
+		if (m_OverheatingParticles)
+		{
+			for (int i = m_OverheatingParticles.Count(); i > 0; i--)
+			{
+				int id = i - 1;
+				Particle p = m_OverheatingParticles.Get(id);
+				
+				if (p)
+				{
+					p.Stop();
+				}
+				
+				//m_OverheatingParticles.Remove(id);
 			}
 			
-			
-			m_OverheatingEffect.Insert(id, WPOOH_array);
+			m_OverheatingParticles.Clear();
+			delete m_OverheatingParticles;
 		}
 	}
 	
@@ -171,7 +308,7 @@ class ItemBase extends InventoryItem
 		else 
 		{
 			// Register new weapon ID
-			m_WeaponTypeToID.Insert(GetType(), ++m_LastRegisteredWeaponID);
+			m_WeaponTypeToID.Insert(GetType(), m_LastRegisteredWeaponID++);
 		}
 		
 		return m_LastRegisteredWeaponID;
@@ -418,8 +555,9 @@ class ItemBase extends InventoryItem
 		if (old_owner)   
 		{      
 			if (old_owner.IsMan())
-			{         
+			{
 				owner_player_old = Man.Cast( old_owner );
+				OnInventoryExit(owner_player_old);
 			}      
 			else
 			{
@@ -431,6 +569,7 @@ class ItemBase extends InventoryItem
 			if ( new_owner.IsMan() )
 			{
 				owner_player_new = Man.Cast( new_owner );
+				OnInventoryEnter(owner_player_new);
 			}      
 			else      
 			{
@@ -649,6 +788,8 @@ class ItemBase extends InventoryItem
 		float quantity = GetQuantity();
 		float split_quantity_new = Math.Floor( quantity / 2 );
 		
+		InventoryLocation invloc = new InventoryLocation;
+		player.GetInventory().FindFirstFreeLocationForNewEntity(GetType(), FindInventoryLocationType.ATTACHMENT, invloc);
 		ItemBase new_item;
 		new_item = player.CopyInventoryItem( this );
 
@@ -662,8 +803,17 @@ class ItemBase extends InventoryItem
 		if( new_item )
 		{
 			MiscGameplayFunctions.TransferItemProperties(this,new_item);
-			AddQuantity(-split_quantity_new);
-			new_item.SetQuantity( split_quantity_new );
+			
+			if (invloc && invloc.GetType() == InventoryLocationType.ATTACHMENT && split_quantity_new > 1)
+			{
+				AddQuantity(-1);
+				new_item.SetQuantity(1);
+			}
+			else
+			{
+				AddQuantity(-split_quantity_new);
+				new_item.SetQuantity( split_quantity_new );
+			}
 		}
 	}
 	
@@ -700,6 +850,13 @@ class ItemBase extends InventoryItem
 	{
 		bool can_this_be_combined =  ConfigGetBool("canBeSplit");
 		
+		if(CastTo(player,GetHierarchyRootPlayer())) //false when attached to player's attachment slot
+		{
+			if(player.GetInventory().HasAttachment(this))
+			{
+				return false;
+			}
+		}
 		if(!can_this_be_combined || !other_item) 
 		{
 			return false;
@@ -707,7 +864,7 @@ class ItemBase extends InventoryItem
 		
 		if( IsFullQuantity() )
 		{
-			return false;			
+			return false;
 		}
 		
 		if( player && (player.GetHumanInventory().GetEntityInHands() == this || player.GetHumanInventory().GetEntityInHands() == other_item )) return false;
@@ -1218,32 +1375,7 @@ class ItemBase extends InventoryItem
 	}
 */
 	// -------------------------------------------------------------------------
-	/**
-	\brief Creates a explosion by ammoType in config of object. If object dont have this parameter ("ammoType" like grenade) explsotion is default "G_GrenadeHand"
-		\return \p void
-		@code
-			ItemBase item = GetGame().GetPlayer().CreateInInventory("GrenadeRGD5");
-			
-			item.Explode();
-		@endcode
-	*/
-	void Explode()
-	{
-		string explosion_name = this.ConfigGetString("ammoType");
-		
-		if ( explosion_name == "" )
-		{
-			explosion_name = "Dummy_Heavy";
-		}
-		
-		if ( GetGame().IsServer() )
-		{
-			DamageSystem.ExplosionDamage(this, NULL, explosion_name, GetPosition());
-		}
-		
-		Particle.Play(ParticleList.EXPLOSION_TEST, GetPosition());
-		GetGame().ObjectDelete(this);
-	}
+	
 	
 	//! Called when this item is activated from a trip wire that was stepped on.
 	void OnActivatedByTripWire()
@@ -2130,7 +2262,6 @@ class ItemBase extends InventoryItem
 			//nplayer.CalculatePlayerLoad();
 			//nplayer.SetEnableQuickBarEntityShortcut(this,true);
 			//nplayer.CalculatePlayerLoad();
-			//nplayer.ChangePlayerLoad(this, false);
 		}
 	}
 
@@ -2152,7 +2283,6 @@ class ItemBase extends InventoryItem
 			}
 			//nplayer.CalculatePlayerLoad();
 			//nplayer.SetEnableQuickBarEntityShortcut(this,false);
-			//nplayer.ChangePlayerLoad(this, true);
 			
 			if (nplayer && nplayer.ItemToInventory && (nplayer.m_EntitySwapped == true || this.IsKindOf("BandanaUntieable_ColorBase") || this.IsKindOf("BandanaMask") ))
 			{
@@ -2308,7 +2438,7 @@ class ItemBase extends InventoryItem
 	static void PlayFireParticles(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
 	{
 		int id = muzzle_owner.GetMuzzleID();
-		array<ref WeaponParticlesOnFire> WPOF_array = m_MuzzleFlashOnFire.Get(id);
+		array<ref WeaponParticlesOnFire> WPOF_array = m_OnFireEffect.Get(id);
 		
 		if (WPOF_array)
 		{
@@ -2328,7 +2458,7 @@ class ItemBase extends InventoryItem
 	static void PlayOverheatingParticles(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
 	{
 		int id = muzzle_owner.GetMuzzleID();
-		array<ref WeaponParticlesOnOverheating> WPOOH_array = m_OverheatingEffect.Get(id);
+		array<ref WeaponParticlesOnOverheating> WPOOH_array = weapon.m_OnOverheatingEffect.Get(id);
 		
 		if (WPOOH_array)
 		{
@@ -2348,7 +2478,7 @@ class ItemBase extends InventoryItem
 	static void StopOverheatingParticles(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
 	{
 		int id = muzzle_owner.GetMuzzleID();
-		array<ref WeaponParticlesOnOverheating> WPOOH_array = m_OverheatingEffect.Get(id);
+		array<ref WeaponParticlesOnOverheating> WPOOH_array = weapon.m_OnOverheatingEffect.Get(id);
 		
 		if (WPOOH_array)
 		{

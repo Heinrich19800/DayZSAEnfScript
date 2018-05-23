@@ -394,8 +394,8 @@ class RifleBoltLock_Base extends Rifle_Base
 		m_fsm.AddTransition(new WeaponTransition(Reload_L01, _fin_,   C11));
 			Reload_L01.AddTransition(new WeaponTransition(Reload_L01.m_start ,    _abt_,   L01));
 			Reload_L01.AddTransition(new WeaponTransition(Reload_L01.m_detach,    _abt_,   L00));
-			Reload_L01.AddTransition(new WeaponTransition(Reload_L01.m_getNew,    _abt_,   L00));
-			Reload_L01.AddTransition(new WeaponTransition(Reload_L01.m_storeOld,  _abt_,   L00));
+			Reload_L01.AddTransition(new WeaponTransition(Reload_L01.m_hideOld,   _abt_,   L00));
+			Reload_L01.AddTransition(new WeaponTransition(Reload_L01.m_swapMags,  _abt_,   L00));
 			Reload_L01.AddTransition(new WeaponTransition(Reload_L01.m_attach,    _abt_,   L01));
 			Reload_C01.AddTransition(new WeaponTransition(Reload_C01.m_onCK,      _abt_,   C01));
 			Reload_L01.AddTransition(new WeaponTransition(Reload_L01.m_chamber,   _abt_,   C11));

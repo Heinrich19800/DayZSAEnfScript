@@ -16,6 +16,7 @@ class HandsContainer: Container
 		ItemManager.GetInstance().SetHandsPreview( hands_preview );
 		m_Body.Insert( hands_preview );
 
+		GetMainPanel().SetFlags( WidgetFlags.IGNOREPOINTER );
 		LoadDefaultState();
 		m_Spacer.Update();
 		m_MainPanel.Update();
@@ -71,7 +72,7 @@ class HandsContainer: Container
 	{
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 		EntityAI item_in_hands = player.GetHumanInventory().GetEntityInHands();
-		if( player.CanDropEntity( item_in_hands ) && GetGame().GetPlayer().GetHumanInventory().CanRemoveEntityInHands() )
+		if( item_in_hands && player.CanDropEntity( item_in_hands ) && GetGame().GetPlayer().GetHumanInventory().CanRemoveEntityInHands() )
 		{
 			player.PredictiveDropEntity( item_in_hands );
 		}

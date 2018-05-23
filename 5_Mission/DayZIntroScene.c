@@ -15,8 +15,6 @@ typedef TAdvanceArray<string> TStringAdvanceArray;
 class DayZIntroScene: Managed
 {
 	string m_lastCharacter;
-	string m_format;
-	//string m_player_name;
 	bool m_female;
 	int m_LastShavedSeconds;
 	int m_CachedPlaytime;
@@ -34,32 +32,32 @@ class DayZIntroScene: Managed
 	ref EntityAnimEndEventHandler 	m_anim_end_event_handler;
 	ref PlayerNameHandler 			m_player_name_handler;
 
-	Camera m_camera;
-	PlayerBase m_demoUnit;
-	vector m_demoPos;
-	vector m_demoRot;
-	vector m_cameraTrans[4];
-	bool m_rotatingCharacter;
-	bool m_rotatingCamera;
-	
-	bool m_disableClick;
-	int m_rotatingCharacterMouseX;
-	int m_rotatingCharacterMouseY;
-	float m_rotatingCharacterRot;
-	float r;
-	float r_original;
-	float diff_x;
-	float delta_x;
-	float delta_z;
-	float angle;// = 0;
-	float angle_offset = 0;
-	float new_x = 0;
-	float new_z = 0;
-	vector target;
-	float blur_value;
+	Camera m_Camera;
+	PlayerBase m_DemoUnit;
+	Weather m_Weather;
+	vector 	m_DemoPos;
+	vector 	m_DemoRot;
+	vector 	m_CameraTrans[4];
+	vector 	m_Target;
+	bool	m_DisableClick;
+	bool 	m_RotatingCamera;
+	bool 	m_RotatingCharacter;
+	int 	m_RotatingCharacterMouseX;
+	int 	m_RotatingCharacterMouseY;
+	float 	m_RotatingCharacterRot;
+	float 	m_Radius;
+	float 	m_Radius_original;
+	float 	m_DiffX;
+	float 	m_DeltaX;
+	float 	m_DeltaZ;
+	float 	m_Angle;
+	float 	m_Angle_offset = 0;
+	float 	m_NewX = 0;
+	float 	m_NewZ = 0;
+	float 	m_BlurValue;
 
-	ref array<Man> m_preloaded;
-	ref OptionsMenu optmenu = new OptionsMenu;
+	ref array<Man> m_Preloaded;
+	ref OptionsMenu m_optmenu = new OptionsMenu;
 	MenuData m_data;
 
 	protected ref Timer m_timer;
@@ -69,17 +67,17 @@ class DayZIntroScene: Managed
 	{
 		m_timer = new Timer();
 		m_currentCharacterID = -1;
-		m_demoPos = "0 0 0";
-		m_demoRot = "0 0 0";
+		m_DemoPos = "0 0 0";
+		m_DemoRot = "0 0 0";
 		m_lastCharacter = "";
 		m_LastShavedSeconds = 0;
 		m_CachedPlaytime = 0;
 		m_lastInventory = new TStringArray;
-		m_rotatingCharacter = 0;
+		m_DisableClick = 0;
 		m_player_name_handler = new PlayerNameHandler;
 		//g_Game.GetPlayerName(m_player_name);
 		
-		m_preloaded = new array<Man>;
+		m_Preloaded = new array<Man>;
 		
 		string cached_playtime_str = "";
 		g_Game.GetProfileString("cachedPlaytime", cached_playtime_str);
@@ -89,41 +87,16 @@ class DayZIntroScene: Managed
 		}
 		World w = g_Game.GetWorld();
 		m_data = g_Game.GetMenuData();
+		m_data.LoadCharacters();
 		
 		//g_Game.m_PlayerName = "Survivor"; //default
 		
 		if (m_data.GetLastPlayedCharacter() > -1 )
 		{
 			m_currentCharacterID = m_data.GetLastPlayedCharacter();
-			//string s1 = g_Game.m_PlayerName;
 			m_data.GetCharacterName(m_currentCharacterID, g_Game.GetPlayerGameName());
-			//string s2 = g_Game.m_PlayerName;
 		}
-	/*	//NEW
-		string cached_selectedCharacter_str = "";
-		g_Game.GetProfileString("selectedCharacter", cached_selectedCharacter_str);
-	
-		if ( cached_selectedCharacter_str == "" )
-		{
-			if( data.GetCharactersCount() > 0)
-			{
-				character_to_select = 0;
-			}
-			else
-			{
-				character_to_select = - 1;
-			}
-		}
-		else
-		{
-			character_to_select = atoi(cached_selectedCharacter_str);
-			
-			if( data.GetCharactersCount() >= character_to_select)
-			{
-				character_to_select = data.GetCharactersCount() - 1;
-			}
-		}
-	*/
+
 		string worldName;
 		g_Game.GetWorldName(worldName);
 	
@@ -135,66 +108,78 @@ class DayZIntroScene: Managed
 		g_Game.ConfigGetChildName(root_path, index, childName);
 	
 		string scene_path = root_path + " " + childName;
-		target = SwapYZ(g_Game.ConfigGetVector(scene_path + " target"));
+		m_Target = SwapYZ(g_Game.ConfigGetVector(scene_path + " target"));
 		vector position = SwapYZ(g_Game.ConfigGetVector(scene_path + " position"));
 		TIntArray date = new TIntArray;
+		TFloatArray storm = new TFloatArray;
 		g_Game.ConfigGetIntArray(scene_path + " date", date);
 		float fov = g_Game.ConfigGetFloat(scene_path + " fov");
-		float aperture = g_Game.ConfigGetFloat(scene_path + " aperture");
-		float humidity = g_Game.ConfigGetFloat(scene_path + " humidity");
 		float overcast = g_Game.ConfigGetFloat(scene_path + " overcast");
-		
-		if (humidity == 0) humidity = 0.2;
-		if (overcast == 0) overcast = 0.2;
+		float rain = g_Game.ConfigGetFloat(scene_path + " rain");
+		float fog = g_Game.ConfigGetFloat(scene_path + " fog");
+		float windspeed = -1;
+		if ( g_Game.ConfigIsExisting(scene_path + " windspeed") ) 	windspeed = g_Game.ConfigGetFloat(scene_path + " windspeed");
+		g_Game.ConfigGetFloatArray(scene_path + " storm", storm);
 		
 		World world = g_Game.GetWorld();
 	
 		if (world && date.Count() >= 5)
 		{
 			world.SetDate(date.Get(0), date.Get(1), date.Get(2), date.Get(3), date.Get(4));
-			//world.SetWeather(overcast, -1, -1, 0);
-			//world.SetAperture(aperture);
-			/*
-			// todo
-			simulSetHumidity _humidity;
-			*/
 		}
 	
-		GetGame().ObjectDelete( m_camera );
-		Class.CastTo(m_camera, g_Game.CreateObject("staticcamera", SnapToGround(position), true)); //Vector(position[0] , position[1] + 1, position[2])
+		GetGame().ObjectDelete( m_Camera );
+		Class.CastTo(m_Camera, g_Game.CreateObject("staticcamera", SnapToGround(position), true)); //Vector(position[0] , position[1] + 1, position[2])
 		
-		Math3D.MatrixIdentity4(m_cameraTrans);
+		Math3D.MatrixIdentity4(m_CameraTrans);
 		
-		if (m_camera)
+		if (m_Camera)
 		{
-			//m_camera.SetPosition(Vector(m_camera.GetPosition()[0],m_camera.GetPosition()[1]+0,m_camera.GetPosition()[2]));
-			m_camera.LookAt(target);
-			m_camera.SetFOV(fov);
-			m_camera.SetFocus(5.0, 0.0); //5.0, 1.0
+			//m_Camera.SetPosition(Vector(m_Camera.GetPosition()[0],m_Camera.GetPosition()[1]+0,m_Camera.GetPosition()[2]));
+			m_Camera.LookAt(m_Target);
+			m_Camera.SetFOV(fov);
+			m_Camera.SetFocus(5.0, 0.0); //5.0, 1.0
 			
-			m_camera.SetActive(true);
+			m_Camera.SetActive(true);
 			
-			Math3D.DirectionAndUpMatrix(target - SnapToGround(position), "0 1 0", m_cameraTrans);
-			m_cameraTrans[3] = m_camera.GetPosition();
-			m_demoPos = Vector(0.685547, -0.988281, 3.68823).Multiply4(m_cameraTrans);
+			Math3D.DirectionAndUpMatrix(m_Target - SnapToGround(position), "0 1 0", m_CameraTrans);
+			m_CameraTrans[3] = m_Camera.GetPosition();
+			m_DemoPos = Vector(0.685547, -0.988281, 3.68823).Multiply4(m_CameraTrans);
 
-			float pos_x = m_demoPos[0];
-			float pos_z = m_demoPos[2];
+			float pos_x = m_DemoPos[0];
+			float pos_z = m_DemoPos[2];
 			float pos_y = GetGame().SurfaceY(pos_x, pos_z);
 			vector ground_demo_pos = Vector(pos_x, pos_y, pos_z);
-			m_demoPos = ground_demo_pos;
+			m_DemoPos = ground_demo_pos;
 
-			m_demoRot = "0 0 0";
-			vector to_cam_dir = m_camera.GetPosition() - m_demoPos;
-			m_demoRot[0] = Math.Atan2(to_cam_dir[0], to_cam_dir[2]) * Math.RAD2DEG;
+			m_DemoRot = "0 0 0";
+			vector to_cam_dir = m_Camera.GetPosition() - m_DemoPos;
+			m_DemoRot[0] = Math.Atan2(to_cam_dir[0], to_cam_dir[2]) * Math.RAD2DEG;
 		}
-
-		delta_x = Math.AbsFloat(m_demoPos[0] - m_camera.GetPosition()[0]);
-		delta_z = Math.AbsFloat(m_demoPos[2] - m_camera.GetPosition()[2]);
-		if (!r || r == 0)
+		
+		m_DeltaX = Math.AbsFloat(m_DemoPos[0] - m_Camera.GetPosition()[0]);
+		m_DeltaZ = Math.AbsFloat(m_DemoPos[2] - m_Camera.GetPosition()[2]);
+		if (!m_Radius || m_Radius == 0)
 		{
-			r = Math.Sqrt (Math.Pow(delta_x, 2) + Math.Pow(delta_z, 2));
-			r_original = r;
+			m_Radius = Math.Sqrt (Math.Pow(m_DeltaX, 2) + Math.Pow(m_DeltaZ, 2));
+			m_Radius_original = m_Radius;
+		}
+		
+		m_Weather = g_Game.GetWeather();
+		m_Weather.GetOvercast().SetLimits( overcast, overcast );
+		m_Weather.GetRain().SetLimits( rain, rain );
+		m_Weather.GetFog().SetLimits( fog, fog );
+		
+		m_Weather.GetOvercast().Set( overcast, 0, 0);
+		m_Weather.GetRain().Set( rain, 0, 0);
+		m_Weather.GetFog().Set( fog, 0, 0);
+		
+		if ( storm.Count() > 1 ) 	m_Weather.SetStorm(storm.Get(0),storm.Get(1));
+		if ( windspeed != -1 )
+		{
+			m_Weather.SetWindSpeed(windspeed);
+			m_Weather.SetWindMaximumSpeed(windspeed);
+			m_Weather.SetWindFunctionParams(1,1,1);
 		}
 		
 		Init();
@@ -218,7 +203,6 @@ class DayZIntroScene: Managed
 		g_Game.ConfigGetTextArray(root_path + " top", m_shirtList);
 		g_Game.ConfigGetTextArray(root_path + " bottom", m_pantsList);
 		g_Game.ConfigGetTextArray(root_path + " shoe", m_shoesList);
-		g_Game.ConfigGetText(root_path + " format", m_format);
 
 		m_allCharacters = GetGame().ListAvailableCharacters();
 		for (int i = 0; i < m_allCharacters.Count(); i++)
@@ -234,13 +218,9 @@ class DayZIntroScene: Managed
 			}
 		}
 		
-		//
-		//MenuData data = g_Game.GetMenuData();
-		/*Print("Intro scene init");
-		Print("Char. Count = " + data.GetCharactersCount());
-		Print("Last char index = " + data.GetLastPlayedCharacter());*/
-		
 		ChangeCharacter(m_currentCharacterID);
+		
+		PPEffects.Init();
 	}
 	
 	void RandomSelectGender()
@@ -269,7 +249,7 @@ class DayZIntroScene: Managed
 		}
 		CreateNewCharacter(character_name);
 		
-		if (m_demoUnit)
+		if (m_DemoUnit)
 		{
 			SetAttachment(m_shirtList.GetRandomElement(), InventorySlots.BODY);
 			SetAttachment(m_pantsList.GetRandomElement(), InventorySlots.LEGS);
@@ -290,13 +270,13 @@ class DayZIntroScene: Managed
 	
 	void SetAttachment(string type, int slot)
 	{
-		if (!m_demoUnit) return;
-		g_Game.ObjectDelete(m_demoUnit.GetInventory().FindAttachment(slot));
+		if (!m_DemoUnit) return;
+		g_Game.ObjectDelete(m_DemoUnit.GetInventory().FindAttachment(slot));
 		EntityAI entity;
 		Class.CastTo(entity, g_Game.CreateObject(type, "0 2000 0", true));
 		if (entity)
 		{
-			m_demoUnit.LocalTakeEntityAsAttachmentEx(entity, slot);
+			m_DemoUnit.LocalTakeEntityAsAttachmentEx(entity, slot);
 		}
 	}
 	
@@ -304,10 +284,10 @@ class DayZIntroScene: Managed
 	void ChangeCharacter(int characterID)
 	{
 		string name;
-		if (m_demoUnit)
+		if (m_DemoUnit)
 		{
-			g_Game.ObjectDelete(m_demoUnit);
-			m_demoUnit = NULL;
+			g_Game.ObjectDelete(m_DemoUnit);
+			m_DemoUnit = NULL;
 		}
 		m_currentCharacterID = characterID;
 		
@@ -326,18 +306,18 @@ class DayZIntroScene: Managed
 			return;
 		}
 		
-		PlayerBase.CastTo(m_demoUnit, m_data.CreateCharacterPerson(characterID));
+		PlayerBase.CastTo(m_DemoUnit, m_data.CreateCharacterPerson(characterID));
 		
-		if (m_demoUnit)
+		if (m_DemoUnit)
 		{
 			g_Game.SetNewCharacter(false);
-			m_demoUnit.PlaceOnSurface();
-			//m_demoUnit.SetPosition(Vector(m_demoPos[0],m_demoPos[1],m_demoPos[2]) + "0 0 333");
-			m_demoUnit.SetOrientation(m_demoRot);
-			m_demoUnit.SetEventHandler(m_anim_end_event_handler);
-			m_demoUnit.SetLastShavedSeconds(m_LastShavedSeconds);
+			m_DemoUnit.PlaceOnSurface();
+			//m_DemoUnit.SetPosition(Vector(m_DemoPos[0],m_DemoPos[1],m_DemoPos[2]) + "0 0 333");
+			m_DemoUnit.SetOrientation(m_DemoRot);
+			m_DemoUnit.SetEventHandler(m_anim_end_event_handler);
+			m_DemoUnit.SetLastShavedSeconds(m_LastShavedSeconds);
 	
-			//InitCharacterAnimations(m_demoUnit.GetHumanInventory().GetEntityInHands());
+			//InitCharacterAnimations(m_DemoUnit.GetHumanInventory().GetEntityInHands());
 			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(SceneCharacterSetPos, 250);
 		}
 
@@ -384,54 +364,54 @@ class DayZIntroScene: Managed
 	// ------------------------------------------------------------
 	void CreateNewCharacter(string type)
 	{
-		if (m_demoUnit)
+		if (m_DemoUnit)
 		{
-			g_Game.ObjectDelete(m_demoUnit);
-			m_demoUnit = NULL;
+			g_Game.ObjectDelete(m_DemoUnit);
+			m_DemoUnit = NULL;
 		}
 
 		g_Game.PreloadObject(type, 1.0);
-		Class.CastTo(m_demoUnit, g_Game.CreateObject(type, SnapToGround(Vector(m_demoPos[0],m_demoPos[1],m_demoPos[2]) + "0 0 333"), true));
+		Class.CastTo(m_DemoUnit, g_Game.CreateObject(type, SnapToGround(Vector(m_DemoPos[0],m_DemoPos[1],m_DemoPos[2]) + "0 0 333"), true));
 		
-		if (m_demoUnit)
+		if (m_DemoUnit)
 		{
 			//GetGame().SetPlayerName("Survivor");
 			//GetGame().GetPlayerName(m_player_name);
-			m_demoUnit.PlaceOnSurface();
-			m_demoUnit.SetOrientation(m_demoRot);
-			m_demoUnit.SetEventHandler(m_anim_end_event_handler);
-			m_demoUnit.SetLastShavedSeconds(m_LastShavedSeconds);
+			m_DemoUnit.PlaceOnSurface();
+			m_DemoUnit.SetOrientation(m_DemoRot);
+			m_DemoUnit.SetEventHandler(m_anim_end_event_handler);
+			m_DemoUnit.SetLastShavedSeconds(m_LastShavedSeconds);
 
 			// NEW STATS API
 			string lvalue = "";
-			m_demoUnit.StatGetCounter("playtime", lvalue);
+			m_DemoUnit.StatGetCounter("playtime", lvalue);
 
 			PluginLifespan module_lifespan;
 			Class.CastTo(module_lifespan, PluginLifespan.Cast( GetPlugin( PluginLifespan ) ));
-			module_lifespan.UpdateLifespanParam( m_demoUnit, lvalue, true );
+			module_lifespan.UpdateLifespanParam( m_DemoUnit, lvalue, true );
 		}
 	}
 	
 	void SceneCharacterSetPos()
 	{
-		if (m_demoUnit)
+		if (m_DemoUnit)
 		{
-			m_demoUnit.SetPosition(m_demoPos);
-			m_demoUnit.SetOrientation(m_demoRot);
+			m_DemoUnit.SetPosition(m_DemoPos);
+			m_DemoUnit.SetOrientation(m_DemoRot);
 		}
-		m_disableClick = false;
+		m_DisableClick = false;
 	}
 	
 	// ------------------------------------------------------------
 	void AnimateCharacter()
 	{
 		// Mirek: Switch move was related to legacy animation system
-		//if (m_demoUnit && m_characterAnimations.Count() > 0)
+		//if (m_DemoUnit && m_characterAnimations.Count() > 0)
 		//{
 		//	int rnd = Math.RandomInt(0, (m_characterAnimations.Count() / 2) - 1 ) * 2;
 		//	//Print("DayZIntroScene::AnimateCharacter()");
 		//	//Print(m_characterAnimations.Get(rnd));
-		//	m_demoUnit.PlayMoveNowGlobal(m_characterAnimations.Get(rnd));
+		//	m_DemoUnit.PlayMoveNowGlobal(m_characterAnimations.Get(rnd));
 		//}
 	}
 	
@@ -440,12 +420,12 @@ class DayZIntroScene: Managed
 	{
 		items.Clear();
 		
-		if (!m_demoUnit) return;
+		if (!m_DemoUnit) return;
 		
 		for (int i = 0; i < InventorySlots.COUNT; i++)
 		{
 			InventoryItem item;
-			Class.CastTo(item, m_demoUnit.GetInventory().FindAttachment(i));
+			Class.CastTo(item, m_DemoUnit.GetInventory().FindAttachment(i));
 	
 			if (!item) continue;
 	
@@ -470,7 +450,7 @@ class DayZIntroScene: Managed
 			}
 		}
 		
-		Class.CastTo(item, m_demoUnit.GetHumanInventory().GetEntityInHands());
+		Class.CastTo(item, m_DemoUnit.GetHumanInventory().GetEntityInHands());
 		if (item) items.Insert(item);
 	}
 	
@@ -483,20 +463,20 @@ class DayZIntroScene: Managed
 	// ------------------------------------------------------------
 	void CharacterRotationStart()
 	{
-		m_rotatingCharacter = true;
-		g_Game.GetMousePos(m_rotatingCharacterMouseX, m_rotatingCharacterMouseY);
-		if (m_demoUnit) 
+		m_RotatingCharacter = true;
+		g_Game.GetMousePos(m_RotatingCharacterMouseX, m_RotatingCharacterMouseY);
+		if (m_DemoUnit) 
 		{
-			m_rotatingCharacterRot = m_demoRot[0];
+			m_RotatingCharacterRot = m_DemoRot[0];
 		}
 	}
 	
 	// ------------------------------------------------------------
 	void CharacterRotationStop()
 	{
-		if (m_rotatingCharacter)
+		if (m_RotatingCharacter)
 		{
-			m_rotatingCharacter = false;
+			m_RotatingCharacter = false;
 		}
 	}
 	
@@ -508,32 +488,32 @@ class DayZIntroScene: Managed
 		float coef;
 		g_Game.GetMousePos(actual_mouse_x, actual_mouse_y);
 	
-		diff_x = m_rotatingCharacterMouseX - actual_mouse_x;
+		m_DiffX = m_RotatingCharacterMouseX - actual_mouse_x;
 		
-		if (m_demoUnit)
+		if (m_DemoUnit)
 		{
-			coef = ( m_rotatingCharacterRot + (diff_x * 0.5) ) / 360;
+			coef = ( m_RotatingCharacterRot + (m_DiffX * 0.5) ) / 360;
 			coef = coef - Math.Floor(coef);
-			//m_demoRot[0] = m_rotatingCharacterRot + (diff_x * 0.5);
-			m_demoRot[0] = coef * 360;
+			//m_DemoRot[0] = m_RotatingCharacterRot + (diff_x * 0.5);
+			m_DemoRot[0] = coef * 360;
 			
-			m_demoUnit.SetOrientation(m_demoRot);
+			m_DemoUnit.SetOrientation(m_DemoRot);
 		}
 	}
 	
 	// ------------------------------------------------------------
 	void SaveDefaultCharacter()
 	{
-		if (m_demoUnit)
+		if (m_DemoUnit)
 		{
-			g_Game.SetProfileString("defaultCharacter", m_demoUnit.GetType());
+			g_Game.SetProfileString("defaultCharacter", m_DemoUnit.GetType());
 			
 			InventoryItem item = NULL;
 			TStringArray inventory = new TStringArray;
 			
 			for (int i = 0; i < InventorySlots.COUNT; i++)
 			{
-				Class.CastTo(item, m_demoUnit.GetInventory().FindAttachment(i));
+				Class.CastTo(item, m_DemoUnit.GetInventory().FindAttachment(i));
 				if (item)
 				{
 					inventory.Insert(item.GetType());
@@ -548,11 +528,11 @@ class DayZIntroScene: Managed
 	// ------------------------------------------------------------
 	void Update()
 	{
-		if (m_demoUnit && m_rotatingCharacter)
+		if (m_DemoUnit && m_RotatingCharacter)
 		{
 			CharacterRotate();
 		}
-		else if (m_demoUnit && m_rotatingCamera)
+		else if (m_DemoUnit && m_RotatingCamera)
 		{
 			CameraRotate();
 		}
@@ -581,30 +561,30 @@ class DayZIntroScene: Managed
 		return tmp_pos;
 	}
 	bool IsRotatingCharacter() {
-		return m_rotatingCharacter;
+		return m_RotatingCharacter;
 	}
 	bool IsRotatingCamera() {
-		return m_rotatingCamera;
+		return m_RotatingCamera;
 	}
 
 	//Camera rotation
 	// ------------------------------------------------------------
 	void CameraRotationStart()
 	{
-		m_rotatingCamera = true;
-		if (m_demoUnit)
+		m_RotatingCamera = true;
+		if (m_DemoUnit)
 		{
-			if (angle)
+			if (m_Angle)
 			{
 				//angle_offset = angle + angle_offset;
-				angle_offset = Math.DEG2RAD*(Math.NormalizeAngle(Math.RAD2DEG*(angle + angle_offset)));
+				m_Angle_offset = Math.DEG2RAD*(Math.NormalizeAngle(Math.RAD2DEG*(m_Angle + m_Angle_offset)));
 			}
-			g_Game.GetMousePos(m_rotatingCharacterMouseX, m_rotatingCharacterMouseY);
+			g_Game.GetMousePos(m_RotatingCharacterMouseX, m_RotatingCharacterMouseY);
 
-			optmenu.m_Options = new GameOptions;
+			m_optmenu.m_Options = new GameOptions;
 			NumericOptionsAccess numeric;
-			Class.CastTo(numeric, NumericOptionsAccess.Cast( optmenu.m_Options.GetOption(21) )); //21 = Radial blur option
-			blur_value = numeric.ReadValue();
+			Class.CastTo(numeric, NumericOptionsAccess.Cast( m_optmenu.m_Options.GetOption(21) )); //21 = Radial blur option
+			m_BlurValue = numeric.ReadValue();
 			numeric.WriteValue(0.0); //sets rotation blur to 0
 		}
 	}
@@ -612,57 +592,57 @@ class DayZIntroScene: Managed
 	// ------------------------------------------------------------
 	void CameraRotationStop()
 	{
-		if (m_rotatingCamera)
+		if (m_RotatingCamera)
 		{
-			optmenu.m_Options = new GameOptions;
+			m_optmenu.m_Options = new GameOptions;
 			NumericOptionsAccess numeric;
-			Class.CastTo(numeric, NumericOptionsAccess.Cast( optmenu.m_Options.GetOption(21) )); //21 = Radial blur option
-			numeric.WriteValue(blur_value); //restores original rotation blur value
+			Class.CastTo(numeric, NumericOptionsAccess.Cast( m_optmenu.m_Options.GetOption(21) )); //21 = Radial blur option
+			numeric.WriteValue(m_BlurValue); //restores original rotation blur value
 			
-			m_rotatingCamera = false;
+			m_RotatingCamera = false;
 		}
 	}
 	
 	// ------------------------------------------------------------
 	void CameraRotate()
 	{
-		if (m_demoUnit && m_rotatingCamera)
+		if (m_DemoUnit && m_RotatingCamera)
 		{
 			int actual_mouse_x_camera;
 			int actual_mouse_y;
 			g_Game.GetMousePos(actual_mouse_x_camera, actual_mouse_y);
 
-			diff_x = m_rotatingCharacterMouseX * 0.05 - actual_mouse_x_camera * 0.05;//obvod vysece
+			m_DiffX = m_RotatingCharacterMouseX * 0.05 - actual_mouse_x_camera * 0.05;//obvod vysece
 
-			angle = diff_x;//Math.DEG2RAD*(Math.NormalizeAngle(Math.RAD2DEG*(((diff_x - (2 * r)) / r)))); //in Rad
-			new_x = Math.Cos(angle + angle_offset) * r;
-			new_z = Math.Sin(angle + angle_offset) * r;
+			m_Angle = m_DiffX;//Math.DEG2RAD*(Math.NormalizeAngle(Math.RAD2DEG*(((diff_x - (2 * r)) / r)))); //in Rad
+			m_NewX = Math.Cos(m_Angle + m_Angle_offset) * m_Radius;
+			m_NewZ = Math.Sin(m_Angle + m_Angle_offset) * m_Radius;
 			
 			//set camera pos and dir
-			m_camera.SetPosition(Vector(m_demoPos[0] + new_x, m_demoPos[1] + 2, m_demoPos[2] + new_z));
-			if(!GetGame().GetUIManager().IsMenuOpen(16))
+			m_Camera.SetPosition(Vector(m_DemoPos[0] + m_NewX, m_DemoPos[1] + 2, m_DemoPos[2] + m_NewZ));
+			if(!GetGame().GetUIManager().IsMenuOpen(MENU_OPTIONS))
 			{
 				// obsolete
-				m_camera.LookAt(Vector(m_demoPos[0] + Math.Cos(angle + angle_offset + Math.PI*4/3), m_demoPos[1] + 0.75, m_demoPos[2] + Math.Sin(angle + angle_offset + Math.PI*4/3)));
+				m_Camera.LookAt(Vector(m_DemoPos[0] + Math.Cos(m_Angle + m_Angle_offset + Math.PI*4/3), m_DemoPos[1] + 0.75, m_DemoPos[2] + Math.Sin(m_Angle + m_Angle_offset + Math.PI*4/3)));
 			}
-			m_camera.SetFocus(r, 0); //(distance, blur)
-			//Print(m_camera.GetPosition());
+			m_Camera.SetFocus(m_Radius, 0); //(distance, blur)
+			//Print(m_Camera.GetPosition());
 		}
 	}
 
 	//camera zoom
 	void ZoomCamera(Widget w, int wheel)
 	{
-		if (w.GetName() == "CharacterRotationFrame" && m_demoUnit && m_camera)
+		if (w.GetName() == "CharacterRotationFrame" && m_DemoUnit && m_Camera)
 		{
-			delta_x = Math.AbsFloat(m_demoPos[0] - m_camera.GetPosition()[0]);
-			delta_z = Math.AbsFloat(m_demoPos[2] - m_camera.GetPosition()[2]);
+			m_DeltaX = Math.AbsFloat(m_DemoPos[0] - m_Camera.GetPosition()[0]);
+			m_DeltaZ = Math.AbsFloat(m_DemoPos[2] - m_Camera.GetPosition()[2]);
 			
-			r = Math.Clamp(wheel/5 + Math.Sqrt (Math.Pow(delta_x, 2) + Math.Pow(delta_z, 2)), r_original*0.75, r_original*1.5);
+			m_Radius = Math.Clamp(wheel/5 + Math.Sqrt (Math.Pow(m_DeltaX, 2) + Math.Pow(m_DeltaZ, 2)), m_Radius_original*0.75, m_Radius_original*1.5);
 			
-			new_x = Math.Cos(angle + angle_offset) * r;
-			new_z = Math.Sin(angle + angle_offset) * r;
-			m_camera.SetPosition(Vector(m_demoPos[0] + new_x, m_demoPos[1] + 2, m_demoPos[2] + new_z));
+			m_NewX = Math.Cos(m_Angle + m_Angle_offset) * m_Radius;
+			m_NewZ = Math.Sin(m_Angle + m_Angle_offset) * m_Radius;
+			m_Camera.SetPosition(Vector(m_DemoPos[0] + m_NewX, m_DemoPos[1] + 2, m_DemoPos[2] + m_NewZ));
 		}
 	}
 	
@@ -673,7 +653,7 @@ class DayZIntroScene: Managed
 		string child_name = ""; 
 		int count = GetGame().ConfigGetChildrenCount ( path );
 		Man character;
-		vector preloadPos = Vector(m_demoPos[0], m_demoPos[1] - 3, m_demoPos[2]);
+		vector preloadPos = Vector(m_DemoPos[0], m_DemoPos[1] - 3, m_DemoPos[2]);
 		
 		for (int p = 0; p < count; p++)
 		{
@@ -683,7 +663,7 @@ class DayZIntroScene: Managed
 			{
 				GetGame().PreloadObject(child_name, 1.0);
 				Class.CastTo(character, GetGame().CreateObject(child_name, preloadPos));
-				m_preloaded.Insert(character);
+				m_Preloaded.Insert(character);
 				if(character)
 				{
 					character.SetPosition(preloadPos);
@@ -714,10 +694,10 @@ class DayZIntroScene: Managed
 	
 	void SetCharacterInfo()
 	{
-		int topIndex = m_shirtList.Find(m_demoUnit.GetInventory().FindAttachment(InventorySlots.BODY).GetType());
-		int bottomIndex = m_pantsList.Find(m_demoUnit.GetInventory().FindAttachment(InventorySlots.LEGS).GetType());
-		int shoesIndex = m_shoesList.Find(m_demoUnit.GetInventory().FindAttachment(InventorySlots.FEET).GetType());
-		int characterIndex = GetGame().ListAvailableCharacters().Find(m_demoUnit.GetType());
+		int topIndex = m_shirtList.Find(m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY).GetType());
+		int bottomIndex = m_pantsList.Find(m_DemoUnit.GetInventory().FindAttachment(InventorySlots.LEGS).GetType());
+		int shoesIndex = m_shoesList.Find(m_DemoUnit.GetInventory().FindAttachment(InventorySlots.FEET).GetType());
+		int characterIndex = GetGame().ListAvailableCharacters().Find(m_DemoUnit.GetType());
 		
 		//saves player' type and clothes to g_Game to sync with server
 		GetGame().SetCharacterInfo(topIndex, bottomIndex, shoesIndex, characterIndex);

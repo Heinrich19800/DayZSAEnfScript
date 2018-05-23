@@ -32,7 +32,6 @@ class ClosableContainer: Container
 		{
 			OnHide();
 		}
-		//m_Parent.m_Parent.Refresh();
 		(Container.Cast( m_Parent.m_Parent ) ).UpdateBodySpacers();
 	}
 
@@ -41,7 +40,6 @@ class ClosableContainer: Container
 		ItemManager.GetInstance().SetDefaultOpenState( m_Entity.GetType(), false );
 		m_Closed = true;
 		this.OnHide();
-//m_Parent.m_Parent.Refresh();
 		( Container.Cast( m_Parent.m_Parent ) ).UpdateBodySpacers();
 	}
 
@@ -70,7 +68,9 @@ class ClosableContainer: Container
 
 	override ContainerBase Get( int x )
 	{
-		return m_Body.Get( x );
+		if( m_Body && x < m_Body.Count() && x >= 0 )
+			return m_Body.Get( x );
+		return null;
 	}
 
 	override void Refresh()

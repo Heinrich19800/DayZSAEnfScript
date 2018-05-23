@@ -513,23 +513,23 @@ class WidgetFadeTimer extends TimerBase
 
 	override private void OnUpdate()
 	{
-		float timeDiff = m_duration - m_time;
-		float progress = Math.Max( 0.0, ( 2.0 * m_alpha - timeDiff ) * 0.5 );
+		float timeDiff = m_time / m_duration;
+		float progress = Math.Max( 0.0, timeDiff );
 	
 		if ( m_widget )
 		{
 			if ( m_fadeIn )
 			{
-				m_widget.SetAlpha( progress );
+				m_widget.SetAlpha( timeDiff );
 			}
 			else
 			{
-				m_widget.SetAlpha( m_alpha - progress );
+				m_widget.SetAlpha( m_alpha - timeDiff );
 				Widget child = m_widget.GetChildren();
 				while( child )
 				{
 					float alphaChild = child.GetAlpha();
-					float progressChild = Math.Max( 0.0, ( 2.0 * alphaChild - timeDiff ) * 0.5 );
+					float progressChild = Math.Max( 0.0, ( 2.0 * alphaChild - timeDiff ) );
 					child.SetAlpha( alphaChild - progressChild );
 					child = child.GetChildren();
 				}

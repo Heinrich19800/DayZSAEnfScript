@@ -875,6 +875,9 @@ void DayZPlayerTypeRegisterItems(DayZPlayerType pType)
 		array<string> Mosin9130BoneRemap ={ "bolthandle", "Weapon_Bolt", "boltbody", "Weapon_Bone_04","boltbodyS", "Weapon_Bone_05", "trigger", "Weapon_Trigger","bullet", "Weapon_Bullet"};
 		pType.AddItemBoneRemap("Mosin9130_Base", Mosin9130BoneRemap);
 		
+		array<string> ShotgunBoneRemap ={ "bolt", "Weapon_Bolt", "pumphandle", "Weapon_Bone_01","feedramp", "Weapon_Bone_02", "trigger", "Weapon_Trigger","bullet", "Weapon_Bullet", "Weapon_Bone_03", "boltrelease", "Weapon_Bone_04", "barrel"};
+		pType.AddItemBoneRemap("Mp133Shotgun_Base", ShotgunBoneRemap);
+		
 		//array<string> M4A1BoneRemap ={ "bolt", "Weapon_Bolt", "magazine", "Weapon_Magazine", "trigger", "Weapon_Trigger","charginghandle", "Weapon_Bone_01","bullet","Weapon_Bullet", };
 		//pType.AddItemBoneRemap("M4A1_Base", M4A1BoneRemap);
 	}

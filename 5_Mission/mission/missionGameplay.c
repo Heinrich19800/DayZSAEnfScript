@@ -13,7 +13,6 @@ class MissionGameplay extends MissionBase
 	
 	private ref InventoryManager 	m_drag_manager;
 	private ref WidgetCache 		m_Widgets_Cache;
-	private ref WidgetEventHandler 	m_widget_event_handler;
 	
 	InventoryMenu 					m_inventory_menu;
 	ref InventoryMenuNew			m_inventory_menu_new;
@@ -50,20 +49,27 @@ class MissionGameplay extends MissionBase
 		m_ToggleHudTimer = new Timer(CALL_CATEGORY_GUI);
 
 		m_drag_manager = new InventoryManager;
-		m_widget_event_handler = new WidgetEventHandler;
+		
 		g_Game.m_loadingScreenOn = true;
+		
+		SyncEvents.RegisterEvents();
 	}
 	
 	void ~MissionGameplay()
 	{
 		DestroyInventory();
-		
 		//GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Remove(this.UpdateDebugMonitor);
 	#ifndef NO_GUI
 		if (g_Game.GetUIManager() && g_Game.GetUIManager().ScreenFadeVisible())
 		{
 			GetGame().SetEVUser(0);
 			g_Game.GetUIManager().ScreenFadeOut(0);
+		}
+	#endif
+	#ifdef PLATFORM_XBOX
+		if( GetGame().IsMultiplayer() )
+		{
+			OnlineServices.m_PermissionsAsyncInvoker.Remove( SendPermissionsToServer );
 		}
 	#endif
 	}
@@ -80,6 +86,7 @@ class MissionGameplay extends MissionBase
 			return;
 		}
 			
+		PPEffects.Init();
 		
 		m_UIManager = GetGame().GetUIManager();
 			
@@ -93,7 +100,7 @@ class MissionGameplay extends MissionBase
 			
 			m_hud_root_widget.Show(false);
 			m_chat.Init(m_hud_root_widget.FindAnyWidget("ChatFrameWidget"));
-			m_actionMenu.Init( TextWidget.Cast( m_hud_root_widget.FindAnyWidget("DefaultActionWidget") ) );
+			m_actionMenu.Init( m_hud_root_widget.FindAnyWidget("ActionsPanel"), TextWidget.Cast( m_hud_root_widget.FindAnyWidget("DefaultActionWidget") ) );
 			m_hud.Init( m_hud_root_widget.FindAnyWidget("HudPanel") );
 			m_microphone_icon = ImageWidget.Cast( m_hud_root_widget.FindAnyWidget("mic") );
 
@@ -113,7 +120,7 @@ class MissionGameplay extends MissionBase
 			
 			if ( !m_hud_debug.IsInitialized() )
 			{
-				m_hud_debug.Init( GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_hud_debug.layout") );
+				m_hud_debug.Init( GetGame().GetWorkspace().CreateWidgets("gui/layouts/debug/day_z_hud_debug.layout") );
 				
 				Debug.SetEnabledLogs(PluginConfigDebugProfile.GetInstance().GetLogsEnabled());
 			}
@@ -123,6 +130,18 @@ class MissionGameplay extends MissionBase
 		//RegBehaviour("zombie2",AIBehaviourHLZombie2,AIBehaviourHLDataZombie2);
 		
 		m_Widgets_Cache = new WidgetCache;
+		
+		#ifdef PLATFORM_XBOX
+			if( GetGame().IsMultiplayer() )
+			{
+				OnlineServices.m_PermissionsAsyncInvoker.Insert( SendPermissionsToServer );
+				
+				string uuid;
+				GetGame().GetUID(uuid);
+				OnlineServices.Init( uuid );
+				Print( "Online Services Initialized" );
+			}
+		#endif
 	}
 	
 	UIManager GetUIManager()
@@ -158,6 +177,19 @@ class MissionGameplay extends MissionBase
 		if( player) player.OnTick();
 	}
 	
+	void SendPermissionsToServer( BiosPrivacyUidResultArray result_list )
+	{
+		if( result_list )
+		{
+			if ( ScriptInputUserData.CanStoreInputUserData() )
+			{
+				ScriptInputUserData ctx = new ScriptInputUserData;
+				ctx.Write( INPUT_UDT_USER_SYNC_PERMISSIONS );
+				ctx.Write( result_list );
+				ctx.Send();
+			}
+		}
+	}
 	
 	override void OnMissionFinish()
 	{
@@ -215,25 +247,22 @@ class MissionGameplay extends MissionBase
 		}
 
 		//Quick Reload Weapon
-		if ( GetGame().IsDebug() )
+		if ( !menu && input.GetActionDown( UAQuickReload, false ) )
 		{
-			if ( input.GetActionDown( UAQuickReload, false ) )
+			if ( !GetGame().IsInventoryOpen() && !playerPB.GetActionManager().FindActionTarget().GetObject() )
 			{
-				if ( !GetGame().IsInventoryOpen() && !playerPB.GetActionManager().FindActionTarget().GetObject() )
+				EntityAI entity_hands = playerPB.GetHumanInventory().GetEntityInHands();
+				
+				if ( entity_hands && entity_hands.IsWeapon() )
 				{
-					EntityAI entity_hands = playerPB.GetHumanInventory().GetEntityInHands();
-					
-					if ( entity_hands && entity_hands.IsWeapon() )
-					{
-						playerPB.QuickReloadWeapon( entity_hands );
-					}
+					playerPB.QuickReloadWeapon( entity_hands );
 				}
 			}
 		}
 		
 #ifdef PLATFORM_XBOX		
 		//Switch beween weapons in quickslots 
-		if( input.GetActionDown( UAUIRadialMenuPick, false ) )
+		if( !menu && input.GetActionDown( UAUIRadialMenuPick, false ) )
 		{
 			if ( !GetGame().IsInventoryOpen() )
 			{
@@ -256,7 +285,7 @@ class MissionGameplay extends MissionBase
 				{
 					quickbar_entity = playerPB.GetQuickBarEntity( quickbar_index );
 					
-					if ( quickbar_entity && ( quickbar_entity.IsWeapon() || ( quickbar_entity.IsMeleeWeapon() && !quickbar_entity.IsMagazine() ) )
+					if ( quickbar_entity && ( quickbar_entity.IsWeapon() || ( quickbar_entity.IsMeleeWeapon() && !quickbar_entity.IsMagazine() ) ) )
 					{
 						break;
 					}
@@ -286,7 +315,7 @@ class MissionGameplay extends MissionBase
 
 #ifdef PLATFORM_PS4		
 		//Switch beween weapons in quickslots 
-		if( input.GetActionDown( UAUIRadialMenuPick, false ) )
+		if( !menu && input.GetActionDown( UAUIRadialMenuPick, false ) )
 		{
 			if ( !GetGame().IsInventoryOpen() )
 			{
@@ -524,7 +553,9 @@ class MissionGameplay extends MissionBase
 			}
 			
 			if ( menu == NULL )
-			{			
+			{
+				m_actionMenu.Refresh();
+				
 				if (input.GetActionDown(UANextAction, false))
 				{
 					m_actionMenu.NextAction();
@@ -534,6 +565,10 @@ class MissionGameplay extends MissionBase
 				{
 					m_actionMenu.PrevAction();
 				}
+			}
+			else
+			{
+				m_actionMenu.Hide();
 			}
 			
 			//hologram rotation
@@ -711,21 +746,6 @@ class MissionGameplay extends MissionBase
 			}
 			break;
 			
-		case SQFConsoleEventTypeID:
-			SQFConsoleEventParams sqf_console_params = SQFConsoleEventParams.Cast( params );
-			if (sqf_console_params.param1)
-			{
-				//Pause();
-				//Continue();
-				g_Game.GetUIManager().ShowUICursor(true);
-			}
-			else
-			{
-				//Continue();
-				g_Game.GetUIManager().ShowUICursor(false);
-			}
-			break;
-			
 		case ChatChannelEventTypeID:
 			ChatChannelEventParams cc_params = ChatChannelEventParams.Cast( params );
 			ChatInputMenu chatMenu = ChatInputMenu.Cast( GetUIManager().FindMenu(MENU_CHAT_INPUT) );
@@ -770,7 +790,17 @@ class MissionGameplay extends MissionBase
 				m_microphone_icon.Show(false);
 			}
 			break;
+		
+		case VONMissingPrivilegeEventTypeID:
+			// without params
+			Print("VONMissingPrivilegeEvent\n");
+			if( m_hud )
+			{
+				m_hud.ShowVONMissingPrivilegeNotify();
+			}
 			
+			break
+		
 		case SetFreeCameraEventTypeID:
 			SetFreeCameraEventParams set_free_camera_event_params = SetFreeCameraEventParams.Cast( params );
 			PluginDeveloper plugin_developer = PluginDeveloper.Cast( GetPlugin(PluginDeveloper) );

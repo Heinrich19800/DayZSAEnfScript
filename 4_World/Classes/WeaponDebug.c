@@ -12,7 +12,9 @@ class WeaponDebug
 {
 	const int BUFFER_SIZE = 1000;
 	const float COLLISIONS_DISTANCE_TOLERANCE = 0.01;
-	const float MAX_MUZZLE_DISTANCE_TOLERANCE = 7;
+	const float MAX_MUZZLE_DISTANCE_TOLERANCE = 20;
+	const float CAMERA_BULLET_ORIGIN_OFFSET = 1;
+	const float CAMERA_TRACE_MIN_DISTANCE_TOLERANCE = 0.3;
 	
 	Weapon m_WeaponInHands;
 	int m_BufferIndex;
@@ -44,6 +46,9 @@ class WeaponDebug
 	Shape m_PermanentLine1;
 	Shape m_PermanentLine2;
 	
+	Shape m_PermanentShape1;
+	Shape m_PermanentShape2;
+	
 	Weapon GetWeaponInHands()
 	{
 		Weapon weapon_in_hands;
@@ -72,17 +77,20 @@ class WeaponDebug
 		Debug.RemoveShape(m_Shape_konec);
 		Debug.RemoveShape(m_ShapeFireDirection1);
 		Debug.RemoveShape(m_ShapeFireDirection2);
-		Debug.RemoveShape(m_HitShape);
 		Debug.RemoveShape(m_ShapeEye);
 		Debug.RemoveShape(m_ShapeTrailLines);
 		Debug.RemoveShape(m_ShapeFireDirCamera);
+		Debug.RemoveShape(m_HitShape);
 		Debug.RemoveShape(m_HitShape2);
 		Debug.RemoveShape(m_HitShape3);
+		Debug.RemoveShape(m_HitShape4);
 		
 		if( is_exit )
 		{
 			Debug.RemoveShape(m_PermanentLine1);
 			Debug.RemoveShape(m_PermanentLine2);
+			Debug.RemoveShape(m_PermanentShape1);
+			Debug.RemoveShape(m_PermanentShape2);
 		}
 	}
 
@@ -170,7 +178,7 @@ class WeaponDebug
 			
 			if( m_CurrentMode == eDebugMode.CAMERA_MUZZLE_HYBRID ) 
 			{
-				DrawLineOfFireCameraHybrid(usti_hlavne_position, cameraDirection, cameraPosition);
+				DrawLineOfFireCameraHybrid(usti_hlavne_position, cameraDirection, cameraPosition, konec_hlavne_position);
 			}
 			
 			if(m_IsDrawKeyHeldDown)
@@ -343,9 +351,9 @@ class WeaponDebug
 		}
 	}
 
-	void DrawLineOfFireCameraHybrid(vector usti_hlavne_position, vector camera_dir, vector camera_pos)
+	void DrawLineOfFireCameraHybrid(vector usti_hlavne_position, vector camera_dir, vector camera_pos, vector konec_hlavne_position)
 	{
-		bool muzzle_ray_colliding;
+		bool muzzle_shot;
 		vector contact_point_cam_trace;
 		vector contact_point_muzzle_trace;
 		
@@ -360,29 +368,34 @@ class WeaponDebug
 		int contact_component_muzzle;
 		
 		float distance_to_aim_at;
-		vector end_point = camera_pos + camera_dir * 1000;
+		vector end_point = camera_pos + camera_dir * 100;
+		vector start_point = camera_pos + (CAMERA_BULLET_ORIGIN_OFFSET * camera_dir);
+		vector weapon_aim_direction = usti_hlavne_position - konec_hlavne_position;
+		weapon_aim_direction.Normalize();
 		
 		Man player = GetGame().GetPlayer();
 		Object player_o;
 		Class.CastTo(player_o, player);
 
-		if( DayZPhysics.RaycastRV(camera_pos, end_point, contact_point_cam_trace, contact_dir, contact_component,null, null, player_o , false, false, ObjIntersectFire) )
+		if( DayZPhysics.RaycastRV(start_point, end_point, contact_point_cam_trace, contact_dir, contact_component,null, null, player_o , false, false, ObjIntersectFire) )
 		{
-			float collision_distance_camera = vector.Distance(usti_hlavne_position, contact_point_muzzle_trace);
+			m_TargetDistance = vector.Distance(start_point, contact_point_cam_trace);
 			aim_at_position = contact_point_cam_trace;
-		}
-		
-		if( DayZPhysics.RaycastRV(usti_hlavne_position, contact_point_cam_trace, contact_point_muzzle_trace, contact_dir, contact_component,null, null, player_o , false, false, ObjIntersectFire, 0.05) )
-		{
-			float collision_distance = vector.Distance(contact_point_cam_trace, contact_point_muzzle_trace);
-			float muzzle_collision_distance = vector.Distance(usti_hlavne_position, contact_point_muzzle_trace);
 			
-			if(collision_distance > COLLISIONS_DISTANCE_TOLERANCE && muzzle_collision_distance < MAX_MUZZLE_DISTANCE_TOLERANCE)
+			if( DayZPhysics.RaycastRV(usti_hlavne_position, contact_point_cam_trace, contact_point_muzzle_trace, contact_dir, contact_component,null, null, player_o , false, false, ObjIntersectFire, 0.05) )
 			{
-				muzzle_ray_colliding = true;
-				aim_at_position = contact_point_muzzle_trace;
+				float collision_distance = vector.Distance(contact_point_cam_trace, contact_point_muzzle_trace);
+				float muzzle_collision_distance = vector.Distance(usti_hlavne_position, contact_point_muzzle_trace);
+				
+				if((collision_distance > 2 && muzzle_collision_distance < MAX_MUZZLE_DISTANCE_TOLERANCE) || m_TargetDistance < CAMERA_TRACE_MIN_DISTANCE_TOLERANCE)
+				{
+					muzzle_shot = true;
+					aim_at_position = contact_point_muzzle_trace;
+				}
 			}
 		}
+		
+		
 		
 		distance_to_aim_at = vector.Distance(camera_pos, aim_at_position);
 		
@@ -390,16 +403,27 @@ class WeaponDebug
 		{
 			Debug.RemoveShape(m_PermanentLine1);
 			Debug.RemoveShape(m_PermanentLine2);
+			Debug.RemoveShape(m_PermanentShape1);
 			
-			if(muzzle_ray_colliding)
+			vector contact_point_temp;
+			
+			if(muzzle_shot)
 			{
-
-				m_PermanentLine1 = Debug.DrawLine(usti_hlavne_position, contact_point_muzzle_trace, Colors.RED, ShapeFlags.NOZBUFFER );
+				m_PermanentLine1 = Debug.DrawLine(usti_hlavne_position, usti_hlavne_position + weapon_aim_direction * 5, Colors.RED, ShapeFlags.NOZBUFFER );
 				m_PermanentLine2 = Debug.DrawLine(camera_pos, contact_point_cam_trace, Colors.GREEN, ShapeFlags.NOZBUFFER );
+				PrintString("muzle shot");
 			}
 			else
 			{
-				m_PermanentLine1 = Debug.DrawLine(camera_pos, contact_point_cam_trace, Colors.RED, ShapeFlags.NOZBUFFER );
+				vector dir = contact_point_cam_trace - camera_pos;
+				dir.Normalize();
+				dir = dir * 100;
+				float dst = vector.Distance(camera_pos, contact_point_cam_trace);
+				float dist2 = vector.Distance(camera_pos, contact_point_cam_trace);
+				
+				//m_PermanentShape1 = Debug.DrawSphere(start_point, 0.015,Colors.GREEN);
+				m_PermanentLine1 = Debug.DrawLine(start_point, contact_point_cam_trace + dir, Colors.RED, ShapeFlags.NOZBUFFER );
+				PrintString("camera shot");
 			}
 		}
 		
@@ -408,8 +432,10 @@ class WeaponDebug
 		float hit_sphere_size = Math.Lerp(0.025, 0.75, distance_normalized);
 		
 		Debug.RemoveShape(m_HitShape4);
+		Debug.RemoveShape(m_HitShape);
+		m_HitShape = Debug.DrawSphere(contact_point_cam_trace, 0.20,Colors.GREEN, ShapeFlags.TRANSP);
 		m_HitShape4 = Debug.DrawSphere(aim_at_position, hit_sphere_size);
-		
+	
 	}
 	
 }

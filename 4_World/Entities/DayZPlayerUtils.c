@@ -232,7 +232,16 @@ class DayZPlayerUtils
 		GameInventory.PrepareDropEntityPos(player, mag, m4);
 		InventoryLocation il_mag_next = new InventoryLocation;
 		il_mag_next.SetGround(mag, m4);
-		return GameInventory.LocationAddEntity(il_mag_next);
+		InventoryLocation il_mag_curr = new InventoryLocation;
+		if (mag.GetInventory().GetCurrentInventoryLocation(il_mag_curr))
+		{
+			return GameInventory.LocationSyncMoveEntity(il_mag_curr, il_mag_next);
+		}
+		else
+		{
+			Error("DayZPlayerUtils::HandleDropMagazine - cannot get current inv location of mag=" + mag);
+			return false;
+		}
 	}
 	
 	static bool HandleDropCartridge (DayZPlayer player, float damage, string cartTypeName, string magTypeName)

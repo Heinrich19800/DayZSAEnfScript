@@ -44,19 +44,21 @@ class Particle extends ScriptedEntity
 	//====================================
 	private void CreateParticleEffect()
 	{
-		if ( m_ParticleEffect == NULL )
-		{
-			m_ParticleEffect = GetGame().CreateObject("#particlesourceenf", Vector(0,0,0), true); // partiple source must be lowercase!
-		}
-		
-		this.AddChild(m_ParticleEffect, -1);
-		vobject vobj = NULL;
-		
 		if (!GetGame().IsServer()  ||  !GetGame().IsMultiplayer())
+		{
+			if ( m_ParticleEffect == NULL )
+			{
+				m_ParticleEffect = GetGame().CreateObject("#particlesourceenf", Vector(0,0,0), true); // partiple source must be lowercase!
+			}
+			
+			this.AddChild(m_ParticleEffect, -1);
+			vobject vobj = NULL;
+			
 			vobj = GetObject( ParticleList.GetParticleFullPath(m_ParticleID) );
-		
-		m_ParticleEffect.SetObject(vobj, "");
-		ReleaseObject(vobj);
+			
+			m_ParticleEffect.SetObject(vobj, "");
+			ReleaseObject(vobj);
+		}
 	}
 	
 	//====================================
@@ -135,6 +137,61 @@ class Particle extends ScriptedEntity
 		
 		return false;
 	}
+	
+	// !Scale some parameter for all emitors in this particle effect. If you want to change a specific emitor, then use function SetParticleParm().
+	void ScaleParticleParam(int parameter_id, float coef )
+	{
+		if (m_ParticleEffect)
+		{
+			string emitors_array[];
+			
+			int emitors = GetParticleEmitors(m_ParticleEffect, emitors_array, 20);
+			
+			for (int i = 0; i < emitors; i++)
+			{
+				float value
+				GetParticleParm(m_ParticleEffect, i, parameter_id, value);
+				SetParticleParm(m_ParticleEffect, i, parameter_id, value * coef);
+			}
+		}
+	}
+	
+	// !Scale some parameter for all emitors in this particle effect. If you want to change a specific emitor, then use function SetParticleParm().
+	void IncrementParticleParam(int parameter_id, float value )
+	{
+		if (m_ParticleEffect)
+		{
+			string emitors_array[];
+			
+			int emitors = GetParticleEmitors(m_ParticleEffect, emitors_array, 20);
+			
+			for (int i = 0; i < emitors; i++)
+			{
+				float param
+				GetParticleParm(m_ParticleEffect, i, parameter_id, param);
+				SetParticleParm(m_ParticleEffect, i, parameter_id, param + value);
+			}
+		}
+	}
+	
+	// !Scale some parameter for all emitors in this particle effect. If you want to change a specific emitor, then use function SetParticleParm().
+	void SetParticleParam(int parameter_id, float value )
+	{
+		SetParticleParm(m_ParticleEffect, -1, parameter_id, value);
+		
+		// The above sometimes doesn't work as intended. The following is a debug/hack.
+		/*
+		string emitors_array[];
+		
+		int emitors = GetParticleEmitors(m_ParticleEffect, emitors_array, 20);
+		
+		for (int i = 0; i < emitors; i++)
+		{
+			SetParticleParm(m_ParticleEffect, i, parameter_id, value);
+		}
+		*/
+	}
+	
 	
 	//====================================
 	// Client: OnCheckAutoDelete

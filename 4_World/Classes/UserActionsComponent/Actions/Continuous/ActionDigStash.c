@@ -85,15 +85,21 @@ class ActionDigStash: ActionContinuousBase
 		{
 			ItemBase stashed_item;
 			UndergroundStash stash;
+			vector pos = targetObject.GetPosition();
+			
+			targetObject.SetPosition( targetObject.GetPosition() + "0 -5 0" ); // TO DO: Do not use teleportation hack if possible!
 			
 			Class.CastTo(stashed_item,  targetObject );
-			Class.CastTo(stash,  GetGame().CreateObject("UndergroundStash", targetObject.GetPosition(), false) );
+			Class.CastTo(stash,  GetGame().CreateObject("UndergroundStash", pos, false) );
 			
 			if ( stash )
 			{
 				stash.SetStashedItem(stashed_item);
-				targetObject.SetPosition( targetObject.GetPosition() + "0 -5 0" ); // TO DO: Do not use teleportation hack if possible!
-				stash.PlaceOnSurface();
+				stash.PlaceOnGround();
+				vector surf_norm = GetGame().SurfaceGetNormal(pos[0], pos[1]);
+				surf_norm = surf_norm.VectorToAngles();
+				vector stash_ori = targetObject.GetOrientation();
+				//stash.SetOrientation(surf_norm);
 			}
 			else
 			{

@@ -161,7 +161,7 @@ class HudDebugWinCharModifiers extends HudDebugWinBase
 	void AddModifier( string name, int id, bool state )
 	{
 		//create widget
-		Widget widget = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/day_z_hud_debug_modifier.layout", m_WgtModifiersContent );
+		Widget widget = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/debug/day_z_hud_debug_modifier.layout", m_WgtModifiersContent );
 		
 		//add to widget array (for clearing purposes)
 		m_ModifierWidgets.Insert( widget );

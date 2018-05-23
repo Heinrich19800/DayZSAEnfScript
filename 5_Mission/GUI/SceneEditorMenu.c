@@ -392,7 +392,7 @@ class SceneEditorMenu extends UIScriptedMenu
 	override Widget Init()
 	{
 		// Create Main layout menu
-		Widget wgt = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_scene_editor.layout");
+		Widget wgt = GetGame().GetWorkspace().CreateWidgets("gui/layouts/scene_editor/day_z_scene_editor.layout");
 		m_WgtPnlWrapper = wgt.FindAnyWidget("pnl_presets_wrapper_outer");
 		m_SlWgtLoadedScene		= TextWidget.Cast( wgt.FindAnyWidget("txt_left_label_loaded_scene") );
 		// Find ListTextBoxWidget for objects list

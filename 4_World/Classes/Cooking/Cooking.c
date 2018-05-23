@@ -341,7 +341,10 @@ class Cooking
 			item_temperature = Math.Clamp( item_temperature, min_temperature, FOOD_MAX_COOKING_TEMPERATURE );
 			
 			//set new temperature
-			cooked_item.SetTemperature( item_temperature );
+			if ( GetGame() && GetGame().IsServer() )
+			{
+				cooked_item.SetTemperature( item_temperature );
+			}
 		}
 	}
 	

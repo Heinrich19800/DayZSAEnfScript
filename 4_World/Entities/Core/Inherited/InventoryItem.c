@@ -88,6 +88,11 @@ class Clothing extends ItemBase
 		
 		return false;
 	}
+
+	float GetItemVisibility()
+	{
+		return ConfigGetFloat("visibilityModifier");
+	}
 };
 
 typedef Clothing ClothingBase;

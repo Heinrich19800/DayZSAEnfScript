@@ -1,11 +1,12 @@
 class Header: ContainerBase
 {
+	protected EntityAI	m_Entity;
 	void Header( ContainerBase parent, string function_name )
 	{
-		WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( m_MainPanel.FindAnyWidget( "collapse_button" ),  m_Parent, function_name );
+		WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( GetMainPanel().FindAnyWidget( "collapse_button" ),  m_Parent, function_name );
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "collapse_button" ),  m_Parent, "OnDropReceivedFromHeader" );
-		WidgetEventHandler.GetInstance().RegisterOnDropReceived( m_MainPanel.FindAnyWidget( "Dropzone" ),  m_Parent, "OnDropReceivedFromHeader" );
-		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( m_MainPanel.FindAnyWidget( "Dropzone" ),  this, "DraggingOverHeader" );
+		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel(),  m_Parent, "OnDropReceivedFromHeader" );
+		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel(),  this, "DraggingOverHeader" );
 	}
 	
 	void SetName( string name )
@@ -17,6 +18,7 @@ class Header: ContainerBase
 	
 	void SetItemPreview( EntityAI entity_ai )
 	{
+		m_Entity = entity_ai;
 		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( GetMainPanel().FindAnyWidget( "Render" ) );
 		item_preview.SetItem(entity_ai);
 	}

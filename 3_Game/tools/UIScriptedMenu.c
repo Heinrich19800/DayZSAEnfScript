@@ -507,11 +507,6 @@ class UIScriptedMenu extends UIMenuPanel
 		return NULL;
 	}
 	
-	// console related functions
-	proto native void ResetGamepads();
-	proto native void ShowAccountPicker();
-	proto native bool IsGamepadUser();
-	
 	bool OnXboxEvent(int xboxEvent)
 	{
 		return true;

@@ -74,10 +74,12 @@ class PluginManager
 		RegisterPluginDebug( "PluginDiagMenu",					true, 	true );
 		RegisterPluginDebug( "PluginDayZCreatureAIDebug",		true, 	true );
 		RegisterPluginDebug( "PluginDoorRuler",					true, 	false );
+		RegisterPluginDebug( "PluginCharPlacement",				true, 	false );
 		RegisterPluginDebug( "PluginPermanentCrossHair",		true,	false );
 		RegisterPluginDebug( "PluginRemotePlayerDebugClient",	true,	false );
 		RegisterPluginDebug( "PluginRemotePlayerDebugServer",	false,	true );
 		RegisterPluginDebug( "PluginDrawCheckerboard",			true,	false );
+		RegisterPluginDebug( "PluginPresenceNotifier",			true,	false );
 		//RegisterPluginDebug( "PluginSoundDebug",				true,	false );
 		
 		GetGame().GetUpdateQueue(CALL_CATEGORY_GAMEPLAY).Insert(this.MainOnUpdate);

@@ -8,7 +8,7 @@ class DebugMonitor
 		
 	void DebugMonitor()
 	{		
-		m_WidgetRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_debug_monitor.layout");
+		m_WidgetRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/debug/day_z_debug_monitor.layout");
 		m_WidgetRoot.Show(false);
 		
 		m_pWindowLabelText = TextWidget.Cast( m_WidgetRoot.FindAnyWidget("WindowLabel") );

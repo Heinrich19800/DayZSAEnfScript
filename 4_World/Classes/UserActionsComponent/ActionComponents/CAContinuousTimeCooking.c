@@ -56,16 +56,7 @@ class CAContinuousTimeCooking : CAContinuousBase
 				
 			if ( m_TimeElapsedRepeat >= m_CookingUpdateTime )
 			{
-				if ( GetGame() && GetGame().IsServer() )
-				{
-					cooking_state_update = m_CookingProcess.CookOnStick( m_ItemToCook, player.GetSoftSkillManager().AddSpecialtyBonus( m_CookingUpdateTime, m_Action.GetSpecialtyWeight(), true ) );
-				}
-				
-				//add speciality
-				if ( ( cooking_time / m_TimeToCook ) > 0 ) 
-				{
-					player.GetSoftSkillManager().AddSpecialty( ROUGH_SPECIALTY_WEIGHT * ( cooking_time / m_TimeToCook ) );
-				}
+				cooking_state_update = m_CookingProcess.CookOnStick( m_ItemToCook, m_CookingUpdateTime );
 				
 				//refresh action when food changed state
 				if ( cooking_state_update == 1 )
