@@ -1,5 +1,7 @@
 class ActionWashHandsItem: ActionSingleUseBase
 {
+	protected const float WASH_HANDS_AMOUNT = 250; //ml
+	
 	void ActionWashHandsItem()
 	{
 		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_WALKIETALKIEON;
@@ -31,7 +33,7 @@ class ActionWashHandsItem: ActionSingleUseBase
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
-		if ( player.HasBloodyHands() )
+		if ( player.HasBloodyHands() && item.GetQuantity() >= WASH_HANDS_AMOUNT )
 		{
 			return true;
 		}
@@ -45,5 +47,7 @@ class ActionWashHandsItem: ActionSingleUseBase
 	{
 		PluginLifespan module_lifespan = PluginLifespan.Cast( GetPlugin( PluginLifespan ) );
 		module_lifespan.UpdateBloodyHandsVisibility( player, false );
+		
+		item.AddQuantity( -WASH_HANDS_AMOUNT, false );
 	}
 };

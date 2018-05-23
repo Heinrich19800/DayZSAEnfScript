@@ -140,13 +140,24 @@ class DayZPlayerImplement extends DayZPlayer
 
 
 		if (!IsAlive() && g_Game.GetMissionState() == g_Game.MISSION_STATE_GAME)
-		{
-			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(ShowDeadScreen, DEAD_SCREEN_DELAY, false, true);
+		{			
+			//GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(ShowDeadScreen, DEAD_SCREEN_DELAY, false, true);
+			//GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(ShowDeadScreen, true);
+			GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(SimulateDeath, true);
 			
 			StartCommand_Death();
 			
 			// disable voice communication
 			GetGame().GetWorld().SetVoiceOn(false);
+			
+			if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )
+			{
+				/*AbstractSoundScene asc = GetGame().GetSoundScene();
+				asc.SetSoundVolume(0,5);*/
+				
+				// hide exit dialog if displayed
+				GetGame().GetUIManager().CloseDialog();
+			}
 			return true;
 		}
 
@@ -167,6 +178,64 @@ class DayZPlayerImplement extends DayZPlayer
 			GetGame().GetUIManager().ScreenFadeOut(0);
 		}
 	#endif
+	}
+	
+	void SimulateDeath(bool state)
+	{
+		if (g_Game.GetMissionState() != DayZGame.MISSION_STATE_GAME)	 return;
+		//controlls
+		LockControls(state);
+		
+		//video
+		ShowDeadScreen(state);
+		
+		//audio
+		if (state == true)
+		{
+			GetGame().GetSoundScene().SetSoundVolume(0,0);
+			GetGame().GetSoundScene().SetSpeechExVolume(0,0);
+			GetGame().GetSoundScene().SetMusicVolume(0,0);
+			GetGame().GetSoundScene().SetVOIPVolume(0,0);
+			GetGame().GetSoundScene().SetRadioVolume(0,0);
+		}
+		else
+		{
+			GetGame().GetSoundScene().SetSoundVolume(g_Game.m_volume_sound,1);
+			GetGame().GetSoundScene().SetSpeechExVolume(g_Game.m_volume_speechEX,1);
+			GetGame().GetSoundScene().SetMusicVolume(g_Game.m_volume_music,1);
+			GetGame().GetSoundScene().SetVOIPVolume(g_Game.m_volume_VOIP,1);
+			GetGame().GetSoundScene().SetRadioVolume(g_Game.m_volume_radio,1);
+		}
+	}
+	
+	void LockControls(bool state)
+	{
+		if (state == true)
+		{
+			GetGame().GetInput().ChangeGameFocus(1, INPUT_DEVICE_MOUSE);
+			GetGame().GetInput().ChangeGameFocus(1, INPUT_DEVICE_KEYBOARD);
+			GetGame().GetInput().ChangeGameFocus(1, INPUT_DEVICE_GAMEPAD);
+			
+			if (GetGame().GetUIManager()) 	GetGame().GetUIManager().ShowUICursor(true);
+		}
+		else
+		{
+			GetGame().GetInput().ChangeGameFocus(-1, INPUT_DEVICE_MOUSE);
+			GetGame().GetInput().ChangeGameFocus(-1, INPUT_DEVICE_KEYBOARD);
+			GetGame().GetInput().ChangeGameFocus(-1, INPUT_DEVICE_GAMEPAD);
+			
+			if (GetGame().GetUIManager())
+			{
+				if (GetGame().GetUIManager().GetMenu())
+				{
+					GetGame().GetUIManager().ShowUICursor(true);
+				}
+				else
+				{
+					GetGame().GetUIManager().ShowUICursor(false);
+				}
+			}
+		}
 	}
 	
 	DayZPlayerInventory GetDayZPlayerInventory ()

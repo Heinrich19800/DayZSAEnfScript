@@ -281,7 +281,7 @@ class CharacterMenu extends UIScriptedMenu
 	void RandomCharacter()
 	{
 		g_Game.SetNewCharacter(true);
-		g_Game.SetPlayerGameName("Survivor");
+		//g_Game.SetPlayerGameName(DEFAULT_CHARACTER_NAME);
 		ShowMenuButtons(true);
 		m_scene.m_currentCharacterID = -1;
 		m_name_widget.SetText(g_Game.GetPlayerGameName());		

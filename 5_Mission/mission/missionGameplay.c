@@ -3,11 +3,6 @@
 class MissionGameplay extends MissionBase
 {
 	int		m_life_state;
-	float 	m_volume_sound;
-	float 	m_volume_speechEX;
-	float 	m_volume_music;
-	float 	m_volume_VOIP;
-	float 	m_volume_radio;
 	bool	m_initialized;
 	bool	m_invUpdateThisFrame;
 	protected bool		m_IsOpenPauseMenu;
@@ -65,7 +60,7 @@ class MissionGameplay extends MissionBase
 		
 		//GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Remove(this.UpdateDebugMonitor);
 	#ifndef NO_GUI
-		if (g_Game && g_Game.GetUIManager() && g_Game.GetUIManager().ScreenFadeVisible())
+		if (g_Game.GetUIManager() && g_Game.GetUIManager().ScreenFadeVisible())
 		{
 			GetGame().SetEVUser(0);
 			g_Game.GetUIManager().ScreenFadeOut(0);
@@ -128,12 +123,6 @@ class MissionGameplay extends MissionBase
 		//RegBehaviour("zombie2",AIBehaviourHLZombie2,AIBehaviourHLDataZombie2);
 		
 		m_Widgets_Cache = new WidgetCache;
-		
-		m_volume_sound = GetGame().GetSoundScene().GetSoundVolume();
-		m_volume_speechEX = GetGame().GetSoundScene().GetSpeechExVolume();
-		m_volume_music = GetGame().GetSoundScene().GetMusicVolume();
-		m_volume_VOIP = GetGame().GetSoundScene().GetVOIPVolume();
-		m_volume_radio = GetGame().GetSoundScene().GetRadioVolume();
 	}
 	
 	UIManager GetUIManager()
@@ -575,15 +564,15 @@ class MissionGameplay extends MissionBase
 				if (m_life_state != EPlayerStates.ALIVE)
 				{
 					CloseAllMenus();
-					if (m_life_state == EPlayerStates.DEAD)
+					/*if (m_life_state == EPlayerStates.DEAD)
 					{
 						GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(SimulateDeath,true);
-					}
+					}*/
 				}
-				else if (m_life_state == EPlayerStates.ALIVE)
+				/*else if (m_life_state == EPlayerStates.ALIVE)
 				{
 					GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(SimulateDeath,false);
-				}
+				}*/
 			}
 		}
 		
@@ -1089,67 +1078,5 @@ class MissionGameplay extends MissionBase
 	{
 		float hold_action_time = GetActionUpTime() - GetActionDownTime();
 		return hold_action_time;
-	}
-	
-	void SimulateDeath(bool state)
-	{
-		if (g_Game.GetMissionState() != DayZGame.MISSION_STATE_GAME)	 return;
-		//TODO turn on/off death effects (audio, visuals, controls)
-		
-		//TODO prepsat 
-		//controlls
-		/*if (state == true) 	GetGame().GetUIManager().GetMenu().LockControls();
-		else 				GetGame().GetUIManager().GetMenu().UnlockControls();*/
-		LockControls(state);
-		
-		//video?
-		
-		//audio?
-		if (state == true)
-		{
-			GetGame().GetSoundScene().SetSoundVolume(0,1);
-			GetGame().GetSoundScene().SetSpeechExVolume(0,1);
-			GetGame().GetSoundScene().SetMusicVolume(0,1);
-			GetGame().GetSoundScene().SetVOIPVolume(0,1);
-			GetGame().GetSoundScene().SetRadioVolume(0,1);
-		}
-		else
-		{
-			GetGame().GetSoundScene().SetSoundVolume(m_volume_sound,1);
-			GetGame().GetSoundScene().SetSpeechExVolume(m_volume_speechEX,1);
-			GetGame().GetSoundScene().SetMusicVolume(m_volume_music,1);
-			GetGame().GetSoundScene().SetVOIPVolume(m_volume_VOIP,1);
-			GetGame().GetSoundScene().SetRadioVolume(m_volume_radio,1);
-		}
-	}
-	
-	void LockControls(bool state)
-	{
-		if (state == true)
-		{
-			GetGame().GetInput().ChangeGameFocus(1, INPUT_DEVICE_MOUSE);
-			GetGame().GetInput().ChangeGameFocus(1, INPUT_DEVICE_KEYBOARD);
-			GetGame().GetInput().ChangeGameFocus(1, INPUT_DEVICE_GAMEPAD);
-			
-			if (GetGame().GetUIManager()) 	GetGame().GetUIManager().ShowUICursor(true);
-		}
-		else
-		{
-			GetGame().GetInput().ChangeGameFocus(-1, INPUT_DEVICE_MOUSE);
-			GetGame().GetInput().ChangeGameFocus(-1, INPUT_DEVICE_KEYBOARD);
-			GetGame().GetInput().ChangeGameFocus(-1, INPUT_DEVICE_GAMEPAD);
-			
-			if (GetGame().GetUIManager())
-			{
-				if (GetGame().GetUIManager().GetMenu())
-				{
-					GetGame().GetUIManager().ShowUICursor(true);
-				}
-				else
-				{
-					GetGame().GetUIManager().ShowUICursor(false);
-				}
-			}
-		}
 	}
 }

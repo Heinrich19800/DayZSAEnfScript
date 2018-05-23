@@ -83,12 +83,6 @@ class InGameMenu extends UIScriptedMenu
 			else
 			{
 				GetGame().GetUIManager().ShowDialog("#main_menu_respawn", "#main_menu_respawn_question", 0, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
-				/*WIP, maybe add timer?
-				if (g_Game.m_isTileSet)
-				{
-					g_Game.m_isTileSet = false;
-					g_Game.m_tilePublic.Show(false);
-				}*/
 			}
 			return true;
 		}
@@ -112,8 +106,8 @@ class InGameMenu extends UIScriptedMenu
 				// skip logout screen in singleplayer
 				GetGame().GetMission().AbortMission();
 			}	
-			g_Game.CancelQueueTime();	
-			return true;	
+			g_Game.CancelQueueTime();
+			return true;
 		
 		}
 		else if (result == DBB_YES && GetGame().IsMultiplayer())
@@ -122,7 +116,7 @@ class InGameMenu extends UIScriptedMenu
 			//turns off dead screen, hides HUD for countdown
 			//---------------------------------------------------
 			PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
-			if(player) 	
+			if(player)
 			{
 				GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(player.ShowDeadScreen, DayZPlayerImplement.DEAD_SCREEN_DELAY, false, false);
 			}

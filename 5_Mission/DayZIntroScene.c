@@ -318,7 +318,7 @@ class DayZIntroScene: Managed
 			m_data.GetUserGamertag(name);
 			g_Game.SetPlayerGameName(name);
 #else
-			g_Game.SetPlayerGameName("Survivor");
+			g_Game.SetPlayerGameName(DEFAULT_CHARACTER_NAME);
 #endif
 			CreateRandomCharacter();
 			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(SceneCharacterSetPos, 250);

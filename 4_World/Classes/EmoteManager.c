@@ -44,6 +44,7 @@ class EmoteManager
 	protected int			m_CurrentGestureID;
 	protected bool			m_MouseButtonPressed;
 	protected bool 			m_PlayerDies;
+	protected bool 			m_controllsLocked;
 	
 	void EmoteManager( PlayerBase player ) 
 	{
@@ -71,6 +72,13 @@ class EmoteManager
 			if( !GetGame().IsMultiplayer() || GetGame().IsClient() )
 			{
 				uiGesture = GetGame().GetUIManager().IsMenuOpen(MENU_GESTURES);
+			}
+			
+			if (m_Callback.m_IsFullbody && !m_controllsLocked)
+			{
+				m_controllsLocked = true;
+				m_Player.GetInputController().OverrideAimChangeX(true,0);
+				m_Player.GetInputController().OverrideMovementSpeed(true,0);
 			}
 			
 			//jtomasik - asi bych nemel checkovat jestli hrac klika v menu nebo ve scene tady, ale mel by to vedet input manager?
@@ -112,7 +120,7 @@ class EmoteManager
 				m_bEmoteIsPlaying = false;
 				OnEmoteEnd();
 			}
-			else if( !m_HIC.IsWeaponRaised() && !m_Player.IsSwimming() && !m_Player.IsClimbingLadder() ) 	//TODO rework conditions into something better?
+			else if( !m_HIC.IsWeaponRaised() && !m_Player.IsSwimming() && !m_Player.IsClimbingLadder() && !m_Player.IsFalling() ) 	//TODO rework conditions into something better?
 			{
 				PickEmote();
 			}
@@ -145,27 +153,15 @@ class EmoteManager
 		}
 		else
 		{
-			/*int gesture = GetGesture();
-			if ( gesture > 0 )
+			if ( m_Player.GetActionManager() ) m_Player.GetActionManager().EnableActions();
+			m_Player.GetInventory().UnlockInventory(LOCK_FROM_SCRIPT);
+			
+			if ( m_controllsLocked )
 			{
-				if( !GetGame().IsMultiplayer() || GetGame().IsClient() ) 
-				{
-					PlayEmote(gesture);
-					SetGesture(-1);
-				}
-				if( GetGame().IsClient() )
-				{
-					ScriptInputUserData ctx = new ScriptInputUserData;
-					ctx.Write(INPUT_UDT_GESTURE);
-					ctx.Write(gesture);
-					ctx.Send();
-				}
+				m_controllsLocked = false;
+				m_Player.GetInputController().OverrideAimChangeX(false,0);
+				m_Player.GetInputController().OverrideMovementSpeed(false,0);
 			}
-			else
-			{*/
-				if( m_Player.GetActionManager() ) m_Player.GetActionManager().EnableActions();
-				m_Player.GetInventory().UnlockInventory(LOCK_FROM_SCRIPT);
-			//}
 		}
 
 		//! back to the default - shoot from camera - if not set already
@@ -186,7 +182,7 @@ class EmoteManager
 				else
 				{
 					m_Callback.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END);		
-				}								
+				}
 			}
 			return true;
 		}
@@ -257,11 +253,17 @@ class EmoteManager
 			
 				case ID_EMOTE_SUICIDE :
 					int suicideID = -1;
+					string suicideStr;
 					ItemBase weapon;
 					weapon = m_Player.GetItemInHands();
 					//suicideID = DayZPlayerConstants.CMD_SUICIDEFB_UNARMED; //unarmed suicide...optional?
 					if (weapon)
 					{
+						if (weapon.ConfigIsExisting("suicideAnim"))
+						{
+							suicideStr = weapon.ConfigGetString("suicideAnim");
+						}
+						
 						if (weapon.IsKindOf("Pistol_Base"))
 						{
 							suicideID = DayZPlayerConstants.CMD_SUICIDEFB_PISTOL;
@@ -275,18 +277,18 @@ class EmoteManager
 							//! switch to shoot from weapons instead of camera
 							m_Player.OverrideShootFromCamera(false);
 						}
-				
-						else if (weapon.GetType() == "FirefighterAxe" || weapon.IsKindOf("FirefighterAxe")) suicideID = DayZPlayerConstants.CMD_SUICIDEFB_FIREAXE; //should work for colored variants
-				
-						else if (weapon.GetType() == "Pitchfork") suicideID = DayZPlayerConstants.CMD_SUICIDEFB_PITCHFORK;
-				
-						else if (weapon.GetType() == "Sword") suicideID = DayZPlayerConstants.CMD_SUICIDEFB_SWORD;
-				
-						else if (weapon.GetType() == "WoodAxe") suicideID = DayZPlayerConstants.CMD_SUICIDEFB_WOODAXE;
-				
-						else if (weapon.GetType() == "Spear") suicideID = DayZPlayerConstants.CMD_SUICIDEFB_SPEAR;
-				
-						else if (weapon.ConfigGetBool("isMeleeWeapon")) suicideID = DayZPlayerConstants.CMD_SUICIDEFB_1HD; //one-handed suicide checks "isMeleeWeapon" bool of items
+						
+						else if (suicideStr == "onehanded") 	suicideID = DayZPlayerConstants.CMD_SUICIDEFB_1HD;
+						
+						else if (suicideStr == "fireaxe") 		suicideID = DayZPlayerConstants.CMD_SUICIDEFB_FIREAXE;
+						
+						else if (suicideStr == "pitchfork") 	suicideID = DayZPlayerConstants.CMD_SUICIDEFB_PITCHFORK;
+						
+						else if (suicideStr == "sword") 		suicideID = DayZPlayerConstants.CMD_SUICIDEFB_SWORD;
+						
+						else if (suicideStr == "spear") 		suicideID = DayZPlayerConstants.CMD_SUICIDEFB_SPEAR;
+						
+						else if (suicideStr == "woodaxe") 		suicideID = DayZPlayerConstants.CMD_SUICIDEFB_WOODAXE;
 					}
 			
 					if (suicideID > -1)

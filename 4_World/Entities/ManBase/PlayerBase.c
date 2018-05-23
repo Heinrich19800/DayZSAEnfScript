@@ -108,6 +108,7 @@ class PlayerBase extends ManBase
 	
 	bool m_IsClimbingLadder;
 	bool m_IsSwimming;
+	bool m_IsFalling;
 	bool ItemToInventory;
 
 	// debug monitor
@@ -1198,6 +1199,11 @@ class PlayerBase extends ManBase
 	// -------------------------------------------------------------------------
 	override void EEItemIntoHands(EntityAI item)
 	{
+		if ( IsPlacingLocal() )
+		{
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call(TogglePlacingLocal);
+		}
+		
 		if (this == PlayerBase.Cast( GetGame().GetPlayer() ))
 		{
 			UIScriptedMenu menu = GetGame().GetUIManager().FindMenu(MENU_INVENTORY);
@@ -1248,6 +1254,18 @@ class PlayerBase extends ManBase
 		m_IsSwimming = pCurrentCommandID == DayZPlayerConstants.COMMANDID_SWIM;
 		m_IsClimbingLadder pCurrentCommandID != DayZPlayerConstants.COMMANDID_LADDER
 		*/
+		
+		if( GetCommand_Fall() && !m_IsFalling )
+		{
+			m_IsFalling =  true;
+			OnFallingStart();
+		}
+		else if( !GetCommand_Fall() && m_IsFalling )
+		{
+			m_IsFalling =  false;
+			OnFallingStop();
+		}		
+		
 		ProcessHoldBreath();
 		HandleInventory(pDt);
 		ActionManagerBase		mngr = GetActionManager();
@@ -1426,7 +1444,17 @@ class PlayerBase extends ManBase
 		if ( GetItemInHands() )	GetItemInHands().SetInvisible(false);
 		if( GetInventory() ) GetInventory().UnlockInventory(LOCK_FROM_SCRIPT);
 	}
+
+	void OnFallingStart()
+	{
+		if( GetInventory() ) GetInventory().LockInventory(LOCK_FROM_SCRIPT);
+		CloseInventoryMenu();
+	}
 	
+	void OnFallingStop()
+	{
+		if( GetInventory() ) GetInventory().UnlockInventory(LOCK_FROM_SCRIPT);
+	}	
 	
 	override void EOnFrame(IEntity other, float timeslice)
 	{
@@ -1915,6 +1943,10 @@ class PlayerBase extends ManBase
 		return m_IsClimbingLadder;
 	}
 	
+	bool IsFalling()
+	{
+		return m_IsFalling;
+	}
 	
 	void OnItemInventoryEnter(EntityAI item)
 	{
@@ -2175,6 +2207,10 @@ class PlayerBase extends ManBase
 			if ( g_Game.IsNewCharacter() )
 			{
 				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(SetNewCharName);
+			}
+			if ( IsAlive() )
+			{
+				SimulateDeath(false);
 			}
 			
 #ifdef BOT

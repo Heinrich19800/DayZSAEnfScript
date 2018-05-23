@@ -273,6 +273,7 @@ class ActionManagerServer: ActionManagerBase
 	
 	override void OnActionEnd( ActionBase action, ActionTarget target, ItemBase item )
 	{
+		super.OnActionEnd( action, target, item );
 		if( target )
 		{
 			ItemBase targetItem;

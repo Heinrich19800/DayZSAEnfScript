@@ -284,6 +284,11 @@ class DayZGame extends CGame
 	private string 	m_PlayerName;
 	private bool 	m_IsNewCharacter;
 	private float	m_UserFOV;
+	float 	m_volume_sound;
+	float 	m_volume_speechEX;
+	float 	m_volume_music;
+	float 	m_volume_VOIP;
+	float 	m_volume_radio;
 	
 	ref TIntArray demounit = new TIntArray;
 
@@ -358,6 +363,12 @@ class DayZGame extends CGame
 	{
 		RegisterProfilesOptions();
 		m_UserFOV = GetUserFOVFromConfig();
+		
+		m_volume_sound = GetGame().GetSoundScene().GetSoundVolume();
+		m_volume_speechEX = GetGame().GetSoundScene().GetSpeechExVolume();
+		m_volume_music = GetGame().GetSoundScene().GetMusicVolume();
+		m_volume_VOIP = GetGame().GetSoundScene().GetVOIPVolume();
+		m_volume_radio = GetGame().GetSoundScene().GetRadioVolume();
 	}
 	
 	void RegisterProfilesOptions()

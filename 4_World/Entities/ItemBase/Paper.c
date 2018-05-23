@@ -50,7 +50,6 @@ class Paper extends ItemBase
 		}
 		if (rpc_type == ERPCs.RPC_READ_NOTE)
 		{
-			//TODO load array first, then set text in the NoteMenu
 			Print("reading");
 			array<ref WritePaperParams> new_AdvancedText = new array<ref WritePaperParams>;
 			PaperParams paramsRead = new PaperParams(null);
@@ -62,7 +61,8 @@ class Paper extends ItemBase
 			if (!GetGame().IsServer() && GetGame().IsMultiplayer())
 			{
 				PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
-				player.enterNoteMenuRead = true;
+				//PlayerBase player = PlayerBase.Cast(GetParent());
+				if ( player && player.GetInventory().HasEntityInInventory(this) ) 	player.enterNoteMenuRead = true;
 			}
 		}
 	}
