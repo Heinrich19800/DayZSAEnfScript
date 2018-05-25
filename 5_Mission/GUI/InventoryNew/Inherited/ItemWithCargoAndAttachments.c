@@ -21,7 +21,7 @@ class ItemWithCargoAndAttachments: ClosableContainer
 	
 	EntityAI GetFocusedItem()
 	{
-		return m_CargoGrid.GetFocusedItem();
+		return m_CargoGrid.GetFocusedItem().GetObject();
 	}	
 	
 	/*void SetLastActive()

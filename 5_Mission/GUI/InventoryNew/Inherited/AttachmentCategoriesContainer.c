@@ -131,7 +131,7 @@ class AttachmentCategoriesContainer: CollapsibleContainer
 				ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( items_cont.GetMainPanel().FindAnyWidget( "Icon"+ slot_number ) );
 				//WidgetEventHandler.GetInstance().RegisterOnDrag( item_preview.GetParent(),  this, "OnIconDrag" );
 				ImageWidget image_widget = ImageWidget.Cast( item_preview.FindAnyWidget( "GhostSlot" + slot_number ) );
-				image_widget.Show( true );
+				image_widget.Show( false );
 				image_widget.LoadImageFile( 0, "set:dayz_inventory image:" + icon_name );
 				if( m_Body.Count() > ( slot_number + 2 ) )
 				{
@@ -178,7 +178,8 @@ class AttachmentCategoriesContainer: CollapsibleContainer
 					ImageWidget image_widget2 = ImageWidget.Cast( item_preview2.FindAnyWidget( "GhostSlot" + slot_number2 ) );
 				WidgetEventHandler.GetInstance().RegisterOnDrag( item_preview2.FindAnyWidget( "PanelWidget"+ slot_number2 ),  this, "OnIconDrag" );
 					//Print(item_preview2.GetParent().GetName());
-					image_widget2.Show( true );
+					image_widget2.Show( false );
+					item_preview2.Show( true );
 					image_widget2.LoadImageFile( 0, "set:dayz_inventory image:" + icon_name );
 					if( m_Body.Count() > ( slot_number2 + 2 ) )
 					{

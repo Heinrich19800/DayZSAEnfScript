@@ -14,7 +14,7 @@ class ItemWithCargo: ClosableContainer
 
 	EntityAI GetFocusedItem()
 	{
-		return m_CargoGrid.GetFocusedItem();
+		return m_CargoGrid.GetFocusedItem().GetObject();
 	}	
 	
 	override void RefreshQuantity( EntityAI item_to_refresh )
@@ -64,7 +64,7 @@ class ItemWithCargo: ClosableContainer
 
 	override void Select()
 	{
-		EntityAI prev_item = m_CargoGrid.GetFocusedItem();
+		EntityAI prev_item = m_CargoGrid.GetFocusedItem().GetObject();
 		Man player = GetGame().GetPlayer();
 		if ( prev_item )
 		{
@@ -97,7 +97,7 @@ class ItemWithCargo: ClosableContainer
 	
 	override void Combine()
 	{
-		EntityAI prev_item = m_CargoGrid.GetFocusedItem();
+		EntityAI prev_item = m_CargoGrid.GetFocusedItem().GetObject();
 		Icon icon;
 		if(prev_item)
 		icon = m_ItemsContainer.GetIcon( prev_item.GetID() );

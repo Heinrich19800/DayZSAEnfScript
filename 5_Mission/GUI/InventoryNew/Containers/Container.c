@@ -206,7 +206,9 @@ class Container: ContainerBase
 		}
 		active.SetActive( false );
 		Container next;
-		if( ++activeIndex < m_OpenedContainers.Count() )
+		Print( m_OpenedContainers.Count() );
+		++activeIndex;
+		if( activeIndex < m_OpenedContainers.Count() )
 		{
 			next = Container.Cast( m_OpenedContainers[activeIndex] );
 			if( activeIndex == m_OpenedContainers.Count() - 1 )
@@ -220,7 +222,8 @@ class Container: ContainerBase
 		}
 		while( next && !next.GetMainPanel().IsVisible() )
 		{
-			if( ++activeIndex < m_OpenedContainers.Count() )
+			++activeIndex
+			if( activeIndex < m_OpenedContainers.Count() )
 			{
 				next = Container.Cast( m_OpenedContainers[activeIndex] );
 			}

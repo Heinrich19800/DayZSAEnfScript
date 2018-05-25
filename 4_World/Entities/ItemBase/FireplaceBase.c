@@ -435,14 +435,17 @@ class FireplaceBase extends ItemBase
 			SetAnimationPhase( ANIMATION_STONES, 1 );
 		}
 		
+		//TODO remove proxy test
 		//ANIMATION_TRIPOD
 		if ( IsItemTypeAttached( ATTACHMENT_TRIPOD ) )
 		{
 			SetAnimationPhase( ANIMATION_TRIPOD, 0 );
+			AddProxyPhysics( ANIMATION_TRIPOD );			//proxy test
 		}
 		else
 		{
 			SetAnimationPhase( ANIMATION_TRIPOD, 1 );
+			RemoveProxyPhysics( ANIMATION_TRIPOD );			//proxy test
 		}
 	}
 

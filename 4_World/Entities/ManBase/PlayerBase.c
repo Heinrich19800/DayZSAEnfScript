@@ -62,6 +62,9 @@ class PlayerBase extends ManBase
 	int m_Time;
 	AbstractWave 					m_SaySoundWave;
 	ref Timer						m_DebugTimer;
+	ref PlayerSoundEventHandler 	m_PlayerSoundEventHandler;
+	
+	
 	#ifdef BOT
 	ref Bot							m_Bot;
 	#endif
@@ -185,6 +188,7 @@ class PlayerBase extends ManBase
 		{
 			m_CraftingManager = new CraftingManager(this,m_ModuleRecipesManager);
 			m_InventoryActionHandler = new InventoryActionHandler(this);
+			m_PlayerSoundEventHandler = new PlayerSoundEventHandler(this);
 		}
 
 		m_ActionManager = NULL;
@@ -246,7 +250,7 @@ class PlayerBase extends ManBase
 		RegisterNetSyncVariableBool("m_HasBloodyHandsVisible");
 		RegisterNetSyncVariableBool("m_HasBloodTypeVisible");
 		RegisterNetSyncVariableBool("m_LiquidTendencyDrain");
-		RegisterNetSyncVariableInt("m_SoundEvent",0,4096);
+		RegisterNetSyncVariableInt("m_SoundEvent",0,63);
 		
 		/*if (g_Game && g_Game.m_tilePublic && g_Game.m_isTileSet == true)
 		{
@@ -546,6 +550,15 @@ class PlayerBase extends ManBase
 		}
 	}
 	
+	bool IsMale()
+	{
+		if (ConfigGetBool("woman") != 1)
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	
 	// --------------------------------------------------
 	// User Actions
@@ -779,12 +792,14 @@ class PlayerBase extends ManBase
 	
 	void OnHoldBreathStart()
 	{
-		SendSoundEvent(SoundSetMap.GetSoundSetID("holdBreath_male_Char_SoundSet"));
+		//SendSoundEvent(SoundSetMap.GetSoundSetID("holdBreath_male_Char_SoundSet"));
+		SendSoundEvent(EPlayerSoundEventID.HOLD_BREATH);
 	}
 	
 	void OnHoldBreathEnd()
 	{
-		SendSoundEvent(SoundSetMap.GetSoundSetID("releaseBreath_male_Char_SoundSet"));
+		//SendSoundEvent(SoundSetMap.GetSoundSetID("releaseBreath_male_Char_SoundSet"));
+		SendSoundEvent(EPlayerSoundEventID.RELEASE_BREATH);
 		
 	}
 	
@@ -1202,6 +1217,7 @@ class PlayerBase extends ManBase
 	void OnCommandHandlerTick(float deltaTime)
 	{
 		if(!IsAlive() ) return;
+		if(m_PlayerSoundEventHandler) m_PlayerSoundEventHandler.OnTick(deltaTime);
 		if( m_DebugMonitorValues ) m_DebugMonitorValues.OnScheduledTick(deltaTime);
 		if( GetStateManager() ) GetStateManager().OnScheduledTick(deltaTime);//needs to stay in command handler tick as it's playing animations
 		
@@ -3011,8 +3027,8 @@ class PlayerBase extends ManBase
 			Print("ZERO VOLUME! Fix config");
 		}
 	}
-	
-	void SendSoundEvent(int id)
+
+	void SendSoundEvent(EPlayerSoundEventID id)
 	{
 		if( !GetGame().IsServer() ) return;
 		m_SoundEvent = id;
@@ -3023,7 +3039,7 @@ class PlayerBase extends ManBase
 			CheckSoundEvent();
 		}
 		
-		PrintString(GetGame().GetTime().ToString() + " Set SoundEvent, id:" + id.ToString());
+		//PrintString(GetGame().GetTime().ToString() + " Set SoundEvent, id:" + id.ToString());
 	}
 	
 	void CheckZeroSoundEvent()
@@ -3032,7 +3048,7 @@ class PlayerBase extends ManBase
 		{
 			m_SoundEvent = 0;
 			m_SoundEventSent = false;
-			PrintString(GetGame().GetTime().ToString() + " Zero SoundEvent");
+			//PrintString(GetGame().GetTime().ToString() + " Zero SoundEvent");
 			SetSynchDirty();
 		}
 	}
@@ -3042,23 +3058,17 @@ class PlayerBase extends ManBase
 		if( m_SoundEvent!= 0 && !m_SoundEventSent )
 		{
 			m_SoundEventSent = true;
-			PrintString(GetGame().GetTime().ToString() + " Send SoundEvent");
+			//PrintString(GetGame().GetTime().ToString() + " Send SoundEvent");
 		}
 	}
 	
-
-	
-	void PlaySoundEvent(int id)
+	void PlaySoundEvent(EPlayerSoundEventID id)
 	{
-		PrintString(GetGame().GetTime().ToString() + " OnSoundEvent, id:" + id.ToString());
-		string soundset_name = SoundSetMap.GetSoundSetName(id);
-		if(m_SaySoundWave)
-		{
-			m_SaySoundWave.Stop();
-			Print("stopping sound");
-		}
-		m_SaySoundWave = SaySound(soundset_name, GetPosition());
+		//PrintString(GetGame().GetTime().ToString() + " OnSoundEvent, id:" + id.ToString());
+		m_PlayerSoundEventHandler.PlayRequest(id);
 	}
+	
+	
 	
 	bool IsSayingSound()
 	{
@@ -3086,7 +3096,7 @@ class PlayerBase extends ManBase
 	
 	void UpdateQuickBarExtraSlots()
 	{
-			m_QuickBarBase.updateSlotsCount();
+		m_QuickBarBase.updateSlotsCount();
 	}
 
 

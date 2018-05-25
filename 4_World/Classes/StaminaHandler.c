@@ -159,6 +159,7 @@ class StaminaHandler
 	
 	protected ref StaminaConsumers			m_StaminaConsumers;
 	protected ref StaminaModifiers			m_StaminaModifiers;
+	protected ref StaminaSoundHandler		m_StaminaSoundHandler;
 	
 	void StaminaHandler(PlayerBase player)
 	{
@@ -177,6 +178,8 @@ class StaminaHandler
 		m_IsInCooldown		= false;
 		m_Debug 			= false;
 
+		m_StaminaSoundHandler = new StaminaSoundHandler(this, m_Player);
+		
 		Init();
 	}
 	
@@ -295,6 +298,10 @@ class StaminaHandler
 
 			m_StaminaDelta = 0;
 			m_StaminaDepletion = 0; // resets depletion modifier
+			if(m_StaminaSoundHandler)
+			{
+				m_StaminaSoundHandler.Update(m_Stamina, deltaT);
+			}
 		}
 	}
 
@@ -359,6 +366,16 @@ class StaminaHandler
 	float GetStamina()
 	{
 		return m_Stamina;
+	}
+	
+	float GetStaminaCap()
+	{
+		return m_StaminaCap;
+	}
+	
+	float GetStaminaMax()
+	{
+		return STAMINA_MAX;
 	}
 
 	float GetStaminaNormalized()

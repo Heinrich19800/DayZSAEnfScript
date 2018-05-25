@@ -40,7 +40,10 @@ class Icon: ContainerBase
 
 	override void SetActive( bool active )
 	{
-		GetMainPanel().FindAnyWidget("Selected").Show( active );
+		if( GetMainPanel() )
+		{
+			GetMainPanel().FindAnyWidget("Selected").Show( active );
+		}
 	}
 
 	void RefreshQuickbar()

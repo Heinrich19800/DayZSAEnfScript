@@ -1,10 +1,10 @@
 class StanceIndicator
 {	
 	protected ref HumanMovementState	m_State;
-	protected PlayerBase					m_Player;
+	protected PlayerBase				m_Player;
 	
 	void StanceIndicator(PlayerBase player)
-	{		
+	{
 		m_State = new HumanMovementState();
 		m_Player = player;
 	}

@@ -50,10 +50,11 @@ class Hit_MeatBones : EffBulletImpactBase
 			pos[1] = GetGame().SurfaceY(pos[0], pos[2]);
 			Print( pos );
 			Particle blood = Particle.Play(ParticleList.BLOOD_SURFACE_DROPS, pos); // BLOOD_SURFACE_DROPS IMPACT_TEST_ENTER_DEBUG
-			
-			vector ori = GetGame().GetSurfaceOrientation(pos[0], pos[2]);
-			// TO DO: Randomize direction of blood splat particles so they are not repetitive
-			//ori[2] = ori[2] + 90; //Math.RandomFloat(0, 360);
+
+			// TO DO: Align to surface			
+			//vector ori = GetGame().GetSurfaceOrientation(pos[0], pos[2]);
+			vector ori = blood.GetOrientation();
+			ori[0] = Math.RandomFloat(0, 360);
 			
 			blood.SetOrientation(ori);
 			blood.IncrementParticleParam(EmitorParam.SIZE, upscale);

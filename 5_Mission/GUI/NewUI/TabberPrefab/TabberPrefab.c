@@ -1,4 +1,4 @@
-class TabberPrefab extends ScriptedWidgetEventHandler
+class TabberUI extends ScriptedWidgetEventHandler
 {
 	protected Widget m_Root;
 	
@@ -22,6 +22,8 @@ class TabberPrefab extends ScriptedWidgetEventHandler
 			tab_child = tab_child.GetSibling();
 		}
 		
+		AlignTabbers( m_Root.FindAnyWidget( "Tab_Control_Container" ) );
+		
 		for( int i = 0; i < tab_count; i++ )
 		{
 			Widget tab_control	= tab_controls.FindAnyWidget( "Tab_Control_" + i );
@@ -37,11 +39,37 @@ class TabberPrefab extends ScriptedWidgetEventHandler
 				Error( "Tabber could not find correctly named tab or control at index " + i );
 			}
 		}
+		
+		#ifdef PLATFORM_XBOX
+			m_Root.FindAnyWidget( "XboxControls" ).Show( true );
+		#endif
 	}
 	
 	void AlignTabbers( Widget tab_controls )
 	{
-	
+		float total_size;
+		float x, y;
+		
+		Widget tab_child = tab_controls.GetChildren();
+		while( tab_child )
+		{
+			
+			tab_child.GetSize( x, y );
+			Print( x );
+			total_size += x;
+			tab_child = tab_child.GetSibling();
+		}
+		
+		tab_child = tab_controls.GetChildren();
+		while( tab_child )
+		{
+			Widget tab_bg = tab_child.FindAnyWidget( tab_child.GetName() + "_Background" );
+			tab_child.GetPos( x, y );
+			tab_bg.SetPos( -x, 0 );
+			tab_bg.SetSize( total_size, 1 );
+			
+			tab_child = tab_child.GetSibling();
+		}
 	}
 	
 	override bool OnMouseButtonUp( Widget w, int x, int y, int button )
@@ -58,11 +86,31 @@ class TabberPrefab extends ScriptedWidgetEventHandler
 				SelectTabPanel( index );
 				
 				m_SelectedIndex = index;
-				
+				AlignTabbers( m_Root.FindAnyWidget( "Tab_Control_Container" ) );
 				return true;
 			}
 		}
 		
+		return false;
+	}
+	
+	bool OnChildAdd( Widget w, Widget child )
+	{
+		if( w == m_Root.FindAnyWidget( "Tab_Control_Container" ) )
+		{
+			AlignTabbers( m_Root.FindAnyWidget( "Tab_Control_Container" ) );
+			return true;
+		}
+		return false;
+	}
+	
+	bool OnChildRemove( Widget w, Widget child )
+	{
+		if( w == m_Root.FindAnyWidget( "Tab_Control_Container" ) )
+		{
+			AlignTabbers( m_Root.FindAnyWidget( "Tab_Control_Container" ) );
+			return true;
+		}
 		return false;
 	}
 	
@@ -112,7 +160,7 @@ class TabberPrefab extends ScriptedWidgetEventHandler
 	
 	void NextTab()
 	{
-		int next_index = m_SelectedIndex++;
+		int next_index = m_SelectedIndex + 1;
 		if( next_index >= m_Tabs.Count() )
 		{
 			next_index = 0;
@@ -129,7 +177,7 @@ class TabberPrefab extends ScriptedWidgetEventHandler
 	
 	void PreviousTab()
 	{
-		int next_index = m_SelectedIndex--;
+		int next_index = m_SelectedIndex - 1;
 		if( next_index < 0 )
 		{
 			next_index = m_TabControls.Count() - 1;
@@ -142,5 +190,10 @@ class TabberPrefab extends ScriptedWidgetEventHandler
 		SelectTabPanel( next_index );
 		
 		m_SelectedIndex = next_index;
+	}
+	
+	int GetSelectedIndex()
+	{
+		return m_SelectedIndex;
 	}
 }

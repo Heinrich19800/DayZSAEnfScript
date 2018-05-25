@@ -6,7 +6,6 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 	protected Widget												m_Content;
 	protected ref map<string, ref PlayerListEntryScriptedWidget>	m_Entries;
 	
-	protected AutoHeightSpacer										m_Spacer;
 	protected ScrollBarContainer 									m_Scroller;
 	protected int													m_TotalEntries;
 	protected int													m_SelectedEntry;
@@ -20,7 +19,6 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 		
 		m_Entries	= new map<string, ref PlayerListEntryScriptedWidget>;
 		
-		m_ScrollContainer.FindAnyWidget( "Content" ).GetScript( m_Spacer );
 		m_Header.SetText( header_text );
 		
 		m_ScrollContainer.GetScript( m_Scroller );
@@ -70,6 +68,11 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 				}
 			}
 		}
+	}
+	
+	bool IsEmpty()
+	{
+		return m_Entries.Count() == 0;
 	}
 	
 	void Reload( BiosFriendInfoArray player_list )
@@ -141,7 +144,6 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 		{
 			m_Entries.Insert( UID, new PlayerListEntryScriptedWidget( m_Content, name, UID, show_permissions ) );
 			m_TotalEntries++;
-			m_Spacer.Update();
 		}
 	}
 	
@@ -151,7 +153,6 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 		{
 			m_Entries.Remove( UID );
 			m_TotalEntries--;
-			m_Spacer.Update();
 		}
 	}
 	

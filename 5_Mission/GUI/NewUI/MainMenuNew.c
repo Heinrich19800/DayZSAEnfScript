@@ -6,14 +6,11 @@ class MainMenuNew extends UIScriptedMenu
 	protected MissionMainMenu		m_Mission;
 	protected DayZIntroScene 		m_Scene;
 	
-	protected ButtonWidget			m_PlayerName;
+	protected TextWidget			m_PlayerName;
 	
-	override Widget Init()
-	{
-		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/tabber_prefab/tabber_prefab.layout" );
-		return layoutRoot;
-	}
-	/*
+	ref WidgetFadeTimer				m_LCharButtonFade;
+	ref WidgetFadeTimer				m_RCharButtonFade;
+
 	override Widget Init()
 	{
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/main_menu.layout" );
@@ -24,6 +21,8 @@ class MainMenuNew extends UIScriptedMenu
 		WidgetEventHandler.GetInstance().RegisterOnClick( layoutRoot.FindAnyWidget( "message_button" ), this, "OpenMessages" );
 		WidgetEventHandler.GetInstance().RegisterOnClick( layoutRoot.FindAnyWidget( "settings_button" ), this, "OpenSettings" );
 		WidgetEventHandler.GetInstance().RegisterOnClick( layoutRoot.FindAnyWidget( "exit_button" ), this, "Exit" );
+		WidgetEventHandler.GetInstance().RegisterOnClick( layoutRoot.FindAnyWidget( "prev_character" ), this, "PreviousCharacter" );
+		WidgetEventHandler.GetInstance().RegisterOnClick( layoutRoot.FindAnyWidget( "next_character" ), this, "NextCharacter" );
 		
 		WidgetEventHandler.GetInstance().RegisterOnMouseButtonUp( layoutRoot.FindAnyWidget( "news_main" ), this, "OpenNewsMain" );
 		WidgetEventHandler.GetInstance().RegisterOnMouseButtonUp( layoutRoot.FindAnyWidget( "news_sec_1" ), this, "OpenNewsSec1" );
@@ -52,6 +51,10 @@ class MainMenuNew extends UIScriptedMenu
 		WidgetEventHandler.GetInstance().RegisterOnMouseEnter( layoutRoot.FindAnyWidget( "news_main" ), this, "ColorRed" );
 		WidgetEventHandler.GetInstance().RegisterOnMouseEnter( layoutRoot.FindAnyWidget( "news_sec_1" ), this, "ColorRed" );
 		WidgetEventHandler.GetInstance().RegisterOnMouseEnter( layoutRoot.FindAnyWidget( "news_sec_2" ), this, "ColorRed" );
+		WidgetEventHandler.GetInstance().RegisterOnMouseEnter( layoutRoot.FindAnyWidget( "news_sec_1" ), this, "ColorRed" );
+		WidgetEventHandler.GetInstance().RegisterOnMouseEnter( layoutRoot.FindAnyWidget( "news_sec_2" ), this, "ColorRed" );
+		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "prev_character" ), this, "ColorRed" );
+		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "next_character" ), this, "ColorRed" );
 		
 		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "play" ), this, "ColorWhite" );
 		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "choose_server" ), this, "ColorWhite" );
@@ -71,6 +74,11 @@ class MainMenuNew extends UIScriptedMenu
 		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "news_main" ), this, "ColorWhite" );
 		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "news_sec_1" ), this, "ColorWhite" );
 		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "news_sec_2" ), this, "ColorWhite" );
+		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "prev_character" ), this, "ColorWhite" );
+		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "next_character" ), this, "ColorWhite" );
+		
+		WidgetEventHandler.GetInstance().RegisterOnMouseEnter( layoutRoot.FindAnyWidget( "character" ), this, "CharacterEnter" );
+		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( layoutRoot.FindAnyWidget( "character" ), this, "CharacterLeave" );
 		
 		m_Newsfeed		= new MainMenuNewsfeed( layoutRoot.FindAnyWidget( "news_feed_root" ) );
 		m_Stats			= new MainMenuStats( layoutRoot.FindAnyWidget( "character_stats_root" ) );
@@ -86,16 +94,18 @@ class MainMenuNew extends UIScriptedMenu
 		
 		m_Scene.m_Camera.LookAt(Vector(m_Scene.m_DemoPos[0],m_Scene.m_DemoPos[1] + 1,m_Scene.m_DemoPos[2]));
 		
-		m_PlayerName	= ButtonWidget.Cast( layoutRoot.FindAnyWidget("character_name") );
+		m_PlayerName	= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_text") );
 		m_PlayerName.SetText( g_Game.GetPlayerGameName() );
 		
 		SetFocus( layoutRoot.FindAnyWidget( "play" ) );
+		
+		m_LCharButtonFade = new WidgetFadeTimer();
+		m_RCharButtonFade = new WidgetFadeTimer();
 		
 		LockControls();
 		
 		return layoutRoot;
 	}
-	*/
 	
 	void ~MainMenuNew()
 	{
@@ -143,6 +153,34 @@ class MainMenuNew extends UIScriptedMenu
 		EnterScriptedMenu(MENU_CHARACTER);
 	}
 	
+	void CharacterEnter()
+	{
+		layoutRoot.FindAnyWidget( "prev_character" ).Show( true );
+		layoutRoot.FindAnyWidget( "next_character" ).Show( true );
+	}
+	
+	void CharacterLeave()
+	{
+		layoutRoot.FindAnyWidget( "prev_character" ).Show( false );
+		layoutRoot.FindAnyWidget( "next_character" ).Show( false );
+	}
+	
+	void NextCharacter()
+	{
+		m_Scene.SaveCharName();
+		m_Scene.ChangeCharacter(m_Scene.NextCharacterID());
+		
+		m_PlayerName.SetText( g_Game.GetPlayerGameName() );
+	}
+	
+	void PreviousCharacter()
+	{
+		m_Scene.SaveCharName();
+		m_Scene.ChangeCharacter(m_Scene.PrevCharacterID());
+		
+		m_PlayerName.SetText( g_Game.GetPlayerGameName() );
+	}
+	
 	void OpenStats()
 	{
 		
@@ -184,7 +222,7 @@ class MainMenuNew extends UIScriptedMenu
 	
 	void Exit()
 	{
-		GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(g_Game.RequestExit, IDC_MAIN_QUIT);
+		GetGame().GetUIManager().ShowDialog("EXIT", "Are you sure you want to exit?", IDC_MAIN_QUIT, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 	}
 	
 	void OpenNewsMain()
@@ -294,5 +332,15 @@ class MainMenuNew extends UIScriptedMenu
 		{
 			image.SetColor( ARGB( 255, 255, 255, 255 ) );
 		}
+	}
+	
+	bool OnModalResult( Widget w, int x, int y, int code, int result )
+	{
+		if( code == IDC_MAIN_QUIT && result == 2 )
+		{
+			GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(g_Game.RequestExit, IDC_MAIN_QUIT);
+			return true;
+		}
+		return false;
 	}
 }

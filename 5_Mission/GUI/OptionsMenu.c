@@ -36,6 +36,7 @@ class OptionsMenu extends UIScriptedMenu
 		PPEffects.SetBlurMenu(0);
 		m_Options.Revert();
 		GetGame().EndOptionsVideo();
+		UnlockControls();
 	}
 	
 	override Widget Init()
@@ -1237,38 +1238,46 @@ class OptionsMenu extends UIScriptedMenu
 	{
 		string OaValue;
 		string OriginalLanguage;
+		array<string> temp = new array<string>;
 		SwitchOptionsAccess soa = SwitchOptionsAccess.Cast(optionAccess);
 		m_languages.Clear();
 		//m_languages = new array<string>;
 		
 		soa.GetItemText(OaValue);
-		if (OaValue != "English")
+		OriginalLanguage = OaValue;
+		temp.Insert(OaValue);
+		soa.Switch();
+		soa.GetItemText(OaValue);
+		/*if (OaValue != "English")
 		{
-			OriginalLanguage = OaValue;
+			//OriginalLanguage = OaValue;
 			while(OaValue != "English") //switches to "English"
 			{
 				soa.Switch();
 				soa.GetItemText(OaValue);
 			}
-		}
+		}*/
 								
-		languages.Insert(OaValue); //inserts "English" at 0
-		soa.Switch();
-		soa.GetItemText(OaValue);
-		while(OaValue != "English")
+		//temp.Insert(OaValue); //inserts "English" at 0
+		//soa.Switch();
+		//soa.GetItemText(OaValue);
+		int max = 20;
+		while(OaValue != OriginalLanguage && max > 0)
 		{
-			languages.Insert(OaValue);
+			temp.Insert(OaValue);
 			soa.Switch();
 			soa.GetItemText(OaValue);
+			max--;
 		}
-		if (OriginalLanguage != "") //returns language setting to its original value. Can be changed later by dropdown menu.
+		/*if (OriginalLanguage != "") //returns language setting to its original value. Can be changed later by dropdown menu.
 		{
 			while(OaValue != OriginalLanguage)
 			{
 				soa.Switch();
 				soa.GetItemText(OaValue);
 			}
-		}
+		}*/
+		languages.InsertAll(temp);
 	}
 	
 	void ListListOptionAccess(OptionsAccess optionAccess, out array<string> output)

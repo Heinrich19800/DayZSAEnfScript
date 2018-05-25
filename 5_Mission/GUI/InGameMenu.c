@@ -13,7 +13,7 @@ class InGameMenu extends UIScriptedMenu
 			IngameHud hud = IngameHud.Cast( mission.GetHud() );
 			if ( hud )
 			{
-				hud.ToggleHud( true, true );
+				hud.ToggleHud( g_Game.GetProfileOption( EDayZProfilesOptions.HUD ), true );
 			}
 		}
 	}

@@ -33,7 +33,15 @@ class CargoGrid
 			Print( m_ItemsContainer.GetItemCount() );
 			
 			#ifdef PLATFORM_XBOX
-			int cargo_height = ((m_ItemsContainer.GetItemCount() / 4)*2) + 2;
+			int cargo_height = ( ( m_ItemsContainer.GetItemCount() / 4 ) * 2 ) + 2;
+			if( m_ItemsContainer.GetItemCount() % 4 == 0 )
+			{
+				cargo_height = ( ( m_ItemsContainer.GetItemCount() / 4 ) * 2 );
+			}
+			if( m_ItemsContainer.GetItemCount() == 0 )
+			{
+				cargo_height = 2;
+			}
 			#else
 			int cargo_height = 	m_Entity.GetInventory().GetCargo().GetHeight();
 			#endif
@@ -68,7 +76,7 @@ class CargoGrid
 	void TransferItemToVicinity()
 	{
 		Man player = GetGame().GetPlayer();
-		EntityAI entity = GetFocusedItem();
+		EntityAI entity = GetFocusedItem().GetObject();
 		if( entity && player.CanDropEntity( entity ) )
 		{
 			player.PredictiveDropEntity( entity );
@@ -77,7 +85,7 @@ class CargoGrid
 	
 	void TransferItem()
 	{
-		EntityAI entity = GetFocusedItem();
+		EntityAI entity = GetFocusedItem().GetObject();
 		if( entity )
 		{
 			GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.CARGO, entity );
@@ -86,7 +94,7 @@ class CargoGrid
 	
 	void EquipItem()
 	{
-		ItemBase entity = ItemBase.Cast( GetFocusedItem() );
+		ItemBase entity = ItemBase.Cast( GetFocusedItem().GetObject() );
 		if( entity && !entity.IsInherited( Magazine ) )
 		{
 			if( entity.HasQuantity() )
@@ -107,25 +115,15 @@ class CargoGrid
 		}
 	}
 	
-	EntityAI GetFocusedItem()
+	Icon GetFocusedItem()
 	{
-		GridContainer focused_row = m_Rows.Get( m_FocusedRowNumber );
+		return m_ItemsContainer.GetIconByIndex( m_FocusedItemPosition );
+		/*GridContainer focused_row = m_Rows.Get( m_FocusedRowNumber );
 		int focused_column = focused_row.GetFocusedColumn();
-		return m_Entity.GetInventory().GetCargo().FindEntityInCargoOn( m_FocusedRowNumber, focused_column );
+		return m_Entity.GetInventory().GetCargo().FindEntityInCargoOn( m_FocusedRowNumber, focused_column );*/
 	}
-
-	protected int m_FocusedRowNumber;
-
-	int GetFocusedRowNumber()
-	{
-		return m_FocusedRowNumber;
-	}
-
-	int GetFocusedColumnNumber()
-	{
-		GridContainer focused_row = m_Rows.Get( m_FocusedRowNumber );
-		return focused_row.GetFocusedColumn();
-	}
+	
+	/*
 	void MoveGridCursor( int direction )
 	{
 		GridContainer focused_row = m_Rows.Get( m_FocusedRowNumber );
@@ -148,7 +146,7 @@ class CargoGrid
 				Container cnt = Container.Cast( m_ItemsContainer.GetParent().GetParent().GetParent() );
 				cnt.SetPreviousActive();
 				return;
-			}			
+			}
 		}
 		else if( direction == Direction.DOWN )
 		{
@@ -192,30 +190,94 @@ class CargoGrid
 		GridContainer focused_cont_row = m_Rows.Get( m_FocusedRowNumber );
 		focused_cont_row.SetFocus( focused_column );
 	}
-
+	*/
+	
+	int m_FocusedItemPosition=0;
+	void MoveGridCursor( int direction )
+	{
+		Container cnt;
+		//GridContainer focused_row = m_Rows.Get( m_FocusedRowNumber );
+		//int focused_column = focused_row.GetFocusedColumn();
+		//focused_row.UnfocusAll();
+		
+		Icon icon = m_ItemsContainer.GetIconByIndex( m_FocusedItemPosition );
+		icon.SetActive( false );
+		
+		int focused_row = m_FocusedItemPosition / 4;
+		int max_rows = m_ItemsContainer.GetItemCount() / 4;
+		int row_min = focused_row * 4;
+		int row_max = row_min + 3;
+		
+		if(row_max > m_ItemsContainer.GetItemCount() )
+		{
+			row_max = m_ItemsContainer.GetItemCount() - 1;
+		}
+		
+		if( direction == Direction.UP )
+		{
+			m_FocusedItemPosition -= 4;
+			if( m_FocusedItemPosition < 0 )
+			{
+				m_FocusedItemPosition = m_ItemsContainer.GetItemCount() - 1;
+				cnt = Container.Cast( m_ItemsContainer.GetParent().GetParent().GetParent() );
+				cnt.SetPreviousActive();
+				return;
+			}
+		}
+		else if( direction == Direction.DOWN )
+		{
+			m_FocusedItemPosition += 4;
+			if( m_FocusedItemPosition > m_ItemsContainer.GetItemCount() - 1 )
+			{
+				if( focused_row < max_rows )
+				{
+					m_FocusedItemPosition = m_ItemsContainer.GetItemCount() - 1;
+				}
+				else
+				{
+					cnt = Container.Cast( m_ItemsContainer.GetParent().GetParent().GetParent() );
+					cnt.SetNextActive();
+					m_FocusedItemPosition = 0;
+					return;
+				}
+			}
+		}
+		else if( direction == Direction.RIGHT )
+		{
+			m_FocusedItemPosition++;
+			if( m_FocusedItemPosition > row_max  )
+			{
+				m_FocusedItemPosition = row_min;
+			}
+		}
+		else if( direction == Direction.LEFT )
+		{
+			m_FocusedItemPosition--;
+			if( m_FocusedItemPosition < row_min  )
+			{
+				m_FocusedItemPosition = row_max;
+			}
+		}
+		
+		icon = m_ItemsContainer.GetIconByIndex( m_FocusedItemPosition );
+		icon.SetActive( true );
+	}
+	
 	void SetDefaultFocus()
 	{
 		Unfocus();
-		GridContainer focused_row = m_Rows.Get( m_FocusedRowNumber );
-		focused_row.SetFocus( 0 );
+		if( m_ItemsContainer.GetItemCount() )
+		{
+			Icon icon = m_ItemsContainer.GetIconByIndex( 0 );
+			icon.SetActive( true );
+		}
 	}
 
 	void Unfocus()
 	{
-		Entity focused_item_old = GetFocusedItem();
-		if ( focused_item_old )
-		{
-			Icon icon_old = m_ItemsContainer.GetIcon( focused_item_old.GetID() );
-			
-			if ( icon_old )
-			{
-				icon_old.SetActive( false );
-			} 
-		}
-		
-		GridContainer focused_row = m_Rows.Get( m_FocusedRowNumber );
-		focused_row.UnfocusAll();
-		m_FocusedRowNumber = 0;
+		Icon focused_item_old = GetFocusedItem();
+		focused_item_old.SetActive( false );
+		m_FocusedItemPosition = 0;
 	}
 
 	void UpdateInterval()
@@ -246,6 +308,12 @@ class CargoGrid
 						RecomputeGridHeight();
 						m_Parent.Refresh();
 						m_ItemsContainer.RecomputeItemPositions();
+						if( m_ItemsContainer.GetItemCount() > 0 )
+						{
+							Icon icon = m_ItemsContainer.GetIconByIndex( m_FocusedItemPosition );
+							icon.SetActive( true );
+						}
+					( Container.Cast( m_Parent.m_Parent.m_Parent ) ).UpdateBodySpacers();
 						#endif
 					}
 				}
@@ -260,11 +328,6 @@ class CargoGrid
 		EntityAI item = m_Entity.GetInventory().GetCargo().GetItem( index );
 		if( !m_ItemsContainer.ContainsEntity( item ) )
 		{
-			#ifdef PLATFORM_XBOX
-			RecomputeGridHeight();
-			m_Parent.Refresh();
-			( Container.Cast( m_Parent.m_Parent.m_Parent ) ).UpdateBodySpacers();
-			#endif
 			int pos_x, pos_y, size_x, size_y;
 			m_Entity.GetInventory().GetCargo().GetItemSize( index, size_x, size_y );
 			m_Entity.GetInventory().GetCargo().GetItemPos( index, pos_x, pos_y );
@@ -276,6 +339,11 @@ class CargoGrid
 			icon.SetPos( (m_ItemsContainer.GetItemCount() % 4)*2, (m_ItemsContainer.GetItemCount() / 4)*2 );
 			icon.m_posX = (m_ItemsContainer.GetItemCount() % 4)*2;
 			icon.m_posY = (m_ItemsContainer.GetItemCount() / 4)*2;
+			
+			/*icon.SetSize( size_x, size_y );
+			icon.SetPos( pos_x, pos_y );
+			icon.m_posX = pos_x;
+			icon.m_posY = pos_y;*/
 			icon.SetCargoPos( index );
 			#else
 			icon.SetSize( size_x, size_y );
@@ -284,6 +352,13 @@ class CargoGrid
 			icon.m_posY = pos_y;
 			#endif
 			m_ItemsContainer.AddItem( icon );
+			
+						#ifdef PLATFORM_XBOX
+			RecomputeGridHeight();
+			m_Parent.Refresh();
+			m_ItemsContainer.RecomputeItemPositions();
+			( Container.Cast( m_Parent.m_Parent.m_Parent ) ).UpdateBodySpacers();
+			#endif
 		}
 
 		return item;

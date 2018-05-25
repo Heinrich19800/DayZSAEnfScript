@@ -769,7 +769,7 @@ class MissionGameplay extends MissionBase
 				{
 					m_inventory_menu_new.Reset();
 				}
-				else
+				else if( WidgetCache.GetInstance() )
 				{
 					WidgetCache.GetInstance().Reset();
 				}

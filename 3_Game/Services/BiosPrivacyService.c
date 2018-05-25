@@ -62,6 +62,12 @@ class BiosPrivacyService
 	*/
 	void OnPermissionsAsync(ref BiosPrivacyUidResultArray result_list, EBiosError error)
 	{
+		if (result_list == null)
+		{
+			Print("biapi privacy error: " + error);
+			return;
+		}
+		
 		Print("biapi: uid result count: " + result_list.Count());
 		
 		for (int i = 0; i < result_list.Count(); ++i)
