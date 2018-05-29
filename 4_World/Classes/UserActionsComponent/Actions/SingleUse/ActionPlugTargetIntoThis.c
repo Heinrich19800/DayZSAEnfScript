@@ -22,7 +22,7 @@ class ActionPlugTargetIntoThis: ActionSingleUseBase
 	
 	override string GetText()
 	{
-		return "connect together";
+		return "Connect together";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

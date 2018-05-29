@@ -21,7 +21,7 @@ class ActionHarvestCrops: ActionInteractBase
 
 	override string GetText()
 	{
-		return "harvest crops";
+		return "Harvest crops";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

@@ -36,7 +36,7 @@ class ActionCoverHeadTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "put on targets head";
+		return "Put on targets head";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

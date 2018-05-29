@@ -38,7 +38,7 @@ class ActionBandageTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "bandage target";
+		return "Bandage target";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

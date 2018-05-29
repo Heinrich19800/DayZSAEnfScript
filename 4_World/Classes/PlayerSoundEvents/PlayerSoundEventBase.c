@@ -1,7 +1,8 @@
 enum EPlayerSoundEventType
 {
 	GENERAL,
-	STAMINA
+	STAMINA,
+	DAMAGE,
 }
 
 class PlayerSoundEventBase
@@ -38,7 +39,14 @@ class PlayerSoundEventBase
 		return m_RequestDestroy;
 	}
 	
-
+	bool CanPlay()
+	{
+		if( m_Player.IsHoldingBreath() ) 
+		{
+			return false;
+		}
+		return true;
+	}
 	
 	void Init(PlayerBase player)
 	{
@@ -57,7 +65,7 @@ class PlayerSoundEventBase
 	
 	void Play()
 	{
-		if(m_Player)
+		if( m_Player )
 		{
 			string soundset_name;
 			string gender;

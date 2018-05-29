@@ -29,7 +29,7 @@ class ActionForceConsume: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "force feed";
+		return "Force feed";
 	}
 
 	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

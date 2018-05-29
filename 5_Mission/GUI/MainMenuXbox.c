@@ -133,7 +133,7 @@ class MainMenuXbox extends UIScriptedMenu
 		//set player name
 		TextWidget player_name_widget = TextWidget.Cast( layoutRoot.FindAnyWidget( "PlayerNameText" ) );
 		string player_name;
-		GetGame().GetPlayerName( player_name );
+		GetGame().GetPlayerNameShort( 16, player_name );
 		player_name_widget.SetText( player_name );
 		
 		//set possible game parameters
@@ -212,9 +212,11 @@ class MainMenuXbox extends UIScriptedMenu
 					//string mission_path = "G:\\missions\\xbox_gdc.Staroye_pr";
 string mission_path = "missions\\xbox_gdc.Staroye_pr";
 				#endif
-				GetGame().PlayMission( mission_path );
+				GetGame().Connect( this, "10.105.128.143", 2302, "" );
+				//GetGame().PlayMission( mission_path );
 				return true;
 			case BUTTON_PLAY_ONLINE:		//open server browser
+				GetGame().Connect( this, "10.105.128.143", 2302, "" );
 				GetGame().GetUIManager().EnterServerBrowser( this );
 				return true;				
 			break;				

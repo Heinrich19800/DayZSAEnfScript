@@ -320,6 +320,9 @@ class DayZPlayerImplement extends DayZPlayer
 				Error("[hndfsm] warning - pending hand event already posted, curr_event=" + m_PostedHandEvent.ToString() + " new_event=" + e.ToString());
 		}
 	}
+	
+	void SendSoundEvent(EPlayerSoundEventID id);
+	
 	void HandleInventory (float pDt)
 	{
 		if (!GetInventory())
@@ -577,6 +580,11 @@ class DayZPlayerImplement extends DayZPlayer
 		switch(pDamageType)
 		{
 			case 0: // DT_CLOSE_COMBAT
+				//! ignore hit impacts in prone (for now)
+				GetMovementState(m_MovementState);
+				if (m_MovementState.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_PRONE || m_MovementState.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_RAISEDPRONE)
+					return false;
+
 				pAnimType = GetGame().ConfigGetInt("cfgAmmo " + pAmmoType + " hitAnimation");
 				if (pAnimType == 1 && !m_MeleeFightLogic.IsInBlock())
 					pAnimHitFullbody = true;
@@ -629,6 +637,11 @@ class DayZPlayerImplement extends DayZPlayer
 		if (EvaluateDamageHitAnimation(damageResult, damageType, source, component, ammo, modelPos, animType, animHitDir, animHitFullbody))
 		{
 			DayZPlayerSyncJunctures.SendDamageHit(this, animType, animHitDir, animHitFullbody);
+		}
+		else
+		{
+			SendSoundEvent(EPlayerSoundEventID.TAKING_DMG_LIGHT);
+			//add code here
 		}
 
 		// interupt melee for non-blocked hit or heavy hit

@@ -40,7 +40,7 @@ class ActionBuryAshes: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "bury ashes";
+		return "Bury ashes";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

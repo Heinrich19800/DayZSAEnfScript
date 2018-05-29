@@ -49,7 +49,7 @@ class ActionConsume: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "consume";
+		return "Consume";
 	}
 
 	override void OnCancelServer(PlayerBase player, ActionTarget target, ItemBase item, Param acdata)

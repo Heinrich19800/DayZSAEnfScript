@@ -20,6 +20,6 @@ class ActionMineTreeBark: ActionMineTree
 		
 	override string GetText()
 	{
-		return "cut bark off";
+		return "Cut bark off";
 	}
 };

@@ -34,7 +34,7 @@ class ActionInjectSelf: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "inject";
+		return "Inject";
 	}
 
 	override void OnExecuteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

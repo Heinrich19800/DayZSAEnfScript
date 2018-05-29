@@ -38,7 +38,7 @@ class ActionMineTree: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "cut tree down";
+		return "Cut tree down";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

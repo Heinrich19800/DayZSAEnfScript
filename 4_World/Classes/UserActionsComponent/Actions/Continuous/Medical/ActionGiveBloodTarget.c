@@ -41,7 +41,7 @@ class ActionGiveBloodTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "give blood";
+		return "Give blood";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )

@@ -23,7 +23,7 @@ class ActionIgniteFireplaceByTorch: ActionIgniteFireplace
 		
 	override string GetText()
 	{
-		return "ignite by torch";
+		return "Ignite by torch";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

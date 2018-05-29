@@ -36,7 +36,7 @@ class ActionLoadMagazine: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "load magazine";
+		return "Load magazine";
 	}
 	
 	override void CreateConditionComponents()  

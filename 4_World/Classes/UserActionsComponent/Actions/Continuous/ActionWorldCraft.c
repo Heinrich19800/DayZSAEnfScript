@@ -59,7 +59,7 @@ class ActionWorldCraft: ActionContinuousBase
 			return module_recipes_manager.GetRecipeName( player.GetCraftingManager().GetRecipeID() );
 		}
 
-		return "default worldcraft text";
+		return "Default worldcraft text";
 	}
 	
 	override bool Can( PlayerBase player, ActionTarget target, ItemBase item )

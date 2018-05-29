@@ -51,7 +51,7 @@ class ActionMineRock: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "mine";
+		return "Mine";
 	}
 
 

@@ -43,7 +43,7 @@ class ActionSewSelf: ActionContinuousBase
 			
 	override string GetText()
 	{
-		return "sew cuts";
+		return "Sew cuts";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

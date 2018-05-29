@@ -17,7 +17,7 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 		m_ScrollContainer	= m_Root.FindAnyWidget( "ScrollFrame" );
 		m_Content			= m_Root.FindAnyWidget( "Content" );
 		
-		m_Entries	= new map<string, ref PlayerListEntryScriptedWidget>;
+		m_Entries			= new map<string, ref PlayerListEntryScriptedWidget>;
 		
 		m_Header.SetText( header_text );
 		
@@ -72,7 +72,7 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 	
 	bool IsEmpty()
 	{
-		return m_Entries.Count() == 0;
+		return ( m_Entries.Count() == 0 );
 	}
 	
 	void Reload( BiosFriendInfoArray player_list )

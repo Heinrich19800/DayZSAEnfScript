@@ -41,7 +41,7 @@ class ActionConsumeSingle: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "take one";
+		return "Take one";
 	}
 	
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

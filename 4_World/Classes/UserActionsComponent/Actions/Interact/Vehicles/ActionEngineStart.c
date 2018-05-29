@@ -21,7 +21,7 @@ class ActionEngineStart: ActionInteractBase
 
 	override string GetText()
 	{
-		return "Start Engine";
+		return "Start engine";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

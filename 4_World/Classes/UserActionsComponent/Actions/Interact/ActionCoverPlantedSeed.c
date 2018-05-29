@@ -13,7 +13,7 @@ class ActionCoverPlantedSeed: ActionInteractBase
 
 	override string GetText()
 	{
-		return "cover planted slot";
+		return "Cover planted slot";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

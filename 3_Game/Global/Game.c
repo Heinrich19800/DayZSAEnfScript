@@ -510,12 +510,19 @@ class CGame
 
 	proto void					GetInventoryItemSize(InventoryItem item, out int width, out int height);
 	/**
-  \brief Returns list of all objects in radius "radius" around position "pos"
+  \brief Returns list of all objects in circle "radius" around position "pos"
 	@param pos
 	@param radius
 	@param objects output array
 	*/
 	proto native void		GetObjectsAtPosition(vector pos, float radius, out array<Object> objects, out array<Cargo> proxyCargos);
+	/**
+  \brief Returns list of all objects in sphere "radius" around position "pos"
+	@param pos
+	@param radius
+	@param objects output array
+	*/
+	proto native void		GetObjectsAtPosition3D(vector pos, float radius, out array<Object> objects, out array<Cargo> proxyCargos);
 	proto native World	GetWorld();
 	proto void					GetWorldName( out string world_name );
 	proto void					FormatString( string format, string params[], out string output);
@@ -682,8 +689,32 @@ class CGame
 	
 	proto native void 		UpdatePathgraphRegion(vector regionMin, vector regionMax);
 	
+	//! Returns the largest height difference between the given positions
+	float GetHighestSurfaceYDifference( array<vector> positions)
+	{
+		float high 			= -9999999;
+		float low 			= 99999999;
+		
+		for (int i = 0; i < positions.Count(); i++)
+		{
+			vector pos = positions.Get(i);
+			pos[1] = SurfaceY( pos[0], pos[2]);
+			float y = pos[1];
+			
+			if ( y > high )
+				high = y;
+			
+			if ( y < low )
+				low = y;
+			
+			;
+		}
+		
+		return high - low;
+	}
+	
 	//! Returns tilt of the ground on the given position in degrees, so you can use this value to rotate any item according to terrain.
-	vector 					GetSurfaceOrientation(float x, float z)
+	vector GetSurfaceOrientation(float x, float z)
 	{
 		vector normal = GetGame().SurfaceGetNormal(x, z);
 		vector angles = normal.VectorToAngles();
@@ -691,7 +722,7 @@ class CGame
 		return angles;
 	}
 	
-	void 					UpdatePathgraphRegionByObject(Object object)
+	void UpdatePathgraphRegionByObject(Object object)
 	{
 		vector pos = object.GetPosition();
 		vector min_max[2];

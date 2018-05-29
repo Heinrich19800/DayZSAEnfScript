@@ -26,7 +26,7 @@ class ActionGetOutTransport: ActionInteractBase
 
 	override string GetText()
 	{
-		return "get out";
+		return "Get out";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

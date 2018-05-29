@@ -43,7 +43,7 @@ class ActionCraft: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "craft";
+		return "Craft";
 	}	
 		
 	//override void OnStart( PlayerBase player, ActionTarget target, ItemBase item )

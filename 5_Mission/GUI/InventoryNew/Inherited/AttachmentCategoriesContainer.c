@@ -89,6 +89,12 @@ class AttachmentCategoriesContainer: CollapsibleContainer
 		GetGame().ConfigGetText(icon_path, icon_name);
 		return icon_name;
 	}
+	
+	int GetViewIndex( string config_path_attachment_categories, string attachment_category )
+	{
+		string preview_path = config_path_attachment_categories+ " " + attachment_category + " view_index";
+		return GetGame().ConfigGetInt( preview_path );;
+	}
 
 	void MouseClick( Widget w )
 	{
@@ -123,16 +129,22 @@ class AttachmentCategoriesContainer: CollapsibleContainer
 		for (int i = 0; i < attachments_categories_count; i++)
 		{
 			string attachment_category = GetAttachmentCategory( config_path_attachment_categories, i );
-			string icon_name = GetIconName( config_path_attachment_categories, attachment_category);
+			string icon_name = GetIconName( config_path_attachment_categories, attachment_category );
 
 			if(items_cont)
 			{
 				int slot_number = i;
+				
 				ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( items_cont.GetMainPanel().FindAnyWidget( "Icon"+ slot_number ) );
+				item_preview.Show( true );
+				item_preview.SetItem( entity );
+				item_preview.SetView( GetViewIndex( config_path_attachment_categories, attachment_category ) );
+				
 				//WidgetEventHandler.GetInstance().RegisterOnDrag( item_preview.GetParent(),  this, "OnIconDrag" );
 				ImageWidget image_widget = ImageWidget.Cast( item_preview.FindAnyWidget( "GhostSlot" + slot_number ) );
 				image_widget.Show( false );
-				image_widget.LoadImageFile( 0, "set:dayz_inventory image:" + icon_name );
+				//image_widget.LoadImageFile( 0, "set:dayz_inventory image:" + icon_name );
+				
 				if( m_Body.Count() > ( slot_number + 2 ) )
 				{
 					ClosableContainer c = ClosableContainer.Cast( m_Body.Get( slot_number + 2 ) );
@@ -143,9 +155,11 @@ class AttachmentCategoriesContainer: CollapsibleContainer
 				}
 				
 				WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( items_cont.GetMainPanel().FindAnyWidget( "PanelWidget"+i ),  this, "MouseClick" );
-				WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( items_cont.GetMainPanel().FindAnyWidget( "GhostSlot"+i ),  this, "MouseClick" );
+				//WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( items_cont.GetMainPanel().FindAnyWidget( "GhostSlot"+i ),  this, "MouseClick" );
+				WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( items_cont.GetMainPanel().FindAnyWidget( "Icon"+i ),  this, "MouseClick" );
 				items_cont.GetMainPanel().FindAnyWidget( "PanelWidget"+i ).SetUserID( i );
-				items_cont.GetMainPanel().FindAnyWidget( "GhostSlot"+i ).SetUserID( i );
+				//items_cont.GetMainPanel().FindAnyWidget( "GhostSlot"+i ).SetUserID( i );
+				items_cont.GetMainPanel().FindAnyWidget( "Icon"+i ).SetUserID( i );
 				AttRow ar;
 				if( m_Body.Count() < attachments_categories_count + 2 )
 				{
@@ -175,12 +189,15 @@ class AttachmentCategoriesContainer: CollapsibleContainer
 				{
 					int slot_number2 = i;
 					ItemPreviewWidget item_preview2 = ItemPreviewWidget.Cast( items_cont2.GetMainPanel().FindAnyWidget( "Icon"+ slot_number2 ) );
-					ImageWidget image_widget2 = ImageWidget.Cast( item_preview2.FindAnyWidget( "GhostSlot" + slot_number2 ) );
-				WidgetEventHandler.GetInstance().RegisterOnDrag( item_preview2.FindAnyWidget( "PanelWidget"+ slot_number2 ),  this, "OnIconDrag" );
-					//Print(item_preview2.GetParent().GetName());
-					image_widget2.Show( false );
 					item_preview2.Show( true );
-					image_widget2.LoadImageFile( 0, "set:dayz_inventory image:" + icon_name );
+					item_preview2.SetItem( entity );					
+					item_preview2.SetView( GetViewIndex( config_path_attachment_categories, attachment_category ) );
+					
+					ImageWidget image_widget2 = ImageWidget.Cast( item_preview2.FindAnyWidget( "GhostSlot" + slot_number2 ) );
+					WidgetEventHandler.GetInstance().RegisterOnDrag( item_preview2.FindAnyWidget( "PanelWidget"+ slot_number2 ),  this, "OnIconDrag" );
+					image_widget2.Show( false );
+					//image_widget2.LoadImageFile( 0, "set:dayz_inventory image:" + icon_name );
+					
 					if( m_Body.Count() > ( slot_number2 + 2 ) )
 					{
 						ClosableContainer c2 = ClosableContainer.Cast( m_Body.Get( slot_number2 + 2 ) );
@@ -191,9 +208,11 @@ class AttachmentCategoriesContainer: CollapsibleContainer
 					}
 					
 					WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( items_cont2.GetMainPanel().FindAnyWidget( "PanelWidget"+i ),  this, "MouseClick" );
-					WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( items_cont2.GetMainPanel().FindAnyWidget( "GhostSlot"+i ),  this, "MouseClick" );
+					//WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( items_cont2.GetMainPanel().FindAnyWidget( "GhostSlot"+i ),  this, "MouseClick" );
+					WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( items_cont2.GetMainPanel().FindAnyWidget( "Icon"+i ),  this, "MouseClick" );
 					items_cont2.GetMainPanel().FindAnyWidget( "PanelWidget"+i ).SetUserID( i );
-					items_cont2.GetMainPanel().FindAnyWidget( "GhostSlot"+i ).SetUserID( i );
+					//items_cont2.GetMainPanel().FindAnyWidget( "GhostSlot"+i ).SetUserID( i );
+					items_cont2.GetMainPanel().FindAnyWidget( "Icon"+i ).SetUserID( i );
 				}
 			}
 		}

@@ -59,7 +59,7 @@ class ActionSkinning: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "skin";
+		return "Skin";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

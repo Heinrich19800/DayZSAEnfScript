@@ -17,7 +17,7 @@ class ActionRemovePlant: ActionInteractBase
 
 	override string GetText()
 	{
-		return "remove plant";
+		return "Remove plant";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

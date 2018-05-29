@@ -345,7 +345,7 @@ class AttRow: ClosableContainer
 			image_widget2.LoadImageFile(0,"set:dayz_inventory image:" + icon_name2 );
 			item_preview2.SetItem(entity.GetInventory().FindAttachment(slot_id));
 			item_preview2.SetModelOrientation( Vector(0, 0, 0) );
-			item_preview2.SetView(1);
+			item_preview2.SetView( entity.GetViewIndex() );
 			
 			ItemManager.GetInstance().SetTemperature( entity.GetInventory().FindAttachment( slot_id ), item_preview2 );
 			

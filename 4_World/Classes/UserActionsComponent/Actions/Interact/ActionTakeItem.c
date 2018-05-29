@@ -26,7 +26,7 @@ class ActionTakeItem: ActionInteractBase
 
 	override string GetText()
 	{
-		return "Take ";
+		return "#action_take_item";
 	}
 	
 	override bool HasProneException()

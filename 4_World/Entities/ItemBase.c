@@ -13,6 +13,8 @@ class ItemBase extends InventoryItem
 	float 	m_VarQuantity;
 	float 	m_VarTemperature;
 	float 	m_VarWet;
+	float	m_HeatIsolation;
+	float 	m_Absorbency; 
 	int 	m_VarLiquidType;
 	int		m_Item_Stage;
 	bool	m_IsHologram;
@@ -81,6 +83,8 @@ class ItemBase extends InventoryItem
 		m_VarLiquidType = GetLiquidTypeInit();
 		m_VarQuantity = GetQuantityInit();//should be by the CE, this is just a precaution
 		m_IsHologram = false;
+		m_HeatIsolation = GetHeatIsolation();
+		m_Absorbency = GetAbsorbency();
 		
 		//RegisterNetSyncVariableInt("m_VariablesMask");
 		if ( HasQuantity() ) RegisterNetSyncVariableFloat("m_VarQuantity", GetQuantityMin(), GetQuantityMax() );
@@ -557,8 +561,7 @@ class ItemBase extends InventoryItem
 			if (old_owner.IsMan())
 			{
 				owner_player_old = Man.Cast( old_owner );
-				OnInventoryExit(owner_player_old);
-			}      
+			}
 			else
 			{
 				owner_player_old = Man.Cast( old_owner.GetHierarchyRootPlayer() );
@@ -569,7 +572,6 @@ class ItemBase extends InventoryItem
 			if ( new_owner.IsMan() )
 			{
 				owner_player_new = Man.Cast( new_owner );
-				OnInventoryEnter(owner_player_new);
 			}      
 			else      
 			{
@@ -2111,9 +2113,9 @@ class ItemBase extends InventoryItem
 	}
 	
 	float GetTemperatureInit()
-		{
-			return ConfigGetFloat("varTemperatureInit");
-		}
+	{
+		return ConfigGetFloat("varTemperatureInit");
+	}
 	
 	float GetTemperatureMin()
 	{
@@ -2124,7 +2126,11 @@ class ItemBase extends InventoryItem
 	{
 		return ConfigGetFloat("varTemperatureMax");
 	}
-
+	//----------------------------------------------------------------
+	float GetHeatIsolation()
+	{
+		return ConfigGetFloat("heatIsolation");
+	}
 	//----------------------------------------------------------------
 	void SetWet(float value, bool allow_client = false)
 	{
@@ -2165,6 +2171,11 @@ class ItemBase extends InventoryItem
 	float GetWetInit()
 	{
 		return ConfigGetFloat("varWetInit");
+	}
+	//----------------------------------------------------------------
+	float GetAbsorbency()
+	{
+		return ConfigGetFloat("absorbency");
 	}
 	//----------------------------------------------------------------
 	bool IsServerCheck(bool allow_client)

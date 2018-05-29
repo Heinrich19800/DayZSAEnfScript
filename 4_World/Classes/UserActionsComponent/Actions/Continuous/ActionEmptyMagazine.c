@@ -63,7 +63,7 @@ class ActionEmptyMagazine: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "empty magazine";
+		return "Empty magazine";
 	}
 	
 	override void OnRepeatServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

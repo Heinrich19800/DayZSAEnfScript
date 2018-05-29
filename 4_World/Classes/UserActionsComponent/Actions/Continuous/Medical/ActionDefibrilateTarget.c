@@ -36,7 +36,7 @@ class ActionDefibrilateTarget: ActionContinuousBase
 	
 	override string GetText()
 	{
-		return "defibrilate target";
+		return "Defibrilate target";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

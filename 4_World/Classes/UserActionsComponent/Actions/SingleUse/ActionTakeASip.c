@@ -18,6 +18,6 @@ class ActionTakeASip: ActionTakeABite
 
 	override string GetText()
 	{
-		return "take a sip";
+		return "Take a sip";
 	}
 };

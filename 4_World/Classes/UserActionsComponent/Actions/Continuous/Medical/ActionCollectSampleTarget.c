@@ -38,7 +38,7 @@ class ActionCollectSampleTarget : ActionContinuousBase
 
 	override string GetText()
 	{
-		return "collect sample";
+		return "Collect sample";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

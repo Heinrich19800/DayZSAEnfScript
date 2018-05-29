@@ -14,7 +14,11 @@ class ClosableHeader: Header
 
 	override void SetLayoutName()
 	{
+		#ifdef PLATFORM_XBOX
+		m_LayoutName = WidgetLayoutName.ClosableHeaderXbox;
+		#else
 		m_LayoutName = WidgetLayoutName.ClosableHeader;
+		#endif
 	}
 	
 	void OnDragHeader( Widget w, int x, int y )
@@ -27,6 +31,7 @@ class ClosableHeader: Header
 			if( item_preview_drag )
 			{
 				item_preview_drag.SetItem( m_Entity );
+				item_preview_drag.SetView( m_Entity.GetViewIndex() );
 			}
 			
 			ItemManager.GetInstance().SetIsDragging( true );

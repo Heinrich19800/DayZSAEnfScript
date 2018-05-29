@@ -46,7 +46,7 @@ class ActionWringClothes: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "wring the clothes";
+		return "Wring the clothes";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

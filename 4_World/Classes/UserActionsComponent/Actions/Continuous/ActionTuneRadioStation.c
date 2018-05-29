@@ -42,7 +42,7 @@ class ActionTuneRadioStation: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "tune radio station";
+		return "Tune radio station";
 	}
 	
 	override bool HasTarget()

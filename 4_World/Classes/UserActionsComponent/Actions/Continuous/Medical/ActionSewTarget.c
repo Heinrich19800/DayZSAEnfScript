@@ -38,7 +38,7 @@ class ActionSewTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "sew target's cuts";
+		return "Sew target's cuts";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

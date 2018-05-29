@@ -32,7 +32,7 @@ class ActionPlaceOnGround: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "place on ground";
+		return "Place on ground";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

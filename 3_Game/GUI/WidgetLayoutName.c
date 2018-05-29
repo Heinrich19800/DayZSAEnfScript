@@ -8,6 +8,7 @@ class WidgetLayoutName
 	const string GridContainerXbox = "gui/layouts/inventory_new/grid_container_xbox.layout";
 	const string CollapsibleHeader = "gui/layouts/inventory_new/collapsible_header.layout";
 	const string ClosableHeader = "gui/layouts/inventory_new/closable_header.layout";
+	const string ClosableHeaderXbox = "gui/layouts/inventory_new/xbox_closable_header.layout";
 	const string HandsHeader = "gui/layouts/inventory_new/hands_header.layout";
 	const string LeftArea = "gui/layouts/inventory_new/left_area.layout";
 	const string HandsArea = "gui/layouts/inventory_new/hands_area.layout";

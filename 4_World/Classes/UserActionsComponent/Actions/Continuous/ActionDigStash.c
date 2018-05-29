@@ -39,7 +39,7 @@ class ActionDigStash: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "dig stash";
+		return "Dig stash";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -54,10 +54,32 @@ class ActionDigStash: ActionContinuousBase
 			
 			if ( target_IB.ConfigGetBool("canBeDigged") )
 			{
+				if ( target_IB.IsInherited(UndergroundStash) )
+				{
+					return true;
+				}
+				
 				// TO DO: Create IsOnSoftSurface() method and use that instead of this long if
 				if ( surface_type == "cp_dirt"  ||  surface_type == "cp_broadleaf_dense1"  ||  surface_type == "cp_broadleaf_dense2"  ||  surface_type == "cp_broadleaf_sparse1"  ||  surface_type == "cp_broadleaf_sparse2"  ||  surface_type == "cp_conifer_common1"  ||  surface_type == "cp_grass"  ||  surface_type == "cp_grass_tall"  ||  surface_type == "grass_dry_ext" )
 				{
-					return true;
+					// Check slope angle
+					vector posA = position + "0.5 0 0.5";
+					vector posB = position + "-0.5 0 0.5";
+					vector posC = position + "0.5 0 -0.5";
+					vector posD = position + "-0.5 0 -0.5";
+					
+					array<vector> positions = new array<vector>;
+					positions.Insert( posA );
+					positions.Insert( posB );
+					positions.Insert( posC );
+					positions.Insert( posD );
+					
+					float difference = GetGame().GetHighestSurfaceYDifference(positions);
+					
+					if ( difference < 0.6 )
+					{
+						return true;
+					}
 				}
 			}
 		}
@@ -96,10 +118,6 @@ class ActionDigStash: ActionContinuousBase
 			{
 				stash.SetStashedItem(stashed_item);
 				stash.PlaceOnGround();
-				vector surf_norm = GetGame().SurfaceGetNormal(pos[0], pos[1]);
-				surf_norm = surf_norm.VectorToAngles();
-				vector stash_ori = targetObject.GetOrientation();
-				//stash.SetOrientation(surf_norm);
 			}
 			else
 			{

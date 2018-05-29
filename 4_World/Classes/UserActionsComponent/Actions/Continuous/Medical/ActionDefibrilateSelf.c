@@ -41,7 +41,7 @@ class ActionDefibrilateSelf: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "defibrilate yourself";
+		return "Defibrilate yourself";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

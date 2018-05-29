@@ -128,21 +128,25 @@ class Inventory: ContainerBase
 		{
 			m_RightArea.MoveGridCursor(Direction.RIGHT);
 			m_LeftArea.MoveGridCursor(Direction.RIGHT);
+			//m_HandsArea.MoveGridCursor(Direction.RIGHT);
 		}
 		else if ( control == ControlID.CID_LEFT && value == 1 )
 		{
 			m_RightArea.MoveGridCursor(Direction.LEFT);
 			m_LeftArea.MoveGridCursor(Direction.LEFT);
+			//m_HandsArea.MoveGridCursor(Direction.LEFT);
 		}
 		else if ( control == ControlID.CID_UP && value == 1 )
 		{
 			m_RightArea.MoveGridCursor(Direction.UP);
 			m_LeftArea.MoveGridCursor(Direction.UP);
+			//m_HandsArea.MoveGridCursor(Direction.UP);
 		}
 		else if ( control == ControlID.CID_DOWN && value == 1 )
 		{
 			m_RightArea.MoveGridCursor(Direction.DOWN);
 			m_LeftArea.MoveGridCursor(Direction.DOWN);
+			//m_HandsArea.MoveGridCursor(Direction.DOWN);
 		}
 		
 		
@@ -157,10 +161,10 @@ class Inventory: ContainerBase
 				{
 					m_LeftArea.Select();
 				}
-				/*if( m_HandsArea.IsActive() )
+				if( m_HandsArea.IsActive() )
 				{
 					m_HandsArea.Select();
-				}*/
+				}
 				if( m_HandsArea.IsCombineActive() )
 				{
 					m_HandsArea.SelectCombine();
@@ -181,10 +185,13 @@ class Inventory: ContainerBase
 				if( m_RightArea.IsActive() )
 				{
 					m_RightArea.Combine();
+					m_RightArea.UnfocusGrid();
+
 				}
 				if( m_LeftArea.IsActive() )
 				{
 					m_LeftArea.Combine();
+					m_LeftArea.UnfocusGrid();
 				}
 			}
 			//ItemManager.GetInstance().SetSelectedItem(NULL,NULL);

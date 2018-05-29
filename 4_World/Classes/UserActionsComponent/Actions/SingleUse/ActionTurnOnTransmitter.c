@@ -25,7 +25,7 @@ class ActionTurnOnTransmitter: ActionTurnOnWhileInHands
 
 	override string GetText()
 	{
-		return "turn on";
+		return "Turn on";
 	}
 		
 	override bool ActionCondition ( PlayerBase player, ActionTarget target, ItemBase item )

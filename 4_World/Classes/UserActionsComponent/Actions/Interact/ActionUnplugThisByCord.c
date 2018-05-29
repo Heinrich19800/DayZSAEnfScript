@@ -13,7 +13,7 @@ class ActionUnplugThisByCord: ActionInteractBase
 		
 	override string GetText()
 	{
-		return "unplug by cord";
+		return "Unplug by cord";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

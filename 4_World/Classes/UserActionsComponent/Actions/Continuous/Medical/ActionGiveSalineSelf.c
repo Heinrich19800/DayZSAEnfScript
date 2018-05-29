@@ -44,7 +44,7 @@ class ActionGiveSalineSelf: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "give saline";
+		return "Give saline";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

@@ -28,7 +28,7 @@ class ActionIgniteFireplaceByAir: ActionIgniteFireplace
 
 	override string GetText()
 	{
-		return "blow air into fireplace";
+		return "Blow air into fireplace";
 	}
 		
 	override bool ActionCondition ( PlayerBase player, ActionTarget target, ItemBase item )

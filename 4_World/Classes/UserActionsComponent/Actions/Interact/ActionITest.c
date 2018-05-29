@@ -14,6 +14,6 @@ class ActionITest: ActionInteractBase
 
 	override string GetText()
 	{
-		return "take one";
+		return "Take one";
 	}
 };

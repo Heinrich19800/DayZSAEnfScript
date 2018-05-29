@@ -33,7 +33,7 @@ class ActionMeasureBattery: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "lick battery";
+		return "Lick battery";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

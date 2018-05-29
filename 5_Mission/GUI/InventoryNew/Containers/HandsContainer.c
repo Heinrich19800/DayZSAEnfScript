@@ -746,6 +746,11 @@ class HandsContainer: Container
 		m_Spacer.Update();
 	}
 	
+	void MoveGridCursor( int direction )
+	{
+		m_Cargo.MoveGridCursor( direction );
+	}
+	
 	void DestroyCargo()
 	{
 		if( m_Cargo )
@@ -876,6 +881,7 @@ class HandsContainer: Container
 			m_ItemsContainer.SetGap( 1 );
 			this.Insert( m_ItemsContainer );
 			m_Cargo = new CargoGrid( entity, m_ItemsContainer );
+			m_Cargo.SetParent( this );
 		}
 
 		if( m_Hidden )
@@ -894,6 +900,17 @@ class HandsContainer: Container
 		}
 
 		this.Refresh();
+		m_Parent.Refresh();
+		m_Spacer.Update();
+	}
+	
+	void RefreshHands()
+	{
+		for ( int i = 1; i < m_Body.Count(); i++ )
+			{
+				m_Body.Get( i ).OnShow();
+			}
+				this.Refresh();
 		m_Parent.Refresh();
 		m_Spacer.Update();
 	}

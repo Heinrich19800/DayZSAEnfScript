@@ -23,7 +23,7 @@ class ActionClapBearTrapWithThisItem: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "prod bear trap";
+		return "Prod bear trap";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

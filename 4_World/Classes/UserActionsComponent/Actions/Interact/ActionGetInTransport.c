@@ -26,7 +26,7 @@ class ActionGetInTransport: ActionInteractBase
 
 	override string GetText()
 	{
-		return "get in driver";
+		return "Get in driver";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

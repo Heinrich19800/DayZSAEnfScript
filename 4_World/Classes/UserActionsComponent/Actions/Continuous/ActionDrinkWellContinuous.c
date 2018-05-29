@@ -31,7 +31,7 @@ class ActionDrinkWellContinuous: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "drink";
+		return "Drink";
 	}
 	
 	override void CreateConditionComponents()  

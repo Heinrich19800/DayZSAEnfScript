@@ -16,7 +16,7 @@ class ActionCloseBarrelHoles: ActionInteractBase
 
 	override string GetText()
 	{
-		return "close";
+		return "Close";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

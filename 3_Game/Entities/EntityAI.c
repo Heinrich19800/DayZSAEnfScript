@@ -14,8 +14,11 @@ class EntityAI extends Entity
 			RegisterNetSyncVariableBool("m_EM.m_IsSwichedOn");
 			RegisterNetSyncVariableBool("m_EM.m_CanWork");
 		}
+		
+		// Item preview index
+		RegisterNetSyncVariableInt( "m_ViewIndex", 0, 99 );
 	}
-
+	
 	void ~EntityAI()
 	{
 		if ( HasEnergyManager() )
@@ -1182,4 +1185,27 @@ class EntityAI extends Entity
 	int GetItemWeight()
 	{
 	}
+	
+	///@{ view index
+	//! Item view index is used to setup which camera will be used in item view widget in inventory.
+	//! With this index you can setup various camera angles for different item states (e.g. fireplace, weapons).
+	int m_ViewIndex = 0;
+	
+	//! Sets item preview index
+	void SetViewIndex( int index )
+	{
+		m_ViewIndex = index;
+		
+		if( GetGame().IsServer() ) 
+		{
+			SetSynchDirty();
+		}
+	}
+	
+	//! Returns item preview index
+	int GetViewIndex()
+	{
+		return m_ViewIndex;
+	}
+	///@} view index
 };

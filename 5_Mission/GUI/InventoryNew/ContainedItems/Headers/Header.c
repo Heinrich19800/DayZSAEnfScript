@@ -3,8 +3,10 @@ class Header: ContainerBase
 	protected EntityAI	m_Entity;
 	void Header( ContainerBase parent, string function_name )
 	{
+		#ifndef PLATFORM_XBOX
 		WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( GetMainPanel().FindAnyWidget( "collapse_button" ),  m_Parent, function_name );
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "collapse_button" ),  m_Parent, "OnDropReceivedFromHeader" );
+		#endif
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel(),  m_Parent, "OnDropReceivedFromHeader" );
 		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel(),  this, "DraggingOverHeader" );
 	}
@@ -21,6 +23,7 @@ class Header: ContainerBase
 		m_Entity = entity_ai;
 		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( GetMainPanel().FindAnyWidget( "Render" ) );
 		item_preview.SetItem(entity_ai);
+		item_preview.SetView( entity_ai.GetViewIndex() );
 	}
 	
 	void DraggingOverHeader( Widget w, int x, int y, Widget receiver )

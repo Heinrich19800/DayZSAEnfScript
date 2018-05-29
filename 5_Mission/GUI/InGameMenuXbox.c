@@ -24,9 +24,6 @@ class InGameMenuXbox extends UIScriptedMenu
 			OnlineServices.m_PermissionsAsyncInvoker.Remove( OnPermissionsUpdate );
 		}
 		
-		layoutRoot.FindAnyWidget( "Gamercard" ).Show( false );
-		layoutRoot.FindAnyWidget( "Mute" ).Show( false );
-		
 		Mission mission = GetGame().GetMission();
 		if ( mission )
 		{
@@ -85,6 +82,9 @@ class InGameMenuXbox extends UIScriptedMenu
 			ClientData.m_OnlineServices.LoadFriends();
 			ClientData.m_OnlineServices.LoadPermissions( ClientData.GetSimplePlayerList() );
 		}
+		
+		layoutRoot.FindAnyWidget( "Gamercard" ).Show( false );
+		layoutRoot.FindAnyWidget( "Mute" ).Show( false );
 		
 		/*
 		if (GetGame().IsMultiplayer())
@@ -320,23 +320,7 @@ class InGameMenuXbox extends UIScriptedMenu
 						if ( uid != "" && ScriptInputUserData.CanStoreInputUserData() )
 						{
 							ctx = new ScriptInputUserData;
-							ctx.Write(INPUT_UDT_USER_MUTE_XBOX);
-							ctx.Write( uid );
-							ctx.Write( !muted );
-							ctx.Send();
-						}
-					}
-				}
-				else if( m_FriendsInfoPanel && m_TabScript.GetSelectedIndex() == 1 )
-				{
-					uid = m_FriendsInfoPanel.FindPlayerByWidget( GetFocus() );
-					if( !IsLocalPlayer( uid ) )
-					{
-						muted = OnlineServices.IsPlayerMuted( uid );
-						if ( uid != "" && ScriptInputUserData.CanStoreInputUserData() )
-						{
-							ctx = new ScriptInputUserData;
-							ctx.Write(INPUT_UDT_USER_MUTE_XBOX);
+							ctx.Write( INPUT_UDT_USER_MUTE_XBOX );
 							ctx.Write( uid );
 							ctx.Write( !muted );
 							ctx.Send();
@@ -347,14 +331,14 @@ class InGameMenuXbox extends UIScriptedMenu
 			
 			if( GetGame().GetInput().GetActionDown( UAUIRadialMenuPick, false ) )
 			{
-				if( m_TabScript.GetSelectedIndex() == 1 )
+				if( m_TabScript.GetSelectedIndex() == 0 )
 				{
 					if( m_ServerInfoPanel )
 					{
 						uid = m_ServerInfoPanel.FindPlayerByWidget( GetFocus() );
 					}
 				}
-				else if( m_TabScript.GetSelectedIndex() == 0 )
+				else if( m_TabScript.GetSelectedIndex() == 1 )
 				{
 					if( m_FriendsInfoPanel )
 					{

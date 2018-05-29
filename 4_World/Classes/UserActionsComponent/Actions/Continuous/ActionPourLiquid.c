@@ -54,7 +54,7 @@ class ActionPourLiquid: ActionContinuousBase
 		ItemBase item = player.GetItemInHands();
 		
 		//return "fill "+item.GetDisplayName().Substring(0,(item.GetDisplayName().Length() )); //crops the '' bit from the displayname
-		return "Pour Liquid";
+		return "Pour liquid";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

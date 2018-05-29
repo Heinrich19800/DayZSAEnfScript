@@ -50,7 +50,7 @@ class ActionMeasureTemperatureSelf: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "measure temperature";
+		return "Measure temperature";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

@@ -37,7 +37,7 @@ class ActionBuildOven: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "build oven";
+		return "Build oven";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

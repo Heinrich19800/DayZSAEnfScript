@@ -10,7 +10,7 @@ class UndergroundStash extends ItemBase
 		SetEventMask(EntityEvent.INIT);
 	}
 	
-	void EOnInit(IEntity other, int extra) //!EntityEvent.INIT
+	override void EOnInit(IEntity other, int extra) //!EntityEvent.INIT
 	{
 		vector pos = GetPosition();
 		this.SetOrientation( GetGame().GetSurfaceOrientation(pos[0], pos[2]) );
@@ -20,7 +20,7 @@ class UndergroundStash extends ItemBase
 	{
 		vector pos = GetPosition();
 		pos[1] = GetGame().SurfaceY(pos[0], pos[2]);
-		pos[1] = pos[1] + 0.025;
+		pos[1] = pos[1] + 0.22;
 		SetPosition(pos);
 	}
 	

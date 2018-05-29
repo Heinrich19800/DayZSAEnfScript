@@ -14,7 +14,7 @@ class ActionDrinkWell extends ActionInteractBase
 
 	override string GetText()
 	{
-		return "take a sip";
+		return "Take a sip";
 	}
 
 	override string GetTargetDescription()

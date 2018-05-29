@@ -52,7 +52,7 @@ class ActionUnpackBox: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "unbox";
+		return "Unbox";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

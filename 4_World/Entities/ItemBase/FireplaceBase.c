@@ -441,11 +441,13 @@ class FireplaceBase extends ItemBase
 		{
 			SetAnimationPhase( ANIMATION_TRIPOD, 0 );
 			AddProxyPhysics( ANIMATION_TRIPOD );			//proxy test
+			//SetViewIndex( 1 );							//update view index
 		}
 		else
 		{
 			SetAnimationPhase( ANIMATION_TRIPOD, 1 );
 			RemoveProxyPhysics( ANIMATION_TRIPOD );			//proxy test
+			//SetViewIndex( 0 );							//update view index
 		}
 	}
 

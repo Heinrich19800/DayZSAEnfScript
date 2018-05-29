@@ -20,7 +20,7 @@ class ActionExitLadder: ActionInteractBase
 
 	override string GetText()
 	{
-		return "exit ladder";
+		return "Exit ladder";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

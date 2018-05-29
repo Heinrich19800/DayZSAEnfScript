@@ -38,7 +38,7 @@ class ActionDeconstruct: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "deconstruct";		//add name of the construction part if possible
+		return "Deconstruct";		//add name of the construction part if possible
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

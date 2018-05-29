@@ -13,7 +13,7 @@ class ActionTurnOnPowerGenerator: ActionInteractBase
 
 	override string GetText()
 	{
-		return "switch on";
+		return "Switch on";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

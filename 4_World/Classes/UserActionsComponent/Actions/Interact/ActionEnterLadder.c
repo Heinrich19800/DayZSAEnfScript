@@ -23,7 +23,7 @@ class ActionEnterLadder: ActionInteractBase
 
 	override string GetText()
 	{
-		return "enter ladder";
+		return "Enter ladder";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

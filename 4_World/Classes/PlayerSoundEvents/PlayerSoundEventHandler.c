@@ -8,6 +8,7 @@ enum EPlayerSoundEventID
 	STAMINA_UP_LIGHT,
 	STAMINA_UP_HEAVY,
 	STAMINA_UP_END,
+	TAKING_DMG_LIGHT,
 }
 
 class PlayerSoundEventHandler
@@ -28,17 +29,30 @@ class PlayerSoundEventHandler
 		m_AvailableStates[EPlayerSoundEventID.STAMINA_UP_LIGHT] = new StaminaUpLight();
 		m_AvailableStates[EPlayerSoundEventID.STAMINA_UP_HEAVY] = new StaminaUpHeavy();
 		m_AvailableStates[EPlayerSoundEventID.STAMINA_UP_END] = new StaminaUpEnd();
-	}
-	
-	
-	static EPlayerSoundEventID GetPlayerSoundEventID(EPlayerSoundEventID id)
-	{
-		return m_AvailableStates[id].GetPlayerSoundEventID();
+		m_AvailableStates[EPlayerSoundEventID.TAKING_DMG_LIGHT] = new DamageLightSoundEvent();
 	}
 	
 	static EPlayerSoundEventType GetPlayerSoundEventType(EPlayerSoundEventID id)
 	{
 		return m_AvailableStates[id].GetPlayerSoundEventType();
+	}
+	
+	EPlayerSoundEventID GetCurrentStateEventID()
+	{
+		if(m_CurrentState)
+		{
+			return m_CurrentState.GetPlayerSoundEventID();
+		}
+		return -1;
+	}
+	
+	EPlayerSoundEventType GetCurrentStateEventType()
+	{
+		if(m_CurrentState)
+		{
+			return m_CurrentState.GetPlayerSoundEventType();
+		}
+		return -1;
 	}
 	
 	void OnTick(float delta_time)
@@ -55,31 +69,38 @@ class PlayerSoundEventHandler
 		}
 	}
 	
-	void PlayRequest(EPlayerSoundEventID id)
+	bool PlayRequest(EPlayerSoundEventID id)
 	{
 		PlayerSoundEventBase requested_state = m_AvailableStates[id].ClassName().ToType().Spawn();
+		requested_state.Init(m_Player);
+		
+		if( !requested_state.CanPlay() )
+		{
+			return false;
+		}
 		
 		if(m_CurrentState)
 		{
+			
 			if( m_CurrentState.HasPriority(id) )
 			{
 				// do nothing
+				return false;
 			}
 			else
 			{
 				m_CurrentState.Stop();
-				m_CurrentState.Init(m_Player);
-				m_CurrentState.Play();
+				requested_state.Play();
+				m_CurrentState = requested_state;
+				return true;
 			}
 		}
 		else
 		{
 			m_CurrentState = requested_state;
-			m_CurrentState.Init(m_Player);
 			m_CurrentState.Play();
+			return true;
 		}
-		
-		
-
+		return false;//should never get here
 	}
 }

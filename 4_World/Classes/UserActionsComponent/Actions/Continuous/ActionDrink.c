@@ -43,6 +43,6 @@ class ActionDrink: ActionConsume
 	
 	override string GetText()
 	{
-		return "drink";
+		return "Drink";
 	}
 };

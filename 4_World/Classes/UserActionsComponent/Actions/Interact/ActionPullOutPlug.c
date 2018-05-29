@@ -29,7 +29,7 @@ class ActionPullOutPlug: ActionInteractBase
 		return return_string;
 		*/
 		
-		return "pull out plug";
+		return "Pull out plug";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

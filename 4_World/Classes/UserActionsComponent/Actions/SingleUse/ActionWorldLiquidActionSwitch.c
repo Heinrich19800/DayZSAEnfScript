@@ -31,7 +31,7 @@ class ActionWorldLiquidActionSwitch: ActionSingleUseBase
 			{
 				if ( Liquid.CanFillContainer( target_item, item.GetLiquidType() ) )
 				{
-					m_switch_to = "Liquid Drain";
+					m_switch_to = "Liquid drain";
 					return true;
 				}
 				else
@@ -44,7 +44,7 @@ class ActionWorldLiquidActionSwitch: ActionSingleUseBase
 			{
 				if ( Liquid.CanFillContainer( item, target_item.GetLiquidType() ) )
 				{
-					m_switch_to = "Liquid Pour";
+					m_switch_to = "Liquid pour";
 					return true;
 				}
 				else

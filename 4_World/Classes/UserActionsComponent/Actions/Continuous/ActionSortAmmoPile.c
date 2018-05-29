@@ -35,7 +35,7 @@ class ActionSortAmmoPile: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "sort ammunition";
+		return "Sort ammunition";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

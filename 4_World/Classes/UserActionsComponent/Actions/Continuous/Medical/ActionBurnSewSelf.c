@@ -40,7 +40,7 @@ class ActionBurnSewSelf: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "close wounds";
+		return "Close wounds";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

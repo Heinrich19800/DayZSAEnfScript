@@ -91,6 +91,7 @@ class ItemWithCargo: ClosableContainer
 						player.PredictiveTakeEntityToHands( prev_item );
 					}
 				}
+				m_CargoGrid.PrepareCursorReactivation();
 			}
 		}
 	}

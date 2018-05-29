@@ -15,7 +15,7 @@ class ActionTuneFrequencyOnGround : ActionInteractBase
 
 	override string GetText()
 	{
-		return "tune frequency";
+		return "Tune frequency";
 	}
 		
 	override bool ActionCondition ( PlayerBase player, ActionTarget target, ItemBase item )

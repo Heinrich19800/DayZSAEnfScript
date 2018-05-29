@@ -36,7 +36,7 @@ class ActionFillGeneratorTank: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "fill the tank";
+		return "Fill the tank";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

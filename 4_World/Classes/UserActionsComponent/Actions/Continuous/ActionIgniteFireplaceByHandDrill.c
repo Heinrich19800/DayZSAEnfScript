@@ -33,7 +33,7 @@ class ActionIgniteFireplaceByHandDrill: ActionIgniteFireplace
 		
 	override string GetText()
 	{
-		return "ignite by hand drill";
+		return "Ignite by hand drill";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

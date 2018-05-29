@@ -92,7 +92,10 @@ class MainMenuNew extends UIScriptedMenu
 		m_Mission		= MissionMainMenu.Cast( GetGame().GetMission() );
 		m_Scene			= m_Mission.GetIntroScene();
 		
-		m_Scene.m_Camera.LookAt(Vector(m_Scene.m_DemoPos[0],m_Scene.m_DemoPos[1] + 1,m_Scene.m_DemoPos[2]));
+		if( m_Scene && m_Scene.m_Camera && m_Scene.m_DemoPos )
+		{
+			m_Scene.m_Camera.LookAt(Vector(m_Scene.m_DemoPos[0],m_Scene.m_DemoPos[1] + 1,m_Scene.m_DemoPos[2]));
+		}
 		
 		m_PlayerName	= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_text") );
 		m_PlayerName.SetText( g_Game.GetPlayerGameName() );

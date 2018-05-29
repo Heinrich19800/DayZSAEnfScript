@@ -55,7 +55,7 @@ class ItemWithElectricManager: ClosableContainer
 			image_widget.LoadImageFile( 0, "set:dayz_inventory image:" + icon_name );
 			item_preview.SetItem( m_Entity.GetCompEM().GetDeviceBySocketID( i ) );
 			item_preview.SetModelOrientation( Vector( 0, 0, 0 ) );
-			item_preview.SetView( 1 );
+			item_preview.SetView( m_Entity.GetViewIndex() );
 		}
 	}
 	

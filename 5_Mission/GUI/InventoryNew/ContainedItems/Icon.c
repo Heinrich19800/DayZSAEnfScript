@@ -1344,7 +1344,7 @@ class Icon: ContainerBase
 		item_preview.Show( true );
 		item_preview.SetItem( EntityAI.Cast( obj ) );
 		item_preview.SetModelOrientation( "0 0 0" );
-		item_preview.SetView( 1 );
+		item_preview.SetView( obj.GetViewIndex() );
 
 		Widget item_w = item_preview.GetParent();
 		if ( item_w )

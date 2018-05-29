@@ -76,6 +76,11 @@ class HandsArea: ContainerBase
 		m_HandsContainer.SelectCombine();
 	}
 	
+	void MoveGridCursor( int direction )
+	{
+		m_HandsContainer.MoveGridCursor( direction );
+	}
+	
 	void EquipItem()
 	{
 		m_HandsContainer.EquipItem();

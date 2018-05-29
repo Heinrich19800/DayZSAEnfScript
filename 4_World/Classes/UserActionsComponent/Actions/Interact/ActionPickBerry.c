@@ -47,7 +47,7 @@ class ActionPickBerry: ActionInteractLoopBase
 
 	override string GetText()
 	{
-		return "harvest";
+		return "Harvest";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

@@ -35,7 +35,7 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 		
 		if (m_position < 0) m_position = 0;
 		if (m_position > 1 - diff) m_position = 1 - diff;
-		Update();
+		UpdateScroller();
 	}
 	
 	void ScrollToPos( float pos )
@@ -49,20 +49,20 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 			m_position = 0;
 		if (m_position > 1 - diff)
 			m_position = 1 - diff;
-		Update();
+		UpdateScroller();
 	}
 	
 	void ScrollToBottom()
 	{
 		float diff = m_root_height / m_content_height;
 		m_position = 1 - diff;
-		Update();
+		UpdateScroller();
 	}
 	
 	void ScrollToTop()
 	{
 		m_position = 0;
-		Update();
+		UpdateScroller();
 	}
 	
 	float GetContentYPos()
@@ -77,8 +77,10 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 		return m_root_height;
 	}
 	
-	void Update()
+	void UpdateScroller()
 	{
+		m_root.Update();
+		Content.Update();
 		float width;
 		float height;
 		float diff;
@@ -123,7 +125,7 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 		m_root.SetHandler(this);
 		m_root.SetFlags(WidgetFlags.VEXACTPOS);
 		m_scrolling = false;
-		Update();
+		UpdateScroller();
 	}
 	
 	protected void StopScrolling()
@@ -154,7 +156,7 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 			}
 		}
 		
-		Update();
+		UpdateScroller();
 	}
 
 	
@@ -193,24 +195,15 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 	
 		if (m_position < 0) m_position = 0;
 		if (m_position > 1) m_position = 1;
-		Update();
+		UpdateScroller();
 		return true;
 	}
 	
 	override bool OnResize( Widget  w, int x, int y) {
 		if (w == m_root || w == Content) 
 		{
-			Update();
+			UpdateScroller();
 		}
 		return false;
 	}
-	
-	override bool OnUpdate(Widget w)
-	{
-		if (w == m_root)
-		{
-			Update();
-		}
-		return false;
-	}	
 };

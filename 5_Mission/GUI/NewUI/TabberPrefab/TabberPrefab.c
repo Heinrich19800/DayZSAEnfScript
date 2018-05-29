@@ -15,7 +15,9 @@ class TabberUI extends ScriptedWidgetEventHandler
 		m_Root = w;
 		Widget tab_controls	= m_Root.FindAnyWidget( "Tab_Control_Container" );
 		Widget tab_child	= tab_controls.GetChildren();
+		
 		int tab_count;
+		
 		while( tab_child )
 		{
 			tab_count++;
@@ -50,12 +52,13 @@ class TabberUI extends ScriptedWidgetEventHandler
 		float total_size;
 		float x, y;
 		
+		tab_controls.Update();
+		
 		Widget tab_child = tab_controls.GetChildren();
 		while( tab_child )
 		{
 			
 			tab_child.GetSize( x, y );
-			Print( x );
 			total_size += x;
 			tab_child = tab_child.GetSibling();
 		}

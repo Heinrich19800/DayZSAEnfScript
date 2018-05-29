@@ -30,7 +30,7 @@ class ActionRepairWithToolFromHands: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "repair";
+		return "Repair";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

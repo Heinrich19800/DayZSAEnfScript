@@ -22,7 +22,7 @@ class ActionPlugIntoFence: ActionSingleUseBase
 	
 	override string GetText()
 	{
-		return "plug in";
+		return "Plug in";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

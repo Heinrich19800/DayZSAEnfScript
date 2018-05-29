@@ -37,7 +37,7 @@ class ActionFillFuel: ActionContinuousBase
 		ItemBase item = player.GetItemInHands();
 		
 		//return "fill "+item.GetDisplayName().Substring(0,(item.GetDisplayName().Length() )); //crops the '' bit from the displayname
-		return " fill bottle"; //default
+		return "Fill bottle"; //default
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

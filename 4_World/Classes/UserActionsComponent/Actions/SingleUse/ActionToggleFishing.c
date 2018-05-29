@@ -26,7 +26,7 @@ class ActionToggleFishing: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "start or end fishing";
+		return "Start or end fishing";
 	}
 
 	override bool ActionCondition ( PlayerBase player, ActionTarget target, ItemBase item )

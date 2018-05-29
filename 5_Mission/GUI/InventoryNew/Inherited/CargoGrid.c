@@ -49,7 +49,7 @@ class CargoGrid
 			for ( int j = 0; j < cargo_height; j++ )
 			{
 				GridContainer row = new GridContainer( m_ItemsContainer );
-				row.SetNumber( j );
+				row.SetNumber( j    );
 				row.SetEntity( m_Entity );
 				row.SetWidth( m_Entity.GetInventory().GetCargo().GetWidth() );
 				m_ItemsContainer.Insert( row );
@@ -81,6 +81,7 @@ class CargoGrid
 		{
 			player.PredictiveDropEntity( entity );
 		}
+		m_ReactivateCursor = true;
 	}
 	
 	void TransferItem()
@@ -90,6 +91,14 @@ class CargoGrid
 		{
 			GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.CARGO, entity );
 		}
+		m_ReactivateCursor = true;
+	}
+	
+	bool m_ReactivateCursor;
+	
+	void PrepareCursorReactivation()
+	{
+		m_ReactivateCursor = true;
 	}
 	
 	void EquipItem()
@@ -204,7 +213,11 @@ class CargoGrid
 		icon.SetActive( false );
 		
 		int focused_row = m_FocusedItemPosition / 4;
-		int max_rows = m_ItemsContainer.GetItemCount() / 4;
+		int max_rows = m_ItemsContainer.GetItemCount() / 4 + 1;
+		if( m_ItemsContainer.GetItemCount() % 4 == 0 )
+		{
+			max_rows = m_ItemsContainer.GetItemCount() / 4;
+		}
 		int row_min = focused_row * 4;
 		int row_max = row_min + 3;
 		
@@ -229,7 +242,7 @@ class CargoGrid
 			m_FocusedItemPosition += 4;
 			if( m_FocusedItemPosition > m_ItemsContainer.GetItemCount() - 1 )
 			{
-				if( focused_row < max_rows )
+				if( focused_row < max_rows - 1 )
 				{
 					m_FocusedItemPosition = m_ItemsContainer.GetItemCount() - 1;
 				}
@@ -308,11 +321,14 @@ class CargoGrid
 						RecomputeGridHeight();
 						m_Parent.Refresh();
 						m_ItemsContainer.RecomputeItemPositions();
-						if( m_ItemsContainer.GetItemCount() > 0 )
+						
+						if( m_ReactivateCursor && m_ItemsContainer.GetItemCount() > 0 )
 						{
 							Icon icon = m_ItemsContainer.GetIconByIndex( m_FocusedItemPosition );
 							icon.SetActive( true );
+							m_ReactivateCursor = false;
 						}
+
 					( Container.Cast( m_Parent.m_Parent.m_Parent ) ).UpdateBodySpacers();
 						#endif
 					}
@@ -355,9 +371,13 @@ class CargoGrid
 			
 						#ifdef PLATFORM_XBOX
 			RecomputeGridHeight();
+			if(m_Parent)
 			m_Parent.Refresh();
 			m_ItemsContainer.RecomputeItemPositions();
+			if(Container.Cast( m_Parent.m_Parent.m_Parent ) )
 			( Container.Cast( m_Parent.m_Parent.m_Parent ) ).UpdateBodySpacers();
+			else
+			HandsContainer.Cast( m_Parent ).RefreshHands();
 			#endif
 		}
 

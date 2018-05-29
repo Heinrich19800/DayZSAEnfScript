@@ -40,7 +40,7 @@ class ActionCoverHeadSelf: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "put on head";
+		return "Put on head";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

@@ -36,7 +36,7 @@ class ActionUseRangefinder : ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "use range finder";
+		return "Use range finder";
 	}
 
 	override bool HasTarget()

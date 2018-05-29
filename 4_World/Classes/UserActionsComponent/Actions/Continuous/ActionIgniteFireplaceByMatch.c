@@ -29,7 +29,7 @@ class ActionIgniteFireplaceByMatch: ActionIgniteFireplace
 		
 	override string GetText()
 	{
-		return "ignite by match";
+		return "Ignite by match";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

@@ -55,7 +55,7 @@ class ActionStripCarrierVest: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "strip vest";
+		return "Strip vest";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

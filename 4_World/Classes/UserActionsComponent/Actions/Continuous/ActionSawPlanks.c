@@ -38,7 +38,7 @@ class ActionSawPlanks: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "saw planks";
+		return "Saw planks";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

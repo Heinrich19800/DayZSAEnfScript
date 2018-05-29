@@ -519,7 +519,7 @@ enum DayZPlayerConstants
 	CMD_ACTIONFB_HACKTREE = 91,					// erc				[end]
 	CMD_ACTIONFB_TAKETEMPSELF = 92,				// pne				[end]
 	CMD_ACTIONFB_DIGHOLE = 93,					// erc				[end]
-	CMD_ACTIONFB_DIGUPCACHE = 93,				// erc				[end]
+	CMD_ACTIONFB_DIGUPCACHE = 94,				// erc				[end]
 	
 	// onetime 
 	CMD_ACTIONFB_LICKBATTERY = 100,    			// pne

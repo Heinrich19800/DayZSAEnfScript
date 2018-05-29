@@ -39,7 +39,7 @@ class ActionUncoverHeadTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "uncover player's head";
+		return "Uncover player's head";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

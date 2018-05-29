@@ -43,7 +43,7 @@ class ActionBandageSelf: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "bandage";
+		return "Bandage";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

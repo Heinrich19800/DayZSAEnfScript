@@ -14,7 +14,7 @@ class ActionPackTent: ActionInteractBase
 
 	override string GetText()
 	{
-		return "pack tent";
+		return "Pack tent";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

@@ -14,7 +14,7 @@ class ActionToggleTentOpen: ActionInteractBase
 
 	override string GetText()
 	{
-		return "toggle";
+		return "Toggle";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

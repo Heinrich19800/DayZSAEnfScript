@@ -25,7 +25,7 @@ class ActionReadPaper: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "read";
+		return "Read";
 	}
 
 	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

@@ -41,7 +41,7 @@ class ActionMineBush: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "cut the bush down";
+		return "Cut the bush down";
 	}
 
 		

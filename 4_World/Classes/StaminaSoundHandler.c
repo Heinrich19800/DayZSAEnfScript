@@ -16,6 +16,16 @@ enum eStaminaTendency
 	DOWN,
 }
 
+enum eStaminaState
+{
+	ZONE0_UP = 1,
+	ZONE0_DOWN,
+	ZONE1_UP,
+	ZONE1_DOWN,
+	ZONE2_UP,
+	ZONE2_DOWN,
+}
+
 class StaminaSoundHandler
 {
 	StaminaHandler m_StaminaHandler;
@@ -25,6 +35,8 @@ class StaminaSoundHandler
 	eStaminaTendency m_StaminaTendency;
 	
 	PlayerBase m_Player;
+	
+	eStaminaState m_StaminaState;
 	
 	float m_TimeAccu;
 	float m_StaminaLastValue;
@@ -41,16 +53,62 @@ class StaminaSoundHandler
 	
 	void Update(float stamina_value, float deltaT)
 	{
-		m_TimeAccu += deltaT;
-		
-		if ( m_TimeAccu >= TICK_INTERVAL )
+		if( GetGame().IsServer() || !GetGame().IsMultiplayer() ) 
 		{
-			Process(stamina_value);
-			m_TimeAccu = 0;
+			ProcessServer(stamina_value);
+		}
+		if( GetGame().IsClient() || !GetGame().IsMultiplayer() ) 
+		{
+			ProcessClient();
 		}
 	}
 	
-	void Process(float stamina_value)
+	void ProcessClient()
+	{
+		m_Player.GetPlayerSoundEventHandler();
+		eStaminaState stamina_state = m_Player.GetStaminaState();
+		
+		switch(stamina_state)
+		{
+			case eStaminaState.ZONE1_DOWN:
+				if(m_Player.PlaySoundEvent(EPlayerSoundEventID.STAMINA_DOWN_LIGHT))
+				{
+					m_StaminaUpEndPlayed = false;
+				}
+			break;
+			
+			case eStaminaState.ZONE1_UP:
+				if(m_Player.PlaySoundEvent(EPlayerSoundEventID.STAMINA_UP_LIGHT))
+				{
+					m_StaminaUpEndPlayed = false;
+				}
+			break;
+			
+			case eStaminaState.ZONE2_DOWN:
+				if(m_Player.PlaySoundEvent(EPlayerSoundEventID.STAMINA_DOWN_HEAVY))
+				{
+					m_StaminaUpEndPlayed = false;
+				}
+			break;
+			
+			case eStaminaState.ZONE2_UP:
+				if(m_Player.PlaySoundEvent(EPlayerSoundEventID.STAMINA_UP_HEAVY))
+				{
+					m_StaminaUpEndPlayed = false;
+				}
+			break;
+			
+			case eStaminaState.ZONE0_UP:
+				if(!m_StaminaUpEndPlayed && m_Player.PlaySoundEvent(EPlayerSoundEventID.STAMINA_UP_END))
+				{
+					m_StaminaUpEndPlayed = true;
+				}
+			break;
+		}
+	
+	}
+	
+	void ProcessServer(float stamina_value)
 	{	
 		m_Stamina = stamina_value;
 		float stamina_delta = m_StaminaLastValue - m_Stamina;
@@ -67,14 +125,18 @@ class StaminaSoundHandler
 		m_StaminaLastValue = stamina_value;
 		
 		m_StaminaZone = GetZone();
-		EPlayerSoundEventID sound_event_id = GetPlayerSoundEventID();
+		m_Player.SetStaminaState( GetStaminaState() );
+		
+		//EPlayerSoundEventID sound_event_id = GetPlayerSoundEventID();
 		/*
 		PrintString("stamina delta " +stamina_delta.ToString());
 		PrintString("stamina zone " +m_StaminaZone.ToString());
 		PrintString("stamina tendency " +m_StaminaTendency.ToString());
 		PrintString(" sound event id " +sound_event_id.ToString());
 		*/
-		if( sound_event_id !=0 ) m_Player.SendSoundEvent(sound_event_id);
+		
+		//if( sound_event_id !=0 ) m_Player.SendSoundEvent(sound_event_id);
+		
 		
 	}
 
@@ -98,42 +160,41 @@ class StaminaSoundHandler
 		return stamina_zone;
 	}
 	
-	EPlayerSoundEventID GetPlayerSoundEventID()
+	eStaminaState GetStaminaState()
 	{
-		EPlayerSoundEventID sound_event_id;
+		eStaminaState stamina_state;
 		
 		if(m_StaminaZone == eStaminaZones.ZONE1 && m_StaminaTendency == eStaminaTendency.DOWN)
 		{
-			sound_event_id = EPlayerSoundEventID.STAMINA_DOWN_LIGHT;
-			m_StaminaUpEndPlayed = false;
+			stamina_state = eStaminaState.ZONE1_DOWN;
 		}
 		
 		if(m_StaminaZone == eStaminaZones.ZONE1 && m_StaminaTendency == eStaminaTendency.UP)
 		{
-			sound_event_id = EPlayerSoundEventID.STAMINA_UP_LIGHT;
-			m_StaminaUpEndPlayed = false;
+			stamina_state = eStaminaState.ZONE1_UP;
 		}
 		
 		if(m_StaminaZone == eStaminaZones.ZONE2 && m_StaminaTendency == eStaminaTendency.DOWN)
 		{
-			sound_event_id = EPlayerSoundEventID.STAMINA_DOWN_HEAVY;
-			m_StaminaUpEndPlayed = false;
+			stamina_state = eStaminaState.ZONE2_DOWN;
 		}
 		
 		if(m_StaminaZone == eStaminaZones.ZONE2 && m_StaminaTendency == eStaminaTendency.UP)
 		{
-			sound_event_id = EPlayerSoundEventID.STAMINA_UP_HEAVY;
-			m_StaminaUpEndPlayed = false;
+			stamina_state = eStaminaState.ZONE2_UP;
 		}
 		
-		if(m_StaminaZone == eStaminaZones.ZONE0 && m_StaminaTendency == eStaminaTendency.UP && !m_StaminaUpEndPlayed)
+		if(m_StaminaZone == eStaminaZones.ZONE0 && m_StaminaTendency == eStaminaTendency.UP)
 		{
-			sound_event_id = EPlayerSoundEventID.STAMINA_UP_END;
-			m_StaminaUpEndPlayed = true;
+			stamina_state = eStaminaState.ZONE0_UP;
 		}
 		
-		return sound_event_id;
+		if(m_StaminaZone == eStaminaZones.ZONE0 && m_StaminaTendency == eStaminaTendency.DOWN)
+		{
+			stamina_state = eStaminaState.ZONE0_DOWN;
+		}
 		
+		return stamina_state;
 	}
 
 }

@@ -14,7 +14,7 @@ class ActionTurnOnTorch: ActionTurnOnWhileInHands
 
 	override string GetText()
 	{
-		return "ignite";
+		return "Ignite";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

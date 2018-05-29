@@ -43,7 +43,7 @@ class ActionTestBloodSelf: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "test blood";
+		return "Test blood";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

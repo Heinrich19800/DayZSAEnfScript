@@ -20,7 +20,7 @@ class ActionPlaceFireplaceIntoBarrel: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "place fireplace";
+		return "Place fireplace";
 	}
 	
 	override void CreateConditionComponents()  

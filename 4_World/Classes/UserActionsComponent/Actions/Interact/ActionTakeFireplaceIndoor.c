@@ -14,7 +14,7 @@ class ActionTakeFireplaceIndoor: ActionInteractBase
 
 	override string GetText()
 	{
-		return "take fireplace";
+		return "Take fireplace";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

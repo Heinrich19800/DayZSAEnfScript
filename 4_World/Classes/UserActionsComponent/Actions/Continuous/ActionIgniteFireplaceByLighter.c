@@ -23,7 +23,7 @@ class ActionIgniteFireplaceByLighter: ActionIgniteFireplace
 		
 	override string GetText()
 	{
-		return "ignite by lighter";
+		return "Ignite by lighter";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

@@ -194,7 +194,7 @@ class VicinityIconsContainer: Container
 			item_preview.GetParent().Show( true );
 			item_preview.SetItem( item );
 			item_preview.SetModelOrientation( Vector( 0, 0, 0 ) );
-			item_preview.SetView( 1 );
+			item_preview.SetView( item.GetViewIndex() );
 			item_preview.GetParent().SetUserID( item.GetID() );
 			
 			if( !ItemManager.GetInstance().IsDragging() )

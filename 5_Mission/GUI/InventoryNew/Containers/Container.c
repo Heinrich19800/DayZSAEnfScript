@@ -222,7 +222,7 @@ class Container: ContainerBase
 		}
 		while( next && !next.GetMainPanel().IsVisible() )
 		{
-			++activeIndex
+			++activeIndex;
 			if( activeIndex < m_OpenedContainers.Count() )
 			{
 				next = Container.Cast( m_OpenedContainers[activeIndex] );
@@ -368,7 +368,7 @@ class Container: ContainerBase
 		for ( int i = 0; i < m_Body.Count(); i++ )
 		{
 			Container c = Container.Cast( m_Body.Get( i ) );
-			if( c.IsInherited( Container ) )
+			if( c && c.IsInherited( Container ) )
 			{
 				c.UpdateSpacer();
 			}

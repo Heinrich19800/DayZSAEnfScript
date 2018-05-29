@@ -37,7 +37,7 @@ class ActionExtinguishFireplaceByLiquid: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "extinguish";
+		return "Extinguish";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

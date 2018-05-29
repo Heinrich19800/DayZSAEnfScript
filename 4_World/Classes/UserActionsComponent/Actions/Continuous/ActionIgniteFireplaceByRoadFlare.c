@@ -23,7 +23,7 @@ class ActionIgniteFireplaceByRoadFlare: ActionIgniteFireplace
 		
 	override string GetText()
 	{
-		return "ignite by road flare";
+		return "Ignite by road flare";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

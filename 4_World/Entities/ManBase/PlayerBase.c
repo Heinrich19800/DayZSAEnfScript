@@ -63,7 +63,7 @@ class PlayerBase extends ManBase
 	AbstractWave 					m_SaySoundWave;
 	ref Timer						m_DebugTimer;
 	ref PlayerSoundEventHandler 	m_PlayerSoundEventHandler;
-	
+	int								m_StaminaState;
 	
 	#ifdef BOT
 	ref Bot							m_Bot;
@@ -250,7 +250,8 @@ class PlayerBase extends ManBase
 		RegisterNetSyncVariableBool("m_HasBloodyHandsVisible");
 		RegisterNetSyncVariableBool("m_HasBloodTypeVisible");
 		RegisterNetSyncVariableBool("m_LiquidTendencyDrain");
-		RegisterNetSyncVariableInt("m_SoundEvent",0,63);
+		RegisterNetSyncVariableInt("m_SoundEvent",0,31);
+		RegisterNetSyncVariableInt("m_StaminaState",0,7);
 		
 		/*if (g_Game && g_Game.m_tilePublic && g_Game.m_isTileSet == true)
 		{
@@ -2351,12 +2352,13 @@ class PlayerBase extends ManBase
 		if ( TogglePlacingServer( userDataType, ctx ) )
 			return true;
 		
+		string uid;
 		if( userDataType == INPUT_UDT_USER_MUTE_XBOX )
 		{
-			string uid;
 			bool mute;
 			if( ctx.Read( uid ) && ctx.Read( mute ) )
 			{
+				Print( "Muting" );
 				GetGame().MutePlayer( uid, GetIdentity().GetId(), mute );
 			}
 		}
@@ -2373,7 +2375,7 @@ class PlayerBase extends ManBase
 					BiosPrivacyPermissionResultArray results = result_list.Get( i ).m_Results;
 					for( int j = 0; j < results.Count(); j++ )
 					{
-						BiosPrivacyPermissionResult result = results.Get( i );
+						BiosPrivacyPermissionResult result = results.Get( j );
 						if( result.m_Permission == EBiosPrivacyPermission.COMMUNICATE_VOICE )
 						{
 							GetGame().MutePlayer( uid, GetIdentity().GetId(), !result.m_IsAllowed );
@@ -3028,7 +3030,7 @@ class PlayerBase extends ManBase
 		}
 	}
 
-	void SendSoundEvent(EPlayerSoundEventID id)
+	override void SendSoundEvent(EPlayerSoundEventID id)
 	{
 		if( !GetGame().IsServer() ) return;
 		m_SoundEvent = id;
@@ -3062,13 +3064,16 @@ class PlayerBase extends ManBase
 		}
 	}
 	
-	void PlaySoundEvent(EPlayerSoundEventID id)
+	bool PlaySoundEvent(EPlayerSoundEventID id)
 	{
 		//PrintString(GetGame().GetTime().ToString() + " OnSoundEvent, id:" + id.ToString());
-		m_PlayerSoundEventHandler.PlayRequest(id);
+		return m_PlayerSoundEventHandler.PlayRequest(id);
 	}
 	
-	
+	PlayerSoundEventHandler GetPlayerSoundEventHandler()
+	{
+		return m_PlayerSoundEventHandler;
+	}
 	
 	bool IsSayingSound()
 	{
@@ -3092,6 +3097,21 @@ class PlayerBase extends ManBase
 		if( GetGame().IsClient() ) return;
 		SendSoundEvent(1234);
 		//Math.RandomInt(1,4096)
+	}
+	
+	void SetStaminaState(eStaminaState state)
+	{
+		if( state != m_StaminaState )
+		{
+			m_StaminaState = state;
+			//PrintString("m_StaminaState:"+m_StaminaState.ToString());
+			SetSynchDirty();
+		}
+	}
+	
+	int GetStaminaState()
+	{
+		return m_StaminaState;
 	}
 	
 	void UpdateQuickBarExtraSlots()

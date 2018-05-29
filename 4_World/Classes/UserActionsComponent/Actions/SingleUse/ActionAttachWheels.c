@@ -22,7 +22,7 @@ class ActionAttachWheels: ActionAttach
 		
 	override string GetText()
 	{
-		return "attach wheels";
+		return "Attach wheels";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

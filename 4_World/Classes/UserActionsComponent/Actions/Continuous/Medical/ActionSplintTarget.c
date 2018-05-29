@@ -37,7 +37,7 @@ class ActionSplintTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "apply splint";
+		return "Apply splint";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

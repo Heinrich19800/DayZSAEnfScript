@@ -21,7 +21,7 @@ class ActionSwitchLights: ActionInteractBase
 
 	override string GetText()
 	{
-		return "Switch Lights";
+		return "Switch lights";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

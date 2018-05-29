@@ -123,19 +123,19 @@ class OnlineServices
 			for( int i = 0; i < result_list.Count(); i++ )
 			{
 				string uid = result_list.Get( i ).m_Uid;
-				if( m_PermissionsList.Get( uid ) )
+				BiosPrivacyPermissionResultArray result_array = m_PermissionsList.Get( uid );
+				BiosPrivacyPermissionResultArray result_array2 = result_list.Get( i ).m_Results;
+				if( result_array && result_array2 )
 				{
-					if( !BiosPrivacyPermissionResult.Compare( m_PermissionsList.Get( uid ).Get( 0 ), result_list.Get( i ).m_Results.Get( 0 ) ) )
+					if( !BiosPrivacyPermissionResult.Compare( result_array.Get( 0 ), result_array2.Get( 0 ) ) )
 					{
-						Print( "Updated permission" );
 						new_list.Insert( result_list.Get( i ) );
-						m_PermissionsList.Set( uid, result_list.Get( i ).m_Results );
+						m_PermissionsList.Set( uid, result_array2 );
 					}
 				}
 				else
 				{
-					Print( "New permission" );
-					m_PermissionsList.Insert( uid, result_list.Get( i ).m_Results );
+					m_PermissionsList.Insert( uid, result_array2 );
 					new_list.Insert( result_list.Get( i ) );
 				}
 				

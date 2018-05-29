@@ -10,6 +10,12 @@ class ActionForceASip: ActionForceABite
 		m_Sounds.Insert("DrinkBottle_1");
 	}
 	
+	override void CreateConditionComponents()  
+	{	
+		m_ConditionItem = new CCINotRuinedAndEmpty;
+		m_ConditionTarget = new CCTMan(UAMaxDistances.DEFAULT);
+	}
+	
 	override int GetType()
 	{
 		return AT_FORCE_A_SIP;
@@ -17,6 +23,6 @@ class ActionForceASip: ActionForceABite
 
 	override string GetText()
 	{
-		return "give a sip";
+		return "Give a sip";
 	}	
 };

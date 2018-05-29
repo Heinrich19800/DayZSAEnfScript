@@ -38,7 +38,7 @@ class ActionUnrestrainTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "unrestrain";
+		return "Unrestrain";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

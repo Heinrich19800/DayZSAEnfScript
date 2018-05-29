@@ -18,7 +18,7 @@ class ActionAttach: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "attach";
+		return "Attach";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
