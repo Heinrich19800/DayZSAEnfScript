@@ -758,25 +758,28 @@ class ItemBase extends InventoryItem
 
 	void SplitIntoStackMax( EntityAI destination_entity, int slot_id )
 	{
-		int stack_max = InventorySlots.GetStackMaxForSlotId( slot_id );
-		float quantity = GetQuantity();
-		float split_quantity_new = stack_max;
-		
-		if ( stack_max == 0 || stack_max >= quantity || !CanBeSplit() )
+		if( destination_entity.GetInventory().HasInventorySlot( slot_id ) )
 		{
-			return;
-		}
-		
-		InventoryLocation source_location = new InventoryLocation;
-		InventoryLocation destination_location = new InventoryLocation;
-		ItemBase new_item;
-		new_item = ItemBase.Cast( destination_entity.GetInventory().CreateAttachmentEx( this.GetType(), slot_id ) );
-		
-		if( new_item )
-		{			
-			MiscGameplayFunctions.TransferItemProperties(this,new_item);
-			AddQuantity(-split_quantity_new);
-			new_item.SetQuantity( split_quantity_new );
+			int stack_max = InventorySlots.GetStackMaxForSlotId( slot_id );
+			float quantity = GetQuantity();
+			float split_quantity_new = stack_max;
+			
+			if ( stack_max == 0 || stack_max >= quantity || !CanBeSplit() )
+			{
+				return;
+			}
+			
+			InventoryLocation source_location = new InventoryLocation;
+			InventoryLocation destination_location = new InventoryLocation;
+			ItemBase new_item;
+			new_item = ItemBase.Cast( destination_entity.GetInventory().CreateAttachmentEx( this.GetType(), slot_id ) );
+			
+			if( new_item )
+			{			
+				MiscGameplayFunctions.TransferItemProperties(this,new_item);
+				AddQuantity(-split_quantity_new);
+				new_item.SetQuantity( split_quantity_new );
+			}
 		}
 	}
 

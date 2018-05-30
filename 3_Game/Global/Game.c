@@ -510,19 +510,12 @@ class CGame
 
 	proto void					GetInventoryItemSize(InventoryItem item, out int width, out int height);
 	/**
-  \brief Returns list of all objects in circle "radius" around position "pos"
+  \brief Returns list of all objects in radius "radius" around position "pos"
 	@param pos
 	@param radius
 	@param objects output array
 	*/
 	proto native void		GetObjectsAtPosition(vector pos, float radius, out array<Object> objects, out array<Cargo> proxyCargos);
-	/**
-  \brief Returns list of all objects in sphere "radius" around position "pos"
-	@param pos
-	@param radius
-	@param objects output array
-	*/
-	proto native void		GetObjectsAtPosition3D(vector pos, float radius, out array<Object> objects, out array<Cargo> proxyCargos);
 	proto native World	GetWorld();
 	proto void					GetWorldName( out string world_name );
 	proto void					FormatString( string format, string params[], out string output);
