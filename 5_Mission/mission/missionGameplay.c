@@ -246,6 +246,7 @@ class MissionGameplay extends MissionBase
 			m_UIManager.CloseMenu(MENU_INSPECT);
 		}
 
+#ifdef PLATFORM_XBOX
 		//Quick Reload Weapon
 		if ( !menu && input.GetActionDown( UAQuickReload, false ) )
 		{
@@ -259,7 +260,24 @@ class MissionGameplay extends MissionBase
 				}
 			}
 		}
-		
+#endif
+
+#ifdef PLATFORM_PS4
+		//Quick Reload Weapon
+		if ( !menu && input.GetActionDown( UAQuickReload, false ) )
+		{
+			if ( !GetGame().IsInventoryOpen() && !playerPB.GetActionManager().FindActionTarget().GetObject() )
+			{
+				EntityAI entity_hands = playerPB.GetHumanInventory().GetEntityInHands();
+				
+				if ( entity_hands && entity_hands.IsWeapon() )
+				{
+					playerPB.QuickReloadWeapon( entity_hands );
+				}
+			}
+		}
+#endif
+
 #ifdef PLATFORM_XBOX		
 		//Switch beween weapons in quickslots 
 		if( !menu && input.GetActionDown( UAUIRadialMenuPick, false ) )
