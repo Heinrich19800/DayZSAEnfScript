@@ -10,7 +10,6 @@ class ZombieBase extends DayZInfected
 	//-------------------------------------------------------------
 	void ZombieBase()
 	{
-		Print("ZombieBase contructor");
 		SetEventMask(EntityEvent.INIT);
 	}
 	
@@ -509,12 +508,12 @@ class ZombieBase extends DayZInfected
 	{
 		super.EEHitBy(damageResult, damageType, source, component, ammo, modelPos);
 		
-		int crawlTransitionType = -1;
+/*		int crawlTransitionType = -1;
 		if( EvaluateCrawlTransitionAnimation(source, component, ammo, crawlTransitionType) )
 		{
 			m_CrawlTransition = crawlTransitionType;
 			return;
-		}
+		}*/
 		
 		if( EvaluateDamageHitAnimation(source, component, ammo, m_DamageHitType, m_DamageHitDirection) )
 		{

@@ -24,11 +24,11 @@ class ClosableHeader: Header
 	void OnDragHeader( Widget w, int x, int y )
 	{
 		ClosableContainer parent = ClosableContainer.Cast( m_Parent );
-		if( parent )
+		if( parent && GetMainPanel() && m_Entity )
 		{
 			ItemPreviewWidget item_preview_drag = ItemPreviewWidget.Cast( GetMainPanel().FindAnyWidget( "Drag_Render" ) );
 
-			if( item_preview_drag )
+			if( item_preview_drag && m_Entity )
 			{
 				item_preview_drag.SetItem( m_Entity );
 				item_preview_drag.SetView( m_Entity.GetViewIndex() );
@@ -39,7 +39,8 @@ class ClosableHeader: Header
 			parent.HideContent();
 			
 			GetMainPanel().FindAnyWidget( "PanelWidget" ).Show( false );
-			GetMainPanel().FindAnyWidget( "Drag_Render" ).Show( true );
+			if( GetMainPanel().FindAnyWidget( "Drag_Render" ) )
+				GetMainPanel().FindAnyWidget( "Drag_Render" ).Show( true );
 			
 			int ww, hh;
 			

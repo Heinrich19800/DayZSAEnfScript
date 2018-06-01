@@ -36,7 +36,7 @@ class RepairWithTape extends RecipeBase
 		InsertIngredient(1,"Inventory_Base");//you can insert multiple ingredients this way
 		
 		m_IngredientAddHealth[1] = 0;// 0 = do nothing
-		m_IngredientSetHealth[1] = 70; // -1 = do nothing
+		m_IngredientSetHealth[1] = -1; // -1 = do nothing
 		m_IngredientAddQuantity[1] = 0;// 0 = do nothing
 		m_IngredientDestroy[1] = false;// false = do nothing
 		m_IngredientUseSoftSkills[1] = false;// set 'true' to allow modification of the values by softskills on this ingredient

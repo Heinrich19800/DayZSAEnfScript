@@ -520,6 +520,7 @@ enum DayZPlayerConstants
 	CMD_ACTIONFB_TAKETEMPSELF = 92,				// pne				[end]
 	CMD_ACTIONFB_DIGHOLE = 93,					// erc				[end]
 	CMD_ACTIONFB_DIGUPCACHE = 94,				// erc				[end]
+	CMD_ACTIONFB_BLOWFIREPLACE = 98,    		// cro				[end]
 	
 	// onetime 
 	CMD_ACTIONFB_LICKBATTERY = 100,    			// pne

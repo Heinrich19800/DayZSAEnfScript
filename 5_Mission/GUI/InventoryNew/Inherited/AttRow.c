@@ -1,6 +1,10 @@
 class AttRow: ClosableContainer
 {
-	void AttRow( ContainerBase parent ) { }
+	void AttRow( ContainerBase parent )
+	{
+		ClosableHeader header = ClosableHeader.Cast( m_Body.Get( 0 ) );
+		header.GetMainPanel().ClearFlags( WidgetFlags.DRAGGABLE );
+	}
 	
 	override void OnDropReceivedFromHeader( Widget w, int x, int y, Widget receiver )
 	{
@@ -423,11 +427,11 @@ class AttRow: ClosableContainer
 			if(entity.GetInventory().FindAttachment(slot_id) != NULL)
 			{
 				ImageWidget image_widget3 = ImageWidget.Cast( item_preview2.GetParent().FindAnyWidget("OutOfReach"+j%7) );
-				if ( AttchmentsOutOfReach.IsAttachmentReachable(entity, slot_name) )
+				if ( image_widget3 && AttchmentsOutOfReach.IsAttachmentReachable(entity, slot_name) )
 				{
 					image_widget3.Show(false);
 				}
-				else
+				else if ( image_widget3 )
 				{
 					image_widget3.Show(true);
 				}

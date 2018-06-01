@@ -435,11 +435,17 @@ void UpdateItemInfoQuantity(Widget root_widget, EntityAI item)
 					WidgetTrySetText( root_widget, "ItemQuantityWidget", item_quantity.ToString() + " PIECES" );
 				}		
 			}
+			else if( item.ConfigGetString("stackedUnit") == "percentage" )
+			{
+				quantity_ratio = Math.Round( ( item_quantity / max_quantity ) * 100 );
+				
+				WidgetTrySetText( root_widget, "ItemQuantityWidget", quantity_ratio.ToString() + "% REMAINING" );			
+			}
 			else if( item.ConfigGetString("stackedUnit") == "g" )
 			{
 				quantity_ratio = Math.Round( ( item_quantity / max_quantity ) * 100 );
 				
-				WidgetTrySetText( root_widget, "ItemQuantityWidget", quantity_ratio.ToString() + " % REMAINING" );			
+				WidgetTrySetText( root_widget, "ItemQuantityWidget", quantity_ratio.ToString() + "% REMAINING" );			
 			}
 			else if( item.ConfigGetString("stackedUnit") == "ml" )
 			{

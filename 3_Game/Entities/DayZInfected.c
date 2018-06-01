@@ -52,7 +52,6 @@ class DayZInfected extends DayZCreatureAI
 	//-------------------------------------------------------------
 	void DayZInfected()
 	{
-		Print("DayZInfected contructor");
 	}
 	
 	//-------------------------------------------------------------

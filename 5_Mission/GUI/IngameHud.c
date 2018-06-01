@@ -916,12 +916,15 @@ class IngameHud extends Hud
 
 	void SetSpecialtyMeterVisibility( bool visible )
 	{
-		PlayerBase player;
-		Class.CastTo(player,  GetGame().GetPlayer() );
-		m_specializationPanel.Show( visible );
-		float x = player.GetSoftSkillManager().GetSpecialtyLevel() / 2;
-		float y = - 0.15; // taken from SpecializationPanel => SpecializationIcon in dayz_z_hud.layout
-		m_specializationIcon.SetPos( x, y, true );		
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+
+		if ( player )
+		{
+			m_specializationPanel.Show( visible );
+			float x = player.GetSoftSkillManager().GetSpecialtyLevel() / 2;
+			float y = - 0.15;
+			m_specializationIcon.SetPos( x, y, true );	
+		}
 	}
 	
 	void CheckHudElementsVisibility()

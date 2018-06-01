@@ -5,7 +5,7 @@ class ActionIgniteFireplaceByAir: ActionIgniteFireplace
 	void ActionIgniteFireplaceByAir()
 	{
 		m_CallbackClass = ActionIgniteFireplaceCB;
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_VOMIT;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BLOWFIREPLACE;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
 		m_MessageStart = "I have started fire by blowing air into fireplace.";

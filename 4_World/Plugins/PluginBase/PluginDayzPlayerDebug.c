@@ -665,6 +665,7 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("FB L TAKETEMPSELF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_TAKETEMPSELF, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB L DIGHOLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_DIGHOLE, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L DIGUPCACHE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_DIGUPCACHE, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("FB L BLOWFIREPLACE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_BLOWFIREPLACE, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			
 			
 			
