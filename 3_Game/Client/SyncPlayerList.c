@@ -16,10 +16,13 @@ class SyncPlayerList
 				Man player = players[i];
 				PlayerIdentity p_identity = player.GetIdentity();
 				
-				ref SyncPlayer sync_player = new SyncPlayer;
-				sync_player.m_UID = p_identity.GetId();
-				sync_player.m_PlayerName = p_identity.GetName();
-				m_PlayerList.Insert( sync_player );
+				if( p_identity )
+				{
+					ref SyncPlayer sync_player = new SyncPlayer;
+					sync_player.m_UID = p_identity.GetId();
+					sync_player.m_PlayerName = p_identity.GetName();
+					m_PlayerList.Insert( sync_player );
+				}
 			}
 		}
 	}

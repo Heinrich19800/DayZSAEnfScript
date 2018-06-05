@@ -442,25 +442,26 @@ enum DayZPlayerConstants
 	CMD_ACTIONMOD_EMPTYPOT = 16,				// erc,cro			[end]
 	CMD_ACTIONMOD_EATFRUIT = 17,				// erc,cro			[end]
 	CMD_ACTIONMOD_TAKETEMPSELF = 18,			// erc,cro			[end]
+	CMD_ACTIONMOD_CLEANHANDSBOTTLE = 19,		// erc,cro			[end]
 	
 	// onetime 
-	CMD_ACTIONMOD_LICKBATTERY = 100,    		// erc,cro,pne
-	CMD_ACTIONMOD_PICKUP = 101,         		// erc,cro,pne
-	CMD_ACTIONMOD_LIGHTFLARE = 102,     		// erc,cro,pne
-	CMD_ACTIONMOD_LITCHEMLIGHT = 103,   		// erc,cro,pne
-	CMD_ACTIONMOD_UNPINGRENAGE = 104,   		// erc,cro,pne
-	CMD_ACTIONMOD_OPENDOORFW = 105,     		// erc,cro
-	CMD_ACTIONMOD_OPENLID = 106,        		// erc,cro 
-	CMD_ACTIONMOD_CLOSELID = 107,       		// erc,cro 	
-	CMD_ACTIONMOD_WALKIETALKIEON = 108, 		// erc,cro,pne
-	CMD_ACTIONMOD_WALKIETALKIEOFF = 109,		// erc,cro,pne
-	CMD_ACTIONMOD_BATONEXTEND = 110,    		// erc,cro
-	CMD_ACTIONMOD_BATONRETRACT = 111,   		// erc,cro
-	CMD_ACTIONMOD_UNLOCKHANDCUFFTARGET = 112,   // erc,cro
-	CMD_ACTIONMOD_FISHINGRODEXTEND = 113,   	// erc,cro
-	CMD_ACTIONMOD_FISHINGRODRETRACT = 114,   	// erc,cro
-	CMD_ACTIONMOD_TAKEITEM = 115,   			// erc,cro,pne
-	CMD_ACTIONMOD_HIDEITEM = 116,   			// erc,cro,pne
+	CMD_ACTIONMOD_LICKBATTERY = 500,    		// erc,cro,pne
+	CMD_ACTIONMOD_PICKUP = 501,         		// erc,cro,pne
+	CMD_ACTIONMOD_LIGHTFLARE = 502,     		// erc,cro,pne
+	CMD_ACTIONMOD_LITCHEMLIGHT = 503,   		// erc,cro,pne
+	CMD_ACTIONMOD_UNPINGRENAGE = 504,   		// erc,cro,pne
+	CMD_ACTIONMOD_OPENDOORFW = 505,     		// erc,cro
+	CMD_ACTIONMOD_OPENLID = 506,        		// erc,cro 
+	CMD_ACTIONMOD_CLOSELID = 507,       		// erc,cro 	
+	CMD_ACTIONMOD_WALKIETALKIEON = 508, 		// erc,cro,pne
+	CMD_ACTIONMOD_WALKIETALKIEOFF = 509,		// erc,cro,pne
+	CMD_ACTIONMOD_BATONEXTEND = 510,    		// erc,cro
+	CMD_ACTIONMOD_BATONRETRACT = 511,   		// erc,cro
+	CMD_ACTIONMOD_UNLOCKHANDCUFFTARGET = 512,   // erc,cro
+	CMD_ACTIONMOD_FISHINGRODEXTEND = 513,   	// erc,cro
+	CMD_ACTIONMOD_FISHINGRODRETRACT = 514,   	// erc,cro
+	CMD_ACTIONMOD_TAKEITEM = 515,   			// erc,cro,pne
+	CMD_ACTIONMOD_HIDEITEM = 516,   			// erc,cro,pne
 
     //! --------------------------
     //! fb (full body)
@@ -520,39 +521,45 @@ enum DayZPlayerConstants
 	CMD_ACTIONFB_TAKETEMPSELF = 92,				// pne				[end]
 	CMD_ACTIONFB_DIGHOLE = 93,					// erc				[end]
 	CMD_ACTIONFB_DIGUPCACHE = 94,				// erc				[end]
+	CMD_ACTIONFB_DEPLOY_HEAVY = 95,				// erc				[end]
+	CMD_ACTIONFB_DEPLOY_1HD = 96,				// cro				[end]
+	CMD_ACTIONFB_DEPLOY_2HD = 97,				// cro				[end]
 	CMD_ACTIONFB_BLOWFIREPLACE = 98,    		// cro				[end]
+	CMD_ACTIONFB_CLEANHANDSBOTTLE = 99,			// pne				[end]
 	
 	// onetime 
-	CMD_ACTIONFB_LICKBATTERY = 100,    			// pne
-	CMD_ACTIONFB_PICKUP = 101,         			// pne
-	CMD_ACTIONFB_LIGHTFLARE = 102,     			// pne
-	CMD_ACTIONFB_LITCHEMLIGHT = 103,   			// pne
-	CMD_ACTIONFB_UNPINGRENAGE = 104,   			// pne
-	CMD_ACTIONFB_WALKIETALKIEON = 108, 			// pne
-	CMD_ACTIONFB_WALKIETALKIEOFF = 109,			// pne
-	CMD_ACTIONFB_TAKEITEM = 115,   				// pne
-	CMD_ACTIONFB_HIDEITEM = 116,   				// pne
+	CMD_ACTIONFB_LICKBATTERY = 500,    			// pne
+	CMD_ACTIONFB_PICKUP = 501,         			// pne
+	CMD_ACTIONFB_LIGHTFLARE = 502,     			// pne
+	CMD_ACTIONFB_LITCHEMLIGHT = 503,   			// pne
+	CMD_ACTIONFB_UNPINGRENAGE = 504,   			// pne
+	CMD_ACTIONFB_WALKIETALKIEON = 508, 			// pne
+	CMD_ACTIONFB_WALKIETALKIEOFF = 509,			// pne
+	CMD_ACTIONFB_TAKEITEM = 515,   				// pne
+	CMD_ACTIONFB_HIDEITEM = 516,   				// pne
+	CMD_ACTIONFB_HANDCUFFTARGET = 550,    		// erc,cro
+	CMD_ACTIONFB_MORPHINE = 551,    			// cro
+	CMD_ACTIONFB_INJECTION = 552,    			// cro
+	CMD_ACTIONFB_INJECTIONTARGET = 553,    		// erc,cro
+	CMD_ACTIONFB_DRINKSIP = 554,    			// cro
 	
-	CMD_ACTIONFB_HANDCUFFTARGET = 150,    		// erc,cro
-	CMD_ACTIONFB_MORPHINE = 151,    			// cro
-	CMD_ACTIONFB_INJECTION = 152,    			// cro
-	CMD_ACTIONFB_INJECTIONTARGET = 153,    		// erc,cro
-	CMD_ACTIONFB_DRINKSIP = 154,    			// cro
+    
+    //! ---------------------------------------------------------
+    //! ---------------------- VEHICLES -------------------------
+    //! ---------------------------------------------------------
+	
+	// looping actions
+	CMD_ACTIONMOD_STARTENGINE = 300,    		// [end]
+	
+	// onetime actions
+	CMD_ACTIONMOD_DRIVER_DOOR_OPEN = 400,
+	CMD_ACTIONMOD_DRIVER_DOOR_CLOSE = 401,
+	CMD_ACTIONMOD_CODRIVER_DOOROPEN = 402,
+	CMD_ACTIONMOD_CODRIVER_DOORCLOSE = 403,
+	CMD_ACTIONMOD_STOPENGINE = 404,
 	
 	
 	
-	CMD_FUNNYSTUFF_VIKTOR 		= 3000,
-	CMD_FUNNYSTUFF_VIKTOR_LOOP 	= 3001,
-	CMD_FUNNYSTUFF_MAREK 		= 3002,
-	CMD_FUNNYSTUFF_MAREK_LOOP 	= 3003,
-	CMD_FUNNYSTUFF_KAKEE 		= 3004,
-	CMD_FUNNYSTUFF_KAKEE_LOOP 	= 3005,
-	CMD_FUNNYSTUFF_JONNY 		= 3006,
-	CMD_FUNNYSTUFF_JONNY_LOOP 	= 3007,
-	CMD_FUNNYSTUFF_MARTIN 		= 3008,
-	CMD_FUNNYSTUFF_MARTIN_LOOP 	= 3009,
-	CMD_FUNNYSTUFF_ADAM		 	= 3010,
-	CMD_FUNNYSTUFF_ADAM_LOOP 	= 3011,
     
     //! ---------------------------------------------------------
     //! ---------------------- GESTURES -------------------------
@@ -623,6 +630,20 @@ enum DayZPlayerConstants
     CMD_GESTUREFB_TAUNTKISS = 1106,				// pne
     CMD_GESTUREFB_TAUNTTHINK = 1108,			// pne
     CMD_GESTUREFB_DANCE = 1109,	        		// erc
+	
+	
+	/*CMD_FUNNYSTUFF_VIKTOR 		= 3000,
+	CMD_FUNNYSTUFF_VIKTOR_LOOP 	= 3001,
+	CMD_FUNNYSTUFF_MAREK 		= 3002,
+	CMD_FUNNYSTUFF_MAREK_LOOP 	= 3003,
+	CMD_FUNNYSTUFF_KAKEE 		= 3004,
+	CMD_FUNNYSTUFF_KAKEE_LOOP 	= 3005,
+	CMD_FUNNYSTUFF_JONNY 		= 3006,
+	CMD_FUNNYSTUFF_JONNY_LOOP 	= 3007,
+	CMD_FUNNYSTUFF_MARTIN 		= 3008,
+	CMD_FUNNYSTUFF_MARTIN_LOOP 	= 3009,
+	CMD_FUNNYSTUFF_ADAM		 	= 3010,
+	CMD_FUNNYSTUFF_ADAM_LOOP 	= 3011,*/
     
     //! ---------------------------------------------------------
     //! ---------------------- SUICIDE --------------------------
@@ -758,6 +779,8 @@ class DayZPlayer extends Human
 	bool									IsShootingFromCamera();
 	//! return true if player is trying to hold breah, otherwise false
 	bool									IsHoldingBreath();
+	//! return true if player is currently performing FB gesture, otherwise false
+	bool									IsPerformingFBGesture();
 
 	//! processes melee hit
 	proto native	MeleeCombatData			GetMeleeCombatData();

@@ -2358,7 +2358,6 @@ class PlayerBase extends ManBase
 			bool mute;
 			if( ctx.Read( uid ) && ctx.Read( mute ) )
 			{
-				Print( "Muting" );
 				GetGame().MutePlayer( uid, GetIdentity().GetId(), mute );
 			}
 		}
