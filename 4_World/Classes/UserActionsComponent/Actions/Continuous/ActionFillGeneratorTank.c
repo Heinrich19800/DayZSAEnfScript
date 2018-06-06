@@ -9,9 +9,7 @@ class ActionFillGeneratorTankCB : ActionContinuousBaseCB
 };
 
 class ActionFillGeneratorTank: ActionContinuousBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.01;
-	
+{	
 	void ActionFillGeneratorTank()
 	{
 		m_CallbackClass = ActionFillGeneratorTankCB;
@@ -20,7 +18,7 @@ class ActionFillGeneratorTank: ActionContinuousBase
 		m_MessageSuccess = "I've poured fuel into generator.";
 		m_MessageFail = "I've stopped filling the tank.";
 		m_MessageCancel = "I've stopped filling the tank.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

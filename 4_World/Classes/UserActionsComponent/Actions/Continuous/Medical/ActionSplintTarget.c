@@ -8,8 +8,6 @@ class ActionSplintTargetCB : ActionContinuousBaseCB
 
 class ActionSplintTarget: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.01;
-	
 	void ActionSplintTarget()
 	{
 		m_CallbackClass = ActionSplintTargetCB;
@@ -21,7 +19,7 @@ class ActionSplintTarget: ActionContinuousBase
 		//m_Animation = "splint";
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BANDAGETARGET;
 		m_FullBody = true;
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

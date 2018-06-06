@@ -8,8 +8,6 @@ class ActionCollectBloodSelfCB : ActionContinuousBaseCB
 
 class ActionCollectBloodSelf: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.03;
-
 	void ActionCollectBloodSelf()
 	{
 		m_CallbackClass = ActionCollectBloodSelfCB;
@@ -22,7 +20,7 @@ class ActionCollectBloodSelf: ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_COLLECTBLOODSELF;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_HIGH;
 	}
 	
 	override void CreateConditionComponents()

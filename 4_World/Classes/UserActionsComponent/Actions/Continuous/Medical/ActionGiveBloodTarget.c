@@ -10,8 +10,6 @@ class ActionGiveBloodTargetCB : ActionContinuousBaseCB
 
 class ActionGiveBloodTarget: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.03;
-	
 	void ActionGiveBloodTarget()
 	{
 		m_CallbackClass = ActionGiveBloodTargetCB;
@@ -21,7 +19,7 @@ class ActionGiveBloodTarget: ActionContinuousBase
 		m_MessageFail = "Player moved and giving you blood was canceled.";
 		m_MessageCancel = "You stopped giving blood.";
 		//m_Animation = "giveblood";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_HIGH;
 		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_SALINEBLOODBAGTARGET;
 		m_FullBody = true;

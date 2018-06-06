@@ -1,8 +1,6 @@
 // This is just a test action!
 class ActionRepairWithToolFromHands: ActionSingleUseBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.03;
-
 	void ActionRepairWithToolFromHands()
 	{
 		Print("ActionRepairWithToolFromHands");
@@ -14,7 +12,7 @@ class ActionRepairWithToolFromHands: ActionSingleUseBase
 		m_MessageCancel = "";
 		
 		//m_Animation = "open";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_HIGH;
 	}
 	
 	override void CreateConditionComponents()  

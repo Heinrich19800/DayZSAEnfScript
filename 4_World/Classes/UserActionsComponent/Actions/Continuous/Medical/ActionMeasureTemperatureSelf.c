@@ -8,8 +8,6 @@ class ActionMeasureTemperatureSelfCB : ActionContinuousBaseCB
 
 class ActionMeasureTemperatureSelf: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
-
 	void ActionMeasureTemperatureSelf()
 	{
 		m_CallbackClass = ActionMeasureTemperatureSelfCB;
@@ -24,7 +22,7 @@ class ActionMeasureTemperatureSelf: ActionContinuousBase
 		m_MessageCancel = "I stopped measuring.";
 		//m_Animation = "measure";
 		
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

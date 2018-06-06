@@ -7,17 +7,14 @@ class ActionPlaceObjectCB : ActionContinuousBaseCB
 };
 
 class ActionPlaceObject: ActionContinuousBase
-{
-	//SOFT SKILLS
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.01;
-		
+{		
 	void ActionPlaceObject()
 	{
 		m_CallbackClass		= ActionPlaceObjectCB;
 		m_CommandUID		= DayZPlayerConstants.CMD_ACTIONFB_BERRIES;
 		m_FullBody			= true;
 		m_StanceMask		= DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
-		m_SpecialtyWeight 	= ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight 	= UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

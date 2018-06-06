@@ -22,6 +22,7 @@ class ActionExtinguishFireplaceByExtinguisher: ActionContinuousBase
 		m_MessageSuccess = "I have extinguished the fireplace.";
 		m_MessageFail = "I have canceled the extinguish action.";
 		m_MessageCancel = "I have stopped extinguishing the fireplace.";
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_MEDIUM;
 	}
 	
 	override void CreateConditionComponents()  

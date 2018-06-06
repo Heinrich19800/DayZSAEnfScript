@@ -8,8 +8,6 @@ class ActionUncoverHeadTargetCB : ActionContinuousBaseCB
 
 class ActionUncoverHeadTarget: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-	
 	void ActionUncoverHeadTarget()
 	{
 		m_CallbackClass = ActionUncoverHeadTargetCB;
@@ -22,7 +20,6 @@ class ActionUncoverHeadTarget: ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERRACTPLAYER;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
 	}
 	
 	override void CreateConditionComponents()  

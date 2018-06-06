@@ -10,7 +10,6 @@ class ActionFillObject: ActionContinuousBase
 {
 	protected int m_ActionState;
 
-	protected const float ROUGH_SPECIALTY_WEIGHT 	= 0.01;
 	protected const int EMPTY 						= 0;
 	protected const int FILLED 						= 1;
 	
@@ -28,7 +27,7 @@ class ActionFillObject: ActionContinuousBase
 		m_MessageStartFail = "Failed to start action: Object collides with environment.";
 		*/
 		//m_Animation = "DIGGINGSHOVEL";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  

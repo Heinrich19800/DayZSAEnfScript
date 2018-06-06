@@ -7,9 +7,7 @@ class ActionRestrainTargetCB : ActionContinuousBaseCB
 };
 
 class ActionRestrainTarget: ActionContinuousBase
-{
-	private const float PRECISE_SPECIALTY_WEIGHT = 0.02;
-	
+{	
 	void ActionRestrainTarget()
 	{
 		m_CallbackClass = ActionRestrainTargetCB;
@@ -23,7 +21,7 @@ class ActionRestrainTarget: ActionContinuousBase
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
 		m_Sound = "action_handcuff_0";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

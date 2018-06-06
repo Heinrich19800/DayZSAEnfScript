@@ -1,7 +1,5 @@
 class ActionIgniteFireplaceByLighter: ActionIgniteFireplace
 {
-	const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-	
 	void ActionIgniteFireplaceByLighter()
 	{
 		m_CallbackClass = ActionIgniteFireplaceCB;
@@ -13,7 +11,7 @@ class ActionIgniteFireplaceByLighter: ActionIgniteFireplace
 		m_MessageSuccess = "I have ignited the fireplace with a petrol lighter.";
 		m_MessageFail = "I have canceled the igniting action.";
 		m_MessageCancel = "I have stopped igniting the fireplace.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 
 	override int GetType()

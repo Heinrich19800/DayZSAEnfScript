@@ -10,7 +10,6 @@ class ActionBuryAshesCB : ActionContinuousBaseCB
 
 class ActionBuryAshes: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
 	string 	m_ReasonToCancel;
 	
 	void ActionBuryAshes()
@@ -24,7 +23,7 @@ class ActionBuryAshes: ActionContinuousBase
 		m_MessageSuccess = "I have buried the ashes.";
 		m_MessageFail = "I couldn't bury the ashes.";
 		m_MessageCancel = "I've stopped burying the ashes.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  
@@ -61,7 +60,7 @@ class ActionBuryAshes: ActionContinuousBase
 		GetGame().ObjectDelete( target.GetObject() );
 
 		//add soft skill specialty
-		player.GetSoftSkillManager().AddSpecialty( ROUGH_SPECIALTY_WEIGHT );	
+		player.GetSoftSkillManager().AddSpecialty( UASoftSkillsWeight.ROUGH_LOW );	
 	}
 	
 	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )

@@ -1,7 +1,6 @@
 class ActionPlaceFireplaceIndoor: ActionSingleUseBase
 {
 	private ref FireplacePoint 	m_ActualFireplacePoint;
-	private const float 		ROUGH_SPECIALTY_WEIGHT = -0.01;
 	private const float 		FIRE_POINT_MAX_DISTANCE = 2;		//maximum distance from the fireplace interact point
 
 	void ActionPlaceFireplaceIndoor()
@@ -12,7 +11,7 @@ class ActionPlaceFireplaceIndoor: ActionSingleUseBase
 		m_MessageStart = "";
 		m_MessageSuccess = "I placed the fireplace inside.";
 		m_MessageFail = "I was unable to place the fireplace inside.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override int GetType()

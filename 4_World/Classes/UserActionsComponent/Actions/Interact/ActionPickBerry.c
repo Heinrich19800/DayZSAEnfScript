@@ -18,8 +18,6 @@ class ActionPickBerryCB : ActionInteractLoopBaseCB
 
 class ActionPickBerry: ActionInteractLoopBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = 0.02;
-	
 	void ActionPickBerry()
 	{
 		m_MessageSuccess = "I have harvested it.";
@@ -29,7 +27,7 @@ class ActionPickBerry: ActionInteractLoopBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BERRIES;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_MEDIUM;
 		
 		m_CallbackClass = ActionPickBerryCB;
 	}

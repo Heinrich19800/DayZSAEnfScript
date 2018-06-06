@@ -10,8 +10,6 @@ class ActionMineTreeCB : ActionContinuousBaseCB
 
 class ActionMineTree: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.03;
-	
 	void ActionMineTree()
 	{
 		m_CallbackClass = ActionMineTreeCB;
@@ -22,7 +20,7 @@ class ActionMineTree: ActionContinuousBase
 		m_MessageStart = "I started cutting down the tree.";
 		m_MessageSuccess = "I have cut down the tree.";
 		m_MessageFail = "My tool is ruined.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_HIGH;
 	}
 	
 	override void CreateConditionComponents()  

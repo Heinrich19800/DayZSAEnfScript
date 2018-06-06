@@ -8,8 +8,6 @@ class ActionDisinfectPlantCB : ActionContinuousBaseCB
 
 class ActionDisinfectPlant: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.01;
-	
 	void ActionDisinfectPlant()
 	{
 		m_CallbackClass = ActionDisinfectPlantCB;
@@ -19,7 +17,7 @@ class ActionDisinfectPlant: ActionContinuousBase
 		m_MessageSuccess = "";
 		m_MessageFail = "";
 		m_MessageCancel = "";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DISINFECTTARGET;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;

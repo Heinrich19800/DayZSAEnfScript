@@ -1,7 +1,5 @@
 class ActionFoldObject: ActionInteractBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.02;
-
 	void ActionFoldObject()
 	{
 		m_MessageSuccess = "";
@@ -11,7 +9,7 @@ class ActionFoldObject: ActionInteractBase
 		m_MessageFail = "";
 		m_MessageCancel = "";
 		//m_Animation = "UNPINGRENADE";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_MEDIUM;
 	}
 
 	override int GetType()

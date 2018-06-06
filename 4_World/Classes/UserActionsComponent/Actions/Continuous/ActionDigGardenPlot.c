@@ -8,15 +8,13 @@ class ActionDigGardenPlotCB : ActionContinuousBaseCB
 
 class ActionDigGardenPlot: ActionContinuousBase
 {	
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-
 	void ActionDigGardenPlot()
 	{
 		m_CallbackClass = ActionDigGardenPlotCB;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DIGSHOVEL;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  

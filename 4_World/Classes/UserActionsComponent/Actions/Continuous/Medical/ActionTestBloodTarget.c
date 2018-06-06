@@ -7,9 +7,7 @@ class ActionTestBloodTargetCB : ActionContinuousBaseCB
 };
 
 class ActionTestBloodTarget: ActionContinuousBase
-{
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
-	
+{	
 	void ActionTestBloodTarget()
 	{
 		m_CallbackClass = ActionTestBloodTargetCB;
@@ -21,7 +19,7 @@ class ActionTestBloodTarget: ActionContinuousBase
 	//	m_Animation = "testblood";
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BANDAGETARGET;
 		m_FullBody = true;
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

@@ -8,8 +8,6 @@ class ActionBandageTargetCB : ActionContinuousBaseCB
 
 class ActionBandageTarget: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
-	
 	void ActionBandageTarget()
 	{
 		m_CallbackClass = ActionBandageTargetCB;
@@ -18,7 +16,7 @@ class ActionBandageTarget: ActionContinuousBase
 		m_MessageSuccess = "Player finished bandaging you.";
 		m_MessageFail = "Player moved and bandaging was canceled.";
 		m_MessageCancel = "You stopped bandaging.";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BANDAGETARGET;
 		m_FullBody = true;

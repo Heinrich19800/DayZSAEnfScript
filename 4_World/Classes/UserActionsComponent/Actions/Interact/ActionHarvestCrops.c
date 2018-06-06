@@ -1,7 +1,5 @@
 class ActionHarvestCrops: ActionInteractBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-
 	void ActionHarvestCrops()
 	{
 		m_MessageSuccess = "";
@@ -11,7 +9,7 @@ class ActionHarvestCrops: ActionInteractBase
 		m_MessageFail = "";
 		m_MessageCancel = "";
 
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 	}
 
 	override int GetType()

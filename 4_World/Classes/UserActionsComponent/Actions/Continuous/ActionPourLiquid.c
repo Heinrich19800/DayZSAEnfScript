@@ -10,8 +10,6 @@ class ActionPourLiquidCB : ActionContinuousBaseCB
 
 class ActionPourLiquid: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0;	//-0.01;
-	
 	void ActionPourLiquid()
 	{
 		m_CallbackClass = ActionPourLiquidCB;
@@ -23,7 +21,7 @@ class ActionPourLiquid: ActionContinuousBase
 		m_MessageSuccess = "I have finished filling the bottle..";
 		m_MessageFail = "Player moved and filling the bottle was canceled.";
 		m_MessageCancel = "I stopped filling the bottle.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

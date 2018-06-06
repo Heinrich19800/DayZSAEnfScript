@@ -1,7 +1,5 @@
 class ActionPlaceFireplaceIntoBarrel: ActionSingleUseBase
 {
-	private const float 		ROUGH_SPECIALTY_WEIGHT = -0.01;
-
 	void ActionPlaceFireplaceIntoBarrel()
 	{
 		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_OPENDOORFW;
@@ -10,7 +8,7 @@ class ActionPlaceFireplaceIntoBarrel: ActionSingleUseBase
 		m_MessageStart = "";
 		m_MessageSuccess = "I placed the fireplace inside.";
 		m_MessageFail = "I was unable to place the fireplace inside.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override int GetType()

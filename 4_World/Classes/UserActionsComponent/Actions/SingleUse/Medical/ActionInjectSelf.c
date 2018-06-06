@@ -1,7 +1,5 @@
 class ActionInjectSelf: ActionSingleUseBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-
 	void ActionInjectSelf()
 	{
 		m_MessageStartFail = "There's nothing left.";
@@ -13,7 +11,7 @@ class ActionInjectSelf: ActionSingleUseBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INJECTION;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 	}
 	
 	override void CreateConditionComponents()  

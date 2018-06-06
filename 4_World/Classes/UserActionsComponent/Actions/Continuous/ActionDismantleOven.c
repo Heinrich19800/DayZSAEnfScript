@@ -7,9 +7,7 @@ class ActionDismantleOvenCB : ActionContinuousBaseCB
 }
 
 class ActionDismantleOven: ActionContinuousBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.03;
-	
+{	
 	void ActionDismantleOven()
 	{
 		m_CallbackClass = ActionDismantleOvenCB;
@@ -20,7 +18,7 @@ class ActionDismantleOven: ActionContinuousBase
 		m_MessageStartFail = "I cannot dismantle an oven.";
 		m_MessageSuccess = "I have dismantle an oven.";
 		m_MessageFail = "I cannot dismantle an oven.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 	}
 	
 	override void CreateConditionComponents()  

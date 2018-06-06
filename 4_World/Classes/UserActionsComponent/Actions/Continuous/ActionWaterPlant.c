@@ -10,8 +10,6 @@ class ActionWaterPlantCB : ActionContinuousBaseCB
 
 class ActionWaterPlant: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-
 	void ActionWaterPlant()
 	{
 		m_CallbackClass = ActionWaterPlantCB;
@@ -22,7 +20,7 @@ class ActionWaterPlant: ActionContinuousBase
 		m_MessageSuccess = "";
 		m_MessageFail = "";
 		m_MessageCancel = "";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  

@@ -7,9 +7,7 @@ class ActionCoverHeadTargetCB : ActionContinuousBaseCB
 };
 
 class ActionCoverHeadTarget: ActionContinuousBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-	
+{	
 	void ActionCoverHeadTarget()
 	{
 		m_CallbackClass = ActionCoverHeadTargetCB;
@@ -19,7 +17,7 @@ class ActionCoverHeadTarget: ActionContinuousBase
 		m_MessageFail = "Player moved and putting sack on was canceled.";
 		m_MessageCancel = "You stopped putting sack on.";
 		//m_Animation = "INJECTEPIPENS";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  

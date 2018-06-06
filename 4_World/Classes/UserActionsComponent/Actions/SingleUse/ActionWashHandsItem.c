@@ -4,7 +4,8 @@ class ActionWashHandsItem: ActionSingleUseBase
 	
 	void ActionWashHandsItem()
 	{
-		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_WALKIETALKIEON;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_CLEANHANDSBOTTLE;
+		m_CommandUIDProne = DayZPlayerConstants.CMD_ACTIONFB_CLEANHANDSBOTTLE;
 		m_StanceMask        = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
 		m_MessageSuccess = "I have washed my hands.";
 		//m_Animation = "open";
@@ -31,6 +32,11 @@ class ActionWashHandsItem: ActionSingleUseBase
 		return false;
 	}
 
+	override bool HasProneException()
+	{
+		return true;
+	}
+	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		if ( player.HasBloodyHands() && item.GetQuantity() >= WASH_HANDS_AMOUNT )

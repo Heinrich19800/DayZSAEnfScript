@@ -77,3 +77,15 @@ class UAMaxDistances
 	const float DEFAULT = 2.0;
 	const float LADDERS = 1.3;
 };
+
+/**@class	Constants for specialty weight and type
+ */
+class UASoftSkillsWeight
+{
+	const float ROUGH_LOW = 0.01;
+	const float ROUGH_MEDIUM = 0.02;
+	const float ROUGH_HIGH = 0.03;
+	const float PRECISE_LOW = -0.01;
+	const float PRECISE_MEDIUM = -0.02;
+	const float PRECISE_HIGH = -0.03;
+};

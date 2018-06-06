@@ -8,8 +8,6 @@ class ActionUnrestrainTargetCB : ActionContinuousBaseCB
 
 class ActionUnrestrainTarget: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.01;
-
 	void ActionUnrestrainTarget()
 	{
 		m_CallbackClass = ActionUnrestrainTargetCB;
@@ -22,7 +20,7 @@ class ActionUnrestrainTarget: ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CUTTIESTARGET;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

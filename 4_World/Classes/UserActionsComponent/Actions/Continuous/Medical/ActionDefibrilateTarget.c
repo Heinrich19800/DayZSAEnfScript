@@ -7,9 +7,7 @@ class ActionDefibrilateTargetCB : ActionContinuousBaseCB
 };
 
 class ActionDefibrilateTarget: ActionContinuousBase
-{
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.03;
-	
+{	
 	void ActionDefibrilateTarget()
 	{
 		m_CallbackClass = ActionDefibrilateTargetCB;
@@ -19,7 +17,7 @@ class ActionDefibrilateTarget: ActionContinuousBase
 		m_MessageFail = "Player moved and defibrilating was canceled.";
 		m_MessageCancel = "You stopped defibrilating.";
 		//m_Animation = "defibrilate";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_HIGH;
 	}
 	
 	override void CreateConditionComponents()  

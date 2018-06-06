@@ -9,9 +9,7 @@ class ActionIgniteFireplaceHandDrillCB : ActionContinuousBaseCB
 }
 
 class ActionIgniteFireplaceByHandDrill: ActionIgniteFireplace
-{
-	const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-	
+{	
 	void ActionIgniteFireplaceByHandDrill()
 	{
 		m_CallbackClass = ActionIgniteFireplaceHandDrillCB;
@@ -23,7 +21,7 @@ class ActionIgniteFireplaceByHandDrill: ActionIgniteFireplace
 		m_MessageSuccess = "I have ignited the fireplace with a hand drill.";
 		m_MessageFail = "I have canceled the igniting action.";
 		m_MessageCancel = "I have stopped igniting the fireplace.";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 	}
 
 	override int GetType()

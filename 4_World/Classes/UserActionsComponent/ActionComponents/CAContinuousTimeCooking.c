@@ -10,8 +10,6 @@ class CAContinuousTimeCooking : CAContinuousBase
 	protected Edible_Base		m_ItemToCook;
 	protected float 			m_CookingUpdateTime;
 	
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.02;
-	
 	void CAContinuousTimeCooking( float cooking_update_time )
 	{
 		m_CookingUpdateTime = cooking_update_time;

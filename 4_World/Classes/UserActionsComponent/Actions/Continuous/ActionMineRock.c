@@ -10,8 +10,6 @@ class ActionMineRockCB : ActionContinuousBaseCB
 
 class ActionMineRock: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.03;
-
 	void ActionMineRock()
 	{
 		m_CallbackClass = ActionMineRockCB;
@@ -25,7 +23,7 @@ class ActionMineRock: ActionContinuousBase
 		m_MessageFail = "My tool is ruined.";
 		//m_AnimationOneHanded = "DRINK";
 		//m_AnimationTwoHanded = "DIGGINGSHOVEL";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_HIGH;
 	}
 	
 	override void CreateConditionComponents()  

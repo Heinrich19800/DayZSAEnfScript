@@ -7,9 +7,7 @@ class ActionBuryBodyCB : ActionContinuousBaseCB
 };
 
 class ActionBuryBody: ActionContinuousBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-	
+{	
 	void ActionBuryBody()
 	{
 		m_CallbackClass = ActionBuryBodyCB;
@@ -22,7 +20,7 @@ class ActionBuryBody: ActionContinuousBase
 		m_MessageFail = "I have canceled the igniting action.";
 		m_MessageCancel = "I have stopped igniting the fireplace.";
 		//m_Animation = "DIGGINGSHOVEL";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  

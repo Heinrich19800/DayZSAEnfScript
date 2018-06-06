@@ -9,9 +9,7 @@ class ActionCPRCB : ActionContinuousBaseCB
 };
 
 class ActionCPR: ActionContinuousBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.03;
-	
+{	
 	void ActionCPR()
 	{
 		m_CallbackClass = ActionCPRCB;
@@ -24,7 +22,7 @@ class ActionCPR: ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CPR;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 	}
 	
 	override void CreateConditionComponents()  

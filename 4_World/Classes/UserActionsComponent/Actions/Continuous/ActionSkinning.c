@@ -27,9 +27,7 @@ class ActionSkinningCB : ActionContinuousBaseCB
 };
 
 class ActionSkinning: ActionContinuousBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.02;
-	
+{	
 	void ActionSkinning()
 	{
 		m_CallbackClass = ActionSkinningCB;
@@ -39,7 +37,7 @@ class ActionSkinning: ActionContinuousBase
 		m_MessageFail = "I have moved and skinning was canceled.";
 		m_MessageCancel = "I stopped skinning the target.";
 		//m_Animation = "EAT";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_ANIMALSKINNING;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;

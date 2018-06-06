@@ -8,8 +8,6 @@ class ActionSewSelfCB : ActionContinuousBaseCB
 
 class ActionSewSelf: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-
 	void ActionSewSelf()
 	{
 		m_CallbackClass = ActionSewSelfCB;
@@ -22,7 +20,7 @@ class ActionSewSelf: ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_STITCHUPSELF;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 	}
 	
 	override void CreateConditionComponents()  

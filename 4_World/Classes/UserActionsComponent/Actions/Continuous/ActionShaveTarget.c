@@ -8,8 +8,6 @@ class ActionShaveTargetCB : ActionContinuousBaseCB
 
 class ActionShaveTarget: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
-	
 	void ActionShaveTarget()
 	{
 		m_CallbackClass = ActionShaveTargetCB;
@@ -19,7 +17,7 @@ class ActionShaveTarget: ActionContinuousBase
 		m_MessageFail = "I have failed to shave target.";
 		m_MessageCancel = "I stopped shaving target.";
 		//m_Animation = "ignite";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

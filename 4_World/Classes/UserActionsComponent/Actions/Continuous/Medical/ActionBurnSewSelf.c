@@ -8,8 +8,6 @@ class ActionBurnSewSelfCB : ActionContinuousBaseCB
 
 class ActionBurnSewSelf: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-	
 	void ActionBurnSewSelf()
 	{
 		m_CallbackClass = ActionBurnSewSelfCB;
@@ -19,7 +17,7 @@ class ActionBurnSewSelf: ActionContinuousBase
 		m_MessageFail = "I have moved and healing was canceled.";
 		m_MessageCancel = "I stopped closing my wounds.";
 		//m_Animation = "bandage";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 	}
 	
 	override void CreateConditionComponents()  

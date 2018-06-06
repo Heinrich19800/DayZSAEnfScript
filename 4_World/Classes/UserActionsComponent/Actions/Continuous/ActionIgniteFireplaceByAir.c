@@ -1,7 +1,5 @@
 class ActionIgniteFireplaceByAir: ActionIgniteFireplace
-{
-	const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-		
+{	
 	void ActionIgniteFireplaceByAir()
 	{
 		m_CallbackClass = ActionIgniteFireplaceCB;
@@ -12,7 +10,7 @@ class ActionIgniteFireplaceByAir: ActionIgniteFireplace
 		m_MessageSuccess = "I have started fire by blowing air into fireplace.";
 		m_MessageFail = "I have failed to start fire by blowing air into fireplace.";
 		m_MessageCancel = "I have stopped blowing air into fireplace.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;		
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;		
 	}
 
 	override void CreateConditionComponents()  

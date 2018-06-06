@@ -7,9 +7,7 @@ class ActionSawPlanksCB : ActionContinuousBaseCB
 };
 
 class ActionSawPlanks: ActionContinuousBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.02;
-	
+{	
 	void ActionSawPlanks()
 	{
 		m_CallbackClass = ActionSawPlanksCB;
@@ -22,7 +20,7 @@ class ActionSawPlanks: ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CRAFTING;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_MEDIUM;
 	}
 	
 	override void CreateConditionComponents()  

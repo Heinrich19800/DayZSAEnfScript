@@ -1,7 +1,5 @@
 class ActionInjectTarget: ActionSingleUseBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-	
 	void ActionInjectTarget()
 	{
 		m_MessageStartFail = "There's nothing left.";
@@ -9,7 +7,7 @@ class ActionInjectTarget: ActionSingleUseBase
 		m_MessageSuccess = "Player finished injecting you.";
 		m_MessageFail = "Player moved and injecting was canceled.";
 		m_MessageCancel = "You stopped injecting.";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INJECTIONTARGET;
 		m_FullBody = true;

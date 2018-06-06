@@ -10,8 +10,6 @@ class ActionWaterGardenSlotCB : ActionContinuousBaseCB
 
 class ActionWaterGardenSlot: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-	
 	void ActionWaterGardenSlot()
 	{
 		m_CallbackClass = ActionWaterGardenSlotCB;
@@ -21,7 +19,7 @@ class ActionWaterGardenSlot: ActionContinuousBase
 		m_MessageStart = "I've started fertilizing.";
 		m_MessageFail = "There's not enough fertilizer.";
 		m_MessageCancel = "I stoped fertilizing.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  

@@ -7,13 +7,11 @@ class ActionDigStashCB : ActionContinuousBaseCB
 };
 
 class ActionDigStash: ActionContinuousBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-	
+{	
 	void ActionDigStash()
 	{
 		m_CallbackClass = ActionDigStashCB;
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DIGSHOVEL;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DIGUPCACHE;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;
 		
@@ -22,7 +20,7 @@ class ActionDigStash: ActionContinuousBase
 		m_MessageSuccess = "I have stashed the chest.";
 		m_MessageFail = "I couldn't dig the hole.";
 		m_MessageCancel = "I've stopped digging.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  

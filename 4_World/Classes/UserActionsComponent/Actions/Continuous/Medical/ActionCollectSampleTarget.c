@@ -8,8 +8,6 @@ class ActionCollectSampleTargetCB : ActionContinuousBaseCB
 
 class ActionCollectSampleTarget : ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-	
 	void ActionCollectSampleTarget()
 	{
 		m_CallbackClass = ActionCollectSampleTargetCB;
@@ -22,7 +20,7 @@ class ActionCollectSampleTarget : ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_SALINEBLOODBAGTARGET;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 	}
 	
 	override void CreateConditionComponents()

@@ -23,15 +23,13 @@ class ActionDisinfectTargetCB : ActionSingleUseBaseCB
 
 class ActionDisinfectTarget: ActionSingleUseBase
 {	
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
-		
 	void ActionDisinfectTarget()
 	{
 		m_CallbackClass = ActionDisinfectTargetCB;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CLEANWOUNDSTARGET;
 		m_StanceMask = DayZPlayerConstants.STANCEIDX_ERECT | DayZPlayerConstants.STANCEIDX_CROUCH;
 		m_FullBody = true;
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

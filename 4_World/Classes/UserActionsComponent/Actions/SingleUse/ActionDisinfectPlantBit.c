@@ -10,9 +10,7 @@ class ActionDisinfectPlantBitCB : ActionSingleUseBaseCB
 
 
 class ActionDisinfectPlantBit: ActionSingleUseBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.01;
-	
+{	
 	void ActionDisinfectPlantBit()
 	{
 		m_CallbackClass = ActionDisinfectPlantBitCB;
@@ -24,7 +22,7 @@ class ActionDisinfectPlantBit: ActionSingleUseBase
 		m_MessageCancel = "";
 		
 		//m_Animation = "open";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

@@ -10,8 +10,6 @@ class ActionTuneRadioStationCB : ActionContinuousBaseCB
 
 class ActionTuneRadioStation: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = 0.01;
-	
 	void ActionTuneRadioStation()
 	{
 		m_CallbackClass = ActionTuneRadioStationCB;
@@ -21,7 +19,7 @@ class ActionTuneRadioStation: ActionContinuousBase
 		m_MessageStart = "I've changed the radio station.";
 		m_MessageFail = "I've failed to change the radio station.";
 		m_MessageCancel = "I have stopped the radio tunning.";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  

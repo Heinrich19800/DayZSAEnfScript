@@ -8,8 +8,6 @@ class ActionMeasureTemperatureTargetCB : ActionContinuousBaseCB
 
 class ActionMeasureTemperatureTarget : ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
-	
 	void ActionMeasureTemperatureTarget()
 	{
 		m_CallbackClass = ActionMeasureTemperatureTargetCB;
@@ -22,7 +20,7 @@ class ActionMeasureTemperatureTarget : ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_SALINEBLOODBAGTARGET;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

@@ -8,8 +8,6 @@ class ActionBandageSelfCB : ActionContinuousBaseCB
 
 class ActionBandageSelf: ActionContinuousBase
 {	
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
-
 	void ActionBandageSelf()
 	{
 		m_CallbackClass = ActionBandageSelfCB;
@@ -22,7 +20,7 @@ class ActionBandageSelf: ActionContinuousBase
 		m_MessageSuccess = "I have bandaged myself.";
 		m_MessageFail = "I have moved and bandaging was canceled.";
 		m_MessageCancel = "I stopped bandaging.";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 
 	override void CreateConditionComponents()  

@@ -9,7 +9,6 @@ class ActionDisinfectSelfCB : ActionSingleUseBaseCB
 
 class ActionDisinfectSelf: ActionSingleUseBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
 	float m_GramsConsumedPerUse;
 	
 	void ActionDisinfectSelf()
@@ -18,7 +17,7 @@ class ActionDisinfectSelf: ActionSingleUseBase
 		m_MessageSuccess = "I disinfected myself";
 		m_MessageStartFail = "Its' empty";
 		//m_Animation = "lick";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

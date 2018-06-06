@@ -8,15 +8,13 @@ class ActionFishingCB : ActionContinuousBaseCB
 
 class ActionFishing: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.02;
-
 	void ActionFishing()
 	{
 		m_CallbackClass = ActionFishingCB;
 		m_Sounds.Insert("FishStruggling_0");
 		m_Sounds.Insert("FishStruggling_1");
 		m_Sounds.Insert("FishStruggling_2");
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_FISHING;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;

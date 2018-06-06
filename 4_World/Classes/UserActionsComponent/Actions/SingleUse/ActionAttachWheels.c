@@ -1,6 +1,5 @@
 class ActionAttachWheels: ActionAttach
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
 	int m_wheel_hub;
 	
 	void ActionAttachWheels()
@@ -10,7 +9,6 @@ class ActionAttachWheels: ActionAttach
 		m_MessageSuccess = "I've attached the object.";
 		//m_MessageFail = "m_MessageFail";
 		//m_MessageCancel = "m_MessageCancel";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
 		
 		m_wheel_hub = -1;
 	}

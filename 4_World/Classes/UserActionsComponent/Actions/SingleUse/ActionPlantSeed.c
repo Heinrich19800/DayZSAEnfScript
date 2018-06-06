@@ -1,7 +1,5 @@
 class ActionPlantSeed: ActionSingleUseBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-
 	void ActionPlantSeed()
 	{
 		m_MessageSuccess = "";
@@ -11,7 +9,7 @@ class ActionPlantSeed: ActionSingleUseBase
 		m_MessageFail = "";
 		m_MessageCancel = "";
 		//m_Animation = "open";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 	}
 	
 	override void CreateConditionComponents()  

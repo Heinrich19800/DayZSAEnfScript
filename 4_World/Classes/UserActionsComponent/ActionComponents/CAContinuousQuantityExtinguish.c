@@ -1,6 +1,5 @@
 class CAContinuousQuantityExtinguish : CAContinuousQuantityRepeat
 {
-	private const float ROUGH_SPECIALTY_WEIGHT		= 0.02;
 	private float 		m_WetnessGainMultiplier 	= 1.0;
 	
 	void CAContinuousQuantityExtinguish( float quantity_used_per_second, float time_to_repeat, float wetness_gain_multiplier )
@@ -33,12 +32,6 @@ class CAContinuousQuantityExtinguish : CAContinuousQuantityRepeat
 				
 				//subtract quantity from water source
 				item.AddQuantity( -m_SpentQuantity );
-				
-				//add soft skill speciality
-				if ( item.GetQuantityMax() > 0 )
-				{
-					player.GetSoftSkillManager().AddSpecialty( ROUGH_SPECIALTY_WEIGHT * ( m_SpentQuantity / item.GetQuantityMax() ) );
-				}
 			}
 		}
 	}

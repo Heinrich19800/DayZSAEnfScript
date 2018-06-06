@@ -8,15 +8,13 @@ class ActionDigWormsCB : ActionContinuousBaseCB
 
 class ActionDigWorms: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = 0.2;
-
 	void ActionDigWorms()
 	{
 		m_CallbackClass = ActionDigWormsCB;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DIGHOE;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_MEDIUM;
 		m_MessageStartFail = "I have no beard to be shaved.";
 		m_MessageStart = "I have started shaving myself.";
 		m_MessageSuccess = "I have shaved myself.";

@@ -8,8 +8,6 @@ class ActionUnpackBoxCB : ActionContinuousBaseCB
 
 class ActionUnpackBox: ActionContinuousBase
 {	
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
-
 	void ActionUnpackBox()
 	{
 		m_CallbackClass = ActionUnpackBoxCB;
@@ -26,7 +24,7 @@ class ActionUnpackBox: ActionContinuousBase
 		m_Sounds.Insert("bandage_0"); //sould be original sound effects?
 		m_Sounds.Insert("bandage_1");
 		m_Sounds.Insert("bandage_2");	
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

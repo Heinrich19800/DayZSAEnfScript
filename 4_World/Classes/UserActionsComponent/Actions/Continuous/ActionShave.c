@@ -8,8 +8,6 @@ class ActionShaveCB : ActionContinuousBaseCB
 
 class ActionShave: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.01;
-
 	void ActionShave()
 	{
 		m_CallbackClass = ActionShaveCB;
@@ -19,7 +17,7 @@ class ActionShave: ActionContinuousBase
 		m_MessageFail = "I have failed to shave myself.";
 		m_MessageCancel = "I stopped shaving myself.";
 		//m_Animation = "ignite";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_SHAVE;
 		m_FullBody = false;

@@ -10,8 +10,6 @@ class ActionMineBushCB : ActionContinuousBaseCB
 
 class ActionMineBush: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.03;
-
 	void ActionMineBush()
 	{
 		m_CallbackClass = ActionMineBushCB;
@@ -21,7 +19,7 @@ class ActionMineBush: ActionContinuousBase
 		m_MessageFail = "My tool is ruined.";
 		//m_AnimationOneHanded = "DRINK";
 		//m_AnimationTwoHanded = "DIGGINGSHOVEL";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BERRIES;
 		m_FullBody = true;

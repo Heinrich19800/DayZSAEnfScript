@@ -8,8 +8,6 @@ class ActionUncoverHeadSelfCB : ActionContinuousBaseCB
 
 class ActionUncoverHeadSelf: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-	
 	void ActionUncoverHeadSelf()
 	{
 		m_CallbackClass = ActionUncoverHeadSelfCB;
@@ -19,7 +17,6 @@ class ActionUncoverHeadSelf: ActionContinuousBase
 		m_MessageFail = "I have moved and removing sack was canceled.";
 		m_MessageCancel = "I stopped removing the sack.";
 		//m_Animation = "INJECTEPIPENS";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
 	}
 	
 	override void CreateConditionComponents()  

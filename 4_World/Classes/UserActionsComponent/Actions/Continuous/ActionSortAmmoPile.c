@@ -8,8 +8,6 @@ class ActionSortAmmoPileCB : ActionContinuousBaseCB
 
 class ActionSortAmmoPile: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-	
 	void ActionSortAmmoPile()
 	{
 		m_CallbackClass = ActionSortAmmoPileCB;
@@ -19,7 +17,7 @@ class ActionSortAmmoPile: ActionContinuousBase
 		m_MessageFail = "I have moved and putting sack on was canceled.";
 		m_MessageCancel = "I stopped putting sack on.";
 		//m_Animation = "INJECTEPIPENS";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 	}
 	
 	override void CreateConditionComponents()  

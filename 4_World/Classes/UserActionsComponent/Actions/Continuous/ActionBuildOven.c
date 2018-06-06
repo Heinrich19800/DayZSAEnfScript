@@ -8,8 +8,6 @@ class ActionBuildOvenCB : ActionContinuousBaseCB
 
 class ActionBuildOven: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.03;
-	
 	void ActionBuildOven()
 	{
 		m_CallbackClass = ActionBuildOvenCB;
@@ -20,7 +18,7 @@ class ActionBuildOven: ActionContinuousBase
 		m_MessageStartFail = "I cannot build an oven.";
 		m_MessageSuccess = "I have build an oven.";
 		m_MessageFail = "I cannot build an oven.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 	}
 	
 	override void CreateConditionComponents()  

@@ -10,8 +10,6 @@ class ActionWringClothesCB : ActionContinuousBaseCB
 
 class ActionWringClothes: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.01;
-
 	void ActionWringClothes()
 	{
 		m_CallbackClass = ActionWringClothesCB;
@@ -25,7 +23,7 @@ class ActionWringClothes: ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_WRING;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  

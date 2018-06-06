@@ -9,9 +9,7 @@ class ActionFillBottleBaseCB : ActionContinuousBaseCB
 };
 
 class ActionFillBottleBase: ActionContinuousBase
-{
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.01;
-	
+{	
 	void ActionFillBottleBase()
 	{
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_FILLBOTTLEWELL;
@@ -20,7 +18,7 @@ class ActionFillBottleBase: ActionContinuousBase
 		m_MessageSuccess = "I have finished filling the bottle..";
 		m_MessageFail = "Player moved and filling the bottle was canceled.";
 		m_MessageCancel = "I stopped filling the bottle.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
 		
 		m_CallbackClass = ActionFillBottleBaseCB;
 		m_FullBody = true;

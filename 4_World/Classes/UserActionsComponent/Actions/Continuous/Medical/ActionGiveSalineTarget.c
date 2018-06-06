@@ -8,8 +8,6 @@ class ActionGiveSalineTargetCB : ActionContinuousBaseCB
 
 class ActionGiveSalineTarget: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-	
 	void ActionGiveSalineTarget()
 	{
 		m_CallbackClass = ActionGiveSalineTargetCB;
@@ -19,7 +17,7 @@ class ActionGiveSalineTarget: ActionContinuousBase
 		m_MessageFail = "Player moved and giving you saline was canceled.";
 		m_MessageCancel = "You stopped giving saline.";
 		//m_Animation = "givesaline";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_SALINEBLOODBAGTARGET;
 		m_FullBody = true;

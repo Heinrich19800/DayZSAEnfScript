@@ -7,9 +7,7 @@ class ActionBurnSewTargetCB : ActionContinuousBaseCB
 };
 
 class ActionBurnSewTarget: ActionContinuousBase
-{
-	private const float PRECISE_SPECIALTY_WEIGHT = -0.02;
-	
+{	
 	void ActionBurnSewTarget()
 	{
 		m_CallbackClass = ActionBurnSewTargetCB;
@@ -19,7 +17,7 @@ class ActionBurnSewTarget: ActionContinuousBase
 		m_MessageFail = "Player moved and closing wounds was canceled.";
 		m_MessageCancel = "You stopped closing target's wounds.";
 	//	m_Animation = "sew";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 	}
 	
 	override void CreateConditionComponents()  

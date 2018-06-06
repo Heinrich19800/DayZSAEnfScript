@@ -8,7 +8,6 @@ class ActionConstructCB : ActionContinuousBaseCB
 
 class ActionConstruct: ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = 0.03;
 	float m_DamageAmount;
 	string m_SlotName;
 	
@@ -21,7 +20,7 @@ class ActionConstruct: ActionContinuousBase
 		m_MessageFail = "I have failed to build a construction part.";
 		m_DamageAmount = 2;
 		//m_Animation = "startFire";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 	}
 	
 	override void CreateConditionComponents()  

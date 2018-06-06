@@ -1,7 +1,5 @@
 class ActionMineTreeBark: ActionMineTree
-{		
-	private const float ROUGH_SPECIALTY_WEIGHT2 = 0.03;
-	
+{			
 	void ActionMineTreeBark()
 	{
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CRAFTING;
@@ -10,7 +8,7 @@ class ActionMineTreeBark: ActionMineTree
 		m_MessageStart = "I started cutting off the branch.";
 		m_MessageSuccess = "I have cut off the branch.";
 		m_MessageFail = "My tool is ruined.";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT2;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 	}
 	
 	override int GetType()

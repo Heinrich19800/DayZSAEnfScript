@@ -8,8 +8,6 @@ class ActionUseRangefinderCB : ActionContinuousBaseCB
 
 class ActionUseRangefinder : ActionContinuousBase
 {
-	private const float ROUGH_SPECIALTY_WEIGHT = -0.01;
-	
 	void ActionUseRangefinder()
 	{
 		m_CallbackClass = ActionUseRangefinderCB;
@@ -20,7 +18,7 @@ class ActionUseRangefinder : ActionContinuousBase
 		m_MessageCancel = "ActionUseRangefinder - m_MessageCancel";
 		////m_TimeToCompleteAction = 999; // TO DO: Must be infinite!
 		//m_Animation = "close";
-		m_SpecialtyWeight = ROUGH_SPECIALTY_WEIGHT;	
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;	
 	}
 	
 	override void CreateConditionComponents()  

@@ -10,8 +10,6 @@ class ActionTuneFrequencyCB : ActionContinuousBaseCB
 
 class ActionTuneFrequency: ActionContinuousBase
 {
-	private const float PRECISE_SPECIALTY_WEIGHT = 0.01;
-	
 	void ActionTuneFrequency()
 	{
 		m_CallbackClass = ActionTuneFrequencyCB;
@@ -21,7 +19,7 @@ class ActionTuneFrequency: ActionContinuousBase
 		m_MessageStart = "I have started the tunning.";
 		m_MessageFail = "I have failed the tunning.";
 		m_MessageCancel = "I have stopped the tunning.";
-		m_SpecialtyWeight = PRECISE_SPECIALTY_WEIGHT;
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  
