@@ -98,6 +98,7 @@ class ItemBase extends InventoryItem
 		RegisterNetSyncVariableInt("m_ColorComponentA", 0, 255);
 		
 		RegisterNetSyncVariableBool("m_IsHologram");
+		RegisterNetSyncVariableBool("m_Opened");
 	
 	}
 	
@@ -2403,14 +2404,21 @@ class ItemBase extends InventoryItem
 	//-------------------------
 	void Open()
 	{
-		m_Opened = true;
+		SetOpenState( true );
 	}
 
 	void Close()
 	{
-		m_Opened = false;
+		SetOpenState( false );
 	}
 
+	void SetOpenState( bool state )
+	{
+		m_Opened = state;
+		
+		SetSynchDirty();
+	}
+	
 	bool IsOpen()
 	{
 		return m_Opened;

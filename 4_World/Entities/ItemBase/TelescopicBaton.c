@@ -17,9 +17,6 @@ class TelescopicBaton : ItemBase
 		m_MeleeMode = 0;
 		m_MeleeHeavyMode = 1;
 		m_MeleeSprintMode = 2;
-		
-		//! sync the opened/closed state from server to clients
-		RegisterNetSyncVariableBool("m_Opened");
 	}
 	
 	override void Open()
@@ -34,8 +31,6 @@ class TelescopicBaton : ItemBase
 		//! single player only
 		if ( !GetGame().IsMultiplayer() && !GetGame().IsClient() )
 			UpdateVisualState();
-
-		SetSynchDirty();
 	}
 
 	override void Close()
@@ -50,8 +45,6 @@ class TelescopicBaton : ItemBase
 		//! single player only		
 		if ( !GetGame().IsMultiplayer() && !GetGame().IsClient() )
 			UpdateVisualState();
-
-		SetSynchDirty();
 	}
 	
 	protected void UpdateVisualState()
