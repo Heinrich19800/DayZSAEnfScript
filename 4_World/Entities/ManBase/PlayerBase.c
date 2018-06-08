@@ -61,7 +61,7 @@ class PlayerBase extends ManBase
 	float							m_LastPostFrameTickTime;
 	int m_Time;
 	AbstractWave 					m_SaySoundWave;
-	ref Timer						m_DebugTimer;
+	ref Timer						m_DeathCheckTimer;
 	ref PlayerSoundEventHandler 	m_PlayerSoundEventHandler;
 	int								m_StaminaState;
 	
@@ -2293,6 +2293,9 @@ class PlayerBase extends ManBase
 		{
 			CheckForBurlap();
 			
+			m_DeathCheckTimer = new Timer();
+			m_DeathCheckTimer.Run(0.1, this, "CheckDeath", NULL, true);
+			
 			if ( g_Game.IsNewCharacter() )
 			{
 				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(SetNewCharName);
@@ -2317,6 +2320,15 @@ class PlayerBase extends ManBase
 		}
 	}
 
+	void CheckDeath()
+	{
+		if( IsPlayerSelected() && !IsAlive() )
+		{
+			SimulateDeath(true);
+			m_DeathCheckTimer.Stop();
+		}
+	}
+	
 	void CheckForBurlap()
 	{
 		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )

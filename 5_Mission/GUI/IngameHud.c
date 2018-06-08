@@ -918,11 +918,11 @@ class IngameHud extends Hud
 	{
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 
-		if ( player )
+		if ( player && player.GetSoftSkillManager() )
 		{
 			m_specializationPanel.Show( visible );
 			float x = player.GetSoftSkillManager().GetSpecialtyLevel() / 2;
-			float y = - 0.15;
+			float y = -0.75;
 			m_specializationIcon.SetPos( x, y, true );	
 		}
 	}
