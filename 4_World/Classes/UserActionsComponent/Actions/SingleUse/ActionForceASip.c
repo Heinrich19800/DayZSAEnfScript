@@ -23,6 +23,6 @@ class ActionForceASip: ActionForceABite
 
 	override string GetText()
 	{
-		return "Give a sip";
+		return "#give_a_sip";
 	}	
 };

@@ -46,7 +46,7 @@ class ActionTogglePlaceObject: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Toggle placing";
+		return "#toggle_placing";
 	}
 	
 	

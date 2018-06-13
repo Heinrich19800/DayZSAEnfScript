@@ -25,7 +25,7 @@ class ActionLoadMagazineToWeapon: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "Load weapon";
+		return "#load_weapon";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

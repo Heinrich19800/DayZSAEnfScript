@@ -38,7 +38,7 @@ class ActionDisinfectPlantBit: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Disinfect plant a bit";
+		return "#disinfect_plant_a_bit";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

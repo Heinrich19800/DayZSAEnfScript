@@ -32,7 +32,7 @@ class ActionInjectSelf: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Inject";
+		return "#inject";
 	}
 
 	override void OnExecuteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

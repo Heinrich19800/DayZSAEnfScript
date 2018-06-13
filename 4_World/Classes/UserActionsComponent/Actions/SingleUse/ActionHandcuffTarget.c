@@ -22,7 +22,7 @@ class ActionHandcuffTarget: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "Handcuff";
+		return "#handcuff";
 	}
 	
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

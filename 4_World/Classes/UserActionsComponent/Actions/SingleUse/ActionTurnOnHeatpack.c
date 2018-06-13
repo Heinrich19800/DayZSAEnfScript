@@ -14,7 +14,7 @@ class ActionTurnOnHeatpack : ActionTurnOnWhileInHands
 
 	override string GetText()
 	{
-		return "Activate";
+		return "#activate";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

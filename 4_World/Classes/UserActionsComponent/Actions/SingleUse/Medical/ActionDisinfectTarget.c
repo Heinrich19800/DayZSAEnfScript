@@ -45,7 +45,7 @@ class ActionDisinfectTarget: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "Disinfect";
+		return "#disinfect";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

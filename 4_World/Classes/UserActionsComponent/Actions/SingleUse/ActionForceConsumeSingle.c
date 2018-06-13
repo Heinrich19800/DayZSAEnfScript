@@ -29,7 +29,7 @@ class ActionForceConsumeSingle: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "Give one";
+		return "#give_one";
 	}
 		
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

@@ -23,7 +23,7 @@ class ActionTurnOffWhileInHands: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Switch off";
+		return "#switch_off";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

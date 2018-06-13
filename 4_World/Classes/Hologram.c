@@ -399,14 +399,29 @@ class Hologram
 	 	float c_ConeHeightMin = -0.5;
 	 	float c_ConeHeightMax = 2;
 		int PLAYER_AND_PARENT = 2;
-				
+		Building building;
+		
 		DayZPlayerUtils.GetEntitiesInCone(parent_pos, headingDirection, c_ConeAngle, c_MaxTargetDistance, c_ConeHeightMin, c_ConeHeightMax, coneObjects);
 				
 		if ( coneObjects.Count() > PLAYER_AND_PARENT )
 		{
+			for ( int i = 0; i < coneObjects.Count(); i++ )
+			{
+				Object object = coneObjects.Get(i);
+				//Print("Obstacle: " + object);
+				
+				if ( Class.CastTo( building, object ) )
+				{
+					//Print("Object is a house");
+					return false;
+				}
+			}
+			
+			//Print("Object is behind Obtacle");
 			return true;	
 		}
 		
+		//Print("Object is NOT behind Obtacle");
 		return false;	
 	}
 	

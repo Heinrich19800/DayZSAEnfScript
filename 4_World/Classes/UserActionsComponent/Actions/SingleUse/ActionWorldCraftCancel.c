@@ -24,7 +24,7 @@ class ActionWorldCraftCancel: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Cancel";
+		return "#cancel";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

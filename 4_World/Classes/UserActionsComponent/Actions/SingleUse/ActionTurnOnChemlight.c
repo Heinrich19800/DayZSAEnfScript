@@ -14,6 +14,6 @@ class ActionTurnOnChemlight: ActionTurnOnWhileInHands
 
 	override string GetText()
 	{
-		return "Break";
+		return "#break";
 	}
 };

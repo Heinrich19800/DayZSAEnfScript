@@ -22,7 +22,7 @@ class ActionAttachPowerSourceToPanel: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "Attach power source";
+		return "#attach_power_source";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

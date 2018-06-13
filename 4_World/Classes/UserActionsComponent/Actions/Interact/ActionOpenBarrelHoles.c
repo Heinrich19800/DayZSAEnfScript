@@ -4,7 +4,7 @@ class ActionOpenBarrelHoles: ActionInteractBase
 	{
 		m_MessageSuccess = "I have opened it.";
 		//m_Animation = "open";
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_OPENLID;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_OPENDOORFW;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
 		m_HUDCursorIcon = CursorIcons.OpenHood;
 	}

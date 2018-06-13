@@ -39,7 +39,7 @@ class ActionWorldCraftSwitch: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Next recipe";
+		return "#next_recipe";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

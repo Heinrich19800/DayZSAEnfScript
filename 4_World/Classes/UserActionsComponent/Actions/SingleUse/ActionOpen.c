@@ -24,7 +24,7 @@ class ActionOpen: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Open";
+		return "#open";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

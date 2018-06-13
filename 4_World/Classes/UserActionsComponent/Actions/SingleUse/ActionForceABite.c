@@ -30,7 +30,7 @@ class ActionForceABite: ActionForceConsumeSingle
 
 	override string GetText()
 	{
-		return "Feed a bite";
+		return "#feed_a_bite";
 	}
 	
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

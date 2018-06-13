@@ -18,7 +18,7 @@ class ActionAttachMetalWire: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "Attach metal wire";
+		return "#attach_metal_wire";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

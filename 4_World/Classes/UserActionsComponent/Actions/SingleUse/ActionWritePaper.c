@@ -45,7 +45,7 @@ class ActionWritePaper: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "Write note";
+		return "#write_note";
 	}
 
 	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

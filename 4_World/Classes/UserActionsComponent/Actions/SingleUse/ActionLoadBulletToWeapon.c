@@ -31,7 +31,7 @@ class ActionLoadBulletToWeapon: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "Load bullet";
+		return "#load_bullet";
 	}
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

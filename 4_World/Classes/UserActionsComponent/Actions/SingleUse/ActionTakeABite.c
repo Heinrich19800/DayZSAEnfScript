@@ -36,6 +36,6 @@ class ActionTakeABite: ActionConsumeSingle
 
 	override string GetText()
 	{
-		return "Take a bite";
+		return "#take_a_bite";
 	}
 };

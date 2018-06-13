@@ -27,7 +27,7 @@ class ActionInjectTarget: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "Inject target";
+		return "#inject_target";
 	}
 
 	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )

@@ -4,7 +4,7 @@ class ActionCloseBarrelHoles: ActionInteractBase
 	{
 		m_MessageSuccess = "I have closed it.";
 		//m_Animation = "close";
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_CLOSELID;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_OPENDOORFW;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
 		m_HUDCursorIcon = CursorIcons.CloseHood;
 	}

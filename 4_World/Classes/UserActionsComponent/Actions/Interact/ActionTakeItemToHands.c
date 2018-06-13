@@ -28,7 +28,7 @@ class ActionTakeItemToHands: ActionInteractBase
 
 	override string GetText()
 	{
-		return "Take To Hands";
+		return "#take_to_hands";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

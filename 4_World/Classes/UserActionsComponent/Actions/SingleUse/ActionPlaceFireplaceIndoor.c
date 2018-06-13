@@ -21,7 +21,7 @@ class ActionPlaceFireplaceIndoor: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Place fireplace";
+		return "#place_fireplace";
 	}
 	
 	override void CreateConditionComponents()  

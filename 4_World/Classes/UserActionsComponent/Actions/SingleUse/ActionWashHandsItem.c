@@ -24,7 +24,7 @@ class ActionWashHandsItem: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Wash hands";
+		return "#wash_hands";
 	}
 	
 	override bool HasTarget()

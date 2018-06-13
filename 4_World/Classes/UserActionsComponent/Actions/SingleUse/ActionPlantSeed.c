@@ -30,7 +30,7 @@ class ActionPlantSeed: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Plant seed";
+		return "#plant_seed";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

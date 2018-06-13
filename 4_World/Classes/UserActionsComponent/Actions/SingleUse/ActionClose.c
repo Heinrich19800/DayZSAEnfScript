@@ -24,7 +24,7 @@ class ActionClose: ActionSingleUseBase
 
 	override string GetText()
 	{
-		return "Close";
+		return "#close";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
