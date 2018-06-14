@@ -1,16 +1,14 @@
 class CAContinuousTimeCooking : CAContinuousBase
 {
 	protected float 			m_LocalTimeElpased;
-	protected float				m_TimeElapsed;
+	protected float				m_TimeElpased;
 	protected float 			m_TimeElapsedRepeat;
 	protected ref Param1<float>	m_SpentUnits;
 	
 	protected float 			m_TimeToCook;
-	protected float 			m_AdjustedTimeToCook;
 	protected Cooking			m_CookingProcess;
 	protected Edible_Base		m_ItemToCook;
 	protected float 			m_CookingUpdateTime;
-	protected float 			m_AdjustedCookingUpdateTime;
 	
 	void CAContinuousTimeCooking( float cooking_update_time )
 	{
@@ -37,11 +35,7 @@ class CAContinuousTimeCooking : CAContinuousBase
 		m_TimeToCook = m_CookingProcess.GetTimeToCook( m_ItemToCook, CookingMethodType.BAKING );
 		
 		//update elapsed time
-		m_TimeElapsed = m_ItemToCook.GetFoodStage().GetCookingTime();
-		
-		//SoftSkill implementation to hasten Cooking
-		m_AdjustedCookingUpdateTime = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_CookingUpdateTime, m_Action.GetSpecialtyWeight(), true);
-		m_AdjustedTimeToCook = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_TimeToCook, m_Action.GetSpecialtyWeight(), true);
+		m_TimeElpased = m_ItemToCook.GetFoodStage().GetCookingTime();
 	}
 	
 	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
@@ -55,10 +49,10 @@ class CAContinuousTimeCooking : CAContinuousBase
 		float cooking_time = m_ItemToCook.GetFoodStage().GetCookingTime();
 		if ( m_TimeToCook > cooking_time )
 		{
-			m_TimeElapsed += player.GetDeltaT();
-			m_TimeElapsedRepeat += ( player.GetDeltaT() );
-			
-			if ( m_TimeElapsedRepeat >= m_AdjustedCookingUpdateTime )
+			m_TimeElpased += player.GetDeltaT();
+			m_TimeElapsedRepeat += player.GetDeltaT();
+				
+			if ( m_TimeElapsedRepeat >= m_CookingUpdateTime )
 			{
 				cooking_state_update = m_CookingProcess.CookOnStick( m_ItemToCook, m_CookingUpdateTime );
 				
@@ -66,23 +60,18 @@ class CAContinuousTimeCooking : CAContinuousBase
 				if ( cooking_state_update == 1 )
 				{
 					Setup( player, target, item );
-					
-					if ( GetGame().IsServer() )
-					{
-						player.GetSoftSkillManager().AddSpecialty( m_Action.GetSpecialtyWeight() );
-					}
 				}
 				
 				m_TimeElapsedRepeat = 0;
 			}				
-					
+			
 			return UA_PROCESSING;
 		}
 		else
 		{
 			if ( m_SpentUnits )
 			{
-				m_SpentUnits.param1 = m_TimeElapsed;
+				m_SpentUnits.param1 = m_TimeElpased;
 				SetACData(m_SpentUnits);
 			}
 			
@@ -91,12 +80,12 @@ class CAContinuousTimeCooking : CAContinuousBase
 	}
 	
 	override float GetProgress()
-	{			
-		if ( m_AdjustedTimeToCook != 0 )
+	{	
+		if ( m_TimeToCook != 0 )
 		{
-			return m_TimeElapsed/m_AdjustedTimeToCook;
+			return m_TimeElpased/m_TimeToCook;
 		}
 
-		return 1; 
+		return 1;
 	}
 };

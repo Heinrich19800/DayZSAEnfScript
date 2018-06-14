@@ -4,7 +4,6 @@ class ActionMineTreeBark: ActionMineTree
 	{
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CRAFTING;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_PRONE;
-		
 		m_MessageStartFail = "My tool is too damaged to cut.";
 		m_MessageStart = "I started cutting off the branch.";
 		m_MessageSuccess = "I have cut off the branch.";

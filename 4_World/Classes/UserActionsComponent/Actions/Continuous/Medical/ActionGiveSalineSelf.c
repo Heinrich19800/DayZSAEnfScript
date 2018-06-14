@@ -53,8 +53,11 @@ class ActionGiveSalineSelf: ActionContinuousBase
 		//player.SetHealth("GlobalHealth", "Blood", player.GetHealth("GlobalHealth", "Blood") + delta );
 		//player.AddHealth("", "Blood", delta);
 		player.GetModifiersManager().ActivateModifier(eModifiers.MDF_SALINE);
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-
+		//this condition protects spamming UAs for exp without using items quantity
+		if ( nacdata.param1 != 0 )
+		{
+			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		}
 		item.Delete();
 	}
 };

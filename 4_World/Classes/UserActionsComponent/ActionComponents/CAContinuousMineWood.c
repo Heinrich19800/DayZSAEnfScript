@@ -1,8 +1,7 @@
 class CAContinuousMineWood : CAContinuousBase
 {
 	protected float 				m_TimeElpased;
-	protected float 				m_AdjustedTimeBetweenMaterialDrops;
-	protected float 				m_TimeBetweenMaterialDrops;
+	protected float 				m_TimeBetweenEachMaterialDrop;
 	protected float					m_DamageToMiningItemEachDrop;
 	protected int 					m_AmountOfDrops;
 	protected string				m_Material;
@@ -13,7 +12,7 @@ class CAContinuousMineWood : CAContinuousBase
 	
 	void CAContinuousMineWood(float time_between_drops)
 	{
-		m_TimeBetweenMaterialDrops = time_between_drops;
+		m_TimeBetweenEachMaterialDrop = time_between_drops;
 	}
 	
 	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
@@ -29,8 +28,8 @@ class CAContinuousMineWood : CAContinuousBase
 		}
 		m_DataLoaded = GetMiningData(player,target,item);
 
-		m_AdjustedTimeBetweenMaterialDrops = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_TimeBetweenMaterialDrops, m_Action.GetSpecialtyWeight(), true );		
-		m_TimeToComplete = m_AmountOfDrops * m_AdjustedTimeBetweenMaterialDrops;
+		m_TimeBetweenEachMaterialDrop = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_TimeBetweenEachMaterialDrop, m_Action.GetSpecialtyWeight(), true );		
+		m_TimeToComplete = m_AmountOfDrops*m_TimeBetweenEachMaterialDrop;
 	}
 	
 	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
@@ -48,7 +47,7 @@ class CAContinuousMineWood : CAContinuousBase
 		}
 		else
 		{
-			if ( m_TimeElpased < m_AdjustedTimeBetweenMaterialDrops )
+			if ( m_TimeElpased < m_TimeBetweenEachMaterialDrop )
 			{
 				m_TimeElpased += player.GetDeltaT();
 			}
@@ -80,8 +79,8 @@ class CAContinuousMineWood : CAContinuousBase
 	
 	override float GetProgress()
 	{	
-		//float progress = m_TimeElpased/m_AdjustedTimeBetweenMaterialDrops;
-		return m_TimeElpased/m_AdjustedTimeBetweenMaterialDrops;
+		//float progress = m_TimeElpased/m_TimeBetweenEachMaterialDrop;
+		return m_TimeElpased/m_TimeBetweenEachMaterialDrop;
 	}
 	
 	//---------------------------------------------------------------------------

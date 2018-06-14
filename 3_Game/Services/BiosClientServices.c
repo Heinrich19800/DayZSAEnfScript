@@ -10,7 +10,6 @@
 class BiosClientServices
 {
 	private void BiosClientServices() {}
-	void ~BiosClientServices() {}
 	
 	proto native BiosPrivacyService GetPrivacyService();
 	proto native BiosSocialService GetSocialService();

@@ -70,4 +70,9 @@ class ActionTuneFrequency: ActionContinuousBase
 		TransmitterBase transmitter =  TransmitterBase.Cast( item );
 		transmitter.SetNextFrequency( player );
 	}
+
+	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	{
+		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+	}
 }

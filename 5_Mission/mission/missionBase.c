@@ -132,10 +132,15 @@ class MissionBase extends Mission
 			menu = new MainMenuXbox;
 #else
 #ifdef PLATFORM_PS4
-		menu = new MainMenuXbox;
+			menu = new MainMenuXbox;
 #else
-		menu = new MainMenuNew;
+	#ifdef NEW_UI
+				menu = new MainMenuNew;
+	#else
+				menu = new MainMenu;
+	#endif
 #endif
+#endif	
 			break;
 		case MENU_INGAME:
 #ifdef PLATFORM_XBOX

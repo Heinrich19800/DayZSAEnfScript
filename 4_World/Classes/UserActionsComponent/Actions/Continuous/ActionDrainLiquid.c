@@ -1,10 +1,11 @@
 class ActionDrainLiquidCB : ActionContinuousBaseCB
 {
+	private const float QUANTITY_DRAINED_PER_SEC = 50;
 	private const float TIME_TO_REPEAT = 1;
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousQuantityLiquidTransfer(UAQuantityConsumed.DRAIN_LIQUID, TIME_TO_REPEAT);
+		m_ActionComponent = new CAContinuousQuantityLiquidTransfer(QUANTITY_DRAINED_PER_SEC, TIME_TO_REPEAT);
 	}
 };
 

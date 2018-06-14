@@ -5,7 +5,6 @@ class CAContinuousQuantityRepeat : CAContinuousBase
 	protected float 				m_ItemMaxQuantity;
 	protected float					m_TimeElpased;
 	protected float 				m_QuantityUsedPerSecond;
-	protected float 				m_AdjustedQuantityUsedPerSecond;
 	protected float 				m_DefaultTimeToRepeat;
 	protected ref Param1<float>		m_SpentUnits;
 	
@@ -49,8 +48,7 @@ class CAContinuousQuantityRepeat : CAContinuousBase
 		{
 			if ( m_SpentQuantity < m_ItemQuantity )
 			{
-				m_AdjustedQuantityUsedPerSecond = player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);		
-				m_SpentQuantity += m_AdjustedQuantityUsedPerSecond * player.GetDeltaT();
+				m_SpentQuantity += m_QuantityUsedPerSecond * player.GetDeltaT();
 				m_TimeElpased += player.GetDeltaT();
 				
 				if ( m_TimeElpased >= m_DefaultTimeToRepeat )

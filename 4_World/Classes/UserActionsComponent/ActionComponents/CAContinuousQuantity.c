@@ -4,7 +4,6 @@ class CAContinuousQuantity : CAContinuousBase
 	protected float 				m_SpentQuantity;
 	protected float 				m_ItemMaxQuantity;
 	protected float 				m_QuantityUsedPerSecond;
-	protected float 				m_AdjustedQuantityUsedPerSecond;
 	protected ref Param1<float>		m_SpentUnits;
 	
 	void CAContinuousQuantity( float quantity_used_per_second )
@@ -44,9 +43,7 @@ class CAContinuousQuantity : CAContinuousBase
 		{
 			if ( m_SpentQuantity < m_ItemQuantity )
 			{
-				m_AdjustedQuantityUsedPerSecond = player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);		
-				m_SpentQuantity += m_AdjustedQuantityUsedPerSecond * player.GetDeltaT();
-
+				m_SpentQuantity += m_QuantityUsedPerSecond * player.GetDeltaT();				
 				return UA_PROCESSING;
 			}
 			else
@@ -83,8 +80,7 @@ class CAContinuousQuantity : CAContinuousBase
 		{
 			if ( m_SpentUnits )
 			{
-				m_SpentUnits.param1 = m_SpentQuantity;
-
+				m_SpentUnits.param1 = player.GetSoftSkillManager().AddSpecialtyBonus( m_SpentQuantity, m_Action.GetSpecialtyWeight(), true );
 				SetACData(m_SpentUnits);
 			}
 			

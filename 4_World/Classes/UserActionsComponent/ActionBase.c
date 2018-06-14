@@ -978,7 +978,7 @@ class ActionBase
 		if(m_SpecialtyWeight == 0)
 		{
 #ifdef DEVELOPER
-			Print("UserAction does not use SoftSkills");
+			Print("m_SpecialtyWeight should never be zero");
 #endif
 		}	
 

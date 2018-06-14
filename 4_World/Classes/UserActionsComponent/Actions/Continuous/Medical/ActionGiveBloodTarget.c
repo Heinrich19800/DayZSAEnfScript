@@ -77,6 +77,10 @@ class ActionGiveBloodTarget: ActionContinuousBase
 			item.Delete();
 		}
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		//this condition protects spamming UAs for exp without using items quantity
+		if( nacdata.param1 != 0 )
+		{
+			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		}
 	}
 };
