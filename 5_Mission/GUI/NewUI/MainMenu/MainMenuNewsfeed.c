@@ -5,6 +5,9 @@ class MainMenuNewsfeed extends ScriptedWidgetEventHandler
 	void MainMenuNewsfeed( Widget root )
 	{
 		m_Root = root;
+		float x, y;
+		m_Root.FindAnyWidget( "news_main_screenshot" ).GetSize( x, y );
+		Print( "" + x + "," + y );
 	}
 	
 	void ShowNewsfeed()

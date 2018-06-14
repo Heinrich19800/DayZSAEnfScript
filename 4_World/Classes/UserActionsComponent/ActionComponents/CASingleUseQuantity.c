@@ -42,7 +42,7 @@ class CASingleUseQuantity : CASingleUseBase
 		{
 			if ( m_SpentUnits )
 			{
-				m_SpentUnits.param1 = player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityUsedPerAction, m_Action.GetSpecialtyWeight(), true );
+				m_SpentUnits.param1 = m_QuantityUsedPerAction;
 				SetACData(m_SpentUnits);	
 			}
 

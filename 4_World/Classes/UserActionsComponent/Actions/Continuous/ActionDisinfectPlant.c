@@ -66,10 +66,6 @@ class ActionDisinfectPlant: ActionContinuousBase
 			SendMessageToClient(player,plant.StopInfestation( nacdata.param1 ));
 		}
 
-		//this condition protects spamming UAs for exp without using items quantity
-		if( nacdata  &&  nacdata.param1 != 0 )
-		{
-			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-		}
+		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

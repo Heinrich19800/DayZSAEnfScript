@@ -3,7 +3,7 @@ class CAContinuousCraft : CAContinuousTime
 	override void Setup( PlayerBase player, ActionTarget target, ItemBase item  )
 	{
 		m_TimeElpased = 0;
-		m_TimeToComplete = 1000; //indication of arror if somting will be craft 1000 sec
+		m_AdjustedTimeToComplete = 1000; //indication of arror if somting will be craft 1000 sec
 		if ( !m_SpentUnits )
 		{ 
 			m_SpentUnits = new Param1<float>(0);
@@ -18,15 +18,16 @@ class CAContinuousCraft : CAContinuousTime
 		Class.CastTo(module_recipes_manager, GetPlugin(PluginRecipesManager));
 		if( module_recipes_manager )
 		{
-			m_TimeToComplete = module_recipes_manager.GetRecipeLengthInSecs( recipeID );
+			m_AdjustedTimeToComplete = module_recipes_manager.GetRecipeLengthInSecs( recipeID );
 			if( module_recipes_manager.GetIsInstaRecipe(recipeID) || module_recipes_manager.IsEnableDebugCrafting() )
 			{
-				m_TimeToComplete = 0;
+				m_AdjustedTimeToComplete = 0;
 			}
 			float specialty_weight = module_recipes_manager.GetRecipeSpecialty( recipeID );
-			m_TimeToComplete = player.GetSoftSkillManager().AdjustCraftingTime( m_TimeToComplete, specialty_weight );
+
+			m_AdjustedTimeToComplete = player.GetSoftSkillManager().AdjustCraftingTime( m_AdjustedTimeToComplete, specialty_weight );
 			
-			//PrintString("ttc:" + m_TimeToComplete.ToString());
+			//PrintString("ttc:" + m_AdjustedTimeToComplete.ToString());
 		}
 	}
 	
@@ -37,7 +38,7 @@ class CAContinuousCraft : CAContinuousTime
 			return UA_ERROR;
 		}
 		
-		if ( m_TimeElpased < m_TimeToComplete )
+		if ( m_TimeElpased < m_AdjustedTimeToComplete )
 		{
 			m_TimeElpased += player.GetDeltaT();
 		}
@@ -55,10 +56,10 @@ class CAContinuousCraft : CAContinuousTime
 	
 	override float GetProgress()
 	{	
-		if( m_TimeToComplete > 0 )
+		if( m_AdjustedTimeToComplete > 0 )
 		{
-			//float progress = m_TimeElpased/m_TimeToComplete;
-			return m_TimeElpased/m_TimeToComplete;
+			//float progress = m_TimeElpased/m_AdjustedTimeToComplete;
+			return m_TimeElpased/m_AdjustedTimeToComplete;
 		}
 		return 1;
 	}

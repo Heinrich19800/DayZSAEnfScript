@@ -167,6 +167,11 @@ class SoftSkillsManager
 	// limit_efficiency sets the max amount of bonus, the soft skill can provide: limit_efficiency = 2 is 50% bonus, limit_efficiency = 3 is 33% bonus etc
 	float AddSpecialtyBonus( float base_value, float specialty_weight, bool is_cacomponent = false, float limit_efficiency = 2 )
 	{	
+		if ( specialty_weight == 0 )
+		{
+			return base_value;	
+		}
+		
 		SetBonusBefore( is_cacomponent, base_value);
 
 		float adjusted_value;
@@ -192,6 +197,11 @@ class SoftSkillsManager
 	// limit_efficiency sets the max amount of bonus, the soft skill can provide: limit_efficiency = 2 is 50% bonus, limit_efficiency = 3 is 33% bonus etc
 	float SubtractSpecialtyBonus( float base_value, float specialty_weight, bool is_cacomponent = false, float limit_efficiency = 2 )
 	{
+		if ( specialty_weight == 0 )
+		{
+			return base_value;	
+		}
+		
 		SetBonusBefore( is_cacomponent, base_value);
 
 		float adjusted_value;
@@ -217,6 +227,11 @@ class SoftSkillsManager
 	// limit_efficiency sets the max amount of bonus, the soft skill can provide: limit_efficiency = 2 is 50% bonus, limit_efficiency = 3 is 33% bonus etc
 	float AdjustCraftingTime( float base_time, float specialty_weight, float limit_efficiency = 2 )
 	{
+		if ( specialty_weight == 0 )
+		{
+			return base_time;	
+		}
+		
 		SetBonusBefore( false, base_time);
 
 		float adjusted_time;

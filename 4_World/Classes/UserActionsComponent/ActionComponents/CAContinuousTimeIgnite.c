@@ -2,7 +2,7 @@ class CAContinuousTimeIgnite : CAContinuousBase
 {
 	protected float 					m_LocalTimeElpased;
 	protected float						m_TimeElpased;
-	protected float						m_TimeToComplete;
+	protected float						m_AdjustedTimeToComplete;
 	protected float						m_DefaultTimeToComplete;	
 	
 	protected float 					m_TimeToRepeatCheck;
@@ -31,7 +31,7 @@ class CAContinuousTimeIgnite : CAContinuousBase
 		
 		m_IgniteFireplaceAction = ActionIgniteFireplace.Cast( m_Action );
 		
-		m_TimeToComplete = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
+		m_AdjustedTimeToComplete = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
 	}
 	
 	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
@@ -41,7 +41,7 @@ class CAContinuousTimeIgnite : CAContinuousBase
 			return UA_ERROR;
 		}
 		
-		if ( m_TimeElpased < m_TimeToComplete )
+		if ( m_TimeElpased < m_AdjustedTimeToComplete )
 		{
 			m_TimeElpased += player.GetDeltaT();
 			m_TimeElapsedRepeat += player.GetDeltaT();
@@ -78,9 +78,9 @@ class CAContinuousTimeIgnite : CAContinuousBase
 
 	override float GetProgress()
 	{	
-		if ( m_TimeToComplete > 0 )
+		if ( m_AdjustedTimeToComplete > 0 )
 		{
-			return m_TimeElpased / m_TimeToComplete;
+			return m_TimeElpased / m_AdjustedTimeToComplete;
 		}
 		else
 		{

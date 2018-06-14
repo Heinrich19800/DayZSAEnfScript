@@ -5,6 +5,7 @@ class CAContinuousQuantityLiquidTransfer : CAContinuousBase
 	protected float 				m_ItemMaxQuantity; //basically free capacity
 	protected float					m_TimeElpased;
 	protected float 				m_QuantityUsedPerSecond;
+	protected float 				m_AdjustedQuantityUsedPerSecond;
 	protected float 				m_DefaultTimeStep;
 	protected ref Param1<float>		m_SpentUnits;
 	
@@ -82,8 +83,9 @@ class CAContinuousQuantityLiquidTransfer : CAContinuousBase
 		{
 			if ( m_SpentQuantity < m_ItemQuantity )
 			{
-				m_SpentQuantity += m_QuantityUsedPerSecond * player.GetDeltaT();
-				m_TimeElpased += player.GetDeltaT();
+				m_AdjustedQuantityUsedPerSecond = m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);
+				m_SpentQuantity += m_AdjustedQuantityUsedPerSecond * m_Player.GetDeltaT();
+				m_TimeElpased += m_Player.GetDeltaT();
 				
 				/*if ( m_TimeElpased >= m_DefaultTimeStep )
 				{

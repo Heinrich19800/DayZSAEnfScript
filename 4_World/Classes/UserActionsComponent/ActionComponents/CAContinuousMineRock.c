@@ -2,7 +2,7 @@ class CAContinuousMineRock : CAContinuousMineWood
 {	
 	void CAContinuousMineRock(float time_between_drops)
 	{
-		m_TimeBetweenEachMaterialDrop = time_between_drops;
+		m_TimeBetweenMaterialDrops = time_between_drops;
 	}
 	
 	override bool GetMiningData(PlayerBase player, ActionTarget target, ItemBase item )
