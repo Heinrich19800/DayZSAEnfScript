@@ -18,15 +18,15 @@ class CAContinuousQuantityExtinguish : CAContinuousQuantityRepeat
 				m_SpentUnits.param1 = m_SpentQuantity;
 				SetACData( m_SpentUnits );
 			}
-			m_SpentQuantity = Math.Floor( m_SpentQuantity );
 			
 			Object targetObject = target.GetObject();
 			if ( targetObject )
 			{
 				FireplaceBase fireplace_target = FireplaceBase.Cast( targetObject );
 				
-				//add wetness to fireplace target
-				float wetness = fireplace_target.GetWet() + ( player.GetSoftSkillManager().AddSpecialtyBonus( m_SpentQuantity, m_Action.GetSpecialtyWeight(), true ) / 1000 * m_WetnessGainMultiplier );
+				//add wetness to fireplace targets
+				float wetness = fireplace_target.GetWet() + ( m_SpentQuantity / 1000 * m_WetnessGainMultiplier );
+
 				wetness = Math.Clamp( wetness , 0, 1 );
 				fireplace_target.SetWet( wetness );
 				

@@ -3,6 +3,7 @@ class CAContinuousFill : CAContinuousBase
 	protected float 				m_TargetUnits;
 	protected float 				m_SpentQuantity;
 	protected float 				m_ItemQuantity;
+	protected float 				m_AdjustedQuantityFilledPerSecond;
 	protected float 				m_QuantityFilledPerSecond;
 	protected ref Param1<float>		m_SpentUnits;
 	
@@ -24,7 +25,7 @@ class CAContinuousFill : CAContinuousBase
 		
 		m_ItemQuantity = item.GetQuantity();
 		m_TargetUnits = item.GetQuantityMax() - item.GetQuantity();	
-		m_QuantityFilledPerSecond = player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityFilledPerSecond, m_Action.GetSpecialtyWeight(), true );
+		m_AdjustedQuantityFilledPerSecond = player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityFilledPerSecond, m_Action.GetSpecialtyWeight(), true );
 	}
 	
 	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
@@ -42,7 +43,8 @@ class CAContinuousFill : CAContinuousBase
 		{
 			if ( m_SpentQuantity < m_TargetUnits )
 			{
-				m_SpentQuantity += m_QuantityFilledPerSecond * player.GetDeltaT();
+				m_SpentQuantity += m_AdjustedQuantityFilledPerSecond * player.GetDeltaT();
+
 				return UA_PROCESSING;
 			}
 			else

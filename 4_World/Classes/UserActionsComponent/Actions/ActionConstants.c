@@ -7,6 +7,7 @@ class UAQuantityConsumed
 	const float EAT_SMALL = 10;
 	const float EAT_NORMAL = 50;
 	const float POUR_LIQUID = 50;
+	const float DRAIN_LIQUID = 50;
 	const float DRINK = 50;
 	const float BLOOD = 100;
 	const float SALINE = 100;

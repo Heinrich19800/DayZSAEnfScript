@@ -6,6 +6,8 @@ class TabberUI extends ScriptedWidgetEventHandler
 	protected ref map<int, Widget> m_Tabs;
 	
 	protected int m_SelectedIndex;
+	
+	ref ScriptInvoker		m_OnTabSwitch = new ScriptInvoker();
 
 	void OnWidgetScriptInit( Widget w )
 	{
@@ -43,7 +45,7 @@ class TabberUI extends ScriptedWidgetEventHandler
 		}
 		
 		#ifdef PLATFORM_XBOX
-			m_Root.FindAnyWidget( "XboxControls" ).Show( true );
+			m_Root.FindAnyWidget( "XboxControls" ).Show( tab_count > 1 );
 		#endif
 	}
 	
@@ -54,10 +56,11 @@ class TabberUI extends ScriptedWidgetEventHandler
 		
 		tab_controls.Update();
 		
+		int tab_count;
 		Widget tab_child = tab_controls.GetChildren();
 		while( tab_child )
 		{
-			
+			tab_count++;
 			tab_child.GetSize( x, y );
 			total_size += x;
 			tab_child = tab_child.GetSibling();
@@ -68,11 +71,15 @@ class TabberUI extends ScriptedWidgetEventHandler
 		{
 			Widget tab_bg = tab_child.FindAnyWidget( tab_child.GetName() + "_Background" );
 			tab_child.GetPos( x, y );
-			tab_bg.SetPos( -x, 0 );
-			tab_bg.SetSize( total_size, 1 );
+			//tab_bg.SetPos( -x, 0 );
+			//tab_bg.SetSize( total_size, 1 );
 			
 			tab_child = tab_child.GetSibling();
 		}
+		
+		#ifdef PLATFORM_XBOX
+			m_Root.FindAnyWidget( "XboxControls" ).Show( tab_count > 1 );
+		#endif
 	}
 	
 	override bool OnMouseButtonUp( Widget w, int x, int y, int button )
@@ -90,6 +97,7 @@ class TabberUI extends ScriptedWidgetEventHandler
 				
 				m_SelectedIndex = index;
 				AlignTabbers( m_Root.FindAnyWidget( "Tab_Control_Container" ) );
+				m_OnTabSwitch.Invoke( m_SelectedIndex );
 				return true;
 			}
 		}
@@ -97,7 +105,7 @@ class TabberUI extends ScriptedWidgetEventHandler
 		return false;
 	}
 	
-	bool OnChildAdd( Widget w, Widget child )
+	override bool OnChildAdd( Widget w, Widget child )
 	{
 		if( w == m_Root.FindAnyWidget( "Tab_Control_Container" ) )
 		{
@@ -107,7 +115,7 @@ class TabberUI extends ScriptedWidgetEventHandler
 		return false;
 	}
 	
-	bool OnChildRemove( Widget w, Widget child )
+	override bool OnChildRemove( Widget w, Widget child )
 	{
 		if( w == m_Root.FindAnyWidget( "Tab_Control_Container" ) )
 		{
@@ -176,6 +184,7 @@ class TabberUI extends ScriptedWidgetEventHandler
 		SelectTabPanel( next_index );
 		
 		m_SelectedIndex = next_index;
+		m_OnTabSwitch.Invoke( m_SelectedIndex );
 	}
 	
 	void PreviousTab()
@@ -193,6 +202,7 @@ class TabberUI extends ScriptedWidgetEventHandler
 		SelectTabPanel( next_index );
 		
 		m_SelectedIndex = next_index;
+		m_OnTabSwitch.Invoke( m_SelectedIndex );
 	}
 	
 	int GetSelectedIndex()

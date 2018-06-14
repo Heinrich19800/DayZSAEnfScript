@@ -2,7 +2,7 @@ class CAContinuousTime : CAContinuousBase
 {
 	protected float 			m_LocalTimeElpased;
 	protected float				m_TimeElpased;
-	protected float				m_TimeToComplete;
+	protected float				m_AdjustedTimeToComplete;
 	protected float				m_DefaultTimeToComplete;	
 	protected ref Param1<float>	m_SpentUnits;
 	
@@ -23,7 +23,7 @@ class CAContinuousTime : CAContinuousBase
 			m_SpentUnits.param1 = 0;
 		}
 		
-		m_TimeToComplete = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
+		m_AdjustedTimeToComplete = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
 	}
 	
 	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
@@ -33,7 +33,7 @@ class CAContinuousTime : CAContinuousBase
 			return UA_ERROR;
 		}
 		
-		if ( m_TimeElpased < m_TimeToComplete )
+		if ( m_TimeElpased < m_AdjustedTimeToComplete )
 		{
 			m_TimeElpased += player.GetDeltaT();
 			return UA_PROCESSING;
@@ -61,10 +61,10 @@ class CAContinuousTime : CAContinuousBase
 
 	override float GetProgress()
 	{	
-		if ( m_TimeToComplete != 0 )
+		if ( m_AdjustedTimeToComplete != 0 )
 		{
-			//progress = m_TimeElpased/m_TimeToComplete;
-			return m_TimeElpased/m_TimeToComplete;
+			//progress = m_TimeElpased/m_AdjustedTimeToComplete;
+			return m_TimeElpased/m_AdjustedTimeToComplete;
 		}
 		else
 		{

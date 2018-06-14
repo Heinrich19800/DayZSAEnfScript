@@ -20,6 +20,7 @@ class ActionCookOnStick: ActionContinuousBase
 		m_MessageStart = "I have started the action.";
 		m_MessageFail = "I have failed the action.";
 		m_MessageCancel = "I have stopped the action.";
+		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
 	override void CreateConditionComponents()  
