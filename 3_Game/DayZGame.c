@@ -280,9 +280,11 @@ class DayZGame extends CGame
 	
 	private int 	m_queueTime;
 	bool			m_loadingScreenOn;
+	private bool	m_IsStressTest;
 	int 			m_OriginalCharactersCount;
 	private string 	m_PlayerName;
 	private bool 	m_IsNewCharacter;
+	
 	private float	m_UserFOV;
 	float 	m_volume_sound;
 	float 	m_volume_speechEX;
@@ -329,6 +331,11 @@ class DayZGame extends CGame
 			}
 			
 			
+		}
+		
+		if ( CommandlineGetParam("stresstest", tmp) )
+		{
+			m_IsStressTest = true;
 		}
 		
 		/*m_ParamNewMenu= false;
@@ -454,6 +461,11 @@ class DayZGame extends CGame
 	map<EDayZProfilesOptions, ref DayZProfilesOption> GetProfileOptionMap()
 	{
 		return m_DayZProfileOptions.GetProfileOptionMap();
+	}
+	
+	bool IsStressTest()
+	{
+		return m_IsStressTest;
 	}
 	
 	// ------------------------------------------------------------

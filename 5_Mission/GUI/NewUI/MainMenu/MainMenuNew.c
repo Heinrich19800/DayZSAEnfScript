@@ -7,6 +7,7 @@ class MainMenuNew extends UIScriptedMenu
 	protected DayZIntroScene 		m_Scene;
 	
 	protected TextWidget			m_PlayerName;
+	protected TextWidget			m_Version;
 	
 	protected Widget				m_CharacterRotationFrame;
 	
@@ -17,10 +18,6 @@ class MainMenuNew extends UIScriptedMenu
 	protected Widget				m_MessageButton;
 	protected Widget				m_SettingsButton;
 	protected Widget				m_Exit;
-	protected Widget				m_Feedback;
-	protected Widget				m_DayZForum;
-	protected Widget				m_Twitter;
-	protected Widget				m_Youtube;
 	protected Widget				m_NewsFeedOpen;
 	protected Widget				m_NewsFeedClose;
 	protected Widget				m_CharacterStatsOpen;
@@ -42,20 +39,14 @@ class MainMenuNew extends UIScriptedMenu
 		m_MessageButton				= layoutRoot.FindAnyWidget( "message_button" );
 		m_SettingsButton			= layoutRoot.FindAnyWidget( "settings_button" );
 		m_Exit						= layoutRoot.FindAnyWidget( "exit_button" );
-		m_Feedback					= layoutRoot.FindAnyWidget( "feedback_tracker" );
-		m_DayZForum					= layoutRoot.FindAnyWidget( "dayz_forums" );
-		m_Twitter					= layoutRoot.FindAnyWidget( "twitter" );
-		m_Youtube					= layoutRoot.FindAnyWidget( "youtube" );
 		m_NewsFeedOpen				= layoutRoot.FindAnyWidget( "news_feed_open" );
 		m_NewsFeedClose				= layoutRoot.FindAnyWidget( "news_feed_close" );
 		m_CharacterStatsOpen		= layoutRoot.FindAnyWidget( "character_stats_open" );
 		m_CharacterStatsClose		= layoutRoot.FindAnyWidget( "character_stats_close" );
-		m_NewsMain					= layoutRoot.FindAnyWidget( "news_main" );
-		m_NewsSec1					= layoutRoot.FindAnyWidget( "news_sec_1" );
-		m_NewsSec2					= layoutRoot.FindAnyWidget( "news_sec_2" );
 		m_PrevCharacter				= layoutRoot.FindAnyWidget( "prev_character" );
 		m_NextCharacter				= layoutRoot.FindAnyWidget( "next_character" );
 		
+		m_Version					= TextWidget.Cast( layoutRoot.FindAnyWidget( "version" ) );
 		m_CharacterRotationFrame	= layoutRoot.FindAnyWidget( "character_rotation_frame" );
 			
 		m_Newsfeed					= new MainMenuNewsfeed( layoutRoot.FindAnyWidget( "news_feed_root" ) );
@@ -73,7 +64,14 @@ class MainMenuNew extends UIScriptedMenu
 		m_PlayerName			= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_text") );
 		m_PlayerName.SetText( g_Game.GetPlayerGameName() );
 		
-		SetFocus( layoutRoot.FindAnyWidget( "play" ) );
+		string version;
+		GetGame().GetVersion( version );
+		if( version != "" )
+			m_Version.SetText( "#main_menu_version" + " " + version );
+		else
+			m_Version.Show( false );
+		
+		SetFocus( m_Play );
 		
 		GetGame().GetUIManager().ScreenFadeOut(0);
 		
@@ -97,41 +95,6 @@ class MainMenuNew extends UIScriptedMenu
 	
 	override bool OnMouseButtonUp( Widget w, int x, int y, int button )
 	{
-		if( w == m_NewsMain )
-		{
-			OpenNewsMain();
-			return true;
-		}
-		else if ( w == m_NewsSec1 )
-		{
-			OpenNewsSec1();
-			return true;
-		}
-		else if ( w == m_NewsSec2 )
-		{
-			OpenNewsSec2();
-			return true;
-		}
-		else if ( w == m_Feedback )
-		{
-			OpenFeedback();
-			return true;
-		}
-		else if ( w == m_DayZForum )
-		{
-			OpenForums();
-			return true;
-		}
-		else if ( w == m_Twitter )
-		{
-			OpenTwitter();
-			return true;
-		}
-		else if ( w == m_Youtube )
-		{
-			OpenYoutube();
-			return true;
-		}
 		if (m_Scene)
 			m_Scene.CharacterRotationStop();
 		return false;
@@ -250,7 +213,7 @@ class MainMenuNew extends UIScriptedMenu
 	bool IsFocusable( Widget w )
 	{
 		bool focus1 = ( w == m_Play || w == m_ChooseServer || w == m_CustomizeCharacter || w == m_StatButton || w == m_MessageButton || w == m_SettingsButton );
-		bool focus2 = ( w == m_Exit || w == m_Feedback || w == m_DayZForum || w == m_Twitter || w == m_Youtube || w == m_NewsFeedOpen || w == m_NewsFeedClose );
+		bool focus2 = ( w == m_Exit || w == m_NewsFeedOpen || w == m_NewsFeedClose );
 		bool focus3 = ( w == m_CharacterStatsOpen || w == m_CharacterStatsClose || w == m_NewsMain || w == m_NewsSec1 || w == m_NewsSec2 || w == m_PrevCharacter || w == m_NextCharacter );
 		return ( focus1 || focus2 || focus3 );
 	}
@@ -380,41 +343,6 @@ class MainMenuNew extends UIScriptedMenu
 		GetGame().GetUIManager().ShowDialog("EXIT", "Are you sure you want to exit?", IDC_MAIN_QUIT, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 	}
 	
-	void OpenNewsMain()
-	{
-		GetGame().OpenURL( "https://dayz.com/blog/0-63-stress-tests" );
-	}
-	
-	void OpenNewsSec1()
-	{
-		GetGame().OpenURL( "https://forums.dayz.com/topic/238136-stress-test-reports/" );
-	}
-	
-	void OpenNewsSec2()
-	{
-		GetGame().OpenURL( "https://feedback.dayz.com" );
-	}
-	
-	void OpenFeedback()
-	{
-		GetGame().OpenURL( "https://feedback.bistudio.com/tag/dayz" );
-	}
-	
-	void OpenForums()
-	{
-		GetGame().OpenURL( "https://forums.dayz.com" );
-	}
-	
-	void OpenTwitter()
-	{
-		GetGame().OpenURL( "https://twitter.com/dayzdevteam" );
-	}
-	
-	void OpenYoutube()
-	{
-		GetGame().OpenURL( "https://www.youtube.com/user/DayZDevTeam" );
-	}
-	
 	void ConnectLastSession()
 	{
 		//TODO fix code-side
@@ -437,6 +365,7 @@ class MainMenuNew extends UIScriptedMenu
 	//Coloring functions (Until WidgetStyles are useful)
 	void ColorRed( Widget w, int x, int y )
 	{
+		SetFocus( w );
 		if( w.IsInherited( ButtonWidget ) )
 		{
 			ButtonWidget button = ButtonWidget.Cast( w );
@@ -466,6 +395,8 @@ class MainMenuNew extends UIScriptedMenu
 	
 	void ColorWhite( Widget w, Widget enterW, int x, int y )
 	{
+		if( GetFocus() == w )
+			return;
 		if( w.IsInherited( ButtonWidget ) )
 		{
 			ButtonWidget button = ButtonWidget.Cast( w );
