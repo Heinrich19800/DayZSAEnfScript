@@ -26,7 +26,7 @@ class ActionGiveSalineSelf: ActionContinuousBase
 	
 	override void CreateConditionComponents()  
 	{	
-		m_ConditionItem = new CCINotRuinedAndEmpty;
+		m_ConditionItem = new CCINonRuined;
 		m_ConditionTarget = new CCTSelf;
 	}
 

@@ -12,7 +12,7 @@ class MainMenuNew extends UIScriptedMenu
 	protected Widget				m_CharacterRotationFrame;
 	
 	protected Widget				m_Play;
-	protected Widget				m_ChooseServer;
+	protected ButtonWidget			m_ChooseServer;
 	protected Widget				m_CustomizeCharacter;
 	protected Widget				m_StatButton;
 	protected Widget				m_MessageButton;
@@ -33,7 +33,7 @@ class MainMenuNew extends UIScriptedMenu
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/main_menu.layout" );
 		
 		m_Play						= layoutRoot.FindAnyWidget( "play" );
-		m_ChooseServer				= layoutRoot.FindAnyWidget( "choose_server" );
+		m_ChooseServer				= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "choose_server" ) );
 		m_CustomizeCharacter		= layoutRoot.FindAnyWidget( "customize_character" );
 		m_StatButton				= layoutRoot.FindAnyWidget( "stat_button" );
 		m_MessageButton				= layoutRoot.FindAnyWidget( "message_button" );
@@ -63,6 +63,12 @@ class MainMenuNew extends UIScriptedMenu
 		
 		m_PlayerName			= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_text") );
 		m_PlayerName.SetText( g_Game.GetPlayerGameName() );
+		
+		#ifdef PLATFORM_XBOX
+			m_NextCharacter.Show( false );
+			m_PrevCharacter.Show( false );
+			m_ChooseServer.SetText( "CONTROLS" );
+		#endif
 		
 		string version;
 		GetGame().GetVersion( version );
@@ -220,6 +226,7 @@ class MainMenuNew extends UIScriptedMenu
 	
 	override void OnShow()
 	{
+		SetFocus( m_Play );
 		if( m_Scene && m_Scene.m_Camera )
 		{
 			m_Scene.m_Camera.LookAt(Vector(m_Scene.m_DemoPos[0],m_Scene.m_DemoPos[1] + 1,m_Scene.m_DemoPos[2]));
@@ -250,6 +257,11 @@ class MainMenuNew extends UIScriptedMenu
 
 	void ChooseServer()
 	{
+		#ifdef PLATFORM_XBOX
+			EnterScriptedMenu( MENU_XBOX_CONTROLS );
+			return;
+		#endif
+		
 		if( m_Scene )
 			m_Scene.SaveCharName();
 		
