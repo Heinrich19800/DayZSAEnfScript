@@ -180,7 +180,7 @@ class MainMenuNew extends UIScriptedMenu
 	{
 		if( IsFocusable( w ) )
 		{
-			ColorRed( w, x, y );
+			ColorRed( w );
 			return true;
 		}
 		return false;
@@ -190,7 +190,7 @@ class MainMenuNew extends UIScriptedMenu
 	{
 		if( IsFocusable( w ) )
 		{
-			ColorWhite( w, enterW, x, y );
+			ColorWhite( w, enterW );
 			return true;
 		}
 		return false;
@@ -200,7 +200,7 @@ class MainMenuNew extends UIScriptedMenu
 	{
 		if( IsFocusable( w ) )
 		{
-			ColorRed( w, x, y );
+			ColorRed( w );
 			return true;
 		}
 		return false;
@@ -210,7 +210,7 @@ class MainMenuNew extends UIScriptedMenu
 	{
 		if( IsFocusable( w ) )
 		{
-			ColorWhite( w, null, x, y );
+			ColorWhite( w, null );
 			return true;
 		}
 		return false;
@@ -375,7 +375,7 @@ class MainMenuNew extends UIScriptedMenu
 	}
 	
 	//Coloring functions (Until WidgetStyles are useful)
-	void ColorRed( Widget w, int x, int y )
+	void ColorRed( Widget w )
 	{
 		SetFocus( w );
 		if( w.IsInherited( ButtonWidget ) )
@@ -405,10 +405,8 @@ class MainMenuNew extends UIScriptedMenu
 		}
 	}
 	
-	void ColorWhite( Widget w, Widget enterW, int x, int y )
+	void ColorWhite( Widget w, Widget enterW )
 	{
-		if( GetFocus() == w )
-			return;
 		if( w.IsInherited( ButtonWidget ) )
 		{
 			ButtonWidget button = ButtonWidget.Cast( w );
@@ -438,9 +436,14 @@ class MainMenuNew extends UIScriptedMenu
 	
 	override bool OnModalResult( Widget w, int x, int y, int code, int result )
 	{
-		if( code == IDC_MAIN_QUIT && result == 2 )
+		if( code == IDC_MAIN_QUIT )
 		{
-			GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(g_Game.RequestExit, IDC_MAIN_QUIT);
+			if( result == 2 )
+				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(g_Game.RequestExit, IDC_MAIN_QUIT);
+			#ifdef PLATFORM_WINDOWS
+			if( result == 3 )
+				ColorWhite( GetFocus(), null );
+			#endif
 			return true;
 		}
 		return false;

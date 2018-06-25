@@ -313,7 +313,7 @@ class Weapon_Base extends Weapon
 	/**@fn		RandomizeFSMState
 	 * @brief	Engine callback - loot randomization of FSM's state. not intended to direct use.
 	 **/
-	void RandomizeFSMState ()
+	protected void RandomizeFSMState ()
 	{
 		if (m_fsm)
 		{
@@ -409,29 +409,6 @@ class Weapon_Base extends Weapon
 		super.EEItemAttached(item, slot_name);
 
 		if ( GetPropertyModifierObject() ) GetPropertyModifierObject().UpdateModifiers();
-
-		Magazine mag;
-		if( !Magazine.CastTo(mag,item) )
-			return;
-
-		PlayerBase player;
-		if ( PlayerBase.CastTo(player, GetHierarchyParent()) )
-			if ( player.GetItemInHands() == this )
-				if ( player.GetWeaponManager().IsRunning() )
-					return;
-
-		float damage;
-		string type;
-		if ( IsChamberEmpty( GetCurrentMuzzle()) )
-		{
-			if ( mag.LocalAcquireCartridge(damage, type) )
-			{
-				//SelectionBulletShow();
-				LoadChamber( GetCurrentMuzzle(), damage, type );
-			}
-		}
-
-		RandomizeFSMState();
 	}
 
 	override void EEItemDetached (EntityAI item, string slot_name)
@@ -439,22 +416,6 @@ class Weapon_Base extends Weapon
 		super.EEItemDetached(item, slot_name);
 
 		if ( GetPropertyModifierObject() ) GetPropertyModifierObject().UpdateModifiers();
-
-		Magazine mag;
-		if( !Magazine.CastTo(mag,item) )
-			return;
-
-		PlayerBase player;
-		if ( PlayerBase.CastTo(player,GetHierarchyParent()) )
-		{
-			if( player.GetItemInHands() == this )
-			{
-				if(player.GetWeaponManager().IsRunning())
-					return;
-			}
-		}
-
-		RandomizeFSMState();
 	}
 
 	bool IsRemoteWeapon ()

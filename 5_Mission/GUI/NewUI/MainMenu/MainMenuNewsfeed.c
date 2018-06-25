@@ -229,8 +229,6 @@ class MainMenuNewsfeed extends ScriptedWidgetEventHandler
 	
 	void ColorWhite( Widget w, Widget enterW, int x, int y )
 	{
-		if( GetFocus() == w )
-			return;
 		if( w.IsInherited( ButtonWidget ) )
 		{
 			ButtonWidget button = ButtonWidget.Cast( w );
