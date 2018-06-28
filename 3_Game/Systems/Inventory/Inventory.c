@@ -13,7 +13,7 @@ enum InventoryJunctureType
 {
 	TAKE,			///< taking from ground
 	SWAP,			///< swapping from ground
-	LOAD,			///< load mag from ground
+	//LOAD,			///< load mag from ground
 };
 enum InventoryMode
 {
@@ -448,6 +448,13 @@ class GameInventory
 	proto native bool SetSlotLock (int slot, bool locked);
 	proto native bool GetSlotLock (int slot);
 	///@} locks
+
+	///@{ anti-cheats
+	static proto native bool CheckDropRequest (notnull Man requestingPlayer, EntityAI item);
+	static proto native bool CheckTakeItemRequest (notnull Man requestingPlayer, EntityAI item, EntityAI target);
+	static proto native bool CheckMoveToDstRequest (notnull Man requestingPlayer, EntityAI item, notnull InventoryLocation dst);
+	static proto native bool CheckSwapItemsRequest (notnull Man requestingPlayer, EntityAI item1, EntityAI item2);
+	///@} anti-cheats
 
 ///@} Engine native functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

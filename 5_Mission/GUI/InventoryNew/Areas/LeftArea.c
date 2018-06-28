@@ -17,6 +17,7 @@ class LeftArea: Container
 	{
 		Container active_container = Container.Cast( m_Body.Get( m_ActiveIndex ) );
 		active_container.RefreshItemPosition( item_to_refresh );
+		m_Spacer.Update();
 	}
 	
 	override void RefreshQuantity( EntityAI item_to_refresh )
@@ -192,6 +193,7 @@ class LeftArea: Container
 	void OnLeftPanelDropReceived( Widget w, int x, int y, Widget receiver )
 	{
 		m_VicinityContainer.OnLeftPanelDropReceived( w, x, y, receiver );
+		m_Spacer.Update();
 	}
 	
 	override void SetLayoutName()

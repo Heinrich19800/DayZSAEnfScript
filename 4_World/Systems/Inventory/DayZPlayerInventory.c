@@ -111,14 +111,20 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 			{
 				src.ReadFromContext(ctx);
 				dst.ReadFromContext(ctx);
-				syncDebugPrint("[syncinv] t=" + GetGame().GetTime() + "ms received cmd=" + typename.EnumToString(InventoryCommandType, type) + " src=" + src.DumpToString() + " dst=" + dst.DumpToString());
 
 				if (remote && (!src.GetItem() || !dst.GetItem()))
 				{
 					syncDebugPrint("[syncinv] remote input (cmd=SYNC_MOVE) dropped, item not in bubble");
 					break; // not in bubble
 				}
-
+				
+				if (false == GameInventory.CheckMoveToDstRequest(GetManOwner(), src.GetItem(), dst))
+				{
+					Print("[cheat] man=" + GetManOwner() + " is cheating with cmd=" + typename.EnumToString(InventoryCommandType, type) + " src=" + src.DumpToString() + " dst=" + dst.DumpToString());
+					return false; // cheater
+				}
+				
+				syncDebugPrint("[syncinv] t=" + GetGame().GetTime() + "ms received cmd=" + typename.EnumToString(InventoryCommandType, type) + " src=" + src.DumpToString() + " dst=" + dst.DumpToString());
 				if (!juncture && GetDayZPlayerOwner().GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER)
 				{
 					if (GetDayZPlayerOwner().NeedInventoryJunctureFromServer(src.GetItem(), src.GetParent(), dst.GetParent()))
@@ -142,7 +148,6 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 			case InventoryCommandType.HAND_EVENT:
 			{
 				HandEventBase e = HandEventBase.CreateHandEventFromContext(ctx);
-				syncDebugPrint("[syncinv] t=" + GetGame().GetTime() + "ms received cmd=" + typename.EnumToString(InventoryCommandType, type) + " event=" + e);
 
 				if (remote && !e.m_Entity)
 				{
@@ -150,6 +155,13 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 					break; // not in bubble
 				}
 
+				if (false == GameInventory.CheckMoveToDstRequest(GetManOwner(), e.m_Entity, e.GetDst()))
+				{
+					Print("[cheat] man=" + GetManOwner() + " is cheating with cmd=" + typename.EnumToString(InventoryCommandType, type) + " event=" + e);
+					return false; // cheater
+				}
+
+				syncDebugPrint("[syncinv] t=" + GetGame().GetTime() + "ms received cmd=" + typename.EnumToString(InventoryCommandType, type) + " event=" + e);
 				if (e.m_Entity.GetInventory().GetCurrentInventoryLocation(src))
 				{
 					dst = e.GetDst();
@@ -189,7 +201,12 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 					break; // not in bubble
 				}
 
-				// workaround for commented code
+				if (false == GameInventory.CheckSwapItemsRequest(GetManOwner(), item1, item2))
+				{
+					Print("[cheat] man=" + GetManOwner() + " is cheating with cmd=" + typename.EnumToString(InventoryCommandType, type) + " src=" + src.DumpToString() + " dst=" + dst.DumpToString());
+					return false; // cheater
+				}
+
 				InventoryLocation src1, src2, dst1, dst2;
 				if (GameInventory.MakeSrcAndDstForSwap(item1, item2, src1, src2, dst1, dst2))
 				{
@@ -241,6 +258,12 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 				{
 					syncDebugPrint("[syncinv] remote input (cmd=DESTROY) dropped, item not in bubble");
 					break; // not in bubble
+				}
+
+				if (false == GameInventory.CheckDropRequest(GetManOwner(), src.GetItem()))
+				{
+					Print("[cheat] man=" + GetManOwner() + " is cheating with cmd=" + typename.EnumToString(InventoryCommandType, type) + " src=" + src.DumpToString());
+					return false; // cheater
 				}
 
 				GetGame().ObjectDelete(src.GetItem());
