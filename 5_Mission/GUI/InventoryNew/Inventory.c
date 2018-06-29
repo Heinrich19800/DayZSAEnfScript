@@ -316,7 +316,7 @@ class Inventory: ContainerBase
 					EntityAI slot_item = player.GetInventory().FindAttachment( slot_id );
 					if( slot_item && player.GetInventory().CanSwapEntities( item, slot_item ) )
 					{
-						player.GetInventory().SwapEntities( InventoryMode.PREDICTIVE, item, slot_item );
+						player.PredictiveSwapEntities(item, slot_item);
 					}
 				}
 			}

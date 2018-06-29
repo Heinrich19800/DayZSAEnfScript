@@ -43,6 +43,7 @@ class HandEventBase
 
 	InventoryLocation GetDst () { return null; }
 	bool IsSwapEvent () { return false; }
+	bool CheckRequest () { return true; }
 
 	static HandEventBase HandEventFactory (HandEventID id, Man p = null, EntityAI e = NULL)
 	{
@@ -91,6 +92,11 @@ class HandEventTake extends HandEventBase
 		dst.SetHands(m_Player, m_Entity);
 		return dst;
 	}
+	
+	override bool CheckRequest ()
+	{
+		return GameInventory.CheckMoveToDstRequest(m_Player, m_Entity, GetDst()));
+	}
 };
 
 class HandEventMoveTo extends HandEventBase
@@ -112,6 +118,11 @@ class HandEventMoveTo extends HandEventBase
 	}
 
 	override InventoryLocation GetDst () { return m_Dst; }
+	
+	override bool CheckRequest ()
+	{
+		return GameInventory.CheckMoveToDstRequest(m_Player, m_Entity, GetDst()));
+	}
 };
 
 class HandEventStash extends HandEventMoveTo
@@ -133,6 +144,11 @@ class HandEventDrop extends HandEventBase
 		dst.SetGround(m_Entity, mat);
 		return dst;
 	}
+	
+	override bool CheckRequest ()
+	{
+		return GameInventory.CheckMoveToDstRequest(m_Player, m_Entity, GetDst()));
+	}
 };
 class HandEventSwap extends HandEventBase
 {
@@ -146,6 +162,13 @@ class HandEventSwap extends HandEventBase
 	}
 	
 	override bool IsSwapEvent () { return true; }
+	
+	override bool CheckRequest ()
+	{
+		bool test1 = GameInventory.CheckSwapItemsRequest(m_Player, m_Entity, m_Player.GetHumanInventory().GetEntityInHands());
+		bool test2 = GameInventory.CanSwapEntities(m_Entity, m_Player.GetHumanInventory().GetEntityInHands());
+		return test1 && test2;
+	}
 };
 class HandEventForceSwap extends HandEventBase
 {
@@ -167,6 +190,13 @@ class HandEventForceSwap extends HandEventBase
 
 	override InventoryLocation GetDst () { return m_Dst; }
 	override bool IsSwapEvent () { return true; }
+	
+	override bool CheckRequest ()
+	{
+		bool test1 = GameInventory.CheckSwapItemsRequest(m_Player, m_Entity, m_Player.GetHumanInventory().GetEntityInHands());
+		bool test2 = GameInventory.CanForceSwapEntities(m_Entity, m_Player.GetHumanInventory().GetEntityInHands(), m_Dst);
+		return test1 && test2;
+	}
 };
 
 class HandEventDestroy extends HandEventBase

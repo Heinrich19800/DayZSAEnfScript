@@ -155,7 +155,7 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 					break; // not in bubble
 				}
 
-				if (false == GameInventory.CheckMoveToDstRequest(GetManOwner(), e.m_Entity, e.GetDst()))
+				if (false == e.CheckRequest())
 				{
 					Print("[cheat] man=" + GetManOwner() + " is cheating with cmd=" + typename.EnumToString(InventoryCommandType, type) + " event=" + e);
 					return false; // cheater
