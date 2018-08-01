@@ -309,13 +309,13 @@ class PluginConfigScene extends PluginConfigHandler
 			CfgParamString cfg_param_obj_iscr = CfgParamString.Cast( cfg_param_obj.GetValueByName(PARAM_OBJ_ISCR, CFG_TYPE_STRING) );
 			cfg_param_obj_iscr.SetValue( EncodeInitScript(obj.GetInitScript()) );
 			
-			local EntityAI e_obj = obj.GetObject();
+			EntityAI e_obj = obj.GetObject();
 
-			local int attcount = e_obj.GetInventory().AttachmentCount();
+			int attcount = e_obj.GetInventory().AttachmentCount();
 				
 			if ( attcount > 0 )
 			{
-				local string param_name_att = param_name+"_"+PARAM_OBJ_ATT;
+				string param_name_att = param_name+"_"+PARAM_OBJ_ATT;
 				CfgParamArray cfg_param_att = CfgParamArray.Cast( GetParamByName(param_name_att, CFG_TYPE_ARRAY) );
 				cfg_param_att.Clear();
 				
@@ -559,7 +559,7 @@ class PluginConfigScene extends PluginConfigHandler
 		
 		for ( int i = 0; i < obj_count; ++i )
 		{
-			local string param_name = PARAM_OBJ_NAME+"_"+i.ToString();
+			string param_name = PARAM_OBJ_NAME+"_"+i.ToString();
 			
 			// Load scene object name
 			CfgParamArray cfg_obj = CfgParamArray.Cast( GetParamByName(param_name, CFG_TYPE_ARRAY) );
@@ -592,7 +592,7 @@ class PluginConfigScene extends PluginConfigHandler
 				scn_obj.m_LinkedSceneObjectsIndices.Insert( cfg_obj_param_lnk_int.GetValue() );
 			}
 			
-			local string param_name_att = param_name +"_"+ PARAM_OBJ_ATT;
+			string param_name_att = param_name +"_"+ PARAM_OBJ_ATT;
 			
 			if ( ParamExist(param_name_att) )
 			{				

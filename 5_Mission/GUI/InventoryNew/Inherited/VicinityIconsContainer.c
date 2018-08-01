@@ -36,12 +36,8 @@ class VicinityIconsContainer: Container
 		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + column ).FindAnyWidget( "Render" + column ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		EntityAI ent = ipw.GetItem();
-		if( !ItemManager.GetInstance().GetSelectedItem() && ent )
+		if( ent )
 		{
-			/*Widget selected_widget = m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Selected" + column );
-			selected_widget.Show( true );
-			ItemManager.GetInstance().SetSelectedItem( ent, selected_widget );*/
-			
 			GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.CARGO, ent );
 		}
 		else
@@ -75,12 +71,21 @@ class VicinityIconsContainer: Container
 		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + column ).FindAnyWidget( "Render" + column ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		EntityAI ent = ipw.GetItem();
-		if( !ItemManager.GetInstance().GetSelectedItem() && ent )
+		
+		if( ItemManager.GetInstance().IsMicromanagmentMode() )
 		{
-			/*Widget selected_widget = m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Selected" + column );
-			selected_widget.Show( true );
-			ItemManager.GetInstance().SetSelectedItem( ent, selected_widget );*/
-			
+			EntityAI selected_item = ItemManager.GetInstance().GetSelectedItem();
+			if( selected_item && GetGame().GetPlayer().CanDropEntity( selected_item ) )
+			{
+				GetGame().GetPlayer().PredictiveDropEntity( selected_item );
+				ItemManager.GetInstance().SetSelectedItem( NULL, NULL );
+				GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
+				return;
+			}
+		}
+		
+		if( ent )
+		{
 			EntityAI item_in_hands = GetGame().GetPlayer().GetHumanInventory().GetEntityInHands();
 			if( item_in_hands )
 			{

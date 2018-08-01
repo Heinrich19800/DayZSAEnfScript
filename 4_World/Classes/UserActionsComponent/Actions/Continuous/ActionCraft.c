@@ -2,7 +2,7 @@ class ActionCraftCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousCraft(0); //default value can be set in recipes
+		m_ActionData.m_ActionComponent = new CAContinuousCraft(0); //default value can be set in recipes
 	}
 };
 
@@ -46,14 +46,14 @@ class ActionCraft: ActionContinuousBase
 		return "Craft";
 	}	
 		
-	//override void OnStart( PlayerBase player, ActionTarget target, ItemBase item )
+	//override void OnStart( ActionData action_data )
 	//{
 		/*
-		if( player.GetCraftingMeta() ) 	
+		if( action_data.m_Player.GetCraftingMeta() ) 	
 		{
-			m_Item1 = player.GetCraftingMeta().GetIngredient1();
-		 	m_Item2 = player.GetCraftingMeta().GetIngredient2();
-			m_RecipeID = player.GetCraftingMeta().GetRecipeID();
+			m_Item1 = action_data.m_Player.GetCraftingMeta().GetIngredient1();
+		 	m_Item2 = action_data.m_Player.GetCraftingMeta().GetIngredient2();
+			m_RecipeID = action_data.m_Player.GetCraftingMeta().GetRecipeID();
 			if(m_Item1 == NULL || m_Item2 == NULL || m_RecipeID < 0) return;
 		}
 		*/
@@ -76,24 +76,24 @@ class ActionCraft: ActionContinuousBase
 		}*/
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		//player.PerformRecipe();
+		//action_data.m_Player.PerformRecipe();
 		//m_HasStarted = false;
 	}
 	
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
 	}
 
-	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
+	override void OnCancelServer( ActionData action_data  )
 	{
 		//m_HasStarted = false;
 	}
 
 	void CancelCraft(PlayerBase player)
 	{
-		//player.SetCraftingReady(false);
-		//player.DisableCrafting();
+		//action_data.m_Player.SetCraftingReady(false);
+		//action_data.m_Player.DisableCrafting();
 	}
 };

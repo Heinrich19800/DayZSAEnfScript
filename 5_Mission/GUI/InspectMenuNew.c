@@ -168,6 +168,13 @@ const float	STATE_SOAKING_WET	= 0.5;
 const float	STATE_WET			= 0.25;
 const float	STATE_DAMP			= 0.05;
 
+const int COLOR_RAW				= 0xFFBF4242;
+const int COLOR_BAKED			= 0xFFA56D28;
+const int COLOR_BOILED			= 0xFFAF9442;
+const int COLOR_DRIED			= 0xBFFFEB48;
+const int COLOR_BURNED			= 0xFF888888;
+const int COLOR_ROTTEN			= 0xFF75BB2F;
+
 //--------------------------------------------------------------------------
 void UpdateItemInfo(Widget root_widget, EntityAI item)
 {
@@ -199,6 +206,7 @@ void UpdateItemInfo(Widget root_widget, EntityAI item)
 	UpdateItemInfoWetness(root_widget, item);
 	UpdateItemInfoQuantity(root_widget, item);
 	UpdateItemInfoWeight(root_widget, item);
+	UpdateItemInfoFoodStage(root_widget, item);
 }
 
 //--------------------------------------------------------------------------
@@ -484,18 +492,17 @@ void UpdateItemInfoWeight(Widget root_widget, EntityAI item)
 {
 	if ( item.IsInherited( ZombieBase ) || item.IsInherited( Car ) ) return;
 	
-	float quantity = 0;
-	float wetness = 0;
-
 	ItemBase item_IB = ItemBase.Cast( item );
 	if( item_IB )
 	{
+		// old calculation
+		/*
+		float quantity = 0;
+		float wetness = 0;
+		int confweight = item.ConfigGetInt("weight");
 		quantity = item_IB.GetQuantity();
 		wetness = item_IB.GetWet();
 		
-		int confweight = item.ConfigGetInt("weight");
-		// old calculation
-		/*
 		float weight = 0;
 	
 		if (quantity > 0 && confweight != 0)
@@ -535,6 +542,59 @@ void UpdateItemInfoWeight(Widget root_widget, EntityAI item)
 		{
 			WidgetTrySetText(root_widget, "ItemWeightWidget", "UNDER 0.25 KG");
 		}
+	}
+}
+
+//--------------------------------------------------------------------------
+void UpdateItemInfoFoodStage(Widget root_widget, EntityAI item)
+{
+	if ( item.IsInherited( Edible_Base ) && !item.IsInherited( Bottle_Base ) )
+	{
+		Edible_Base food_item = Edible_Base.Cast( item );
+		
+		ref FoodStage food_stage = food_item.GetFoodStage();
+		FoodStageType food_stage_type = food_stage.GetFoodStageType();
+		
+		string food_stage_name = food_stage.GetFoodStageName( food_stage_type );
+		food_stage_name.ToUpper();
+		
+		switch( food_stage_type )
+		{
+			case FoodStageType.RAW:
+			{
+				WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, COLOR_RAW );
+				break;
+			}
+			case FoodStageType.BAKED:
+			{
+				WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, COLOR_BAKED );
+				break;
+			}
+			case FoodStageType.BOILED:
+			{
+				WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, COLOR_BOILED );
+				break;
+			}
+			case FoodStageType.DRIED:
+			{
+				WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, COLOR_DRIED );
+				break;
+			}
+			case FoodStageType.BURNED:
+			{
+				WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, COLOR_BURNED );
+				break;
+			}
+			case FoodStageType.ROTTEN:
+			{
+				WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, COLOR_ROTTEN );
+				break;
+			}
+		}
+	}
+	else
+	{
+		WidgetTrySetText( root_widget, "ItemFoodStageWidget", "" );
 	}
 }
 

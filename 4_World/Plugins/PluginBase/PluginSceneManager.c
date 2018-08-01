@@ -115,7 +115,7 @@ class PluginSceneManager extends PluginBase
 	//::::::::::::::::::::::::::::::::::::::::::
 	void Event_OnClick()
 	{
-		if ( !IsMouseInScene() )
+		if ( !IsMouseInScene() || !m_IsOpen )
 		{
 			return;
 		}
@@ -177,7 +177,7 @@ class PluginSceneManager extends PluginBase
 	//::::::::::::::::::::::::::::::::::::::::::
 	void Event_OnClickMiddle()
 	{
-		if ( !IsMouseInScene() )
+		if ( !IsMouseInScene() || !m_IsOpen )
 		{
 			return;
 		}
@@ -240,7 +240,7 @@ class PluginSceneManager extends PluginBase
 	//::::::::::::::::::::::::::::::::::::::::::
 	void Event_OnDrag()
 	{
-		if ( !IsMouseInScene() )
+		if ( !IsMouseInScene() || !m_IsOpen )
 		{
 			return;
 		}
@@ -275,15 +275,10 @@ class PluginSceneManager extends PluginBase
 	//::::::::::::::::::::::::::::::::::::::::::
 	SceneObject Event_OnDoubleClick()
 	{
-		if ( !IsMouseInScene() )
+		if ( !IsMouseInScene() || !m_IsOpen || m_ClassBrowserSelected == "" )
 		{
-			return NULL;
+			return null;
 		}
-		
-		if ( m_ClassBrowserSelected == "" )
-		{
-			return NULL;
-		}	
 		
 		// Direction Vector from current active Camera
 		vector dir = GetGame().GetPointerDirection();
@@ -1149,7 +1144,8 @@ class PluginSceneManager extends PluginBase
 		}
 		
 		array<ref SceneObject> objects = GetSceneObjects();
-		
+		if( !objects )
+			return;
 		for ( int i = 0; i < objects.Count(); ++i )
 		{
 			SceneObject obj = objects.Get(i);

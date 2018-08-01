@@ -14,14 +14,6 @@ class ZombieBase extends DayZInfected
 	}
 	
 	//-------------------------------------------------------------
-	void ~ZombieBase()
-	{
-#ifdef PLATFORM_XBOX
-		StaroyeInfectedRespawner.Event_OnInfectedDespawn(this);
-#endif
-	}
-	
-	//-------------------------------------------------------------
 	override void EOnInit(IEntity other, int extra)
 	{
 		if( !GetGame().IsMultiplayer() || GetGame().IsServer() )
@@ -31,19 +23,6 @@ class ZombieBase extends DayZInfected
 			DayZInfectedCommandMove moveCommand = GetCommand_Move();
 			moveCommand.SetStanceVariation(m_StanceVariation);
 		}
-		
-#ifdef PLATFORM_XBOX
-		StaroyeInfectedRespawner.Event_OnInfectedSpawn(this);
-#endif
-	}
-	
-	override void EEKilled( Object killer )
-	{
-		super.EEKilled(killer);
-		
-#ifdef PLATFORM_XBOX
-		StaroyeInfectedRespawner.Event_OnInfectedDespawn(this);
-#endif
 	}
 	
 	//-------------------------------------------------------------
@@ -196,10 +175,13 @@ class ZombieBase extends DayZInfected
 
 	bool HandleMindStateChange(int pCurrentCommandID, DayZInfectedInputController pInputController, float pDt)
 	{
+		DayZInfectedCommandMove moveCommand = GetCommand_Move();
+		if( moveCommand && moveCommand.IsTurning() )
+			return false;
+		
 		int mindState = pInputController.GetMindState();
 		if( m_LastMindState != mindState )
 		{
-			DayZInfectedCommandMove moveCommand = GetCommand_Move();
 			switch( mindState )
 			{
 			case DayZInfectedConstants.MINDSTATE_CALM:
@@ -255,13 +237,8 @@ class ZombieBase extends DayZInfected
 			{
 				if( m_ActualTarget != NULL )
 				{
-					bool blocked = false;
-					PlayerBase playerTarget = PlayerBase.Cast(m_ActualTarget);
-					if( playerTarget )
-						blocked = playerTarget.GetMeleeFightLogic() && playerTarget.GetMeleeFightLogic().IsInBlock();
-
 					vector targetPos = m_ActualTarget.GetPosition();
-					if( !blocked && vector.DistanceSq(targetPos, this.GetPosition()) < 1.5 * 1.5 )
+					if( vector.DistanceSq(targetPos, this.GetPosition()) < 1.5 * 1.5 )
 					{
 						DamageSystem.CloseCombatDamage(this, m_ActualTarget, -1, m_ActualAttackType.m_AmmoType, targetPos);
 					}
@@ -339,7 +316,7 @@ class ZombieBase extends DayZInfected
 		// TODO: move it to some virtual method
 		if( target.IsMan() )
 		{
-			DayZPlayer targetPlayer = NULL;			
+			DayZPlayer targetPlayer = NULL;
 			Class.CastTo(targetPlayer, target);
 			
 			// bone index should be cached in Type

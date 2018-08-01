@@ -157,7 +157,7 @@ class CrossHairSelector extends ScriptedWidgetEventHandler
 		HumanInputController hic = m_Player.GetInputController();
 		ActionBase action = m_AM.GetRunningAction();
 
-		if ( m_Player.IsFireWeaponRaised() && !m_Player.IsInIronsights() && !hic.CameraIsFreeLook() )	// Firearms
+		if ( m_Player.IsFireWeaponRaised() && !m_Player.IsInIronsights() && !m_Player.IsInOptics() && !hic.CameraIsFreeLook() )	// Firearms
 			ShowCrossHair(GetCrossHairByName("crossT_128x128"));
 			//ShowCrossHair(GetCrossHairByName("cross_128x128"));
 		else if (action && action.GetActionCategory() == AC_CONTINUOUS) // On Continuous Actions

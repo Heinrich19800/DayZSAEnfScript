@@ -2,7 +2,7 @@ class ActionTakeFireplaceFromBarrel: ActionInteractBase
 {
 	void ActionTakeFireplaceFromBarrel()
 	{
-		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP;
+		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS;
 		m_StanceMask        = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
 		m_MessageSuccess = "I took the fireplace.";
 	}
@@ -39,11 +39,11 @@ class ActionTakeFireplaceFromBarrel: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object target_object = target.GetObject();
+		Object target_object = action_data.m_Target.GetObject();
 		BarrelHoles_ColorBase fireplace_barrel = BarrelHoles_ColorBase.Cast( target_object );
 		
-		MiscGameplayFunctions.TurnItemIntoItemEx(player, new TurnItemIntoItemLambda(fireplace_barrel, "Fireplace", player));
+		MiscGameplayFunctions.TurnItemIntoItemEx(action_data.m_Player, new TurnItemIntoItemLambda(fireplace_barrel, "Fireplace", action_data.m_Player));
 	}
 }

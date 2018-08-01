@@ -1,7 +1,7 @@
 class Temperature: ModifierBase
 {
-	private const float	NONAFFECTING_HEAT_COMFORT_MIN_TRESHOLD = -10;
-	private const float	NONAFFECTING_HEAT_COMFORT_MAX_TRESHOLD = 18;
+	private const float	NONAFFECTING_HEAT_COMFORT_MIN_TRESHOLD = -6;
+	private const float	NONAFFECTING_HEAT_COMFORT_MAX_TRESHOLD = 300; //! overheating is disabled through this
 	private const float	HEALTHY_TEMPERATURE = 36.8;
 	private const float	TEMPERATURE_INCREMENT_PER_SEC = 0.008;
 	private float		m_LastTemperatureLevel;
@@ -30,19 +30,18 @@ class Temperature: ModifierBase
 	}
 	
 	override void OnTick(PlayerBase player, float deltaT)
-	{	
-		
+	{
 		float heat_comfort = player.GetStatHeatComfort().Get();
 		float temperature = player.GetStatTemperature().Get();
-		
-		//float temperaturedelta  = Math.AbsInt(temperature - m_LastTemperatureLevel);
-		//if (temperature <  m_LastTemperatureLevel) temperaturedelta = -temperaturedelta;
 
-		//m_LastTemperatureLevel = temperature;
+		float temperaturedelta  = Math.AbsInt(temperature - m_LastTemperatureLevel);
+		if (temperature <  m_LastTemperatureLevel) temperaturedelta = -temperaturedelta;
+
+		m_LastTemperatureLevel = temperature;
 		
 		if ( heat_comfort > NONAFFECTING_HEAT_COMFORT_MAX_TRESHOLD || heat_comfort < NONAFFECTING_HEAT_COMFORT_MIN_TRESHOLD )
 		{
-			//  // temp decresase rate calculation
+			// temp decresase rate calculation
 			float temperature_increment = 0.001 * heat_comfort * deltaT; //extremer the heatcomfort value, the bigger effect on temperature growth/decrease ,
 			
 			player.GetStatTemperature().Add( temperature_increment, this.GetName() ); 

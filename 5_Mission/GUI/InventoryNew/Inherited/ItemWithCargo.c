@@ -1,7 +1,7 @@
 class ItemWithCargo: ClosableContainer
 {
 	ref ItemsContainer m_ItemsContainer;
-	protected ref CargoGrid m_CargoGrid;
+	protected ref UICargoGrid m_CargoGrid;
 
 	void ItemWithCargo( Container parent )
 	{
@@ -14,7 +14,7 @@ class ItemWithCargo: ClosableContainer
 
 	EntityAI GetFocusedItem()
 	{
-		return m_CargoGrid.GetFocusedItem().GetObject();
+		return EntityAI.Cast( m_CargoGrid.GetFocusedItem().GetObject() );
 	}	
 	
 	override void RefreshQuantity( EntityAI item_to_refresh )
@@ -37,9 +37,9 @@ class ItemWithCargo: ClosableContainer
 		m_CargoGrid.MoveGridCursor( direction );
 	}
 
-	void SetDefaultFocus()
+	void SetDefaultFocus( bool while_micromanagment_mode = false )
 	{
-		m_CargoGrid.SetDefaultFocus();
+		m_CargoGrid.SetDefaultFocus( while_micromanagment_mode );
 	}
 	
 	override void EquipItem()
@@ -61,44 +61,91 @@ class ItemWithCargo: ClosableContainer
 	{
 		m_CargoGrid.TransferItemToVicinity();
 	}
+	
+	void SelectItem()
+	{
+		Icon focused_item = m_CargoGrid.GetFocusedItem();
+		if( !focused_item )
+		{
+			return;
+		}
+		ItemManager.GetInstance().SetSelectedItem( focused_item.GetObject(), focused_item );
+	}
 
 	override void Select()
 	{
-		EntityAI prev_item = m_CargoGrid.GetFocusedItem().GetObject();
-		Man player = GetGame().GetPlayer();
-		if ( prev_item )
+		EntityAI prev_item;
+		if( m_CargoGrid.GetFocusedItem() )
 		{
-			Icon icon = m_ItemsContainer.GetIcon( prev_item.GetID() );
-			
-			if( icon )
+			prev_item = EntityAI.Cast( m_CargoGrid.GetFocusedItem().GetObject() );
+		}
+		Man player = GetGame().GetPlayer();
+		
+		if( ItemManager.GetInstance().IsItemMoving() )
+		{
+			EntityAI selected_item = ItemManager.GetInstance().GetSelectedItem();
+			if( selected_item && GetEntity() )
 			{
-				EntityAI item_in_hands = GetGame().GetPlayer().GetHumanInventory().GetEntityInHands();
-				if( item_in_hands )
+				bool can_add = m_Entity.GetInventory().CanAddEntityInCargo( selected_item );
+				bool in_cargo = !player.GetInventory().HasEntityInInventory( selected_item ) || !m_Entity.GetInventory().HasEntityInCargo( selected_item );
+				if( can_add && in_cargo )
 				{
-					if( GameInventory.CanSwapEntities( item_in_hands, prev_item ) )
-					{
-						player.PredictiveSwapEntities( item_in_hands, prev_item );
-					}
-					else
-					{
-						player.PredictiveSwapEntities( prev_item, item_in_hands);
-					}
+					player.PredictiveTakeEntityToTargetCargo(m_Entity, selected_item);
+					m_CargoGrid.SetDefaultFocusAfterInitIcon();
 				}
 				else
 				{
-					if( player.GetHumanInventory().CanAddEntityInHands( prev_item ) )
+					m_CargoGrid.SetDefaultFocus( true );
+					Icon selected_icon = ItemManager.GetInstance().GetSelectedIcon();
+					if( selected_icon )
 					{
-						player.PredictiveTakeEntityToHands( prev_item );
+						selected_icon.SetActive( false );
 					}
 				}
-				m_CargoGrid.PrepareCursorReactivation();
+				
+				if( m_Parent.IsInherited( PlayerContainer ) )
+				{
+					PlayerContainer player_container_parent = PlayerContainer.Cast( m_Parent );
+					player_container_parent.UnfocusPlayerAttachmentsContainer();
+				}
 			}
+		}
+		else
+		{
+			if ( prev_item )
+			{
+				Icon icon = m_ItemsContainer.GetIcon( prev_item.GetID() );
+				
+				if( icon )
+				{
+					EntityAI item_in_hands = GetGame().GetPlayer().GetHumanInventory().GetEntityInHands();
+					if( item_in_hands )
+					{
+						if( GameInventory.CanSwapEntities( item_in_hands, prev_item ) )
+						{
+							player.PredictiveSwapEntities( item_in_hands, prev_item );
+						}
+						else
+						{
+							player.PredictiveSwapEntities( prev_item, item_in_hands);
+						}
+					}
+					else
+					{
+						if( player.GetHumanInventory().CanAddEntityInHands( prev_item ) )
+						{
+							player.PredictiveTakeEntityToHands( prev_item );
+						}
+					}
+					m_CargoGrid.PrepareCursorReactivation();
+				}
+			}		
 		}
 	}
 	
 	override void Combine()
 	{
-		EntityAI prev_item = m_CargoGrid.GetFocusedItem().GetObject();
+		EntityAI prev_item = EntityAI.Cast( m_CargoGrid.GetFocusedItem().GetObject() );
 		Icon icon;
 		if(prev_item)
 		icon = m_ItemsContainer.GetIcon( prev_item.GetID() );
@@ -122,7 +169,7 @@ class ItemWithCargo: ClosableContainer
 		h.SetName( m_Entity.GetDisplayName() );
 		h.SetItemPreview( m_Entity );
 
-		m_CargoGrid = new CargoGrid( entity, m_ItemsContainer );
+		m_CargoGrid = new UICargoGrid( entity, m_ItemsContainer );
 		m_CargoGrid.SetParent(this);
 		( Container.Cast( m_Parent) ).Insert(this);
 		//((Container)m_Parent).Refresh();

@@ -22,11 +22,11 @@ class InventoryContainerVicinity: InventoryContainer
 		vector dir = player.GetDirection();
 		int i, j, c, x;
 		EntityAI entity;
-		Cargo cargo;
+		CargoBase cargo;
 		Object obj;
 		EntityAI e;
 		ref array<Object> objects = new array<Object>;
-		ref array<Cargo> proxyCargos = new array<Cargo>;
+		ref array<CargoBase> proxyCargos = new array<CargoBase>;
 		GetGame().GetObjectsAtPosition(pos + (dir * 0.75), 1.0, objects, proxyCargos);
 		InventoryManager manager = InventoryManager.GetInstance();
 
@@ -35,7 +35,7 @@ class InventoryContainerVicinity: InventoryContainer
 		for (i = 0; i < c; i++)
 		{
 			cargo = proxyCargos.Get(i);
-			objects.Insert(cargo.GetParent());
+			objects.Insert(cargo.GetCargoOwner());
 		}
 		
 		// remove unnecesary entities
@@ -67,8 +67,8 @@ class InventoryContainerVicinity: InventoryContainer
 		for (i = 0; i < objects.Count(); i++)
 		{
 			obj = objects.Get(i);
-
-			if ( CanShowItemInInventory(PlayerBase.Cast( player ), obj) && !obj.IsInherited(PlayerBase) && !obj.IsInherited(ZombieBase) )
+			
+			if ( CanShowItemInInventory(PlayerBase.Cast( player ), obj) )
 			{
 				e = EntityAI.Cast(obj);
 				if ( m_views.Contains(e) == false && m_viewsAttCat.Contains(e) == false )
@@ -118,7 +118,7 @@ class InventoryContainerVicinity: InventoryContainer
 						for (j = 0; j < c; j++)
 						{
 							cargo = proxyCargos.Get(j);
-							if (cargo.GetParent() == e)
+							if (cargo.GetCargoOwner() == e)
 							{
 								view.AddProxyCargo(cargo);
 							}

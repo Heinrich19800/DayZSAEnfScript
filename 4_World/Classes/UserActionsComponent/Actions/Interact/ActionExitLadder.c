@@ -31,14 +31,14 @@ class ActionExitLadder: ActionInteractBase
 			return true;
 		}
 		
-		//if ( player.IsOnLadder() ) return true;
+		//if ( action_data.m_Player.IsOnLadder() ) return true;
 		return false;
 	}
 
 	//! 
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Start( ActionData action_data )
 	{
-	    HumanCommandLadder cl = player.GetCommand_Ladder();
+	    HumanCommandLadder cl = action_data.m_Player.GetCommand_Ladder();
 		if (cl)
 		{
 			cl.Exit();
@@ -46,7 +46,7 @@ class ActionExitLadder: ActionInteractBase
 	}
 
 
-	/*override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	/*override void OnCompleteServer( ActionData action_data )
 	{
 	}*/
 	override bool IsInstant()

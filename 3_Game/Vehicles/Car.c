@@ -1,9 +1,23 @@
-/*!
-	Type of vehicle's fluid.
 
-	!!! DO NOT EXTEND THIS !!!
-	Maximal number of fluid types is limited to eight.
-*/
+//!	Car's sound controller list. (native, do not change or extend)
+enum CarSoundCtrl
+{
+	// simulation
+	ENGINE, //!< indicates if engine is ON
+	THRUST, //!< thrust position
+	RPM,    //!< engine's RPM
+	SPEED,  //!< speed of the car in km/h
+
+	// miscellaneous
+	DOORS, //!< indicates if doors are open
+
+	// other
+	CAMERA, //!< indicates if camera inside 3rd of 1st person view
+	PLAYER  //!< indicates if driver is controlled by player
+};
+
+
+//!	Type of vehicle's fluid. (native, do not change or extend)
 enum CarFluid
 {
 	FUEL,
@@ -18,8 +32,7 @@ enum CarFluid
 };
 
 
-
-//!	Enumerated vehicle's gears.
+//!	Enumerated vehicle's gears. (native, do not change or extend)
 enum CarGear
 {
 	REVERSE,

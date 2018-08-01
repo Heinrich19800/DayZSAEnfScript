@@ -1,5 +1,5 @@
 /*
-	This is a generic user action for attaching sparkplug on any EntityAI object. The receiver must have a "sparkplug" selection in its View Geometry that the player can look at.
+	This is a generic user action for attaching sparkplug on any EntityAI object. The receiver must have a "sparkplug" selection in its View Geometry that the action_data.m_Player can look at.
 */
 
 
@@ -39,14 +39,14 @@ class ActionInsertSparkplug: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		EntityAI target_EAI = EntityAI.Cast( target.GetObject() ); // cast to ItemBase
-		target_EAI.LocalTakeEntityAsAttachment (item);
+		EntityAI target_EAI = EntityAI.Cast( action_data.m_Target.GetObject() ); // cast to ItemBase
+		target_EAI.LocalTakeEntityAsAttachment (action_data.m_MainItem);
 	}
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
-		EntityAI target_EAI = EntityAI.Cast( target.GetObject() ); // cast to ItemBase
-		target_EAI.LocalTakeEntityAsAttachment (item);
+		EntityAI target_EAI = EntityAI.Cast( action_data.m_Target.GetObject() ); // cast to ItemBase
+		target_EAI.LocalTakeEntityAsAttachment (action_data.m_MainItem);
 	}
 };

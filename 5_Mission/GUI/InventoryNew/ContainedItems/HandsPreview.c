@@ -15,16 +15,6 @@ class HandsPreview: ContainerBase
 			icon.RefreshQuantity();
 		}
 	}
-
-	void SelectCombine()
-	{
-		icon.SelectCombine();
-	}
-
-	void SelectSwap()
-	{
-		icon.SelectSwap();
-	}
 	
 	Icon GetIcon()
 	{
@@ -83,6 +73,7 @@ class HandsPreview: ContainerBase
 
 				icon.Init( item );
 				icon.FullScreen();
+				( HandsContainer.Cast( m_Parent ) ).Reselect();
 				if( item != item_has_attachments_initialized )
 				{
 					( HandsContainer.Cast( m_Parent ) ).DestroyAtt();

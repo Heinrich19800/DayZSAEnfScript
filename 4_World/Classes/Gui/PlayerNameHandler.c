@@ -7,7 +7,8 @@ class PlayerNameHandler extends ScriptedWidgetEventHandler
 		super.OnFocusLost(w, x, y);
 		
 		EditBoxWidget name_edit_widget = EditBoxWidget.Cast( w );
-		TextWidget name_text_widget = TextWidget.Cast(w.GetParent().FindWidget("CharacterNameText"));
+		
+		TextWidget name_text_widget = TextWidget.Cast(w.GetParent().FindWidget("character_name_text"));
 		string player_name = name_edit_widget.GetText().Trim();
 		
 		if (name_text_widget) 	//is main menu screen
@@ -32,7 +33,7 @@ class PlayerNameHandler extends ScriptedWidgetEventHandler
 		if (!finished) return false;
 		
 		EditBoxWidget name_edit_widget = EditBoxWidget.Cast( w );
-		TextWidget name_text_widget = TextWidget.Cast(w.GetParent().FindWidget("CharacterNameText"));
+		TextWidget name_text_widget = TextWidget.Cast(w.GetParent().FindWidget("character_name_text"));
 
 		string player_name = name_edit_widget.GetText().Trim();
 

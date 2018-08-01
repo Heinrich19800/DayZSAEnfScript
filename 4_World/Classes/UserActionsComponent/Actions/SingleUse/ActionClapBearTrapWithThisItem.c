@@ -3,6 +3,8 @@ class ActionClapBearTrapWithThisItem: ActionSingleUseBase
 	void ActionClapBearTrapWithThisItem()
 	{
 		m_MessageSuccess = "I've poked the bear trap";
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_POKE;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
 	}
 	
 	override void CreateConditionComponents()
@@ -16,18 +18,14 @@ class ActionClapBearTrapWithThisItem: ActionSingleUseBase
 		return AT_CLAP_BEARTRAP_WITH_THIS_ITEM;
 	}
 
-	override bool HasTarget()
-	{
-		return false;
-	}
-
 	override string GetText()
 	{
-		return "#prod_bear_trap";
+		return "#trigger_bear_trap";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
+		if ( !target ) return false;
 		if ( !IsInReach(player, target, UAMaxDistances.DEFAULT) ) return false;
 
 		TrapBase target_TB;
@@ -42,11 +40,11 @@ class ActionClapBearTrapWithThisItem: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		TrapBase target_TB;
-		Class.CastTo(target_TB,  target.GetObject() );
+		Class.CastTo(target_TB,  action_data.m_Target.GetObject() );
 		
-		target_TB.SnapOnObject(item);
+		target_TB.SnapOnObject(action_data.m_MainItem);
 	}
 };

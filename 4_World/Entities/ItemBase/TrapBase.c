@@ -62,14 +62,17 @@ class TrapBase extends ItemBase
     {
         super.OnVariablesSynchronized();
 		
-		if ( m_IsActive )
+		if ( GetGame().IsMultiplayer() )
 		{
-			SetActive();
-	}
-	
-		if (m_IsInProgress  &&  !m_IsActive)
-		{
-			StartActivate( NULL );
+			if ( m_IsActive )
+			{
+				SetActive();
+			}
+		
+			if (m_IsInProgress  &&  !m_IsActive)
+			{
+				StartActivate( NULL );
+			}
 		}
 	}
 	
@@ -215,7 +218,7 @@ class TrapBase extends ItemBase
 					{
 						victim.DecreaseHealth( "", "", m_DamagePlayers );
 						PlayerBase player = PlayerBase.Cast( victim );
-						player.MessageStatus( m_InfoDamage );
+						//player.MessageStatus( m_InfoDamage );
 					}
 					else if(victim.IsInherited(ZombieBase) )
 					{
@@ -378,7 +381,7 @@ class TrapBase extends ItemBase
 			{
 				this.SetActive();
 			}
-			player.MessageStatus( m_InfoSetup );
+			//player.MessageStatus( m_InfoSetup );
 		}
 	}
 
@@ -427,10 +430,12 @@ class TrapBase extends ItemBase
 				m_IsInProgress = true;
 				m_Timer.Run( m_InitWaitTime, this, "SetActive" );
 				
+				/*
 				if (player)
 				{
 					player.MessageStatus( m_InfoActivationTime );
 				}
+				*/
 			
 			Synch(NULL);
 			}
@@ -444,7 +449,7 @@ class TrapBase extends ItemBase
 	{
 		if ( g_Game.IsServer() )
 		{
-			player.MessageStatus( m_InfoDeactivated );
+			//player.MessageStatus( m_InfoDeactivated );
 			this.SetInactive();
 		}
 	}
@@ -494,9 +499,9 @@ class TrapBase extends ItemBase
 		m_TrapTrigger.SetParentObject( this );
 	}
 
-	override void EEItemLocationChanged  ( EntityAI old_owner, EntityAI new_owner ) 
+	override void OnItemLocationChanged  ( EntityAI old_owner, EntityAI new_owner ) 
 	{
-		super.EEItemLocationChanged(old_owner, new_owner);
+		super.OnItemLocationChanged(old_owner, new_owner);
 		
 		if ( g_Game.IsServer() )
 		{
@@ -578,11 +583,3 @@ class TrapBase extends ItemBase
 		return "Trap can't be placed on this surface type.";
 	}
 }
-
-/*
-TODO:
-damage pasce sa nevyuziva
-SET RADIUS
-SERVER SYNC ?
-custom radius
-*/

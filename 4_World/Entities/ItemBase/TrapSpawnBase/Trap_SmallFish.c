@@ -20,6 +20,11 @@ class Trap_SmallFish extends TrapSpawnBase
 		m_CatchesGroundAnimal = new multiMap<string, float>;
 	}
 	
+	override bool IsOneHandedBehaviour()
+	{
+		return true;
+	}
+	
 	// ITEM CANNOT BE TAKEN WHEN CONTAINS CARGO
 	/*override*/ bool CanPutInInventory ( EntityAI  player ) 
 	{
@@ -77,7 +82,8 @@ class SmallFishTrap extends Trap_SmallFish
 
 		if ( GetGame().SurfaceIsSea( position[0], position[2] ) || GetGame().SurfaceIsPond( position[0], position[2] ) )
 		{
-			this.SetQuantity( this.GetQuantityMax() );
+			// TODO: fill with different kinds of liquid, once nescessary surface getters are available and working
+			Liquid.FillContainerEnviro( this, LIQUID_WATER, this.GetQuantityMax() );
 			SetupTrapPlayer( PlayerBase.Cast( player ), false );
 		}	
 		else
@@ -89,9 +95,9 @@ class SmallFishTrap extends Trap_SmallFish
 	
 	// ----------------------------------------------------------------------------------------
 	// When the item is picked up by a player, stop the rain procurement
-	override void EEItemLocationChanged( EntityAI old_owner, EntityAI new_owner ) 
+	override void OnItemLocationChanged( EntityAI old_owner, EntityAI new_owner ) 
 	{
-		super.EEItemLocationChanged(old_owner, new_owner);
+		super.OnItemLocationChanged(old_owner, new_owner);
 		
 		if (m_RainProcurement != NULL) 
 		{

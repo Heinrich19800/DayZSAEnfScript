@@ -1,8 +1,8 @@
 class CASingleUse : CASingleUseBase
 {	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}

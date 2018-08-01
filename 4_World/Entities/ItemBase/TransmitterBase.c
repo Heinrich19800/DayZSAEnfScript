@@ -1,6 +1,9 @@
 //TRANSMITTER BASE
 class TransmitterBase extends ItemTransmitter
 {
+	//Sounds
+	const string SOUND_RADIO_START_NOISE 	= "radioStartNoise";
+	
 	override bool IsTransmitter()
 	{
 		return true;
@@ -23,7 +26,7 @@ class TransmitterBase extends ItemTransmitter
 		}
 	}
 	
-	//HUD
+	//--- HUD
 	protected Hud GetHud( PlayerBase player )
 	{
 		if ( !player ) 
@@ -56,6 +59,9 @@ class TransmitterBase extends ItemTransmitter
 		EnableBroadcast ( true );
 		EnableReceive ( true );
 		SwitchOn ( true );
+		
+		//play sound
+		SoundRadioStartNoise();
 	}
 
 	override void OnSwitchOff()
@@ -63,12 +69,22 @@ class TransmitterBase extends ItemTransmitter
 		//turn off broadcasting/receiving
 		EnableBroadcast ( false );
 		EnableReceive ( false );	
-		SwitchOn ( false );
+		SwitchOn ( false );	
 	}
 
 	override void OnWorkStop()
 	{
 		//turn off device
 		GetCompEM().SwitchOff();
+	}
+	
+	//--- SOUNDS
+	//Radio start noise
+	protected void SoundRadioStartNoise()
+	{
+		if ( GetGame() && ( !GetGame().IsMultiplayer() || GetGame().IsClient() ) )
+		{
+			PlaySound( SOUND_RADIO_START_NOISE, 50 );
+		}
 	}
 }

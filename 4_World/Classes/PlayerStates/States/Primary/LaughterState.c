@@ -24,8 +24,8 @@ class LaughterState extends StateBase
 	//!gets called once on an state which is being activated
 	override void OnGetActivatedServer(PlayerBase player)
 	{
-		PlaySound("Character_Mad");
-
+		PlaySound(EPlayerSoundEventID.SYMPTOM_LAUGHTER);
+		player.SpreadAgents();
 	}
 
 	//!gets called once on a state which is being activated

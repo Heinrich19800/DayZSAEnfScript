@@ -5,7 +5,7 @@ class InventoryViewBase: InventoryGridController
 	protected InventoryGrid m_container_icon_grid;
 	protected Widget m_contentGrid;
 	protected ref array<InventoryGrid> m_cargo_grids;
-	protected ref array<Cargo> m_cargos;	
+	protected ref array<CargoBase> m_cargos;	
 	protected EntityAI m_entity;
 	protected ref Timer m_update_lock_timer;
 	protected AutoHeightSpacer m_body_spacer;
@@ -29,7 +29,7 @@ class InventoryViewBase: InventoryGridController
 		m_container = container;
 		m_entity = entity;
 		m_cargo_grids = new array<InventoryGrid>;
-		m_cargos = new array<Cargo>;
+		m_cargos = new array<CargoBase>;
 		m_items = new TItemsMap;
 		m_update_lock_timer = new Timer();
 		m_properties = properties;
@@ -67,7 +67,7 @@ class InventoryViewBase: InventoryGridController
 		if (m_header) m_header.SetText(text);
 	}
 
-	void AddProxyCargo(Cargo proxyCargo)
+	void AddProxyCargo(CargoBase proxyCargo)
 	{
 	}
 	
@@ -89,7 +89,7 @@ class InventoryViewBase: InventoryGridController
 	{
 	}
 	
-	void InitCargoGrid(Cargo cargo, int panel_type)
+	void InitCargoGrid(CargoBase cargo, int panel_type)
 	{
 		if ( !HasProperty(InventoryViewProperties.CARGOS) ) return;
 		
@@ -317,11 +317,11 @@ class InventoryViewBase: InventoryGridController
 				
 				if (cargo_index != INDEX_NOT_FOUND)	
 				{
-					Cargo cargo = m_cargos.Get(cargo_index);
+					CargoBase cargo = m_cargos.Get(cargo_index);
 					int idx = 0;
 					
 					// use cargo index here
-					if (cargo.GetParent().GetInventory().CanAddEntityInCargoEx(dragged_item, idx, row, col))			
+					if (cargo.GetCargoOwner().GetInventory().CanAddEntityInCargoEx(dragged_item, idx, row, col))			
 					{
 						if (testOnly)
 						{
@@ -409,9 +409,9 @@ class InventoryViewBase: InventoryGridController
 		
 		if (cargo_index < m_cargos.Count())
 		{
-			int c, i, index, x, y, w, h;
+			int c, i, index, item_col, item_row, w, h;
 			InventoryItemBase item;
-			Cargo cargo = m_cargos.Get(cargo_index);
+			CargoBase cargo = m_cargos.Get(cargo_index);
 		
 			InventoryGrid cargo_grid = m_cargo_grids.Get(cargo_index);
 			if (cargo && cargo_grid)
@@ -422,9 +422,9 @@ class InventoryViewBase: InventoryGridController
 				for (i = 0; i < c; i++)
 				{
 					item = InventoryItemBase.Cast( cargo.GetItem(i) );
-					cargo.GetItemPos(i, x, y);
+					cargo.GetItemRowCol(i, item_row, item_col);
 					cargo.GetItemSize(i, w, h);
-					index = x + (y * cargo.GetWidth());
+					index = item_col + (item_row * cargo.GetWidth());
 					m_items.Set(item, Vector(index, w, h));
 				}
 				

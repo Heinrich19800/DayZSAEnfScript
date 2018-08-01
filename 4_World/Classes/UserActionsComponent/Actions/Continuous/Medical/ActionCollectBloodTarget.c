@@ -2,7 +2,7 @@ class ActionCollectBloodTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.COLLECT_BLOOD);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.COLLECT_BLOOD);
 	}
 };
 
@@ -39,21 +39,21 @@ class ActionCollectBloodTarget: ActionContinuousBase
 		return "Collect blood";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		Param1<float> nacdata;
-		Class.CastTo(nacdata,  acdata );
+		Class.CastTo(nacdata,  action_data.m_ActionComponent.GetACData() );
 		float delta = (nacdata.param1 / UATimeSpent.COLLECT_BLOOD);
 
-		ActionCollectBloodTargetLambda lambda = new ActionCollectBloodTargetLambda(item, "BloodBagFull", player, m_SpecialtyWeight, ntarget, delta);
-		player.LocalReplaceItemInHandsWithNew(lambda);
-		//player.GetItemInHands().SetQuantity();
+		ActionCollectBloodTargetLambda lambda = new ActionCollectBloodTargetLambda(action_data.m_MainItem, "BloodBagFull", action_data.m_Player, m_SpecialtyWeight, ntarget, delta);
+		action_data.m_Player.ServerReplaceItemInHandsWithNew(lambda);
+		//action_data.m_Player.GetItemInHands().SetQuantity();
 	}
 	
-	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCancelServer( ActionData action_data )
 	{
-		OnCompleteServer( player, target, item, acdata );
+		OnCompleteServer( action_data );
 	}
 };
 
@@ -65,7 +65,7 @@ class ActionCollectBloodTargetLambda : ReplaceItemWithNewLambda
 
 	void ActionCollectBloodTargetLambda (EntityAI old_item, string new_item_type, PlayerBase player, float specialtyWeight, PlayerBase target, float delta) { m_SpecialtyWeight = specialtyWeight; m_Target = target; m_percentFilled = delta; }
 
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
 	{
 		float maxQuantity;
 		float quantitySet;

@@ -17,7 +17,7 @@ class CAContinuousTimeCooking : CAContinuousBase
 		m_CookingUpdateTime = cooking_update_time;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		m_TimeElapsedRepeat = 0;
 		
@@ -31,22 +31,22 @@ class CAContinuousTimeCooking : CAContinuousBase
 		}
 		
 		//fireplace & cooking process
-		FireplaceBase fireplace = FireplaceBase.Cast( target.GetObject() );
+		FireplaceBase fireplace = FireplaceBase.Cast( action_data.m_Target.GetObject() );
 		m_CookingProcess = fireplace.GetCookingProcess();
-		m_ItemToCook = m_CookingProcess.GetFoodOnStick( item );
+		m_ItemToCook = m_CookingProcess.GetFoodOnStick( action_data.m_MainItem );
 		m_TimeToCook = m_CookingProcess.GetTimeToCook( m_ItemToCook, CookingMethodType.BAKING );
 		
 		//update elapsed time
 		m_TimeElapsed = m_ItemToCook.GetFoodStage().GetCookingTime();
 		
 		//SoftSkill implementation to hasten Cooking
-		m_AdjustedCookingUpdateTime = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_CookingUpdateTime, m_Action.GetSpecialtyWeight(), true);
-		m_AdjustedTimeToCook = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_TimeToCook, m_Action.GetSpecialtyWeight(), true);
+		m_AdjustedCookingUpdateTime = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( m_CookingUpdateTime, m_Action.GetSpecialtyWeight(), true);
+		m_AdjustedTimeToCook = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( m_TimeToCook, m_Action.GetSpecialtyWeight(), true);
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
@@ -55,8 +55,8 @@ class CAContinuousTimeCooking : CAContinuousBase
 		float cooking_time = m_ItemToCook.GetFoodStage().GetCookingTime();
 		if ( m_TimeToCook > cooking_time )
 		{
-			m_TimeElapsed += player.GetDeltaT();
-			m_TimeElapsedRepeat += ( player.GetDeltaT() );
+			m_TimeElapsed += action_data.m_Player.GetDeltaT();
+			m_TimeElapsedRepeat += ( action_data.m_Player.GetDeltaT() );
 			
 			if ( m_TimeElapsedRepeat >= m_AdjustedCookingUpdateTime )
 			{
@@ -65,11 +65,11 @@ class CAContinuousTimeCooking : CAContinuousBase
 				//refresh action when food changed state
 				if ( cooking_state_update == 1 )
 				{
-					Setup( player, target, item );
+					Setup(action_data);
 					
 					if ( GetGame().IsServer() )
 					{
-						player.GetSoftSkillManager().AddSpecialty( m_Action.GetSpecialtyWeight() );
+						action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_Action.GetSpecialtyWeight() );
 					}
 				}
 				

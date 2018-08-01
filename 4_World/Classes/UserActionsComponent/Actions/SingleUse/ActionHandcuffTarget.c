@@ -25,12 +25,12 @@ class ActionHandcuffTarget: ActionSingleUseBase
 		return "#handcuff";
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		PlayerBase ntarget = PlayerBase.Cast(target.GetObject());
+		PlayerBase ntarget = PlayerBase.Cast(action_data.m_Target.GetObject());
 		//ntarget.SetCaptive();
-		item.Delete();
+		action_data.m_MainItem.Delete();
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

@@ -118,8 +118,11 @@ const int CM_MODE_INVENTORY = 2;
 					m_item2 = item2;
 					m_recipeID = recipes.Get(i);
 
-					if( m_player.GetItemInHands() == item1) m_player.GetInventoryActionHandler().SetAction(InventoryActionHandler.IAH_CONTINUOUS, AT_WORLD_CRAFT, item2);
-					else m_player.GetInventoryActionHandler().SetAction(InventoryActionHandler.IAH_CONTINUOUS, AT_WORLD_CRAFT, item1);
+					ActionManagerClient am = ActionManagerClient.Cast(m_player.GetActionManager());
+					
+					
+					if( m_player.GetItemInHands() == item1) am.SetInventoryAction(InventoryActionHandler.IAH_CONTINUOUS, AT_WORLD_CRAFT, item2);
+					else am.SetInventoryAction(InventoryActionHandler.IAH_CONTINUOUS, AT_WORLD_CRAFT, item1);
 					
 					return true;
 				}		

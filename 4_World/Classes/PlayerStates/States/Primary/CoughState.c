@@ -18,27 +18,13 @@ class CoughState extends StateBase
 
 	override void OnUpdateClient(PlayerBase player, float deltatime)
 	{
-		int i = 1 + 1;
 	}
 	
 	//!gets called once on an state which is being activated
 	override void OnGetActivatedServer(PlayerBase player)
 	{
-		PlaySound("cough");
-		ManTrigger trigger = ManTrigger.Cast(GetGame().CreateObject("ManTrigger", player.GetPosition(),true, false));
-		PluginTransmissionAgents plugin = PluginTransmissionAgents.Cast(GetPlugin(PluginTransmissionAgents));
-
-				
-		for(int i = 0; i < trigger.GetInsiders().Count(); i++)
-		{
-			PlayerBase other_player = PlayerBase.Cast(trigger.GetInsiders().Get(i).GetObject());
-			if(other_player != player)
-			{
-				plugin.TransmitAgents(player, other_player, AGT_AIRBOURNE, 50);
-			}
-			
-		}
-		trigger.Delete();
+		PlaySound( EPlayerSoundEventID.SYMPTOM_COUGH );
+		player.SpreadAgents();
 	}
 
 	//!gets called once on a state which is being activated

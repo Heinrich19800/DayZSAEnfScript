@@ -2,7 +2,7 @@ class ActionUnrestrainTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.UNRESTRAIN);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.UNRESTRAIN);
 	}
 };
 
@@ -12,8 +12,8 @@ class ActionUnrestrainTarget: ActionContinuousBase
 	{
 		m_CallbackClass = ActionUnrestrainTargetCB;
 		m_MessageStartFail = "It's broken.";
-		m_MessageStart = "Player started unrestraining you using item.";
-		m_MessageSuccess = "Player finished unrestraining you using item.";
+		m_MessageStart = "Player started unrestraining you using action_data.m_MainItem.";
+		m_MessageSuccess = "Player finished unrestraining you using action_data.m_MainItem.";
 		m_MessageFail = "Player moved and unrestraining was canceled.";
 		m_MessageCancel = "You stopped unrestraining.";
 		//m_Animation = "inject";
@@ -39,11 +39,11 @@ class ActionUnrestrainTarget: ActionContinuousBase
 		return "Unrestrain";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		PlayerBase ntarget = PlayerBase.Cast(target.GetObject());
+		PlayerBase ntarget = PlayerBase.Cast(action_data.m_Target.GetObject());
 		//restraintarget
-		item.Delete();
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_MainItem.Delete();
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

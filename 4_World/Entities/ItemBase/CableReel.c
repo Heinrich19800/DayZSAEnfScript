@@ -10,6 +10,11 @@ class CableReel extends ItemBase
 		m_ForceIntoHands = false;
 	}
 
+	override bool IsTwoHandedBehaviour()
+	{
+		return true;
+	}
+	
 	void ForceIntoHandsNow ( PlayerBase player ) 
 	{
 		m_ForceIntoHands = true;

@@ -2,7 +2,7 @@ class ActionTakeFireplaceIndoor: ActionInteractBase
 {
 	void ActionTakeFireplaceIndoor()
 	{
-		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP;
+		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS;
 		m_StanceMask        = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
 		m_MessageSuccess = "I took the fireplace.";
 	}
@@ -34,18 +34,15 @@ class ActionTakeFireplaceIndoor: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object target_object = target.GetObject();
+		Object target_object = action_data.m_Target.GetObject();
 		FireplaceIndoor fireplace_indoor = FireplaceIndoor.Cast( target_object );
 		
-		MiscGameplayFunctions.TurnItemIntoItemEx(player, new FireplaceIndoorLambda(fireplace_indoor, "Fireplace", player));
-
-		/*
 		//create fireplace object
-		vector spawn_pos = player.GetPosition();
-		Fireplace fireplace = Fireplace.Cast( GetDayZGame().CreateObject( "Fireplace", Vector(spawn_pos[0]+1, spawn_pos[1]+1, spawn_pos[2]+1) ) );
-		player.TakeEntityToHands(true, fireplace );
+		vector spawn_pos = action_data.m_Player.GetPosition();
+		Fireplace fireplace = Fireplace.Cast( GetDayZGame().CreateObject( "Fireplace", spawn_pos ) );
+		action_data.m_Player.PredictiveTakeEntityToHands( fireplace );
 		
 		//transfer all required parameters to this object (damage, wetness)
 		fireplace.SetHealth( "", "", fireplace_indoor.GetHealth("", "") );
@@ -53,49 +50,31 @@ class ActionTakeFireplaceIndoor: ActionInteractBase
 		
 		//transfer all cargo items to this object, position of all items must be preserved
 		//fireplace in hands cannot have any items in it but this can be changed in the future
-		Cargo cargo = fireplace_indoor.GetInventory().GetCargo();
+		CargoBase cargo = fireplace_indoor.GetInventory().GetCargo();
 		for ( int i = 0; i < cargo.GetItemCount(); i++ )
-		{
-			int col;
-			int row;
-			cargo.GetItemPos( i, col, row );
-			fireplace.SynchronizedTakeEntityToCargoEx(true,  cargo.GetItem ( i ), fireplace.GetInventory().GetCargo(), row, col );
+		{	
+			EntityAI c = cargo.GetItem(i);
+			InventoryLocation srcc = new InventoryLocation;
+			if ( c.GetInventory().GetCurrentInventoryLocation( srcc ) )
+			{
+				InventoryLocation dstc = new InventoryLocation;
+				dstc.SetCargo( fireplace, c, srcc.GetIdx(), srcc.GetRow(), srcc.GetCol() );
+				action_data.m_Player.ServerTakeEntityToTargetCargoEx( fireplace, c, srcc.GetIdx(), srcc.GetRow(), srcc.GetCol() );
+			}
 		}
 		
 		//transfer all attachments to this object
-		int item_attachments_count = fireplace_indoor.GetInventory().AttachmentCount();
-		for ( int j = 0; j < item_attachments_count; j++ )
+		int att_count = fireplace_indoor.GetInventory().AttachmentCount();
+		for ( int j = 0; j < att_count; j++ )
 		{
-			EntityAI entity = fireplace_indoor.GetInventory().GetAttachmentFromIndex( 0 );
-			fireplace.SynchronizedTakeEntityAsAttachment(true,  entity );
-		}*/
-	}
-}
-
-class FireplaceIndoorLambda : TurnItemIntoItemLambda
-{
-	float m_SpillModifier;
-	float m_SpecialtyWeight;
-	void FireplaceIndoorLambda (EntityAI old_item, string new_item_type, PlayerBase player) { }
-
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
-	{
-		super.CopyOldPropertiesToNew(old_item, new_item);
-
-		Fireplace fireplace = Fireplace.Cast(new_item);
-		fireplace.SetHealth( "", "", old_item.GetHealth("", "") );
-		fireplace.SetWet( old_item.GetWet() );
-		
-		//@TODO: move to TurnItemIntoItemLambda?
-		//transfer all cargo items to this object, position of all items must be preserved
-		//fireplace in hands cannot have any items in it but this can be changed in the future
-		Cargo cargo = old_item.GetInventory().GetCargo();
-		for ( int i = 0; i < cargo.GetItemCount(); i++ )
-		{
-			int col;
-			int row;
-			cargo.GetItemPos( i, col, row );
-			fireplace.LocalTakeEntityToCargoEx(cargo.GetItem ( i ), 0, row, col );
+			EntityAI a = fireplace_indoor.GetInventory().GetAttachmentFromIndex( 0 );
+			InventoryLocation srca = new InventoryLocation;
+			if ( a.GetInventory().GetCurrentInventoryLocation( srca ) )
+			{
+				InventoryLocation dsta = new InventoryLocation;
+				dsta.SetAttachment( fireplace, a, srca.GetSlot() );
+				action_data.m_Player.ServerTakeEntityToTargetAttachmentEx( fireplace, a, srca.GetSlot() );
+			}
 		}
 	}
-};
+}

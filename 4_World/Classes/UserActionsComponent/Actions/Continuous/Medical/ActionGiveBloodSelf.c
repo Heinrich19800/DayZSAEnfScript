@@ -1,10 +1,8 @@
 class ActionGiveBloodSelfCB : ActionContinuousBaseCB
 {
-	private const float QUANTITY_USED_PER_SEC = 100;
-	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousQuantity(QUANTITY_USED_PER_SEC);
+		m_ActionData.m_ActionComponent = new CAContinuousQuantityRepeat(UAQuantityConsumed.BLOOD, UATimeSpent.DEFAULT);
 	}
 };
 
@@ -47,52 +45,50 @@ class ActionGiveBloodSelf: ActionContinuousBase
 		return "Give blood";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{	
-		Param1<float> nacdata = Param1<float>.Cast( acdata );
-		float delta = nacdata.param1;
-		
-		player.AddHealth("","Blood",delta);
-		//player.SetHealth("GlobalHealth", "Blood", player.GetHealth("GlobalHealth", "Blood") );
-		
-		int itembloodtype = 0; //item.GetVar(BloodType);
-		int bloodtypetarget = player.GetStatBloodType().Get();
-		bool bloodmatch = BloodTypes.MatchBloodCompatibility(itembloodtype, bloodtypetarget);
-		if ( !bloodmatch )
+	override void OnCompleteLoopServer( ActionData action_data )
+	{
+		OnRepeatServer(action_data);
+
+		if ( action_data.m_MainItem.IsKindOf("BloodSyringe") )
 		{
-			player.m_ModifiersManager.ActivateModifier(eModifiers.MDF_HEMOLYTIC_REACTION);
-		}	
-		if ( item.IsKindOf("BloodSyringe") )
-		{
-			MiscGameplayFunctions.TurnItemIntoItemEx(player, new SyringeLambda(item, "Syringe", player));
-		}
-		else if ( item.GetQuantity() < 1 )
-		{
-			item.Delete();
+			SyringeLambda lambda = new SyringeLambda(action_data.m_MainItem, "Syringe", action_data.m_Player);
+			lambda.SetTransferParams(true, true, true);
+			MiscGameplayFunctions.TurnItemIntoItemEx(action_data.m_Player, lambda);
 		}
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+	}
+	
+	override void OnRepeatServer(ActionData action_data)
+	{
+		Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );
+		float delta = nacdata.param1;
+		
+		action_data.m_Player.AddHealth("","Blood",delta);
+		//action_data.m_Player.SetHealth("GlobalHealth", "Blood", action_data.m_Player.GetHealth("GlobalHealth", "Blood") );
+		
+		int itembloodtype = 0; //item.GetVar(BloodType);
+		int bloodtypetarget = action_data.m_Player.GetStatBloodType().Get();
+		bool bloodmatch = BloodTypes.MatchBloodCompatibility(itembloodtype, bloodtypetarget);
+
+		if ( !bloodmatch )
+		{
+			action_data.m_Player.m_ModifiersManager.ActivateModifier(eModifiers.MDF_HEMOLYTIC_REACTION);
+		}
+		
+		if ( action_data.m_MainItem && action_data.m_MainItem.GetQuantity() <= 0.01 )
+		{
+			action_data.m_MainItem.SetQuantity(0);
+		}
+	}
+	
+	override void OnCancelServer(ActionData action_data)
+	{
+		OnRepeatServer(action_data);
 	}
 };
 
-class SyringeLambda : ReplaceItemWithNewLambda
+class SyringeLambda : TurnItemIntoItemLambda
 {
 	void SyringeLambda (EntityAI old_item, string new_item_type, PlayerBase player) { }
-
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
-	{
-		super.CopyOldPropertiesToNew(old_item, new_item);
-
-		if (new_item) 
-		{
-			ItemBase old_item_IB = ItemBase.Cast(old_item);
-			ItemBase new_item_IB = ItemBase.Cast(new_item);
-			
-			MiscGameplayFunctions.TransferItemProperties(old_item_IB, new_item_IB, true, false, true);
-		}
-		else
-		{
-			Debug.LogError("SyringeLambda: failed to create new item","static");
-		}
-	}
 };

@@ -58,7 +58,7 @@ class ActionPlugTargetIntoThis: ActionSingleUseBase
 				
 				if ( metal_wire  &&  metal_wire.GetCompEM().CanReceivePlugFrom(target_EAI) )
 				{
-					return true; // We can power the target from vehicle battery because it has metal wire attached.
+					return true; // We can power the action_data.m_Target from vehicle battery because it has metal wire attached.
 				}
 			}
 		}
@@ -66,25 +66,25 @@ class ActionPlugTargetIntoThis: ActionSingleUseBase
 		return false;
 	}
 	
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
-		Process(player, target, item, acdata);
+		Process(action_data);
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Process(player, target, item, acdata);
+		Process(action_data);
 	}
 
-	void Process( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	void Process( ActionData action_data )
 	{
-		ItemBase target_IB = ItemBase.Cast( target.GetObject() );
+		ItemBase target_IB = ItemBase.Cast( action_data.m_Target.GetObject() );
 		
-		if ( item.IsInherited(VehicleBattery) )
+		if ( action_data.m_MainItem.IsInherited(VehicleBattery) )
 		{
 			// Car/truck batteries can have a metal wire attached through which they can power common electric appliances
 			
-			MetalWire metal_wire = MetalWire.Cast( item.GetCompEM().GetPluggedDevice() );
+			MetalWire metal_wire = MetalWire.Cast( action_data.m_MainItem.GetCompEM().GetPluggedDevice() );
 			
 			if (metal_wire)
 			{
@@ -94,7 +94,7 @@ class ActionPlugTargetIntoThis: ActionSingleUseBase
 		else
 		{
 			// Everything else in general
-			target_IB.GetCompEM().PlugThisInto(item);
+			target_IB.GetCompEM().PlugThisInto(action_data.m_MainItem);
 		}
 		
 		// Special case for spotlights
@@ -102,14 +102,14 @@ class ActionPlugTargetIntoThis: ActionSingleUseBase
 		{
 			Spotlight spotlight = Spotlight.Cast( target_IB );
 			spotlight.Unfold();
-			vector player_ori = player.GetOrientation();
+			vector player_ori = action_data.m_Player.GetOrientation();
 			vector s_pos = spotlight.GetPosition();
 			spotlight.SetOrientation(player_ori);
 			spotlight.SetPosition(s_pos);
 			spotlight.PlaceOnSurface();
 		}
 		
-		target_IB.GetInventory().TakeEntityAsAttachment( InventoryMode.LOCAL, item );
-		player.LocalDropEntity( item );
+		target_IB.GetInventory().TakeEntityAsAttachment( InventoryMode.LOCAL, action_data.m_MainItem );
+		action_data.m_Player.LocalDropEntity( action_data.m_MainItem );
 	}
 };

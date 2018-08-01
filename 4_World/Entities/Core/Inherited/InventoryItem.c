@@ -69,6 +69,11 @@ class CarDoor extends InventoryItemSuper
 {
 };
 
+class CarRadiator extends InventoryItemSuper
+{
+};
+
+
 //-----------------------------------------------------------------------------
 class Clothing extends ItemBase
 {

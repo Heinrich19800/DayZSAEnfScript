@@ -5,7 +5,7 @@ class CASingleUseQuantityEdible : CASingleUseQuantity
 		m_QuantityUsedPerAction = quantity_used_per_action;
 	}
 	
-	override void CalcAndSetQuantity(PlayerBase player, ActionTarget target, ItemBase item )
+	override void CalcAndSetQuantity(ActionData action_data )
 	{	
 		if ( m_SpentUnits )
 		{
@@ -13,21 +13,21 @@ class CASingleUseQuantityEdible : CASingleUseQuantity
 			SetACData(m_SpentUnits);	
 		}
 		
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		if ( ntarget )
 		{
 			if ( GetGame().IsServer() ) 
 			{
-				//item.Consume(ntarget, m_QuantityUsedPerAction);
-				ntarget.Consume(item, m_QuantityUsedPerAction);
+				//action_data.m_MainItem.Consume(ntarget, m_QuantityUsedPerAction);
+				ntarget.Consume(action_data.m_MainItem, m_QuantityUsedPerAction);
 			}
 		}
 		else
 		{
 			if ( GetGame().IsServer() ) 
 			{
-				//item.Consume(player, m_QuantityUsedPerAction);
-				player.Consume(item, m_QuantityUsedPerAction);
+				//action_data.m_MainItem.Consume(action_data.m_Player, m_QuantityUsedPerAction);
+				action_data.m_Player.Consume(action_data.m_MainItem, m_QuantityUsedPerAction);
 			}
 		}
 	}

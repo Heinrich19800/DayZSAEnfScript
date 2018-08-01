@@ -141,15 +141,15 @@ class StaminaHandler
 {	
 	protected int 							m_PlayerSpeed;
 	protected int 							m_PlayerStance;
-	protected float 							m_PlayerLoad;
-	protected float 							m_StaminaDelta;
-	protected float 							m_Stamina;
-	protected float 							m_StaminaCap;
+	protected float 						m_PlayerLoad;
+	protected float 						m_StaminaDelta;
+	protected float 						m_Stamina;
+	protected float 						m_StaminaCap;
 	protected float							m_StaminaDepletion;
-	protected float 							m_Time;
-	protected ref Param2<float,float>			m_StaminaParams; 
-	protected ref HumanMovementState			m_State;
-	protected PlayerBase						m_Player;
+	protected float 						m_Time;
+	protected ref Param2<float,float>		m_StaminaParams; 
+	protected ref HumanMovementState		m_State;
+	protected PlayerBase					m_Player;
 
 	protected bool 							m_Debug;
 	protected bool							m_StaminaDepleted;
@@ -189,12 +189,14 @@ class StaminaHandler
 		m_StaminaConsumers = new StaminaConsumers;
 		m_StaminaConsumers.RegisterConsumer(EStaminaConsumers.HOLD_BREATH, STAMINA_HOLD_BREATH_THRESHOLD);
 		m_StaminaConsumers.RegisterConsumer(EStaminaConsumers.SPRINT, STAMINA_SPRINT_THRESHOLD);
+		m_StaminaConsumers.RegisterConsumer(EStaminaConsumers.JUMP, STAMINA_JUMP_THRESHOLD);
 		m_StaminaConsumers.RegisterConsumer(EStaminaConsumers.MELEE_HEAVY, STAMINA_MELEE_HEAVY_THRESHOLD);
 		m_StaminaConsumers.RegisterConsumer(EStaminaConsumers.MELEE_EVADE, STAMINA_MELEE_EVADE_THRESHOLD);
 		
 		//! stamina modifiers registration
 		m_StaminaModifiers = new StaminaModifiers;
 		m_StaminaModifiers.RegisterFixed(EStaminaModifiers.HOLD_BREATH, STAMINA_DRAIN_HOLD_BREATH);
+		m_StaminaModifiers.RegisterFixed(EStaminaModifiers.JUMP, STAMINA_DRAIN_JUMP);
 		m_StaminaModifiers.RegisterRandomized(EStaminaModifiers.MELEE_LIGHT, 1, STAMINA_DRAIN_MELEE_LIGHT);
 		m_StaminaModifiers.RegisterRandomized(EStaminaModifiers.MELEE_HEAVY, STAMINA_DRAIN_MELEE_LIGHT, STAMINA_DRAIN_MELEE_HEAVY);
 		m_StaminaModifiers.RegisterRandomized(EStaminaModifiers.MELEE_EVADE, 3, STAMINA_DRAIN_MELEE_EVADE);
@@ -228,40 +230,48 @@ class StaminaHandler
 			m_Player.GetMovementState(m_State);
 			m_PlayerSpeed = m_State.m_iMovement;
 			m_PlayerStance = m_State.m_iStanceIdx;
-			if( !m_IsInCooldown )
+			switch ( m_PlayerSpeed )
 			{
-				switch ( m_PlayerSpeed )
-				{
-					case 3/* DayZPlayerConstants.MOVEMENTIDX_SPRINT */: //sprint
-						if ( m_PlayerStance == DayZPlayerConstants.STANCEIDX_ERECT )
-						{
-							m_StaminaDelta = -STAMINA_DRAIN_STANDING_SPRINT_PER_SEC;
-							break;
-						}
-						if ( m_PlayerStance == DayZPlayerConstants.STANCEIDX_CROUCH)
-						{
-							m_StaminaDelta = -STAMINA_DRAIN_CROUCHED_SPRINT_PER_SEC;
-							break;
-						}
-						m_StaminaDelta = STAMINA_GAIN_JOG_PER_SEC;
-					break;
-						
-					case 2/* DayZPlayerConstants.MOVEMENTIDX_RUN */: //jog
+				case DayZPlayerConstants.MOVEMENTIDX_SPRINT: //sprint
+					if ( m_PlayerStance == DayZPlayerConstants.STANCEIDX_ERECT )
+					{
+						m_StaminaDelta = -STAMINA_DRAIN_STANDING_SPRINT_PER_SEC;
+						SetCooldown(STAMINA_REGEN_COOLDOWN_DEPLETION);
+						break;
+					}
+					if ( m_PlayerStance == DayZPlayerConstants.STANCEIDX_CROUCH)
+					{
+						m_StaminaDelta = -STAMINA_DRAIN_CROUCHED_SPRINT_PER_SEC;
+						SetCooldown(STAMINA_REGEN_COOLDOWN_DEPLETION);
+						break;
+					}
+					m_StaminaDelta = STAMINA_GAIN_JOG_PER_SEC;
+				break;
+					
+				case DayZPlayerConstants.MOVEMENTIDX_RUN: //jog
+					if (!m_IsInCooldown)
+					{
 						m_StaminaDelta = (STAMINA_GAIN_JOG_PER_SEC + CalcStaminaGainBonus());
-					break;
-						
-					case 1/* DayZPlayerConstants.MOVEMENTIDX_WALK */: //walk
+					}
+				break;
+					
+				case DayZPlayerConstants.MOVEMENTIDX_WALK: //walk
+					if (!m_IsInCooldown)
+					{
 						m_StaminaDelta = (STAMINA_GAIN_WALK_PER_SEC + CalcStaminaGainBonus());
-					break;
-						
-					case 0/* DayZPlayerConstants.MOVEMENTIDX_IDLE */: //idle
+					}
+				break;
+					
+				case DayZPlayerConstants.MOVEMENTIDX_IDLE: //idle
+					if (!m_IsInCooldown)
+					{
 						m_StaminaDelta = (STAMINA_GAIN_IDLE_PER_SEC + CalcStaminaGainBonus());
-					break;
-						
-					default:
-						m_StaminaDelta = STAMINA_GAIN_IDLE_PER_SEC;
-					break;
-				}
+					}
+				break;
+					
+				default:
+					m_StaminaDelta = STAMINA_GAIN_IDLE_PER_SEC;
+				break;
 			}
 			
 			//Sets current stamina & stores + syncs data with client
@@ -291,7 +301,15 @@ class StaminaHandler
 			exhaustion_value = Math.Min(1,exhaustion_value);
 			if ( ad )
 			{
-				ad.SetExhaustion(exhaustion_value, true);
+				// do not apply exhaustion on local client if player is in ADS/Optics (camera shakes)
+				if ( m_Player.GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT && (m_Player.IsInOptics() || m_Player.IsInIronsights()) )
+				{
+					ad.SetExhaustion(0, true);
+				}
+				else
+				{
+					ad.SetExhaustion(exhaustion_value, true);
+				}
 			}
 
 			CheckStaminaState();

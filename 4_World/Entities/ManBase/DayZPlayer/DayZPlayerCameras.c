@@ -11,12 +11,19 @@ class DayZPlayerCameras
 	static const int 	DAYZCAMERA_3RD_ERC_RAISED_MELEE   	= 9; 		//!< 3rd - laying raised
 	static const int 	DAYZCAMERA_IRONSIGHTS				= 10;		//!< ironsights camera
 	static const int 	DAYZCAMERA_OPTICS					= 11;		//!< optics
+	static const int 	DAYZCAMERA_1ST_UNCONSCIOUS			= 12;		//!< unconscious
+	
+	static const int	DAYZCAMERA_3RD_VEHICLE				= 13;		//!< vehicle
 	
 	static const int 	PERITEMUD_INVALID 			= -1;		//! uninitialized / invalid per item camera user data
 	static const int 	PERITEMUD_EMPTYHANDED 		= 20;		//! for empty hands
 	static const int 	PERITEMUD_ONEHANDED 		= 25;		//! for empty hands
 	static const int 	PERITEMUD_TWOHANDED 		= 30;		//! for two handed items
-
+	
+	// some times for camera changes
+	static const float 	TIME_CAMERACHANGE_01 				= 0.1;
+	static const float 	TIME_CAMERACHANGE_015 				= 0.15;
+	static const float 	TIME_CAMERACHANGE_02 				= 0.2;
 
 	static ref map<int,float>								m_TransitionTimes = new map<int,float>;
 
@@ -42,6 +49,8 @@ class DayZPlayerCameras
 		pType.RegisterCameraCreator(DAYZCAMERA_IRONSIGHTS, DayZPlayerCameraIronsights);
 		pType.RegisterCameraCreator(DAYZCAMERA_OPTICS, DayZPlayerCameraOptics);
 		pType.RegisterCameraCreator(DAYZCAMERA_3RD_ERC_RAISED_MELEE, DayZPlayerCamera3rdPersonErcRaisedMelee);
+		pType.RegisterCameraCreator(DAYZCAMERA_1ST_UNCONSCIOUS, DayZPlayerCamera1stPersonUnconscious);
+		pType.RegisterCameraCreator(DAYZCAMERA_3RD_VEHICLE, DayZPlayerCamera3rdPersonVehicle);
 
 		
 		//! Blend times when changing cameras
@@ -76,13 +85,25 @@ class DayZPlayerCameras
 		RegisterTransitionTime(DAYZCAMERA_3RD_PRO_RAISED, DAYZCAMERA_3RD_ERC_RAISED, 0.9, false);
 
 		//! ironsights camera transitions
-		RegisterTransitionTime(DAYZCAMERA_3RD_ERC_RAISED, DAYZCAMERA_IRONSIGHTS, 0.2, true);
-		RegisterTransitionTime(DAYZCAMERA_3RD_CRO_RAISED, DAYZCAMERA_IRONSIGHTS, 0.2, true);
-		RegisterTransitionTime(DAYZCAMERA_3RD_PRO_RAISED, DAYZCAMERA_IRONSIGHTS, 0.2, true);
-		RegisterTransitionTime(DAYZCAMERA_1ST, DAYZCAMERA_IRONSIGHTS, 0.1, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_ERC_RAISED, DAYZCAMERA_IRONSIGHTS, TIME_CAMERACHANGE_02, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_CRO_RAISED, DAYZCAMERA_IRONSIGHTS, TIME_CAMERACHANGE_02, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_PRO_RAISED, DAYZCAMERA_IRONSIGHTS, TIME_CAMERACHANGE_02, true);
+		RegisterTransitionTime(DAYZCAMERA_1ST, DAYZCAMERA_IRONSIGHTS, TIME_CAMERACHANGE_01, true);
+		
+		RegisterTransitionTime(DAYZCAMERA_3RD_ERC, DAYZCAMERA_IRONSIGHTS, TIME_CAMERACHANGE_02, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_CRO, DAYZCAMERA_IRONSIGHTS, TIME_CAMERACHANGE_02, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_PRO, DAYZCAMERA_IRONSIGHTS, TIME_CAMERACHANGE_02, true);
 		
 		//! optics camera transitions
-		RegisterTransitionTime(DAYZCAMERA_IRONSIGHTS, DAYZCAMERA_OPTICS, 0.1, true);
+		RegisterTransitionTime(DAYZCAMERA_IRONSIGHTS, DAYZCAMERA_OPTICS, TIME_CAMERACHANGE_01, true);
+		RegisterTransitionTime(DAYZCAMERA_1ST, DAYZCAMERA_OPTICS, TIME_CAMERACHANGE_01, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_ERC_RAISED, DAYZCAMERA_OPTICS, TIME_CAMERACHANGE_015, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_CRO_RAISED, DAYZCAMERA_OPTICS, TIME_CAMERACHANGE_015, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_PRO_RAISED, DAYZCAMERA_OPTICS, TIME_CAMERACHANGE_015, true);
+		
+		RegisterTransitionTime(DAYZCAMERA_3RD_ERC, DAYZCAMERA_OPTICS, TIME_CAMERACHANGE_015, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_CRO, DAYZCAMERA_OPTICS, TIME_CAMERACHANGE_015, true);
+		RegisterTransitionTime(DAYZCAMERA_3RD_PRO, DAYZCAMERA_OPTICS, TIME_CAMERACHANGE_015, true);
 		
 		//! register function to handle camera changes 
 		pType.RegisterCameraOnChangeFnStatic(DayZPlayerCameras, "OnCameraChange");
@@ -120,11 +141,9 @@ class DayZPlayerCameras
 
 	static float 	OnCameraChange(DayZPlayer pPlayer, int pFrom, int pTo)
 	{
+		//Print("---transition change---");
 		float transTime = GetTransitionTime(pFrom, pTo);
 	    //Print("OnCameraChange:" + pFrom.ToString() + "->" + pTo.ToString() + " time:" + transTime.ToString());
 		return transTime;		
 	}
-	
-
-
 }

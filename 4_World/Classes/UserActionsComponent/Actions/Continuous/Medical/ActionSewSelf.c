@@ -2,7 +2,7 @@ class ActionSewSelfCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.SEW_CUTS);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.SEW_CUTS);
 	}
 };
 
@@ -44,13 +44,13 @@ class ActionSewSelf: ActionContinuousBase
 		return "Sew cuts";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
 		const float ITEM_DAMAGE = 10;
-		float delta = player.GetSoftSkillManager().SubtractSpecialtyBonus( ITEM_DAMAGE, this.GetSpecialtyWeight() );
+		float delta = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( ITEM_DAMAGE, this.GetSpecialtyWeight() );
 
-		item.AddHealth("GlobalHealth","Health",-delta);
-		player.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_BLEEDING);
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_MainItem.AddHealth("GlobalHealth","Health",-delta);
+		action_data.m_Player.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_BLEEDING);
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

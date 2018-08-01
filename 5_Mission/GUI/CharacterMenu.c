@@ -37,11 +37,11 @@ class CharacterMenu extends UIScriptedMenu
 			//m_scene.angle_offset = 0;
 			
 			//sets name to widget in main menu
-			if (g_Game.GetUIManager().FindMenu(MENU_MAIN))
+			if (g_Game.GetUIManager().FindMenu(MENU_MAIN) != null)
 			{
 				MainMenu.CastTo( menu, g_Game.GetUIManager().FindMenu(MENU_MAIN) );
-				//TextWidget m_name_widget = TextWidget.Cast( menu.layoutRoot.FindAnyWidget("CharacterNameText") );
-				m_name_widget.SetText(g_Game.GetPlayerGameName());
+				TextWidget name_widget = TextWidget.Cast( menu.layoutRoot.FindAnyWidget("character_name_text") );
+				name_widget.SetText(g_Game.GetPlayerGameName());
 			}
 		}
 	}
@@ -287,7 +287,8 @@ class CharacterMenu extends UIScriptedMenu
 		//g_Game.SetPlayerGameName(DEFAULT_CHARACTER_NAME);
 		ShowMenuButtons(true);
 		m_scene.m_currentCharacterID = -1;
-		m_name_widget.SetText(g_Game.GetPlayerGameName());		
+		g_Game.SetPlayerGameName(m_name_widget.GetText());
+		//m_name_widget.SetText(g_Game.GetPlayerGameName());		
 		
 		// make random selection
 		m_scene.RandomSelectGender();

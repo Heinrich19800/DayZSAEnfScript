@@ -1,5 +1,10 @@
 class MapMenu extends UIScriptedMenu
 {
+	void ~MapMenu()
+	{
+		CloseMap();
+	}
+	
 	override Widget Init()
 	{
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_map.layout");
@@ -19,5 +24,19 @@ class MapMenu extends UIScriptedMenu
 		}
 
 		return false;
+	}
+	
+	void CloseMap()
+	{
+		PlayerBase player = PlayerBase.Cast(g_Game.GetPlayer());
+		ScriptInputUserData ctx = new ScriptInputUserData;
+		//player.m_MapOpen = false;
+		player.m_hac.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END);
+		if (GetGame().IsMultiplayer() && GetGame().IsClient() && ctx.CanStoreInputUserData())
+		{
+			ctx.Write(INPUT_UDT_STANDARD_ACTION);
+			ctx.Write(DayZPlayerConstants.CMD_ACTIONINT_END);
+			ctx.Send();
+		}
 	}
 }

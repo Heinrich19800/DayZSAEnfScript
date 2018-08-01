@@ -108,9 +108,9 @@ RegisterRecipe(new PaintGorkaHelmetComplete,106);
 RegisterRecipe(new LightTorchMatchbox,107);
 RegisterRecipe(new LightTorchDrill,108);
 RegisterRecipe(new ExtinguishTorch,109);
-RegisterRecipe(new AttachHolster,110);
+//RegisterRecipe(new AttachHolster,110);
 RegisterRecipe(new AttachHolsterPouch,111);
-RegisterRecipe(new AttachPouch,112);
+//RegisterRecipe(new AttachPouch,112);
 RegisterRecipe(new AttachPouchesHolster,113);
 RegisterRecipe(new CraftGorkaHelmetComplete,114);
 //RegisterRecipe(new WriteLetter,115);
@@ -156,5 +156,8 @@ RegisterRecipe(new CraftBoneBait,153);
 //RegisterRecipe(new DeCraftCarrierHolster,155);
 //RegisterRecipe(new DeCraftCarrierComplete,156);
 //RegisterRecipe(new DrainLiquid,157);
+RegisterRecipe(new SplitStones,158);
 
 //RegisterRecipe(new Test,151);
+
+RegisterRecipe(new RefuelTorch,158);

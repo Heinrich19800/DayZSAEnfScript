@@ -70,8 +70,6 @@ class PurifyWater extends RecipeBase
 	override void Do(ItemBase ingredients[], PlayerBase player,array<ItemBase> results, float specialty_weight)//gets called upon recipe's completion
 	{
 		ItemBase ingredient2 = ingredients[1];
-		PluginTransmissionAgents mta;
-		Class.CastTo(mta, GetPlugin(PluginTransmissionAgents));
-		mta.RemoveAllAgents(ingredient2);
+		ingredient2.RemoveAllAgents();
 	}
 };

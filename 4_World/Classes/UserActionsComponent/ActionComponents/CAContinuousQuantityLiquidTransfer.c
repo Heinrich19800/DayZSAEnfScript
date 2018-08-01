@@ -2,6 +2,7 @@ class CAContinuousQuantityLiquidTransfer : CAContinuousBase
 {
 	protected float 				m_ItemQuantity;
 	protected float 				m_SpentQuantity;
+	protected float 				m_SpentQuantity_total;
 	protected float 				m_ItemMaxQuantity; //basically free capacity
 	protected float					m_TimeElpased;
 	protected float 				m_QuantityUsedPerSecond;
@@ -17,11 +18,11 @@ class CAContinuousQuantityLiquidTransfer : CAContinuousBase
 		m_DefaultTimeStep = time_to_progress;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
-		m_Player = player;
+		m_Player = action_data.m_Player;
 		
-		ItemBase target_item = ItemBase.Cast(target.GetObject());
+		ItemBase target_item = ItemBase.Cast(action_data.m_Target.GetObject());
 		
 		m_TimeElpased = 0;
 		m_SpentQuantity = 0;
@@ -35,11 +36,11 @@ class CAContinuousQuantityLiquidTransfer : CAContinuousBase
 			m_SpentUnits.param1 = 0;
 		}
 		
-		if ( player.GetLiquidTendencyDrain() )
+		if ( action_data.m_Player.GetLiquidTendencyDrain() )
 		{
-			if ( target_item.GetQuantity() > (item.GetQuantityMax() - item.GetQuantity()) )
+			if ( target_item.GetQuantity() > (action_data.m_MainItem.GetQuantityMax() - action_data.m_MainItem.GetQuantity()) )
 			{
-				m_ItemMaxQuantity = item.GetQuantityMax() - item.GetQuantity();
+				m_ItemMaxQuantity = action_data.m_MainItem.GetQuantityMax() - action_data.m_MainItem.GetQuantity();
 				m_ItemQuantity = m_ItemMaxQuantity; //target_item.GetQuantity();
 			}
 			else //
@@ -50,27 +51,27 @@ class CAContinuousQuantityLiquidTransfer : CAContinuousBase
 		}
 		else
 		{
-			if ( item.GetQuantity() > (target_item.GetQuantityMax() - target_item.GetQuantity()) )
+			if ( action_data.m_MainItem.GetQuantity() > (target_item.GetQuantityMax() - target_item.GetQuantity()) )
 			{
 				m_ItemMaxQuantity = target_item.GetQuantityMax() - target_item.GetQuantity();
-				m_ItemQuantity = m_ItemMaxQuantity; //item.GetQuantity();
+				m_ItemQuantity = m_ItemMaxQuantity; //action_data.m_MainItem.GetQuantity();
 			}
 			else //
 			{
-				m_ItemMaxQuantity = item.GetQuantity();
+				m_ItemMaxQuantity = action_data.m_MainItem.GetQuantity();
 				m_ItemQuantity = m_ItemMaxQuantity; //target_item.GetQuantity();
 			}
 		}
-		//m_ItemMaxQuantity = item.GetQuantityMax();
-		//m_ItemQuantity = item.GetQuantity();
+		//m_ItemMaxQuantity = action_data.m_MainItem.GetQuantityMax();
+		//m_ItemQuantity = action_data.m_MainItem.GetQuantity();
 	}
 	
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item  )
+	override int Execute( ActionData action_data  )
 	{
-		ItemBase target_item = ItemBase.Cast(target.GetObject());
+		ItemBase target_item = ItemBase.Cast(action_data.m_Target.GetObject());
 		
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
@@ -81,36 +82,37 @@ class CAContinuousQuantityLiquidTransfer : CAContinuousBase
 		}
 		else
 		{
-			if ( m_SpentQuantity < m_ItemQuantity )
+			if ( m_SpentQuantity_total < m_ItemQuantity )
 			{
-				m_AdjustedQuantityUsedPerSecond = m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);
-				m_SpentQuantity += m_AdjustedQuantityUsedPerSecond * m_Player.GetDeltaT();
-				m_TimeElpased += m_Player.GetDeltaT();
+				m_AdjustedQuantityUsedPerSecond = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);
+				m_SpentQuantity += m_AdjustedQuantityUsedPerSecond * action_data.m_Player.GetDeltaT();
+				m_TimeElpased += action_data.m_Player.GetDeltaT();
 				
-				/*if ( m_TimeElpased >= m_DefaultTimeStep )
+				if ( m_TimeElpased >= m_DefaultTimeStep )
 				{
-					CalcAndSetQuantity( player, target, item );
-					//Setup( player, target, item );	//reset data after repeat
-				}*/
+					CalcAndSetQuantity( action_data );
+					m_TimeElpased = 0;
+					//Setup(action_data);	//reset data after repeat
+				}
 				
 				return UA_PROCESSING;
 			}
 			else
 			{
-				CalcAndSetQuantity( player, target, item );
+				CalcAndSetQuantity( action_data );
 				return UA_FINISHED;
 			}
 		}
 	}
 	
-	override int Cancel( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Cancel( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		
-		CalcAndSetQuantity( player, target, item );
+		CalcAndSetQuantity( action_data );
 		return UA_INTERRUPT;
 	}	
 	
@@ -124,19 +126,20 @@ class CAContinuousQuantityLiquidTransfer : CAContinuousBase
 		
 		if ( m_Player.GetLiquidTendencyDrain() )
 		{
-			return m_SpentQuantity / m_ItemMaxQuantity;
+			return m_SpentQuantity_total / m_ItemMaxQuantity;
 		}
 		else
 		{
-			return -(m_SpentQuantity / m_ItemMaxQuantity);
+			return -(m_SpentQuantity_total / m_ItemMaxQuantity);
 		}
 	}
 	
 	//---------------------------------------------------------------------------
 	
-	void CalcAndSetQuantity( PlayerBase player, ActionTarget target, ItemBase item )
+	void CalcAndSetQuantity( ActionData action_data )
 	{
-		ItemBase target_item = ItemBase.Cast(target.GetObject());
+		ItemBase target_item = ItemBase.Cast(action_data.m_Target.GetObject());
+		m_SpentQuantity_total += m_SpentQuantity;
 		
 		if ( GetGame().IsServer() )
 		{
@@ -147,15 +150,16 @@ class CAContinuousQuantityLiquidTransfer : CAContinuousBase
 			}
 			
 			//could move following stuff to action itself, if needed
-			if ( player.GetLiquidTendencyDrain() )
+			if ( action_data.m_Player.GetLiquidTendencyDrain() )
 			{
-				Liquid.Transfer(target_item, item, m_SpentQuantity);
+				Liquid.Transfer(target_item, action_data.m_MainItem, m_SpentQuantity);
 			}
 			else
 			{
-				Liquid.Transfer(item, target_item, m_SpentQuantity);
+				Liquid.Transfer(action_data.m_MainItem, target_item, m_SpentQuantity);
 			}
-			//item.AddQuantity( -m_SpentQuantity, false, false );
+			//action_data.m_MainItem.AddQuantity( -m_SpentQuantity, false, false );
 		}
+		m_SpentQuantity = 0;
 	}
 }

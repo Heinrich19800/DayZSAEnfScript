@@ -29,7 +29,7 @@ class Shock: ModifierBase
 		}
 		else
 		{
-			player.AddHealth("GlobalHealth","Shock", (SHOCK_INCREMENT_PER_SEC * deltaT) );
+			//player.AddHealth("GlobalHealth","Shock", (SHOCK_INCREMENT_PER_SEC * deltaT) );
 		}
 	}
 	

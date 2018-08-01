@@ -18,30 +18,27 @@ class HandsArea: ContainerBase
 
 	override void SetActive( bool active )
 	{
-		m_MainPanel.FindAnyWidget("SelectedContainer").Show(active);
-	}
-
-	void SetCombineActive( bool active )
-	{
-		if( m_MainPanel.FindAnyWidget( "CombineCursor" ) )
-		{
-			m_MainPanel.FindAnyWidget( "Combine" ).Show( active );
-			m_MainPanel.FindAnyWidget( "CombineCursor" ).Show( active );
-		}
-	}
-
-	void SetSwapActive( bool active )
-	{
-		if( m_MainPanel.FindAnyWidget( "SwapCursor" ) )
-		{
-			m_MainPanel.FindAnyWidget( "Swap" ).Show( active );
-			m_MainPanel.FindAnyWidget( "SwapCursor" ).Show( active );
-		}
+			m_HandsContainer.SetActive( active );
 	}
 
 	override bool IsActive()
 	{
-		return m_MainPanel.FindAnyWidget("SelectedContainer").IsVisible();
+		return m_HandsContainer.IsActive();
+	}
+	
+	void UnfocusGrid()
+	{
+		m_HandsContainer.UnfocusGrid();
+	}
+	
+	void SetNextActive()
+	{
+		m_HandsContainer.SetNextActive();
+	}
+	
+	void SetPreviousActive()
+	{
+		m_HandsContainer.SetPreviousActive();
 	}
 
 	bool IsSwapActive()
@@ -70,25 +67,18 @@ class HandsArea: ContainerBase
 			return false;
 		}
 	}
-
-	void SelectCombine()
-	{
-		m_HandsContainer.SelectCombine();
-	}
 	
 	void MoveGridCursor( int direction )
 	{
-		m_HandsContainer.MoveGridCursor( direction );
+		if( IsActive() )
+		{
+			m_HandsContainer.MoveGridCursor( direction );
+		}
 	}
 	
 	void EquipItem()
 	{
 		m_HandsContainer.EquipItem();
-	}
-
-	void SelectSwap()
-	{
-		m_HandsContainer.SelectSwap();
 	}
 
 	void Select()

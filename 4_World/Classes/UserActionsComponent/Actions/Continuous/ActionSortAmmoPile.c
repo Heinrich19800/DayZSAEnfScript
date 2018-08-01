@@ -2,7 +2,7 @@ class ActionSortAmmoPileCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_SORT);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_SORT);
 	}
 };
 
@@ -41,9 +41,9 @@ class ActionSortAmmoPile: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteLoopServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteLoopServer( ActionData action_data )
 	{	
-		SortAmmo(item);
+		SortAmmo(action_data.m_MainItem);
 	}
 
 	void SortAmmo(ItemBase item)

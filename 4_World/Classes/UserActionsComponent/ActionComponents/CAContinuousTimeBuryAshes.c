@@ -17,7 +17,7 @@ class CAContinuousTimeBuryAshes : CAContinuousBase
 		m_TimeToRepeatCheck = time_to_repeat_check;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		m_TimeElpased = 0;
 		if ( !m_SpentUnits )
@@ -31,27 +31,27 @@ class CAContinuousTimeBuryAshes : CAContinuousBase
 		
 		m_BuryAshesAction = ActionBuryAshes.Cast( m_Action );
 		
-		m_TimeToComplete = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
+		m_TimeToComplete = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		
 		if ( m_TimeElpased < m_TimeToComplete )
 		{
-			m_TimeElpased += player.GetDeltaT();
-			m_TimeElapsedRepeat += player.GetDeltaT();
+			m_TimeElpased += action_data.m_Player.GetDeltaT();
+			m_TimeElapsedRepeat += action_data.m_Player.GetDeltaT();
 			
 			if ( m_TimeElapsedRepeat >= m_TimeToRepeatCheck )
 			{
 				m_TimeElapsedRepeat = 0;
 				
 				//get reason to cancel action
-				string reason = GetReasonToCancel( target, item );
+				string reason = GetReasonToCancel( action_data.m_Target, action_data.m_MainItem );
 				if ( reason != "" )
 				{
 					m_BuryAshesAction.SetReasonToCancel( reason );

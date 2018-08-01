@@ -50,29 +50,29 @@ class ActionPlantSeed: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Process(player, target, item, acdata);
+		Process(action_data);
 	}
 	
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
-		Process(player, target, item, acdata);
+		Process(action_data);
 	}
 
-	void Process( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	void Process( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		
 		if ( targetObject != NULL && targetObject.IsInherited(GardenBase) )
 		{
 			GardenBase garden_base = GardenBase.Cast( targetObject );
-			string selection = targetObject.GetActionComponentName(target.GetComponentIndex());
+			string selection = targetObject.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 			Slot slot = garden_base.GetSlotBySelection( selection );
 			int slot_ID = slot.GetSlotId();
-			player.PredictiveTakeEntityToTargetAttachmentEx(garden_base, item, slot_ID );
+			action_data.m_Player.PredictiveTakeEntityToTargetAttachmentEx(garden_base, action_data.m_MainItem, slot_ID );
 		}
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

@@ -12,6 +12,16 @@ class LandMineTrap extends TrapBase
 		m_AddDeactivationDefect = true;
 	}
 	
+	override bool IsOneHandedBehaviour()
+	{
+		return true;
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
 	override void StartActivate( PlayerBase player )
 	{
 		super.StartActivate( player );
@@ -50,9 +60,9 @@ class LandMineTrap extends TrapBase
 		this.Explode();
 	}
 	
-	override void EEItemLocationChanged  ( EntityAI old_owner, EntityAI new_owner ) 
+	override void OnItemLocationChanged  ( EntityAI old_owner, EntityAI new_owner ) 
 	{
-		super.EEItemLocationChanged(old_owner, new_owner);
+		super.OnItemLocationChanged(old_owner, new_owner);
 		
 		if ( g_Game.IsServer() )
 		{

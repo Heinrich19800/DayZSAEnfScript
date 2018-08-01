@@ -21,6 +21,9 @@ class Weapon_Base extends Weapon
 	protected ref array<ref AbilityRecord> m_abilities;		/// weapon abilities
 	protected int m_weaponAnimState; /// animation state the weapon is in, -1 == uninitialized
 	protected bool m_receivedSyncFromRemote; /// if remote weapon, this flag waits for first stable state sync
+	protected bool m_canEnterIronsights = true; /// if false, weapon goes straight into optics view
+	protected ref array<string> m_ironsightsExcludingOptics; /// optics that go straight into optics view (skip ironsights)
+	ref array<float> 	m_DOFProperties;
 	protected ref PropertyModifiers m_PropertyModifierObject;
 	protected int m_RecoilSeed;
 
@@ -29,6 +32,12 @@ class Weapon_Base extends Weapon
 		m_weaponAnimState = -1;
 		m_receivedSyncFromRemote = false;
 		m_abilities = new array<ref AbilityRecord>;
+		m_ironsightsExcludingOptics = new array<string>;
+		m_DOFProperties = new array<float>;
+		
+		InitExcludedScopesArray(m_ironsightsExcludingOptics);
+		InitDOFProperties(m_DOFProperties);
+		
 		InitStateMachine();
 	}
 
@@ -117,7 +126,7 @@ class Weapon_Base extends Weapon
 
 	bool CanChamberBullet (int muzzleIndex, Magazine mag)
 	{
-		return CanChamberFromMag(muzzleIndex, mag) && !IsChamberFull(muzzleIndex));
+		return CanChamberFromMag(muzzleIndex, mag) && (!IsChamberFull(muzzleIndex) || IsChamberFiredOut(muzzleIndex)) );
 	}
 
 	void SetWeaponAnimState (int state)
@@ -194,10 +203,10 @@ class Weapon_Base extends Weapon
 			p.StoreInputForRemotes(ctx);
 			
 		}
-		if (p)
+		/*if (p)
 		{
 			p.OnWeaponActionEnd();
-		}
+		}*/
 		//MWBREAK
 	}
 
@@ -408,14 +417,28 @@ class Weapon_Base extends Weapon
 	{
 		super.EEItemAttached(item, slot_name);
 
-		if ( GetPropertyModifierObject() ) GetPropertyModifierObject().UpdateModifiers();
+		if ( GetPropertyModifierObject() ) 	GetPropertyModifierObject().UpdateModifiers();
+		if ( ItemOptics.Cast(item) ) 		OpticsAllowsIronsightsCheck(ItemOptics.Cast(item));
 	}
 
 	override void EEItemDetached (EntityAI item, string slot_name)
 	{
 		super.EEItemDetached(item, slot_name);
 
-		if ( GetPropertyModifierObject() ) GetPropertyModifierObject().UpdateModifiers();
+		if ( GetPropertyModifierObject() ) 	GetPropertyModifierObject().UpdateModifiers();
+		if ( ItemOptics.Cast(item) ) 		m_canEnterIronsights = true;
+	}
+	
+	override void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
+	{
+		super.OnItemLocationChanged(old_owner,new_owner);
+		
+		// HACK "resets" optics memory on optics
+		PlayerBase player;
+		if ( PlayerBase.CastTo(player,old_owner) )
+		{ 
+			player.SetReturnToOptics(false);
+		}
 	}
 
 	bool IsRemoteWeapon ()
@@ -498,6 +521,58 @@ class Weapon_Base extends Weapon
 		}
 		
 		return Math.Round((item_wetness + 1) * (ConfWeight + AttachmentWeight));
+	}
+	
+	//! Initializes list of optics, that do not allow ironsights camera for the weapon
+	bool InitExcludedScopesArray(out array<string> temp_array)
+	{
+		if (GetGame().ConfigIsExisting("cfgWeapons " + GetType() + " ironsightsExcludingOptics"))
+		{
+			GetGame().ConfigGetTextArray("cfgWeapons " + GetType() + " ironsightsExcludingOptics",temp_array);
+			return true;
+		}
+		return false;
+	}
+	
+	//! Checks if attached optic allows ironsights, sets m_canEnterIronsights accordingly
+	void OpticsAllowsIronsightsCheck(ItemOptics optic)
+	{
+		if (!optic)
+		{
+			m_canEnterIronsights = true;
+			return;
+		}
+		string type = optic.GetType();
+		int can;
+		can = m_ironsightsExcludingOptics.Find(type);
+		if (can > -1)
+		{
+			m_canEnterIronsights = false;
+			return;
+		}
+		
+		m_canEnterIronsights = true;
+	}
+	
+	bool CanEnterIronsights()
+	{
+		return m_canEnterIronsights;
+	}
+	
+	//! Initializes DOF properties for weapon's ironsight/optics cameras
+	bool InitDOFProperties(out array<float> temp_array)
+	{
+		if (GetGame().ConfigIsExisting("cfgWeapons " + GetType() + " PPDOFProperties"))
+		{
+			GetGame().ConfigGetFloatArray("cfgWeapons " + GetType() + " PPDOFProperties",temp_array);
+			return true;
+		}
+		return false;
+	}
+	
+	ref array<float> GetWeaponDOF()
+	{
+		return m_DOFProperties;
 	}
 };
 

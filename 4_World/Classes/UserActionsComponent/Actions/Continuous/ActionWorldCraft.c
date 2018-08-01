@@ -1,8 +1,13 @@
+class WorldCraftActionData : ActionData
+{
+	int m_RecipeID;
+}
+
 class ActionWorldCraftCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousCraft(UATimeSpent.DEFAULT_CRAFT); //default value can be set in recipes
+		m_ActionData.m_ActionComponent = new CAContinuousCraft(UATimeSpent.DEFAULT_CRAFT); //default value can be set in recipes
 	}
 
 	/*override void OnFinish(bool pCanceled)	
@@ -36,6 +41,12 @@ class ActionWorldCraft: ActionContinuousBase
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
 		m_ActionPrompt = "Craft";
+	}
+	
+	override ActionData CreateActionData()
+	{
+		ActionData action_data = new WorldCraftActionData;
+		return action_data;
 	}
 	
 	override void CreateConditionComponents()  
@@ -77,59 +88,69 @@ class ActionWorldCraft: ActionContinuousBase
 		return true;		
 	}
 	
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item ) //Setup on start of action
+	override void Start( ActionData action_data ) //Setup on start of action
 	{
-		super.Start(player, target, item);	
+		super.Start(action_data);
+		
+		WorldCraftActionData wcActionData;
+		Class.CastTo(wcActionData, action_data);
+		
 		if( GetGame().IsClient() || !GetGame().IsMultiplayer() )
 		{
-			ref ActionTarget newTarget;
-			newTarget = new ActionTarget(player.GetCraftingManager().m_item2, null, -1, vector.Zero, 0);		
-			m_Callback.SetActionData( this, player, newTarget, player.GetCraftingManager().m_item1, GetStanceMask(player) ); 
+			wcActionData.m_RecipeID = action_data.m_Player.GetCraftingRecipeID();
+		/*	ref ActionTarget newTarget;
+			newTarget = new ActionTarget(action_data.m_Player.GetCraftingManager().m_item2, null, -1, vector.Zero, 0);		
+			action_data.m_Callback.SetActionData( action_data ); */
 		}
-		if ( item ) item.SetInvisible(true);
+		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(true);
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		if ( item ) item.SetInvisible(false);
+		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(false);
 	}
 	
-	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCancelServer( ActionData action_data )
 	{
-		if ( item ) item.SetInvisible(false);
+		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(false);
 	}
 	
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
-		if ( item ) item.SetInvisible(false);
+		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(false);
 	}
 	
-	override void OnCancelClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCancelClient( ActionData action_data )
 	{
-		if ( item ) item.SetInvisible(false);
+		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(false);
 	}	
 	
-	override void OnCompleteLoopServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteLoopServer( ActionData action_data )
 	{
 		if (!GetGame().IsMultiplayer())
 		{
-			ActionManagerClient am = ActionManagerClient.Cast(player.GetActionManager());
-			am.UnlockInventory(this);
+			ActionManagerClient am = ActionManagerClient.Cast(action_data.m_Player.GetActionManager());
+			am.UnlockInventory(action_data);
 		}
+		
+		WorldCraftActionData wcActionData;
 		PluginRecipesManager module_recipes_manager;
-		Class.CastTo(module_recipes_manager,  GetPlugin(PluginRecipesManager) );
 		ItemBase item2;
-		Class.CastTo(item2,  target.GetObject() );
-			module_recipes_manager.PerformRecipeServer( player.GetCraftingRecipeID(), item, item2, player );
+		
+		Class.CastTo(wcActionData, action_data);
+		Class.CastTo(module_recipes_manager,  GetPlugin(PluginRecipesManager) );
+		Class.CastTo(item2,  action_data.m_Target.GetObject() );
+	
+		module_recipes_manager.PerformRecipeServer( wcActionData.m_RecipeID, action_data.m_MainItem, item2, action_data.m_Player );
 	}
 	
-	override void OnCompleteLoopClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteLoopClient( ActionData action_data )
 	{
-		ActionManagerClient am = ActionManagerClient.Cast(player.GetActionManager());
-		am.UnlockInventory(this);
+		ActionManagerClient am = ActionManagerClient.Cast(action_data.m_Player.GetActionManager());
+		am.UnlockInventory(action_data);
 	}
 	
-	override void WriteToContext (ParamsWriteContext ctx, ActionTarget target)
+	override void WriteToContext (ParamsWriteContext ctx, ActionData action_data)
 	{
 		PlayerBase player;
 		Class.CastTo(player, GetGame().GetPlayer());
@@ -139,7 +160,7 @@ class ActionWorldCraft: ActionContinuousBase
 		ctx.Write(player.GetCraftingRecipeID());
 	}
 	
-	override bool ReadFromContext(ParamsReadContext ctx, out ActionReceived actionReceived)
+	override bool ReadFromContext(ParamsReadContext ctx, ActionData action_data )
 	{
 		ItemBase item1 = null;
 		ItemBase item2 = null;
@@ -151,9 +172,17 @@ class ActionWorldCraft: ActionContinuousBase
 		if (!ctx.Read(recipeID))
 				return false;
 		
-		actionReceived.baseItem = item1;			
-		actionReceived.Target = item2;
-		actionReceived.recipeID = recipeID;
+		
+		WorldCraftActionData wcActionData;
+		Class.CastTo(wcActionData, action_data);
+		
+		ref ActionTarget target;
+		target = new ActionTarget(item2 , NULL, -1,vector.Zero, 0);
+						
+		wcActionData.m_MainItem = item1;
+		wcActionData.m_Target = target;
+		wcActionData.m_RecipeID = recipeID;
+		wcActionData.m_Player.SetCraftingRecipeID(recipeID);//TODO remove this after refactor will work
 		return true;
 	}
 };

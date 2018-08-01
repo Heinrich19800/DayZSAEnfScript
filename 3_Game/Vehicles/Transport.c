@@ -58,6 +58,10 @@ class Transport extends EntityAI
 	//! -1 is returned when no crew position corresponds to given component index.
 	proto native int CrewPositionIndex( int componentIdx );
 
+	//! Returns crew member index based on player's instance.
+	//! -1 is returned when the player is not isnide.
+	proto native int CrewMemberIndex( Human player );
+
 	//! Returns crew member based on position index.
 	//! Null can be returned if no Human is present on the given position.
 	proto native Human CrewMember( int posIdx );
@@ -87,6 +91,29 @@ class Transport extends EntityAI
 	}
 	
 	override bool IsHealthVisible()
+	{
+		return false;
+	}
+
+	int GetAnimInstance()
+	{
+		Error("GetAnimInstance() not implemented");
+		return 0;
+	}
+
+	int GetSeatAnimationType( int posIdx )
+	{
+		Error("GetSeatAnimationType() not implemented");
+		return 0;
+	}
+
+	int Get3rdPersonCameraType()
+	{
+		Error("Get3rdPersonCameraType() not implemented");
+		return 0;
+	}
+	
+	bool CrewCanGetThrough( int posIdx )
 	{
 		return false;
 	}

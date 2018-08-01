@@ -2,7 +2,7 @@ class ActionUnlockDoorsCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.UNLOCK);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.UNLOCK);
 	}
 };
 
@@ -37,7 +37,7 @@ class ActionUnlockDoors: ActionContinuousBase
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		if( !target ) return false;
-		//if( IsDamageDestroyed(target) ) return false;
+		//if( IsDamageDestroyed(action_data.m_Target) ) return false;
 		if( !IsBuilding(target) ) return false;
 		if( !IsInReach(player, target, UAMaxDistances.DEFAULT) ) return false;
 
@@ -66,8 +66,8 @@ class ActionUnlockDoors: ActionContinuousBase
 		}
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		UnlockDoor(target);
+		UnlockDoor(action_data.m_Target);
 	}
 };

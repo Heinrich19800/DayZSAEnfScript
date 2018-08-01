@@ -5,17 +5,22 @@ class GridContainer: ContainerBase
 	protected EntityAI m_Entity;	
 	protected int m_Width;
 	protected ItemsContainer m_ParentContainer;
+	protected int m_MaxColumns;
 	
 	void GridContainer( ContainerBase parent )
 	{
 		m_ParentContainer = ItemsContainer.Cast( parent );
-		
-		for ( int i = 0; i < 10; i++ )
+		#ifdef PLATFORM_XBOX
+		m_MaxColumns = 8;
+		#else
+		m_MaxColumns = 10;
+		#endif
+		for ( int i = 0; i < m_MaxColumns; i++ )
 		{
 			WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "Icon" + i ),  this, "Column" + i );
 		}
 		
-		for ( i = 0; i < 10; i++ )
+		for ( i = 0; i < m_MaxColumns; i++ )
 		{
 			WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "Icon" + i ),  this, "ColumnOnDraggingOver" + i );
 		}
@@ -26,7 +31,7 @@ class GridContainer: ContainerBase
 	
 	void UnfocusAll()
 	{
-		for ( int i = 0; i < 10; i++ )
+		for ( int i = 0; i < m_MaxColumns; i++ )
 		{
 			//GetMainPanel().FindAnyWidget( "Cursor" + i ).Show( false );
 			
@@ -430,7 +435,7 @@ class GridContainer: ContainerBase
 	void SetWidth( int width )
 	{
 		m_Width = width;
-		for ( int i = width; i < 10; i++ )
+		for ( int i = width; i < m_MaxColumns; i++ )
 		{
 			GetMainPanel().FindAnyWidget( "Icon" + i ).Show( false );
 		}

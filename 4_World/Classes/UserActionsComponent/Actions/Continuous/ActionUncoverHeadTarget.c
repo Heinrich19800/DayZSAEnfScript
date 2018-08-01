@@ -2,7 +2,7 @@ class ActionUncoverHeadTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.COVER_HEAD);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.COVER_HEAD);
 	}
 };
 
@@ -17,9 +17,9 @@ class ActionUncoverHeadTarget: ActionContinuousBase
 		m_MessageFail = "Player moved and removing sack from was canceled.";
 		m_MessageCancel = "You stopped removing sack.";
 		//m_Animation = "INJECTEPIPENS";
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERRACTPLAYER;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERACT;
 		m_FullBody = true;
-		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
 	}
 	
 	override void CreateConditionComponents()  
@@ -52,10 +52,10 @@ class ActionUncoverHeadTarget: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
 		//setaperture will be called from here, or from statemachine
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		
 		EntityAI attachment;
 		Class.CastTo(attachment, ntarget.GetInventory().FindAttachment(InventorySlots.HEADGEAR));
@@ -63,8 +63,8 @@ class ActionUncoverHeadTarget: ActionContinuousBase
 		if ( attachment && attachment.GetType() == "BurlapSackCover" )
 		{
 			attachment.Delete();
-			player.GetInventory().CreateInInventory("BurlapSack");
-			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+			action_data.m_Player.GetInventory().CreateInInventory("BurlapSack");
+			action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 		}
 		
 

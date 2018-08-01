@@ -43,7 +43,6 @@ class UIManager
 	proto native bool ShowQueuedDialog();
 	proto native bool GetLoginQueueDialog();
 	proto native void SetLoginQueueDialog(bool state);
-	proto native void EnterLoginQueueScript(UIMenuPanel parentMenu);
 	proto native int  GetLoginQueuePosition();
 	proto native bool ScreenFadeVisible();
 	proto native void ScreenFadeIn(float duration, string text, int backgroundColor, int textColor);
@@ -226,7 +225,19 @@ class UIManager
 	void ShowUICursor( bool visible )
 	{
 #ifdef PLATFORM_XBOX
-		ShowCursor( false );
+		Hud hud;
+		if( GetGame() && GetGame().GetMission() )
+		{
+			hud = GetGame().GetMission().GetHud();
+		}
+		if( hud && hud.IsXboxDebugCursorEnabled(  ) )
+		{
+			ShowCursor( true );
+		}
+		else
+		{
+			ShowCursor( false);
+		}
 #else
 #ifdef PLATFORM_PS4
 		ShowCursor( false );

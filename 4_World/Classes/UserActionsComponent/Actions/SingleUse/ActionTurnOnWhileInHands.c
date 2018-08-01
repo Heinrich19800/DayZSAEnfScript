@@ -39,7 +39,7 @@ class ActionTurnOnWhileInHands: ActionSingleUseBase
 		}
 		else
 		{
-			m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP;
+			m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS;
 		}
 		
 		
@@ -51,15 +51,15 @@ class ActionTurnOnWhileInHands: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnExecuteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )  //Takhle to nedelat, vyrob si action componentu a tehle check patri do jeji Execute metody. Message o selhani pak napis jako messageStartFail
+	override void OnExecuteServer( ActionData action_data )  //Takhle to nedelat, vyrob si action componentu a tehle check patri do jeji Execute metody. Message o selhani pak napis jako messageStartFail
 	{
-		if ( item.GetCompEM().CanWork() )
+		if ( action_data.m_MainItem.GetCompEM().CanWork() )
 		{
-			item.GetCompEM().SwitchOn();
+			action_data.m_MainItem.GetCompEM().SwitchOn();
 		} 
 		else
 		{
-			InformPlayers(player,target,UA_FAILED);
+			InformPlayers(action_data.m_Player,action_data.m_Target,UA_FAILED);
 		}
 	}
 };

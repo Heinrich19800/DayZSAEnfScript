@@ -73,8 +73,7 @@ class Roadflare : ItemBase
 	// When the flare starts burning
 	override void OnWorkStart()
 	{
-		if ( GetGame().IsServer() )
-			SwitchLight(true);
+		SwitchLight(true);
 		
 		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer())
 			m_LoopSoundEntity = PlaySoundLoop(BURNING_SOUND, BURNING_NOISE_RANGE);
@@ -149,10 +148,10 @@ class Roadflare : ItemBase
 			GetGame().ObjectDelete( m_LoopSoundEntity );
 		}
 		
+		SwitchLight(false);
 		
 		if ( GetGame().IsServer() )
 		{
-			SwitchLight(false);
 			SetHealth("","",0);
 		}
 	}

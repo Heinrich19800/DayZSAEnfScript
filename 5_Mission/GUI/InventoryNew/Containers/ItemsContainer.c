@@ -67,7 +67,16 @@ class ItemsContainer: Container
 		if( icon )
 		{
 			Icon icon_copy = icon; // for some reason garbage collector collects icon too soon, so copy has to be made
-			m_EntitiesMap.Remove( icon.GetObject().GetID() );
+			if( icon.GetObject() )
+				m_EntitiesMap.Remove( icon.GetObject().GetID() );
+			else
+			{
+				int ix = m_EntitiesMap.GetKeyByValue( icon );
+				if( m_EntitiesMap.Contains( ix ) )
+					m_EntitiesMap.Remove( ix );
+				else
+					delete icon;
+			}
 		}
 	}
 
@@ -86,9 +95,9 @@ class ItemsContainer: Container
 		for( int i = 0; i < m_EntitiesMap.Count(); i++ )
 		{
 			Icon icon = m_EntitiesMap.GetElement( i );
-			icon.SetPos( (i % 4)*2, (i / 4)*2 );
-			icon.m_posX = (i % 4)*2;
-			icon.m_posY = (i / 4)*2;
+			icon.SetPos( (i % 5)*2, (i / 5)*2 );
+			icon.m_posX = (i % 5)*2;
+			icon.m_posY = (i / 5)*2;
 		}
 	}
 	

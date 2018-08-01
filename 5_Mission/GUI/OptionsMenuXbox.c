@@ -288,7 +288,7 @@ class OptionsMenuXbox extends UIScriptedMenu
 	{
 		if (m_current_scrollbar.IsVisible())
 		{
-			ScrollWidget(wheel);
+			ScrollWidgetFn(wheel);
 			return true;
 		}
 		
@@ -429,7 +429,7 @@ class OptionsMenuXbox extends UIScriptedMenu
 			m_scrollbar_value = m_current_scrollbar.GetCurrent();
 			m_scrollbar_value = m_scrollbar_value / m_current_scrollbar.GetMax();
 			//m_scrollbar_value = m_new_scrollbar_value;
-			ScrollWidget(0); //0 value makes slider widget move widget Y positions
+			ScrollWidgetFn(0); //0 value makes slider widget move widget Y positions
 		}
 		return false;
 	}
@@ -547,14 +547,19 @@ class OptionsMenuXbox extends UIScriptedMenu
 			ImageWidget backdrop = m_tab_images[i];
 			if ( backdrop )
 			{
-				backdrop.Show(i != tab_id);
+				float alpha;
+				if( i != tab_id )
+					alpha = 0.4;
+				else
+					alpha = 0.9;
+				backdrop.SetAlpha( alpha );
 			}
 		}
 		
 		m_selected_tab = tab_id;
 	}
 			
-	void ScrollWidget(int wheel)
+	void ScrollWidgetFn(int wheel)
 	{
 		int i = 0;
 		float pos_x;
@@ -701,7 +706,8 @@ class OptionsMenuXbox extends UIScriptedMenu
 	}
 		
 	ref GameOptions m_Options;
-	void ApplyFn()
+	
+	void ApplyFn()	
 	{
 		string value;
 		GetGame().GetProfileString("usenewui", value);
@@ -710,21 +716,14 @@ class OptionsMenuXbox extends UIScriptedMenu
 		
 		GetGame().SaveProfile();
 		m_Options.Apply();
-		
-		//refresh hud
+		//
 		m_hud = IngameHud.Cast( GetGame().GetMission().GetHud() );
 		if (m_hud)
 		{
 			m_hud.Init(m_hud.GetHudPanelWidget());
-			m_hud.Show( false );
 		}
 		//
-		
-		/*
-		NumericOptionsAccess noa = NumericOptionsAccess.Cast(m_FOV_option.GetOptionAccess());
-		float valueFOV = noa.ReadValue();
-		g_Game.SetUserFOV( valueFOV );
-		*/
+		Close();
 	}
 	
 	void RestartFn()

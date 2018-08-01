@@ -1,36 +1,25 @@
-class ActionDigGardenPlotCB : ActionContinuousBaseCB
+class ActionDigGardenPlotCB : ActionPlaceObjectCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DIG_GARDEN);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DIG_GARDEN);
 	}
 };
 
-class ActionDigGardenPlot: ActionContinuousBase
+class ActionDigGardenPlot: ActionPlaceObject
 {	
 	void ActionDigGardenPlot()
 	{
-		m_CallbackClass = ActionDigGardenPlotCB;
+		m_CallbackClass	= ActionDigGardenPlotCB;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DIGSHOVEL;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
-	
-	override void CreateConditionComponents()  
-	{	
-		m_ConditionItem = new CCINonRuined;
-		m_ConditionTarget = new CCTNone;
-	}
 
 	override int GetType()
 	{
 		return AT_DIG_GARDEN_PLOT;
-	}
-	
-	override bool HasTarget()
-	{
-		return false;
 	}
 		
 	override string GetText()
@@ -71,177 +60,28 @@ class ActionDigGardenPlot: ActionContinuousBase
 
 	void CheckSurfaceBelowGardenPlot(PlayerBase player, GardenPlot_TO_BE_RELEASED item_GP, Hologram hologram)
 	{
-		if ( item_GP.CanBePlaced(player, item_GP.GetPosition() )  )
+		if (item_GP) // TO DO: When GardenPlot_TO_BE_RELEASED is renamed back to GardenPlot then remove this check.
 		{
-			if( item_GP.CanBePlaced(NULL, item_GP.CoordToParent(hologram.GetLeftCloseProjectionVector())) )
+			if ( item_GP.CanBePlaced(player, item_GP.GetPosition() )  )
 			{
-				if( item_GP.CanBePlaced(NULL, item_GP.CoordToParent(hologram.GetRightCloseProjectionVector())) )
+				if( item_GP.CanBePlaced(NULL, item_GP.CoordToParent(hologram.GetLeftCloseProjectionVector())) )
 				{
-					if( item_GP.CanBePlaced(NULL, item_GP.CoordToParent(hologram.GetLeftFarProjectionVector())) )
+					if( item_GP.CanBePlaced(NULL, item_GP.CoordToParent(hologram.GetRightCloseProjectionVector())) )
 					{
-						if( item_GP.CanBePlaced(NULL, item_GP.CoordToParent(hologram.GetRightFarProjectionVector())) )
+						if( item_GP.CanBePlaced(NULL, item_GP.CoordToParent(hologram.GetLeftFarProjectionVector())) )
 						{
-							hologram.SetIsCollidingGPlot( false );
-
-							return;
+							if( item_GP.CanBePlaced(NULL, item_GP.CoordToParent(hologram.GetRightFarProjectionVector())) )
+							{
+								hologram.SetIsCollidingGPlot( false );
+	
+								return;
+							}
 						}
 					}
 				}
 			}
-		}
-		
-		hologram.SetIsCollidingGPlot( true );
-	}
-
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item ) //Setup on start of action
-	{
-		super.Start(player, target, item);	
-		
-		if( GetGame().IsMultiplayer() )
-		{
-			if( GetGame().IsServer() )
-			{
-				player.PlacingStartServer();
-			}
-			else
-			{
-				player.PlacingCompleteLocal();
-			}
-		}
-		else
-		{	
-			//local singleplayer
-			player.GetHologramLocal().SetUpdatePosition( false );
-		}
-	}
-		
-	override void OnCancelClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
-	{
-		//local singleplayer
-		player.PlacingCancelLocal();
-	}
-		
-	override void OnInterruptClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
-	{
-		//local singleplayer
-		player.PlacingCancelLocal();
-	}
-	
-	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
-	{
-		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
-		{	
-			player.PlacingCancelServer();
-		}
-		else
-		{
-			//local singleplayer
-			player.PlacingCancelLocal();
-		}
-	}
-		
-	override void OnInterruptServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
-	{		
-		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
-		{	
-			player.PlacingCancelServer();
-		}
-		else
-		{
-			//local singleplayer
-			player.PlacingCancelLocal();
-		}
-	}
-
-	override void OnCompleteLoopServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{	
-		EntityAI entity_for_placing = EntityAI.Cast( item );
-		
-		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
-		{	
-			player.GetHologramServer().PlaceEntity( entity_for_placing, player.GetLocalProjectionPosition(), player.GetLocalProjectionOrientation() );
-			player.GetHologramServer().CheckPowerSource();
-			player.PlacingCompleteServer();
-		}
-		
-		//local singleplayer
-		if( !GetGame().IsMultiplayer() && GetGame().IsServer() )
-		{	
-			vector position = player.GetHologramLocal().GetProjectionPosition();
-			vector orientation = player.GetHologramLocal().GetProjectionOrientation();
-			vector rotation_matrix[3];
-			float direction[4];
-			InventoryLocation source = new InventoryLocation;
-			InventoryLocation destination = new InventoryLocation;
 			
-			Math3D.YawPitchRollMatrix( orientation, rotation_matrix );
-			Math3D.MatrixToQuat( rotation_matrix, direction );
-			
-			if (entity_for_placing.GetInventory().GetCurrentInventoryLocation( source ))
-			{
-				destination.SetGroundEx( entity_for_placing, position, direction );
-				entity_for_placing.LocalTakeToDst( source, destination );
-			}
-			
-			player.GetHologramLocal().PlaceEntity( entity_for_placing, player.GetHologramLocal().GetProjectionPosition(), player.GetHologramLocal().GetProjectionOrientation() );
-			player.PlacingCompleteLocal();
-			
-			entity_for_placing.OnPlacementComplete( player );
-			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+			hologram.SetIsCollidingGPlot( true );
 		}
-	}
-	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{	
-		EntityAI entity_for_placing = EntityAI.Cast( item );
-
-		entity_for_placing.OnPlacementComplete( player );
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-	}
-
-	override void OnCompleteLoopClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{	
-		EntityAI entity_for_placing = EntityAI.Cast( item );
-		vector position = player.GetLocalProjectionPosition();
-		vector orientation = player.GetLocalProjectionOrientation();
-		vector rotation_matrix[3];
-		float direction[4];
-		InventoryLocation source = new InventoryLocation;
-		InventoryLocation destination = new InventoryLocation;
-		
-		Math3D.YawPitchRollMatrix( orientation, rotation_matrix );
-		Math3D.MatrixToQuat( rotation_matrix, direction );
-		
-		if (entity_for_placing.GetInventory().GetCurrentInventoryLocation( source ))
-		{
-			destination.SetGroundEx( entity_for_placing, position, direction );
-			entity_for_placing.PredictiveTakeToDst( source, destination );
-		}
-	}
-		
-	override void WriteToContext(ParamsWriteContext ctx,ActionTarget target)
-	{
-		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
-		vector player_position = player.GetHologramLocal().GetProjectionPosition();
-		vector player_orientation = player.GetHologramLocal().GetProjectionOrientation();
-		ctx.Write( player_position );
-		ctx.Write( player_orientation );
-		
-		player.SetLocalProjectionPosition( player_position );
-		player.SetLocalProjectionOrientation( player_orientation );
-	}
-	override bool ReadFromContext(ParamsReadContext ctx, out ActionReceived actionReceived)
-	{
-		vector entity_position = "0 0 0";
-		vector entity_orientation = "0 0 0";
-		if (!ctx.Read(entity_position))
-			return false;
-		if (!ctx.Read(entity_orientation))
-			return false;
-		
-		actionReceived.entity_position = entity_position;
-		actionReceived.entity_orientation = entity_orientation;
-		
-		return true;
 	}
 };

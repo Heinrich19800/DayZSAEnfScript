@@ -41,37 +41,39 @@ const int IDC_INT_EXIT				= 107;
  * \desc constants for menu pages
  * @{
  */
+
 const int MENU_ANY									= 1;
-const int MENU_NONE									= 1 << 1;
-const int MENU_UNKNOWN								= 1 << 2;
-const int MENU_ASSIGNMENT							= 1 << 3;
-const int MENU_CHARACTER							= 1 << 4;
-const int MENU_CHAT									= 1 << 5;
-const int MENU_EARLYACCESS							= 1 << 6;
-const int MENU_INGAME								= 1 << 7;
-const int MENU_INSPECT								= 1 << 8;
-const int MENU_INVENTORY							= 1 << 9;
-const int MENU_LOADING								= 1 << 10;
-const int MENU_MAIN									= 1 << 11;
-const int MENU_OPTIONS								= 1 << 12;
-const int MENU_SCENE_EDITOR							= 1 << 13;
-const int MENU_SCRIPTCONSOLE						= 1 << 14;
-const int MENU_STARTUP								= 1 << 15;
-const int MENU_CHAT_INPUT							= 1 << 16;
-const int MENU_SCRIPTCONSOLE_DIALOG_PRESET_NAME		= 1 << 17;
-const int MENU_SCRIPTCONSOLE_DIALOG_PRESET_RENAME 	= 1 << 18;
-const int MENU_CONTROLS_PRESET						= 1 << 19;
-const int MENU_NOTE									= 1 << 20;
-const int MENU_MAP									= 1 << 21;
-const int MENU_BOOK									= 1 << 22;
-const int MENU_HELP_SCREEN      					= 1 << 23;
-const int MENU_GESTURES		      					= 1 << 24;
-const int MENU_LOGOUT 								= 1 << 25;
-const int MENU_TITLE_SCREEN							= 1 << 26;
-const int MENU_XBOX_CONTROLS						= 1 << 27;
-const int MENU_RADIAL_QUICKBAR						= 1 << 28;
-const int MENU_SERVER_BROWSER						= 1 << 29;
-const int MENU_INGAME_XBOX							= 1 << 38;
+const int MENU_NONE									= 2;
+const int MENU_ASSIGNMENT							= 3;
+const int MENU_UNKNOWN								= 4;
+const int MENU_CHARACTER							= 5;
+const int MENU_CHAT									= 6;
+const int MENU_EARLYACCESS							= 7;
+const int MENU_SCENE_EDITOR							= 8;
+const int MENU_INGAME								= 9;
+const int MENU_INSPECT								= 10;
+const int MENU_INVENTORY							= 11;
+const int MENU_LOADING								= 12;
+const int MENU_MAIN									= 13;
+const int MENU_OPTIONS								= 14;
+const int MENU_STARTUP								= 15;
+const int MENU_SCRIPTCONSOLE						= 16;
+const int MENU_CHAT_INPUT							= 17;
+const int MENU_SCRIPTCONSOLE_DIALOG_PRESET_NAME		= 18;
+const int MENU_SCRIPTCONSOLE_DIALOG_PRESET_RENAME 	= 19;
+const int MENU_CONTROLS_PRESET						= 20;
+const int MENU_NOTE									= 21;
+const int MENU_MAP									= 22;
+const int MENU_BOOK									= 23;
+const int MENU_HELP_SCREEN      					= 24;
+const int MENU_GESTURES		      					= 25;
+const int MENU_LOGOUT 								= 26;
+const int MENU_TITLE_SCREEN							= 27;
+const int MENU_XBOX_CONTROLS						= 28;
+const int MENU_RADIAL_QUICKBAR						= 29;
+const int MENU_LOGIN_QUEUE							= 30;
+const int MENU_SERVER_BROWSER						= 31;
+const int MENU_CAMERA_TOOLS							= 32;
 
 const int GUI_WINDOW_MISSION_LOADER = 1;
 
@@ -234,39 +236,61 @@ const int ID_EMOTE_RPS 			= 14;
 	const int ID_EMOTE_THUMB			= 9;
 	const int ID_EMOTE_THROAT		 	= 10;
 	const int ID_EMOTE_SUICIDE			= 11; //FB
-	const int ID_EMOTE_DANCE 		= 12;
+	const int ID_EMOTE_DANCE 			= 12;
+	const int ID_EMOTE_CAMPFIRE 		= 13;
+	const int ID_EMOTE_SITA 			= 14;
+	const int ID_EMOTE_SITB 			= 15;
+	const int ID_EMOTE_THUMBDOWN 		= 16;
 
 const int ID_EMOTE_DABBING 		= 32;
-const int ID_EMOTE_SITA 		= 33; //FB
 const int ID_EMOTE_TIMEOUT 		= 35;
 const int ID_EMOTE_CLAP 		= 39;
 const int ID_EMOTE_POINT 		= 40;
 const int ID_EMOTE_SILENT 		= 43;
 const int ID_EMOTE_SALUTE 		= 44;
 const int ID_EMOTE_RPS 			= 45;
+const int ID_EMOTE_WATCHING 	= 46;
+const int ID_EMOTE_HOLD 		= 47;
+const int ID_EMOTE_LISTENING 	= 48;
+const int ID_EMOTE_POINTSELF 	= 49;
+const int ID_EMOTE_LOOKATME 	= 50;
+const int ID_EMOTE_TAUNTTHINK 	= 51;
+const int ID_EMOTE_MOVE 		= 52;
+const int ID_EMOTE_DOWN 		= 53;
+const int ID_EMOTE_COME 		= 54;
+const int ID_EMOTE_RPS_R 		= 55;
+const int ID_EMOTE_RPS_P 		= 56;
+const int ID_EMOTE_RPS_S 		= 57;
+const int ID_EMOTE_NOD 			= 58;
+const int ID_EMOTE_SHAKE 		= 59;
+const int ID_EMOTE_SHRUG 		= 60;
+const int ID_EMOTE_SURRENDER 	= 61;
+
 /**
  * \defgroup Configurations for Environment class
  * \desc Configurations for Environment class
  * @{
  */
-const float ENVIRO_TICK_RATE = 2; //in secs. how often should enviro effet process
-const float	ENVIRO_TICKS_TO_WETNESS_CALCULATION = 30; // each X (ticks) is processed wetness on items on player
-const float ENVIRO_WET_PENALTY_EFFECT = 5;//how much wetness of clothes affects players heatcomfort
-const float ENVIRO_WET_INCREMENT = 0.01; // amount of wetness added to items wet value each tick if is raining
-const float ENVIRO_DRY_INCREMENT = 0.0005; // amount of wetness subtracted from items wet value each tick if is not raining due to player heat
-const float ENVIRO_SUN_INCREMENT = 0.002; // amount of wetness subtracted from items wet value each tick if is not raining due to sun
-const float ENVIRO_CLOUD_DRY_EFFECT = 0.1; // how many % of ENVIRO_SUN_INCREMENT is reduced by cloudy sky
-const float ENVIRO_CLOUDS_TEMP_EFFECT = 0.1; // how many % of environment temperature can be lowered by clouds
-const float ENVIRO_FOG_TEMP_EFFECT = 0.2; // how many % of environment temperature can be lowered by fog
-const float ENVIRO_WET_PENALTY = 0.5; //at which state of item wetness (0-1) will heat isolation start having negative effect on heat comfort of item
-const float ENVIRO_WET_PASSTHROUGH_KOEF = 0.1; //how many times slower is wetting/drying items in backpacks
-const float ENVIRO_ITEM_HEAT_TRANSFER_KOEF = 0.01; //converts temperature of items to entities heatcomfort gain
-const float ENVIRO_WATER_TEMPERATURE_KOEF = 0.5; //how many time is water colder than air
-const float ENVIRO_DEFAULT_ENTITY_HEAT = 3; //heat entity generates if not moving
-const float ENVIRO_TEMPERATURE_HEIGHT_REDUCTION = 0.0065; //amount of ?C reduced for each 100 meteres of height above water level
-const float ENVIRO_WIND_EFFECT = 1; //amount of % wind affect drying/wetting
-const float ENVIRO_HIGH_NOON = 12; //when is sun highest on sky
-const float	ENVIRO_HEAT_COMFORT_MAX = 210;
+const float ENVIRO_TICK_RATE 						= 2;		//! in secs. how often should enviro effet process
+const float	ENVIRO_TICKS_TO_WETNESS_CALCULATION 	= 2;	  	//! each X (ticks) is processed wetness on items on player
+const float ENVIRO_TICK_ROOF_RC_CHECK 				= 10;	  	//! in secs. how often we should check if player is under the roof (raycast)
+const float ENVIRO_WET_PENALTY_EFFECT 				= 5;	  	//! how much wetness of clothes affects players heatcomfort
+const float ENVIRO_WET_INCREMENT 					= 0.01;	  	//! amount of wetness added to items wet value each tick if is raining
+const float ENVIRO_DRY_INCREMENT 					= 0.0005; 	//! amount of wetness subtracted from items wet value each tick if is not raining due to player heat
+const float ENVIRO_SUN_INCREMENT 					= 0.002;	//! amount of wetness subtracted from items wet value each tick if is not raining due to sun
+const float ENVIRO_CLOUD_DRY_EFFECT 				= 0.1;		//! how many % of ENVIRO_SUN_INCREMENT is reduced by cloudy sky
+const float ENVIRO_CLOUDS_TEMP_EFFECT 				= 0.1;		//! how many % of environment temperature can be lowered by clouds
+const float ENVIRO_FOG_TEMP_EFFECT 					= 0.2;		//! how many % of environment temperature can be lowered by fog
+const float ENVIRO_WET_PENALTY 						= 0.5;		//! at which state of item wetness (0-1) will heat isolation start having negative effect on heat comfort of item
+const float ENVIRO_WET_PASSTHROUGH_COEF 			= 0.1;		//! how many times slower is wetting/drying items in backpacks
+const float ENVIRO_ITEM_HEAT_TRANSFER_COEF 			= 0.01;		//! converts temperature of items to entities heatcomfort gain
+const float ENVIRO_WATER_TEMPERATURE_COEF 			= 0.5;		//! how many time is water colder than air
+const float ENVIRO_DEFAULT_ENTITY_HEAT 				= 3;		//! heat entity generates if not moving
+const float ENVIRO_TEMPERATURE_HEIGHT_REDUCTION 	= 0.0065;	//! amount of ?C reduced for each 100 meteres of height above water level
+const float ENVIRO_TEMPERATURE_INSIDE_COEF 			= 1.25;		//! increases temp in interiors
+const float ENVIRO_TEMPERATURE_UNDERROOF_COEF		= 1.1;
+const float ENVIRO_WIND_EFFECT 						= 1;		//! amount of % wind affect drying/wetting
+const float ENVIRO_HIGH_NOON 						= 12;		//! when is sun highest on sky
 /** @}*/
 
 /**
@@ -291,6 +315,7 @@ const int 	STAMINA_DRAIN_STANDING_SPRINT_PER_SEC = 5; //in units (how much sprin
 const int 	STAMINA_DRAIN_CROUCHED_SPRINT_PER_SEC = 1; //in units (how much sprint in crouch depletes stamina)
 const int 	STAMINA_DRAIN_PRONE_SPRINT_PER_SEC = 3; //in units (how much sprint in prone depletes stamina)
 const float	STAMINA_DRAIN_HOLD_BREATH = 0.2; //in units (how much holding breath depletes stamina)
+const int	STAMINA_DRAIN_JUMP = 20;		// in units (how much jumping depletes stamina)
 const int	STAMINA_DRAIN_MELEE_LIGHT = 5; //in units (how much light melee punch depletes stamina)
 const float	STAMINA_DRAIN_MELEE_HEAVY = 20; //in units (how much heavy melee punch depletes stamina)
 const int	STAMINA_DRAIN_MELEE_EVADE = 8; // in units (how much evade depletes stamina)
@@ -304,6 +329,7 @@ const float STAMINA_KG_TO_STAMINAPERCENT_PENALTY = 2.5; //in units (by how many 
 const float STAMINA_MIN_CAP = 5; //in units (overload won't reduce max stamina bar under this value)
 const float STAMINA_SPRINT_THRESHOLD = 25; //in units (how many units of stamina you need regained in order to be able to start sprinting)
 const float STAMINA_HOLD_BREATH_THRESHOLD = 10; // in units
+const float STAMINA_JUMP_THRESHOLD = 20; // in units
 const float STAMINA_MELEE_HEAVY_THRESHOLD = STAMINA_DRAIN_MELEE_HEAVY; // in units (how many units we need to make a heavy hit in melee)
 const float STAMINA_MELEE_EVADE_THRESHOLD = 8; // in units
 const float STAMINA_REGEN_COOLDOWN_DEPLETION = 0.45; // in secs (how much time we will spend in cooldown before the stamina will starts with regeneration)
@@ -347,6 +373,10 @@ const int		UA_CHECK_CON = 13;
 const int		UA_AM_PENDING = 14;
 const int		UA_AM_ACCEPTED = 15;
 const int		UA_AM_REJECTED = 16;
+const int		UA_IN_START = 17;
+const int		UA_IN_END = 18;
+const int		UA_SPAWN_DUST_A = 19;
+const int		UA_SPAWN_DUST_B = 20;
 	
 const int		UA_ERROR = 24;
 	
@@ -481,7 +511,9 @@ const float PROJECTED_CURSOR_DISTANCE = 5;//how long is the raycast from the wea
  * \defgroup FOV settings
  * \desc Constats for setting of DayZPlayerCamera FOV
  */
-const float DZPLAYER_CAMERA_FOV_EYEZOOM		= 0.3926;	// 45deg (H) / 22.5deg (V)
-const float DZPLAYER_CAMERA_FOV_IRONSIGHTS	= 0.5236;	// 60deg (H) / 30deg (V)
+
+//! FOV (vertical angle/2) in radians. Take care to modify also in "basicDefines.hpp"
+const float DZPLAYER_CAMERA_FOV_EYEZOOM		= 0.3926;	// 45deg
+const float DZPLAYER_CAMERA_FOV_IRONSIGHTS	= 0.5236;	// 60deg
 
 const string DEFAULT_CHARACTER_NAME = "Survivor";

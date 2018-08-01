@@ -11,6 +11,7 @@ const int INPUT_UDT_WEAPON_REMOTE_SYNC			= 9;
 const int INPUT_UDT_WEAPON_REMOTE_EVENT			= 10;
 const int INPUT_UDT_USER_MUTE_XBOX				= 11;
 const int INPUT_UDT_USER_SYNC_PERMISSIONS		= 12;
+const int INPUT_UDT_HAND_REMOTE_EVENT			= 13;
 
 const int AC_UNCATEGORIZED						= 0;
 const int AC_SINGLE_USE							= 1;
@@ -149,6 +150,18 @@ const int AT_POUR_LIQUID = 225;
 const int AT_DRAIN_LIQUID = 226;
 const int AT_DRINK_COOKING_POT = 227;
 const int AT_EAT_FRUIT = 228;
+const int AT_VEH_ENGINE_START = 229;
+const int AT_VIEW_COMPASS = 230;
+const int AT_DEPLOY_OBJECT = 231;
+const int AT_RAISE_MEGAPHONE = 232;
+const int AT_ACTIVATE_TRAP = 233;
+const int AT_EMPTY_BOTTLE = 234;
+const int AT_LOAD_MULTI_BULLET_TO_WEAPON = 235;
+const int AT_VIEW_OPTICS = 236;
+const int AT_VIEW_BINOCULARS = 237;
+const int AT_EMPTY_COOKING_POT = 238;
+
+
 
 //SingleUse Actions
 const int AT_OPEN = 501;
@@ -218,6 +231,11 @@ const int AT_INJECT_EPINEPHRINE_T = 568;
 const int AT_INJECT_MORPHINE_S = 569;
 const int AT_INJECT_MORPHINE_T = 570;
 const int AT_HANDCUFF_T = 571;
+const int AT_VEH_ENGINE_STOP = 572;
+const int AT_DETACH = 573;
+const int AT_UNFOLD_MAP = 574;
+
+
 
 //Interact Actions
 const int AT_PULL_OUT_PLUG = 1001;
@@ -241,7 +259,6 @@ const int AT_TURN_OFF_TRANSMITTER_ON_GROUND = 1019;
 const int AT_TUNE_FREQUENCY_ON_GROUND = 1020;
 const int AT_TOGGLE_TENT_OPEN = 1021;
 const int AT_PACK_TENT = 1022;
-const int AT_ACTIVATE_TRAP = 1024;
 const int AT_OPEN_BARREL = 1025;
 const int AT_CLOSE_BARREL = 1026;
 const int AT_COVER_PLANTED_SEED = 1027;
@@ -264,6 +281,8 @@ const int AT_OPEN_CAR_DOORS = 1043;
 const int AT_WASH_HANDS_WELL_ONE = 1044;
 const int AT_WASH_HANDS_WATER_ONE = 1045;
 const int AT_GETOUT_TRANSPORT = 1046;
+const int AT_CLOSE_V3S_PLATE = 1047;
+const int AT_OPEN_V3S_PLATE = 1048;
 
 //weapons
 const int AT_WPN_ATTACH_MAGAZINE = 1501;
@@ -272,8 +291,10 @@ const int AT_WPN_DETACH_MAGAZINE = 1503;
 const int AT_WPN_LOAD_BULLET = 1504;
 const int AT_WPN_UNJAM = 1505;
 const int AT_WPN_EJECT_BULLET = 1506;
+const int AT_WPN_LOAD_MULTI_BULLETS_START = 1507;
+const int AT_WPN_LOAD_MULTI_BULLETS_END   = 1508;
 
 //vehicle
 const int AT_VEH_SWITCH_LIGHTS = 2001;
-const int AT_VEH_ENGINE_START = 2002;
-const int AT_VEH_ENGINE_STOP = 2003;
+//const int AT_VEH_ENGINE_START = 2002;
+//const int AT_VEH_ENGINE_STOP = 2003;

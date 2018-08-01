@@ -51,13 +51,13 @@ class ActionPullOutPlug: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		if ( targetObject )
 		{
 			EntityAI target_EAI = EntityAI.Cast( targetObject );
-			string selection = targetObject.GetActionComponentName(target.GetComponentIndex());
+			string selection = targetObject.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 			
 			EntityAI device = EntityAI.Cast( target_EAI.GetCompEM().GetPlugOwner(selection) );
 			if ( device )
@@ -66,9 +66,9 @@ class ActionPullOutPlug: ActionInteractBase
 			}
 			
 			// Disable Advanced Placement
-			if ( player.IsPlacingServer() )
+			if ( action_data.m_Player.IsPlacingServer() )
 			{
-				player.PlacingCancelServer();
+				action_data.m_Player.PlacingCancelServer();
 			}
 		}
 	}

@@ -5,8 +5,8 @@ class ActionSwapItemToHands: ActionInteractBase
 	void ActionSwapItemToHands()
 	{
 		m_MessageSuccess    = "";
-		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP;
-		m_CommandUIDProne   = DayZPlayerConstants.CMD_ACTIONFB_PICKUP;
+		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS;
+		m_CommandUIDProne   = DayZPlayerConstants.CMD_ACTIONFB_PICKUP_HANDS;
 
 		m_HUDCursorIcon     = CursorIcons.LootCorpse;
 	}
@@ -48,16 +48,16 @@ class ActionSwapItemToHands: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		EntityAI eih = EntityAI.Cast(player.GetItemInHands());
-		EntityAI ntarget = EntityAI.Cast(target.GetObject());
-		player.LocalSwapEntities(ntarget, eih);
+		EntityAI eih = EntityAI.Cast(action_data.m_Player.GetItemInHands());
+		EntityAI ntarget = EntityAI.Cast(action_data.m_Target.GetObject());
+		action_data.m_Player.LocalSwapEntities(ntarget, eih);
 	}
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
-		EntityAI eih = EntityAI.Cast(player.GetItemInHands());
-		EntityAI ntarget = EntityAI.Cast(target.GetObject());
-		player.LocalSwapEntities(ntarget, eih);
+		EntityAI eih = EntityAI.Cast(action_data.m_Player.GetItemInHands());
+		EntityAI ntarget = EntityAI.Cast(action_data.m_Target.GetObject());
+		action_data.m_Player.LocalSwapEntities(ntarget, eih);
 	}
 };

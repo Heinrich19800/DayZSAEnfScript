@@ -10,7 +10,7 @@ class ActionInjectMorphineSelf: ActionInjectSelf
 		return AT_INJECT_MORPHINE_S;
 	}
 		
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
 		//player.m_ModifiersManager.ActivateModifier(eModifiers.MDF_CHEMICALPOISON);
 	}

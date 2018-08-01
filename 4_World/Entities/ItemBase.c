@@ -17,7 +17,8 @@ class ItemBase extends InventoryItem
 	float 	m_Absorbency; 
 	int 	m_VarLiquidType;
 	int		m_Item_Stage;
-	bool	m_IsHologram;
+	bool	m_IsBeingPlaced;
+	bool	m_IsTakeable;
 	// items color variables
 	int 	m_ColorComponentR;
 	int 	m_ColorComponentG;
@@ -82,14 +83,15 @@ class ItemBase extends InventoryItem
 		m_VarWet = GetWetInit();
 		m_VarLiquidType = GetLiquidTypeInit();
 		m_VarQuantity = GetQuantityInit();//should be by the CE, this is just a precaution
-		m_IsHologram = false;
+		m_IsBeingPlaced = false;
+		m_IsTakeable = true;
 		m_HeatIsolation = GetHeatIsolation();
 		m_Absorbency = GetAbsorbency();
 		
 		//RegisterNetSyncVariableInt("m_VariablesMask");
 		if ( HasQuantity() ) RegisterNetSyncVariableFloat("m_VarQuantity", GetQuantityMin(), GetQuantityMax() );
 		RegisterNetSyncVariableFloat("m_VarTemperature", GetTemperatureMin(),GetTemperatureMax() );
-		RegisterNetSyncVariableFloat("m_VarWet", GetWetMin(), GetWetMax() );
+		RegisterNetSyncVariableFloat("m_VarWet", GetWetMin(), GetWetMax(), 2 );
 		RegisterNetSyncVariableInt("m_VarLiquidType");
 		
 		RegisterNetSyncVariableInt("m_ColorComponentR", 0, 255);
@@ -97,8 +99,9 @@ class ItemBase extends InventoryItem
 		RegisterNetSyncVariableInt("m_ColorComponentB", 0, 255);
 		RegisterNetSyncVariableInt("m_ColorComponentA", 0, 255);
 		
-		RegisterNetSyncVariableBool("m_IsHologram");
+		RegisterNetSyncVariableBool("m_IsBeingPlaced");
 		RegisterNetSyncVariableBool("m_Opened");
+		RegisterNetSyncVariableBool("m_IsTakeable");
 	
 	}
 	
@@ -448,16 +451,17 @@ class ItemBase extends InventoryItem
 		return false;
 	}
 	
-	bool IsHologram()
+	bool IsBeingPlaced()
 	{
-		return m_IsHologram;
+		return m_IsBeingPlaced;
 	}
 	
-	void SetIsHologram( bool is_hologram )
+	void SetIsBeingPlaced( bool is_being_placed )
 	{
-		m_IsHologram = is_hologram;
+		m_IsBeingPlaced = is_being_placed;
+		SetSynchDirty();
 	}
-
+	
 	float GetNutritionalEnergy()
 	{
 		if( !IsLiquidPresent() )
@@ -550,9 +554,9 @@ class ItemBase extends InventoryItem
 		}
 	}
 	// -------------------------------------------------------------------------
-	override void EEItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
+	override void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
 	{
-		super.EEItemLocationChanged(old_owner, new_owner);
+		super.OnItemLocationChanged(old_owner, new_owner);
 		
 		Man owner_player_old = NULL;
 		Man owner_player_new = NULL;
@@ -648,7 +652,7 @@ class ItemBase extends InventoryItem
 			}
 		}
 	}
-	override void OnWasAttached( EntityAI parent, string slot_name )
+	override void OnWasAttached( EntityAI parent, int slot_name )
 	{
 		//PlayerBase player;
 		//if(PlayerBase.CastTo(player, GetHierarchyRootPlayer()))
@@ -778,7 +782,7 @@ class ItemBase extends InventoryItem
 			if( new_item )
 			{			
 				MiscGameplayFunctions.TransferItemProperties(this,new_item);
-				AddQuantity(-split_quantity_new);
+				AddQuantity( -split_quantity_new );
 				new_item.SetQuantity( split_quantity_new );
 			}
 		}
@@ -873,7 +877,7 @@ class ItemBase extends InventoryItem
 			return false;
 		}
 		
-		if( player && (player.GetHumanInventory().GetEntityInHands() == this || player.GetHumanInventory().GetEntityInHands() == other_item )) return false;
+		//if( player && (player.GetHumanInventory().GetEntityInHands() == this || player.GetHumanInventory().GetEntityInHands() == other_item )) return false;
 		
 		return ( this.GetType() == other_item.GetType() );
 	}
@@ -889,7 +893,7 @@ class ItemBase extends InventoryItem
 			int max_quantity;
 			if( use_stack_max )
 			{
-				int stack_max = InventorySlots.GetStackMaxForSlotId( GetInventory().GetSlotId() );
+			int stack_max = InventorySlots.GetStackMaxForSlotId( GetInventory().GetSlotId() );
 				max_quantity = stack_max;
 			}
 			else
@@ -907,7 +911,7 @@ class ItemBase extends InventoryItem
 			{
 				quantity_used = other_item_quantity;
 			}
-			if( quantity_used!= 0 )
+			if( quantity_used != 0 )
 			{
 				this.AddQuantity(quantity_used);
 				other_item.AddQuantity(-quantity_used);
@@ -1954,11 +1958,11 @@ class ItemBase extends InventoryItem
 	{
 		if( GetQuantity() == GetQuantityMax() )
 		{
-			return true;			
-		}
+				return true;			
+			}
 		else
 		{
-			return false;			
+			return false;
 		}
 	}
 	
@@ -2003,7 +2007,7 @@ class ItemBase extends InventoryItem
 		int ConfWeight;
 		
 		int AttachmentsCount = GetInventory().AttachmentCount();
-		Cargo cargo = GetInventory().GetCargo();
+		CargoBase cargo = GetInventory().GetCargo();
 		
 		ConfWeight = this.ConfigGetInt("weight");
 		
@@ -2279,7 +2283,7 @@ class ItemBase extends InventoryItem
 			//nplayer.CalculatePlayerLoad();
 		}
 	}
-
+	
 	// -------------------------------------------------------------------------
 	//! Event called on item when it is removed from the player(Man) inventory, passes the old owner as a parameter
 	void OnInventoryExit(Man player)
@@ -2317,9 +2321,9 @@ class ItemBase extends InventoryItem
 	{
 		super.OnPlacementStarted( player );
 		
-		SetIsHologram( true );
+		SetTakeable(false);
 	}
-	
+
 	//-----------------------------
 	// AGENT SYSTEM
 	//-----------------------------
@@ -2350,7 +2354,11 @@ class ItemBase extends InventoryItem
 	{
 		m_AttachedAgents = 0;
 	}
-
+	//--------------------------------------------------------------------------
+	void RemoveAllAgentsExcept(int agents_to_keep_mask)
+	{
+		m_AttachedAgents = m_AttachedAgents & agent_to_keep;
+	}
 	// -------------------------------------------------------------------------
 	override void InsertAgent(int agent, int count)
 	{
@@ -2517,6 +2525,42 @@ class ItemBase extends InventoryItem
 	}
 	
 	//----------------------------------------------------------------
+	//Item Behaviour
+	bool IsHeavyBehaviour()
+	{
+		return false;
+	}
+	
+	bool IsOneHandedBehaviour()
+	{
+		return false;
+	}
+	
+	bool IsTwoHandedBehaviour()
+	{
+		return false;
+	}
+	
+	bool IsDeployable()
+	{
+		return false;
+	}
+
+	//----------------------------------------------------------------
+	// Item Targeting (User Actions)
+	void SetTakeable(bool pState)
+	{
+		m_IsTakeable = pState;
+		SetSynchDirty();
+	}
+
+	bool IsTaketable()
+	{
+		return m_IsTakeable;
+	}
+	
+	
+	//----------------------------------------------------------------
 	//Has item stages in config?
 	bool IsItemStaged()
 	{
@@ -2582,7 +2626,7 @@ EntityAI SpawnItemOnLocation (string object_name, notnull InventoryLocation loc,
 		if ( is_item && full_quantity )
 		{
 			ItemBase item = ItemBase.Cast( entity );
-			item.SetQuantity(item.GetQuantityMax());// Set full quantity
+			item.SetQuantity(item.GetQuantityInit());// Set full quantity
 		}
 	}
 	else
@@ -2600,7 +2644,7 @@ void SetupSpawnedItem (ItemBase item, float health, float quantity)
 		if ( quantity == -1 )
 		{
 			if (item.HasQuantity())
-				quantity = item.GetQuantityMax();
+				quantity = item.GetQuantityInit();
 		}
 
 		item.SetHealth("", "", health);

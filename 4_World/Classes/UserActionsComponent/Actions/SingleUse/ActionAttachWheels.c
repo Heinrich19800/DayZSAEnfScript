@@ -1,3 +1,4 @@
+// TODO: REMOVE -> Attach action handle it
 class ActionAttachWheels: ActionAttach
 {
 	int m_wheel_hub;
@@ -94,22 +95,22 @@ class ActionAttachWheels: ActionAttach
  		return false;
 	}
 
-	override void OnCompleteLoopServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteLoopServer( ActionData action_data )
 	{
 		EntityAI target_entity;
-		Class.CastTo(target_entity,  target.GetObject() ); // cast to ItemBase
-		int slot_index	= item.GetInventory().GetSlotId();
+		Class.CastTo(target_entity,  action_data.m_Target.GetObject() ); // cast to ItemBase
+		int slot_index	= action_data.m_MainItem.GetInventory().GetSlotId();
 		int test	= m_wheel_hub;
-		if (!target_entity.LocalTakeEntityAsAttachmentEx( item, slot_index ))
-			target_entity.LocalTakeEntityAsAttachment( item );
+		if (!target_entity.LocalTakeEntityAsAttachmentEx( action_data.m_MainItem, slot_index ))
+			target_entity.LocalTakeEntityAsAttachment( action_data.m_MainItem );
 	}
-	override void OnCompleteLoopClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteLoopClient( ActionData action_data )
 	{
 		EntityAI target_entity;
-		Class.CastTo(target_entity,  target.GetObject() ); // cast to ItemBase
-		int slot_index	= item.GetInventory().GetSlotId();
+		Class.CastTo(target_entity,  action_data.m_Target.GetObject() ); // cast to ItemBase
+		int slot_index	= action_data.m_MainItem.GetInventory().GetSlotId();
 		int test	= m_wheel_hub;
-		if (!target_entity.LocalTakeEntityAsAttachmentEx( item, slot_index ))
-			target_entity.LocalTakeEntityAsAttachment( item );
+		if (!target_entity.LocalTakeEntityAsAttachmentEx( action_data.m_MainItem, slot_index ))
+			target_entity.LocalTakeEntityAsAttachment( action_data.m_MainItem );
 	}
 };

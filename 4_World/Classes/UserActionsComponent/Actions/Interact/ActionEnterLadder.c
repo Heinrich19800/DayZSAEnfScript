@@ -28,7 +28,7 @@ class ActionEnterLadder: ActionInteractBase
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{	
-		//! is target ? not on ladder and not falling ? 
+		//! is action_data.m_Target ? not on ladder and not falling ? 
 		if (!target || !target.GetObject() || player.GetCommand_Ladder() || player.GetCommand_Fall() )
 			return false;
 
@@ -55,7 +55,7 @@ class ActionEnterLadder: ActionInteractBase
 				
 		// ze stringu compName dostat posledni cislo a to je index zebriku 
 				
-		//building.GetActionComponentNameList( target.GetComponentIndex(), components );
+		//building.GetActionComponentNameList( action_data.m_Target.GetComponentIndex(), components );
 				
 		string condCompName = string.Format("%1_con", compName);
 		vector pos = player.GetPosition();
@@ -120,28 +120,28 @@ class ActionEnterLadder: ActionInteractBase
 		return false;
 	}
 	
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Start( ActionData action_data )
 	{
 
 		Building 	b;
-		Class.CastTo(b, target.GetObject());
+		Class.CastTo(b, action_data.m_Target.GetObject());
 		
 		if (b)
 		{
-			string compName 	= b.GetActionComponentName( target.GetComponentIndex() );
+			string compName 	= b.GetActionComponentName( action_data.m_Target.GetComponentIndex() );
 			int 	ladderIndex = HumanCommandLadder.DebugGetLadderIndex(compName);
 			
-			player.StartCommand_Ladder(b, ladderIndex );
+			action_data.m_Player.StartCommand_Ladder(b, ladderIndex );
 		}
 
 
 		/* if( GetGame().IsServer() )
 		{
-			OnStartServer(player, target, item);
+			OnStartServer(action_data);
 		}
 		else
 		{
-			OnStartClient(player, target, item);
+			OnStartClient(action_data);
 		}*/
 	}
 	
@@ -161,12 +161,12 @@ class ActionEnterLadder: ActionInteractBase
 		ctx.Write(componentIndex);
 	}
 
-	override void OnStartServer( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartServer( ActionData action_data )
 	{
 		Print("psovis - server/single");
 		
 		Building building;
-		if ( Class.CastTo(building, target.GetObject()) )
+		if ( Class.CastTo(building, action_data.m_Target.GetObject()) )
 		{
 			ref array<Selection> memSelections	= new array<Selection>();
 
@@ -188,7 +188,7 @@ class ActionEnterLadder: ActionInteractBase
 		}		
 	}*/
 	
-	/*override void OnStartClient( PlayerBase player, ActionTarget target, ItemBase item )
+	/*override void OnStartClient( ActionData action_data )
 	{
 		Print("psovis - client");
 	}*/

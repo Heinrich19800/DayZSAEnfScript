@@ -45,17 +45,17 @@ class ActionRepairWithToolFromHands: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		if ( targetObject  /* &&  targetObject.IsKindOf("ItemBase")*/ )
 		{
 			ItemBase item_to_repair = ItemBase.Cast( targetObject );
-			Param1<float> nacdata = Param1<float>.Cast( acdata );
-			bool was_repaired = item_to_repair.Repair(player, item, nacdata.param1);
+			Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );
+			bool was_repaired = item_to_repair.Repair(action_data.m_Player, action_data.m_MainItem, nacdata.param1);
 			Print(was_repaired);
 		}
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

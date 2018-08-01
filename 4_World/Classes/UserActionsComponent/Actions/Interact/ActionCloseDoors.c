@@ -27,7 +27,7 @@ class ActionCloseDoors: ActionInteractBase
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		if( !target ) return false;
-		//if( IsDamageDestroyed(target) ) return false;
+		//if( IsDamageDestroyed(action_data.m_Target) ) return false;
 		if( !IsBuilding(target) ) return false;
 		
 		Building building;
@@ -43,12 +43,12 @@ class ActionCloseDoors: ActionInteractBase
 		return false;
 	}
 
-	override void OnStartServer( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartServer( ActionData action_data )
 	{
 		Building building;
-		if( Class.CastTo(building, target.GetObject()) )
+		if( Class.CastTo(building, action_data.m_Target.GetObject()) )
 		{
-			int doorIndex = building.GetDoorIndex(target.GetComponentIndex());
+			int doorIndex = building.GetDoorIndex(action_data.m_Target.GetComponentIndex());
 			if( doorIndex != -1 )
 			{
 				building.CloseDoor(doorIndex);

@@ -4,7 +4,7 @@ class ActionMineRockCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousMineRock(TIME_BETWEEN_MATERIAL_DROPS);
+		m_ActionData.m_ActionComponent = new CAContinuousMineRock(TIME_BETWEEN_MATERIAL_DROPS);
 	}
 };
 
@@ -13,16 +13,13 @@ class ActionMineRock: ActionContinuousBase
 	void ActionMineRock()
 	{
 		m_CallbackClass = ActionMineRockCB;
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CHOPTREE;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_MINEROCK;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;
-		m_CallbackClass = ActionMineRockCB;
 		m_MessageStartFail = "My tool is too damaged to mine.";
 		m_MessageStart = "I started mining the rock.";
 		m_MessageSuccess = "I have mined the rock.";
 		m_MessageFail = "My tool is ruined.";
-		//m_AnimationOneHanded = "DRINK";
-		//m_AnimationTwoHanded = "DIGGINGSHOVEL";
 		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_HIGH;
 	}
 	
@@ -53,8 +50,8 @@ class ActionMineRock: ActionContinuousBase
 	}
 
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

@@ -2,13 +2,17 @@ enum EPlayerSoundEventID
 {
 	HOLD_BREATH = 1,
 	RELEASE_BREATH,
-	ENUM_COUNT,
 	STAMINA_DOWN_LIGHT,
 	STAMINA_DOWN_HEAVY,
 	STAMINA_UP_LIGHT,
 	STAMINA_UP_HEAVY,
 	STAMINA_UP_END,
 	TAKING_DMG_LIGHT,
+	SYMPTOM_COUGH,
+	SYMPTOM_LAUGHTER,
+	SYMPTOM_SNEEZE,
+	//--------------
+	ENUM_COUNT,
 }
 
 class PlayerSoundEventHandler
@@ -30,6 +34,9 @@ class PlayerSoundEventHandler
 		m_AvailableStates[EPlayerSoundEventID.STAMINA_UP_HEAVY] = new StaminaUpHeavy();
 		m_AvailableStates[EPlayerSoundEventID.STAMINA_UP_END] = new StaminaUpEnd();
 		m_AvailableStates[EPlayerSoundEventID.TAKING_DMG_LIGHT] = new DamageLightSoundEvent();
+		m_AvailableStates[EPlayerSoundEventID.SYMPTOM_SNEEZE] = new SneezeSoundEvent();
+		m_AvailableStates[EPlayerSoundEventID.SYMPTOM_LAUGHTER] = new LaugherSoundEvent();
+		m_AvailableStates[EPlayerSoundEventID.SYMPTOM_COUGH] = new CoughSoundEvent();
 	}
 	
 	static EPlayerSoundEventType GetPlayerSoundEventType(EPlayerSoundEventID id)
@@ -82,7 +89,7 @@ class PlayerSoundEventHandler
 		if(m_CurrentState)
 		{
 			
-			if( m_CurrentState.HasPriority(id) )
+			if( m_CurrentState.ThisHasPriority(id) )
 			{
 				// do nothing
 				return false;

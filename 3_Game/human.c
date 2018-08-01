@@ -15,6 +15,9 @@ class HumanInputController
 {
 	//--------------------------------------------------------------
 
+	//! disables input controller
+	proto native void			SetDisabled(bool pState);
+	
 	//! returns main heading angle (in radians)  -PI .. PI (this is world Y angle player is actualy pointing the camera)
 	proto native float 			GetHeadingAngle();
 
@@ -327,6 +330,9 @@ class HumanCommandMove
 
 	//! 0,1,2..3 idle, walk, run, sprint 
 	proto native float 		GetCurrentMovementSpeed();
+	
+	//! return true if prone is on back
+	proto native bool		IsOnBack();
 
 	//! marks command to continue to combo 
 	proto native void 		StartMeleeEvade();
@@ -479,8 +485,45 @@ class HumanCommandSwim
 // *************************************************************************************
 class HumanCommandVehicle
 {	
+	proto native Transport			GetTransport();
+	proto native int				GetVehicleClass();
+	proto native int				GetVehicleSeat();
 	proto native void				SetVehicleType(int pVehicleType);
+	proto native int				GetVehicleType();
+	
+	proto native void				GetOutVehicle();
+	proto native void				JumpOutVehicle();
 }
+
+// *************************************************************************************
+// ! HumanCommandClimb
+// *************************************************************************************
+
+//! result from static test
+class SHumanCommandClimbResult
+{
+	bool		m_bIsClimb;	
+	bool		m_bIsClimbOver;
+
+	vector 		m_ClimbGrabPoint;		//! grab point for climb && climb over
+	vector 		m_ClimbStandPoint;		//! where climb ends
+	vector 		m_ClimbOverStandPoint;	//! where climb over ends
+};
+
+
+
+//! command itself
+class HumanCommandClimb
+{	
+	//! debug draws climb heauristics
+	//! pDebugDrawLevel viz DebugDrawClimb
+	proto native static bool		DoClimbTest(Human pHuman, SHumanCommandClimbResult pResult, int pDebugDrawLevel);
+
+	//! debug draws climb heauristics
+	//! int pLevel = 1 result, 2 - capsules (3 - all)
+	proto native static bool		DebugDrawClimb(Human pHuman, int pLevel);
+}
+
 
 
 
@@ -558,10 +601,18 @@ enum WeaponActionChamberingTypes
 	CHAMBERING_STARTLOOPABLE_OPENED				= 10,		// start loop chambering
 	CHAMBERING_ENDLOOPABLE								= 11,		// end loop chambering
 	CHAMBERING_STARTLOOPABLE_CLOSED				= 12,		// start loop chambering
+	CHAMBERING_STARTLOOPABLE_SHOTGUN_UNCOCKED	= 15,
+	CHAMBERING_STARTLOOPABLE_SHOTGUN_COCKED		= 16, 
+	
+	CHAMBERING_DOUBLE_1				= 17,
+	CHAMBERING_DOUBLE_2				= 18,
+	CHAMBERING_DOUBLE_3				= 19,
+	CHAMBERING_DOUBLE_4				= 20,
+	
 
-	CHAMBERING_CROSSBOW_OPENED			= 20,		// chambering crossbow
-	CHAMBERING_CROSSBOW_CLOSED			= 21,		// chambering crossbow
-	CHAMBERING_CROSSBOW_FULL			= 22,		// chambering crossbow
+	CHAMBERING_CROSSBOW_OPENED			= 21,		// chambering crossbow
+	CHAMBERING_CROSSBOW_CLOSED			= 22,		// chambering crossbow
+	CHAMBERING_CROSSBOW_FULL			= 23,		// chambering crossbow
 };
 
 enum WeaponActionChamberingLoaderTypes
@@ -579,25 +630,24 @@ enum WeaponActionUnjammingTypes
 
 enum WeaponActionFireTypes
 {
-	//!	fire action types
-	FIRE_NORMAL 						= 0,		//!
-	FIRE_LAST 							= 1,		//!
-	FIRE_COCKED 						= 2,		//!
-	FIRE_UNCOCKED 						= 3,		//!
+	FIRE_NORMAL 						= 0,
+	FIRE_LAST 							= 1,
+	FIRE_COCKED 						= 2,
+	FIRE_UNCOCKED 						= 3,
 	FIRE_DRY							= 4,
 	FIRE_JAM							= 5
 };
 
 enum WeaponHideShowTypes
-{
-	//!	fire action types
-	HIDESHOW_SLOT_LEFTBODY				= 0,
-	HIDESHOW_SLOT_RIGHBODY				= 1,
-	HIDESHOW_SLOT_LEFTBACK 				= 2,
-	HIDESHOW_SLOT_RIGHTBACK 			= 3,
+{ 
+	HIDESHOW_SLOT_2HDLEFTBACK = 0,
+	HIDESHOW_SLOT_RFLLEFTBACK = 1,
+	HIDESHOW_SLOT_2HDRIGHTBACK = 2,
+	HIDESHOW_SLOT_RFLRIGHTBACK = 3,
+	HIDESHOW_SLOT_PISTOLBELT = 4,
+	HIDESHOW_SLOT_PISTOLCHEST = 5,
+	HIDESHOW_SLOT_KNIFEBACK = 6,
 };
-
-
 
 string WeaponActionTypeToString (int A, int AT)
 {
@@ -610,6 +660,8 @@ string WeaponActionTypeToString (int A, int AT)
 		case WeaponActions.CHAMBERING_LOADER: return typename.EnumToString(WeaponActionChamberingLoaderTypes, AT);
 		case WeaponActions.UNJAMMING: return typename.EnumToString(WeaponActionUnjammingTypes, AT);
 		case WeaponActions.FIRE: return typename.EnumToString(WeaponActionFireTypes, AT);
+		case WeaponActions.HIDE: return typename.EnumToString(WeaponHideShowTypes, AT);
+		case WeaponActions.SHOW: return typename.EnumToString(WeaponHideShowTypes, AT);
 	}
 	return "---";
 }
@@ -638,6 +690,7 @@ enum WeaponEvents
 	HAMMER_UNCOCKED,
 	HAMMER_COCKED
 	CHANGE_HIDE,
+	LOADING_LOOP_START,
 };
 
 
@@ -663,6 +716,9 @@ class HumanCommandWeapons
 
 	//! return -1 when there is no event, otherwise it returns pId of event from animation 
 	proto native 	int 		IsEvent();
+	
+	//! sets head tilt to optics
+	proto native	void		SetADS(bool pState);
 
 	//!
 	void 	RegisterDefaultEvents()
@@ -688,6 +744,7 @@ class HumanCommandWeapons
 		RegisterEvent("Weapon_Hammer_Uncocked", WeaponEvents.HAMMER_UNCOCKED);
 		RegisterEvent("Weapon_Hammer_Cocked", WeaponEvents.HAMMER_COCKED);
 		RegisterEvent("Weapon_Change_Hide", WeaponEvents.CHANGE_HIDE);
+		RegisterEvent("LoopStart", WeaponEvents.LOADING_LOOP_START);
 	}
 
 	//----------------------------------------------------

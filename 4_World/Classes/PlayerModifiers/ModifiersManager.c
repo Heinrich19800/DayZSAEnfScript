@@ -47,16 +47,19 @@ class ModifiersManager
 		AddModifier(new Fever);
 		AddModifier(new HeartAttack);
 		AddModifier(new HemolyticReaction);
-		AddModifier(new Hyperthermia);
-		AddModifier(new Hypothermia);
+		//AddModifier(new Hyperthermia);
+		//AddModifier(new Hypothermia);
 		AddModifier(new Poisoning);
 		AddModifier(new StuffedStomach);
 		AddModifier(new Tremor);
-		//AddModifier(new CommonCold);
-		//AddModifier(new Cholera);
-		//AddModifier(new Influenza);
-		//AddModifier(new Salmonella);
-		//AddModifier(new BrainDisease);
+		AddModifier(new Unconsciousness);
+		AddModifier(new ShockDamage);
+		AddModifier(new CommonCold);
+		AddModifier(new Cholera);
+		AddModifier(new Influenza);
+		AddModifier(new Salmonella);
+		AddModifier(new BrainDisease);
+		AddModifier(new Wet);
 	}
 
 	void SetModifiers(bool enable)
@@ -109,7 +112,7 @@ class ModifiersManager
 	
 	void ActivateModifier(int modifier_id, bool triggerEvent = EActivationType.TRIGGER_EVENT_ON_ACTIVATION)
 	{
-		m_ModifierList.Get(modifier_id).Activate(triggerEvent);
+		m_ModifierList.Get(modifier_id).ActivateRequest(triggerEvent);
 	}
 
 	void DeactivateModifier(int modifier_id, bool triggerEvent = true)

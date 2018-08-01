@@ -2,7 +2,7 @@ class ActionCoverHeadSelfCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.COVER_HEAD);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.COVER_HEAD);
 	}
 };
 
@@ -49,14 +49,14 @@ class ActionCoverHeadSelf: ActionContinuousBase
 		return true;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
 		//setaperture will be called from here, or from statemachine
 		//GetGame().GetWorld().SetAperture(10000);
-		player.GetInventory().CreateInInventory("BurlapSackCover");
-		item.TransferModifiers(player);
-		item.Delete();
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetInventory().CreateInInventory("BurlapSackCover");
+		action_data.m_MainItem.TransferModifiers(action_data.m_Player);
+		action_data.m_MainItem.Delete();
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 
 

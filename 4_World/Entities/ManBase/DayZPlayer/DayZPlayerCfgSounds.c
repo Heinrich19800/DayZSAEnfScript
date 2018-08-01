@@ -144,6 +144,79 @@ class DayZPlayerTypeAttachmentSoundLookupTableImpl extends DayZPlayerTypeAttachm
 }
 
 
+class DayZPlayerTypeSoundTableImpl extends DayZPlayerTypeAnimTable
+{
+	void DayZPlayerTypeSoundTableImpl()
+	{
+		m_animSoundEvents = new array<ref AnimSoundEvent>;
+		
+		string soundsCfgPath = "CfgVehicles SurvivorBase AnimEvents Sounds ";
+
+		int soundCount = GetGame().ConfigGetChildrenCount(soundsCfgPath);
+		for(int i = 0; i < soundCount; i++)
+		{
+			string soundName;
+			GetGame().ConfigGetChildName(soundsCfgPath, i, soundName);			
+			string soundPath = soundsCfgPath + soundName + " ";
+			AnimSoundEvent soundEvent = new AnimSoundEvent(soundPath);
+			m_animSoundEvents.Insert(soundEvent);
+		}
+	}
+	
+	AnimSoundEvent GetSoundEvent(int event_id)
+	{
+		for(int i = 0; i < m_animSoundEvents.Count(); i++)
+		{
+			AnimSoundEvent soundEvent = m_animSoundEvents.Get(i);
+			if(soundEvent.m_iID == event_id)
+			{
+				return soundEvent;
+			}
+		}
+
+		return NULL;
+	}
+	
+	ref array<ref AnimSoundEvent> m_animSoundEvents;
+}
+
+class DayZPlayerSoundVoiceTableImpl extends DayZPlayerTypeAnimTable
+{
+	void DayZPlayerSoundVoiceTableImpl()
+	{
+		m_animSoundEvents = new array<ref AnimSoundEvent>;
+		
+		string soundsCfgPath = "CfgVehicles SurvivorBase AnimEvents SoundVoice ";
+
+		int soundCount = GetGame().ConfigGetChildrenCount(soundsCfgPath);
+		for(int i = 0; i < soundCount; i++)
+		{
+			string soundName;
+			GetGame().ConfigGetChildName(soundsCfgPath, i, soundName);			
+			string soundPath = soundsCfgPath + soundName + " ";
+			AnimSoundEvent soundEvent = new AnimSoundEvent(soundPath);
+			m_animSoundEvents.Insert(soundEvent);
+		}
+	}
+	
+	AnimSoundEvent GetSoundEvent(int event_id)
+	{
+		for(int i = 0; i < m_animSoundEvents.Count(); i++)
+		{
+			AnimSoundEvent soundEvent = m_animSoundEvents.Get(i);
+			if(soundEvent.m_iID == event_id)
+			{
+				return soundEvent;
+			}
+		}
+
+		return NULL;
+	}
+	
+	ref array<ref AnimSoundEvent> m_animSoundEvents;
+}
+
+
 void DayZPlayerTypeRegisterSounds(DayZPlayerType pType)
 {
 	GetGame().ProfilerStart("DayZPlayerTypeRegisterSounds");
@@ -152,6 +225,7 @@ void DayZPlayerTypeRegisterSounds(DayZPlayerType pType)
 
 	pType.RegisterSoundEvent("Sound", -1);
 	pType.RegisterSoundEvent("SoundWeapon", 0.2);
+	pType.RegisterSoundEvent("SoundVoice", -1);
 	if(GetGame().IsClient() || !GetGame().IsMultiplayer())//attachments don't generate noise, so we can ignore them on server
 		pType.RegisterSoundEvent("SoundAttachment", 0.2);
 	
@@ -165,6 +239,12 @@ void DayZPlayerTypeRegisterSounds(DayZPlayerType pType)
 		
 		DayZPlayerTypeAttachmentSoundLookupTableImpl attachTable = new DayZPlayerTypeAttachmentSoundLookupTableImpl("CfgVehicles SurvivorBase AnimEvents Attachments");
 		pType.RegisterAttachmentSoundLookupTable(attachTable);
+		
+		DayZPlayerTypeSoundTableImpl soundTable = new DayZPlayerTypeSoundTableImpl();
+		pType.RegisterSoundTable(soundTable);
+		
+		DayZPlayerSoundVoiceTableImpl voiceTable = new DayZPlayerSoundVoiceTableImpl();
+		pType.RegisterSoundVoiceTable(voiceTable);
 	}
 	GetGame().ProfilerStop("DayZPlayerTypeRegisterSounds");
 }

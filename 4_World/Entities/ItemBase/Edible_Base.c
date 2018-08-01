@@ -272,20 +272,11 @@ class Edible_Base extends ItemBase
 	{
 		PlayerBase player = PlayerBase.Cast(GetHierarchyRootPlayer());
 		ReplaceEdibleWithNewLambda lambda = new ReplaceEdibleWithNewLambda(this, typeName, player);
-		player.LocalReplaceItemInHandsWithNew(lambda);
+		player.ServerReplaceItemInHandsWithNew(lambda);
 	}
 }
 
-class ReplaceEdibleWithNewLambda : ReplaceItemWithNewLambdaBase
+class ReplaceEdibleWithNewLambda : TurnItemIntoItemLambda
 {
 	void ReplaceEdibleWithNewLambda (EntityAI old_item, string new_item_type, PlayerBase player) { }
-
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
-	{
-		super.CopyOldPropertiesToNew(old_item, new_item);
-
-		float health = old_item.GetHealth("", "");
-		Print("ReplaceEdibleWithNewLambda::OnCreated old_item=" + old_item + " health=" + health);
-		new_item.SetHealth("", "", health);
-	}
 };

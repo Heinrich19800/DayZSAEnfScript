@@ -34,30 +34,30 @@ class ActionAttach: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		EntityAI target_entity = EntityAI.Cast( target.GetObject() );
-		EntityAI item_entity = EntityAI.Cast( item );
+		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
+		EntityAI item_entity = EntityAI.Cast( action_data.m_MainItem );
 		
 		//find inventory location for attachment
 		InventoryLocation target_location = new InventoryLocation;
 		
-		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
+		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
 		{
 			//target_entity.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
 			target_entity.LocalTakeEntityAsAttachmentEx( item_entity, target_location.GetSlot() );
 		}
 	}
 	
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
-		EntityAI target_entity = EntityAI.Cast( target.GetObject() );
-		EntityAI item_entity = EntityAI.Cast( item );
+		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
+		EntityAI item_entity = EntityAI.Cast( action_data.m_MainItem );
 		
 		//find inventory location for attachment
 		InventoryLocation target_location = new InventoryLocation;
 		
-		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
+		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
 		{
 			//target_entity.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
 			target_entity.LocalTakeEntityAsAttachmentEx( item_entity, target_location.GetSlot() );

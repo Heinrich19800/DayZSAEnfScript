@@ -4,7 +4,7 @@ class ActionBuryAshesCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTimeBuryAshes( UATimeSpent.BURY_ASHES, TIME_TO_REPEAT_CHECK );
+		m_ActionData.m_ActionComponent = new CAContinuousTimeBuryAshes( UATimeSpent.BURY_ASHES, TIME_TO_REPEAT_CHECK );
 	}
 }
 
@@ -54,18 +54,18 @@ class ActionBuryAshes: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		//destroy fireplace with ashes
-		GetGame().ObjectDelete( target.GetObject() );
+		GetGame().ObjectDelete( action_data.m_Target.GetObject() );
 
 		//add soft skill specialty
-		player.GetSoftSkillManager().AddSpecialty( UASoftSkillsWeight.ROUGH_LOW );	
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( UASoftSkillsWeight.ROUGH_LOW );	
 	}
 	
-	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
+	override void OnCancelServer( ActionData action_data  )
 	{
-		SendMessageToClient( player, m_ReasonToCancel );
+		SendMessageToClient( action_data.m_Player, m_ReasonToCancel );
 	}
 	
 	void SetReasonToCancel( string reason )

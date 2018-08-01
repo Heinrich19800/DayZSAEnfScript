@@ -5,9 +5,9 @@ class ActionForceDrinkAlcohol: ActionForceDrink
 		return AT_FORCE_DRINK_ALCOHOL;
 	}
 		
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		//ntarget.m_ModifiersManager.ActivateModifier(eModifiers.MDF_CHEMICALPOISON);
 	}
 };

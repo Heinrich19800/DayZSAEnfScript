@@ -2,7 +2,7 @@ class ActionSawPlanksCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_CONSTRUCT);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_CONSTRUCT);
 	}
 };
 
@@ -64,19 +64,19 @@ class ActionSawPlanks: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		PileOfWoodenPlanks item_POWP = PileOfWoodenPlanks.Cast( target.GetObject() );
+		PileOfWoodenPlanks item_POWP = PileOfWoodenPlanks.Cast( action_data.m_Target.GetObject() );
 		item_POWP.RemovePlanks(1);
 		
-		vector pos = player.GetPosition();
+		vector pos = action_data.m_Player.GetPosition();
 		ItemBase planks = ItemBase.Cast( GetGame().CreateObject("WoodenPlank", pos) );
 		const float NEW_PLANKS = 3;
 
-		planks.SetQuantity( Math.Round( player.GetSoftSkillManager().AddSpecialtyBonus( NEW_PLANKS, this.GetSpecialtyWeight() ) ), true );
+		planks.SetQuantity( Math.Round( action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( NEW_PLANKS, this.GetSpecialtyWeight() ) ), true );
 		
-		item.DecreaseHealth( "", "", 1);
+		action_data.m_MainItem.DecreaseHealth( "", "", 1);
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

@@ -10,17 +10,17 @@ class CAContinuousQuantityEdible : CAContinuousQuantityRepeat
 		m_InitItemQuantity = -1;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
-		super.Setup(player, target, item);
+		super.Setup( action_data );
 		
 		if (m_InitItemQuantity < 0)
 		{
-			m_InitItemQuantity = item.GetQuantity();
+			m_InitItemQuantity = action_data.m_MainItem.GetQuantity();
 		}
 	}
 	
-	override void CalcAndSetQuantity( PlayerBase player, ActionTarget target, ItemBase item )
+	override void CalcAndSetQuantity( ActionData action_data )
 	{	
 		//Print("Munch!");
 		if ( m_SpentUnits )
@@ -32,13 +32,13 @@ class CAContinuousQuantityEdible : CAContinuousQuantityRepeat
 		}
 		//m_SpentQuantity = Math.Floor(m_SpentQuantity);
 
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		if ( ntarget )
 		{
 			if ( GetGame().IsServer() ) 
 			{
-				//item.Consume(targetObject, m_SpentQuantity);
-				ntarget.Consume(item, m_SpentQuantity);
+				//action_data.m_MainItem.Consume(targetObject, m_SpentQuantity);
+				ntarget.Consume(action_data.m_MainItem, m_SpentQuantity);
 				
 			}
 		}
@@ -46,8 +46,8 @@ class CAContinuousQuantityEdible : CAContinuousQuantityRepeat
 		{
 			if ( GetGame().IsServer() ) 
 			{
-				//item.Consume(player, m_SpentQuantity);
-				player.Consume(item, m_SpentQuantity);
+				//action_data.m_MainItem.Consume(action_data.m_Player, m_SpentQuantity);
+				action_data.m_Player.Consume(action_data.m_MainItem, m_SpentQuantity);
 			}
 		}
 	}

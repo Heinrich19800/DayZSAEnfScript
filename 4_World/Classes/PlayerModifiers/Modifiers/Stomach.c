@@ -28,10 +28,10 @@ class Stomach: ModifierBase
 		float stomach_volume = player.GetStatStomachSolid().Get();
 		float stomach_water = player.GetStatStomachWater().Get();
 		
-		if ( player.GetStatStomachEnergy().Get() >= ModifierConstants.STOMACH_ENERGY_TRANSFERED_PER_SEC*deltaT )
+		if ( player.GetStatStomachEnergy().Get() >= PlayerConstants.STOMACH_ENERGY_TRANSFERED_PER_SEC*deltaT )
 		{
-			player.GetStatEnergy().Add(ModifierConstants.STOMACH_ENERGY_TRANSFERED_PER_SEC*deltaT);
-			player.GetStatStomachEnergy().Add(-ModifierConstants.STOMACH_ENERGY_TRANSFERED_PER_SEC*deltaT);
+			player.GetStatEnergy().Add(PlayerConstants.STOMACH_ENERGY_TRANSFERED_PER_SEC*deltaT);
+			player.GetStatStomachEnergy().Add(-PlayerConstants.STOMACH_ENERGY_TRANSFERED_PER_SEC*deltaT);
 		}
 		else
 		{
@@ -39,10 +39,10 @@ class Stomach: ModifierBase
 			player.GetStatStomachEnergy().Add(-player.GetStatStomachEnergy().Get());
 		}
 		
-		if (  stomach_water >= ModifierConstants.STOMACH_WATER_TRANSFERED_PER_SEC*deltaT )
+		if (  stomach_water >= PlayerConstants.STOMACH_WATER_TRANSFERED_PER_SEC*deltaT )
 		{
-			player.GetStatStomachWater().Add(-ModifierConstants.STOMACH_WATER_TRANSFERED_PER_SEC*deltaT);
-			player.GetStatWater().Add(ModifierConstants.STOMACH_WATER_TRANSFERED_PER_SEC*deltaT);
+			player.GetStatStomachWater().Add(-PlayerConstants.STOMACH_WATER_TRANSFERED_PER_SEC*deltaT);
+			player.GetStatWater().Add(PlayerConstants.STOMACH_WATER_TRANSFERED_PER_SEC*deltaT);
 		}
 		else
 		{
@@ -52,7 +52,7 @@ class Stomach: ModifierBase
 		
 		if ( stomach_volume > 0 )
 		{
-			player.GetStatStomachSolid().Add(-ModifierConstants.STOMACH_SOLID_EMPTIED_PER_SEC * deltaT);
+			player.GetStatStomachSolid().Add(-PlayerConstants.STOMACH_SOLID_EMPTIED_PER_SEC * deltaT);
 			
 			if( player.GetStatStomachSolid().Get() < 0 )
 			{

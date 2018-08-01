@@ -5,35 +5,35 @@ class CABase
 	protected ref Param					m_ACData;
 	protected ref Param2<float,float>	m_ProgressParam;
 	
-	void Init( ActionBase action, PlayerBase player, ActionTarget target, ItemBase item )
+	void Init( ActionData action_data )
 	{
 		m_ProgressParam = new Param2<float,float>(0,0);
-		m_Action = action;
+		m_Action = action_data.m_Action;
 		if ( !m_ACData ) 
 		{
 			m_ACData = new Param;
 		}
 		m_LastTick = GetGame().GetTime();
-		Setup(player,target,item);
+		Setup(action_data);
 	}
 	
-	void Setup( PlayerBase player, ActionTarget target, ItemBase item  )
+	void Setup( ActionData action_data  )
 	{
 	}
 
-	int Execute( PlayerBase player, ActionTarget target, ItemBase item  )
+	int Execute( ActionData action_data  )
 	{
 		return UA_ERROR;
 	}
 	
-	int Cancel( PlayerBase player, ActionTarget target, ItemBase item )
+	int Cancel( ActionData action_data )
 	{
 		return UA_CANCEL;
 	}
 
-	int Interrupt( PlayerBase player, ActionTarget target, ItemBase item )
+	int Interrupt( ActionData action_data )
 	{
-		Cancel( player, target, item);
+		Cancel( action_data );
 		return UA_INTERRUPT;
 	}
 		

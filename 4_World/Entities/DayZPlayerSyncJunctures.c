@@ -13,6 +13,7 @@ class DayZPlayerSyncJunctures
 	static const int SJ_ACTION_ACK_REJECT				= 7;
 	static const int SJ_WEAPON_ACTION_ACK_ACCEPT		= 8;
 	static const int SJ_WEAPON_ACTION_ACK_REJECT		= 9;
+	static const int SJ_UNCONSCIOUSNESS					= 10;
 
 	//-------------------------------------------------------------
 	//!
@@ -64,7 +65,31 @@ class DayZPlayerSyncJunctures
 		return true;
 	}
 
+	//-------------------------------------------------------------
+	//!
+	//! Conscious / Unconscious
+	//! 
+	
+	static void SendPlayerUnconsciousness(DayZPlayer pPlayer, bool enable)
+	{
+		ScriptJunctureData ctx = new ScriptJunctureData;
 
+		ctx.Write(enable);
+		
+		pPlayer.SendSyncJuncture(SJ_UNCONSCIOUSNESS, ctx);
+	}
+	
+	static bool ReadPlayerUnconsciousnessParams(ParamsReadContext pCtx, out bool enable)
+	{
+		if ( !pCtx.Read(enable) )
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	
+	
 	//-------------------------------------------------------------
 	//!
 	//! Full body

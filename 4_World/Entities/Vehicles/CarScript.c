@@ -57,6 +57,22 @@ class CarScript extends Car
 	}
 
 	/*!
+		Gets called every sound simulation step.
+		In this callback, user can modify behaviour of sound controllers
+	*/
+	float OnSound( CarSoundCtrl ctrl, float oldValue )
+	{
+		switch ( ctrl )
+		{
+			case CarSoundCtrl.DOORS:
+				break;
+		}
+
+		// if you don't wanna change the behaviour, just return the old value.
+		return oldValue;
+	}
+
+	/*!
 		Gets called everytime when the specified vehicle's fluid
 		changes its current value eg. when car is consuming fuel.
 
@@ -157,4 +173,36 @@ class CarScript extends Car
 			m_RadiatorHealth = GetHealth01("radiator", "");
 		}
 	}
+	
+	bool IsVitalCarBattery()
+	{
+		return true;
+	}
+	
+	bool IsVitalTruckBattery()
+	{
+		return true;
+	}
+	
+	bool IsVitalSparkPlug()
+	{
+		return true;
+	}
+	
+	bool IsVitalGlowPlug()
+	{
+		return true;
+	}
+	
+	bool IsVitalEngineBelt()
+	{
+		return true;
+	}
+
+	//! camera type
+	override int Get3rdPersonCameraType()
+	{
+		return DayZPlayerCameras.DAYZCAMERA_3RD_VEHICLE;
+	}
+
 };

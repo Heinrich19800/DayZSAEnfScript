@@ -533,7 +533,7 @@ class OptionsMenu extends UIScriptedMenu
 	{
 		if (m_current_scrollbar.IsVisible())
 		{
-			ScrollWidget(wheel);
+			ScrollWidgetFn(wheel);
 			return true;
 		}
 		
@@ -605,7 +605,7 @@ class OptionsMenu extends UIScriptedMenu
 			m_scrollbar_value = m_current_scrollbar.GetCurrent();
 			m_scrollbar_value = m_scrollbar_value / m_current_scrollbar.GetMax();
 			//m_scrollbar_value = m_new_scrollbar_value;
-			ScrollWidget(0); //0 value makes slider widget move widget Y positions
+			ScrollWidgetFn(0); //0 value makes slider widget move widget Y positions
 		}
 		return false;
 	}
@@ -767,7 +767,12 @@ class OptionsMenu extends UIScriptedMenu
 				if(button != NULL)
 				{
 					button.SetState(i == tab_id);
-					backdrop.Show(i != tab_id);
+					float alpha;
+					if( i != tab_id )
+						alpha = 0.4;
+					else
+						alpha = 0.9;
+					backdrop.SetAlpha( alpha );
 				}
 			}
 			
@@ -807,7 +812,7 @@ class OptionsMenu extends UIScriptedMenu
 		m_Smoothing_DDM_button.SetText(resolution);
 	}*/
 	
-	void ScrollWidget(int wheel)
+	void ScrollWidgetFn(int wheel)
 	{
 		int i = 0;
 		float pos_x;

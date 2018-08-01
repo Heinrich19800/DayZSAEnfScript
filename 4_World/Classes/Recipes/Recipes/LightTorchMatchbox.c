@@ -57,7 +57,9 @@ class LightTorchMatchbox extends RecipeBase
 
 	override bool CanDo(ItemBase ingredients[], PlayerBase player)//final check for recipe's validity
 	{
-		return true;
+		Torch torch = Class.Cast(ingredients[0]);
+		
+		return torch.CanIgnite();
 	}
 
 	override void Do(ItemBase ingredients[], PlayerBase player,array<ItemBase> results, float specialty_weight)//gets called upon recipe's completion
@@ -67,6 +69,8 @@ class LightTorchMatchbox extends RecipeBase
 		if ( ingredient1.HasEnergyManager() )
 		{
 			ingredient1.GetCompEM().SwitchOn();
+			Torch torch = Class.Cast(ingredient1);
+			torch.Ignite();
 		}
 	}
 };

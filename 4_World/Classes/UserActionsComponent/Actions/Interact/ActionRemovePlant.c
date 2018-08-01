@@ -36,13 +36,13 @@ class ActionRemovePlant: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		if ( targetObject != NULL && targetObject.IsInherited(PlantBase) )
 		{
 			PlantBase plant = PlantBase.Cast( targetObject );
-			m_MessageSuccess = plant.Remove( player );
+			m_MessageSuccess = plant.Remove( action_data.m_Player );
 		}
 	}
 };

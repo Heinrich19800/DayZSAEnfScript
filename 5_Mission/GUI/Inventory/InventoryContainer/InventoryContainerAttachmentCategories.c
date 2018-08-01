@@ -209,7 +209,7 @@ class InventoryContainerAttachmentCategories: InventoryContainer
 	void UpdateItemsNewInventory()
 	{
 		EntityAI entity;
-		Cargo cargo;
+		CargoBase cargo;
 		int i, j, c, x;
 		bool change = false;
 		bool added_item = false;
@@ -323,7 +323,7 @@ class InventoryContainerAttachmentCategories: InventoryContainer
 		if (m_entity == NULL) return;
 		
 		EntityAI entity;
-		Cargo cargo;
+		CargoBase cargo;
 		int i, j, c, x;
 		bool change = false;
 		bool added_item = false;

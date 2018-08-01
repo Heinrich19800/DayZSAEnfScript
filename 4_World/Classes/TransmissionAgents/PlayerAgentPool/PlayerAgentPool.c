@@ -145,7 +145,7 @@ class PlayerAgentPool
 	}
 	
 
-	void SetAgentCount(int agent_id, int count)
+	void SetAgentCount(int agent_id, float count)
 	{
 		if(count > 0)
 		{
@@ -168,7 +168,7 @@ class PlayerAgentPool
 		}
 
 		//float m_DeltaT = (GetGame().GetTime() - m_LastTicked) / 1000;
-		m_LastTicked = GetGame().GetTime();
+		//m_LastTicked = GetGame().GetTime();
 		m_TotalAgentCount = 0;
 		for(int i = 0; i < m_VirusPool.Count(); i++)
 		{	
@@ -180,7 +180,7 @@ class PlayerAgentPool
 			m_TotalAgentCount += new_count;//count the overall num of agents
 			Debug.Log("old_count"+ old_count.ToString(), "Agents");
 			Debug.Log("new_count"+ new_count.ToString(), "Agents");
-			PrintString(new_count.ToString());
+			//PrintString(new_count.ToString());
 			SetAgentCount(agent_id, new_count);
 		}
 	}
@@ -191,8 +191,13 @@ class PlayerAgentPool
 		for(int i = 0; i < m_VirusPool.Count(); i++)
 		{
 			int agent_id = m_VirusPool.GetKey(i);
-			float new_count = m_VirusPool.Get( agent_id ) - immune_attack_value;
-
+			float agent_resistance_inverted = 1 - m_PluginTransmissionAgents.GetImmunityResistance( agent_id );
+			float delta = immune_attack_value * agent_resistance_inverted;
+			float old_count = m_VirusPool.Get( agent_id );
+			float new_count = old_count - delta;
+			//PrintString("delta:"+delta.ToString());
+			//PrintString("old_count:"+old_count.ToString());
+			//PrintString("new_count:"+new_count.ToString());
 			SetAgentCount(agent_id, new_count);
 		}
 	}
@@ -204,7 +209,7 @@ class PlayerAgentPool
 		for(int i = 0;i < m_VirusPool.Count(); i++)
 		{
 			int 	item_key 	= m_VirusPool.GetKey(i);
-			float 	item_value 	= m_VirusPool.Get(item_key);
+			int 	item_value 	= m_VirusPool.Get(item_key);
 			
 			string agent_name = m_PluginTransmissionAgents.GetNameByID(item_key);
 			

@@ -10,7 +10,7 @@ class ActionTakeABiteCan: ActionTakeABite
 		return false;
 		/* 
 		//if staging for cans is introduced
-		if ( item && item.IsOpen() )
+		if ( action_data.m_MainItem && action_data.m_MainItem.IsOpen() )
 		{
 			return true;
 		}

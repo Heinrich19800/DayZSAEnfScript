@@ -94,10 +94,10 @@ class HumanItemAccessor
 	proto native bool 	WeaponGetCameraPoint(out vector pPos, out vector pRot);
 
 	//! returns true if weapon is item and it has camera point - model space matrix - 
-	proto native bool 	WeaponGetCameraPointMSTransform (vector pCamPoint, vector pCamDir, out vector pTm[4]);
+	proto native bool 	WeaponGetCameraPointMSTransform (notnull EntityAI pCamEntity, vector pCamPoint, vector pCamDir, out vector pTm[4]);
 
 	//! returns true if weapon is item and it has camera point - model space matrix - 
-	proto native bool 	WeaponGetCameraPointBoneRelative(vector pCamPoint, vector pCamDir, int pBoneIndex, out vector pTm[4]);
+	proto native bool 	WeaponGetCameraPointBoneRelative(notnull EntityAI pCamEntity, vector pCamPoint, vector pCamDir, int pBoneIndex, out vector pTm[4]);
 
 	//! return current aiming point from aiming model (additive swaying applied - no recoil points)
 	proto native bool 	WeaponGetAimingModelDirTm(out vector pTm[4]);

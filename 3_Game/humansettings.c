@@ -47,3 +47,26 @@ class SHumanCommandSwimSettings
 	float 		m_fToCrouchLevel;					//!< when to crouch
 	float 		m_fToErectLevel;					//!< when to stand
 }
+
+
+
+class SHumanCommandClimbSettings 
+{
+	//! forward pass
+	float 		m_fCharWidth;
+
+	float		m_fFwMinHeight;
+	float		m_fFwMaxHeight;
+	float		m_fFwMaxDistance;
+
+	//! forward step
+	float		m_fStepFreeSpace;		//! must be a space to step there 
+	float		m_fStepPositionAfterEdge;
+	float		m_fStepDownRadius;
+	float		m_fStepMinNormal;
+	float		m_fStepVariation;
+	float		m_fStepMinWidth;
+
+	float		m_fClimbOverMaxWidth;
+	float		m_fClimbOverMinHeight;
+};

@@ -34,9 +34,11 @@ class MissionGameplay extends MissionBase
 	protected const int 			HOLD_LIMIT_TIME	= 300; //ms
 	protected int					m_ActionDownTime;
 	protected int					m_ActionUpTime;
+	protected bool 					m_InitOnce;
 	
 	void MissionGameplay()
 	{
+		DestroyAllMenus();
 		m_initialized = false;
 		m_hud_root_widget = NULL;
 		m_chat = new Chat;
@@ -53,11 +55,14 @@ class MissionGameplay extends MissionBase
 		g_Game.m_loadingScreenOn = true;
 		
 		SyncEvents.RegisterEvents();
+		g_Game.SetGameState( DayZGameState.IN_GAME );
+		PlayerBase.Event_OnPlayerDeath.Insert( Pause );
 	}
 	
 	void ~MissionGameplay()
 	{
 		DestroyInventory();
+		PlayerBase.Event_OnPlayerDeath.Remove( Pause );
 		//GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Remove(this.UpdateDebugMonitor);
 	#ifndef NO_GUI
 		if (g_Game.GetUIManager() && g_Game.GetUIManager().ScreenFadeVisible())
@@ -66,12 +71,7 @@ class MissionGameplay extends MissionBase
 			g_Game.GetUIManager().ScreenFadeOut(0);
 		}
 	#endif
-	#ifdef PLATFORM_XBOX
-		if( GetGame().IsMultiplayer() )
-		{
-			OnlineServices.m_PermissionsAsyncInvoker.Remove( SendPermissionsToServer );
-		}
-	#endif
+
 	}
 	
 	InventoryMenuNew GetInventory()
@@ -131,17 +131,10 @@ class MissionGameplay extends MissionBase
 		
 		m_Widgets_Cache = new WidgetCache;
 		
-		#ifdef PLATFORM_XBOX
-			if( GetGame().IsMultiplayer() )
-			{
-				OnlineServices.m_PermissionsAsyncInvoker.Insert( SendPermissionsToServer );
-				
-				string uuid;
-				GetGame().GetUID(uuid);
-				OnlineServices.Init( uuid );
-				Print( "Online Services Initialized" );
-			}
-		#endif
+		if( GetGame().IsMultiplayer() )
+		{
+			OnlineServices.m_MuteUpdateAsyncInvoker.Insert( SendMuteListToServer );
+		}
 	}
 	
 	UIManager GetUIManager()
@@ -159,9 +152,11 @@ class MissionGameplay extends MissionBase
 	
 	void InitInventory()
 	{
+		DestroyAllMenus();
 		if (m_inventory_menu_new == NULL)
 		{
 			m_inventory_menu_new = InventoryMenuNew.Cast( GetUIManager().EnterScriptedMenu(MENU_INVENTORY, NULL) );
+			GetUIManager().HideScriptedMenu( m_inventory_menu_new );
 		}
 	}
 
@@ -174,19 +169,32 @@ class MissionGameplay extends MissionBase
 	{
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 				
-		if( player) player.OnTick();
+		if( player)
+			player.OnTick();
 	}
 	
-	void SendPermissionsToServer( BiosPrivacyUidResultArray result_list )
+	void SendMuteListToServer( map<string, bool> mute_list )
 	{
-		if( result_list )
+		if( mute_list && mute_list.Count() > 0 )
 		{
 			if ( ScriptInputUserData.CanStoreInputUserData() )
 			{
 				ScriptInputUserData ctx = new ScriptInputUserData;
 				ctx.Write( INPUT_UDT_USER_SYNC_PERMISSIONS );
-				ctx.Write( result_list );
+				ref map<string, bool> mute_list2;
+				if( mute_list.Count() > 4 )
+				{
+					mute_list2 = new map<string, bool>;
+					for( int i = mute_list.Count() - 1; i >= 4; i-- )
+					{
+						mute_list2.Insert( mute_list.GetKey( i ), mute_list.GetElement( i ) );
+						mute_list.RemoveElement( i );
+					}
+				}
+				ctx.Write( mute_list );
+				Print( mute_list );
 				ctx.Send();
+				SendMuteListToServer( mute_list2 );
 			}
 		}
 	}
@@ -207,6 +215,10 @@ class MissionGameplay extends MissionBase
 		m_chat.Destroy();
 		delete m_hud_root_widget;
 		
+		#ifdef PLATFORM_CONSOLE
+			OnlineServices.m_MuteUpdateAsyncInvoker.Remove( SendMuteListToServer );
+		#endif
+
 		if (m_debugMonitor)
 			m_debugMonitor.Hide();
 		g_Game.GetUIManager().ShowUICursor(false);
@@ -241,7 +253,7 @@ class MissionGameplay extends MissionBase
 			m_note.InitWrite(playerPB.m_paper,playerPB.m_writingImplement,playerPB.m_Handwriting);
 		}
 		
-		if (inspect && player.GetHumanInventory().CanOpenInventory() == false)
+		if (inspect && player && (player.GetHumanInventory().CanOpenInventory() == false || player.IsInventorySoftLocked()) )
 		{
 			m_UIManager.CloseMenu(MENU_INSPECT);
 		}
@@ -262,7 +274,7 @@ class MissionGameplay extends MissionBase
 		}
 #endif
 
-#ifdef PLATFORM_PS4
+#ifdef PLATFORM_PS4	
 		//Quick Reload Weapon
 		if ( !menu && input.GetActionDown( UAQuickReload, false ) )
 		{
@@ -277,7 +289,7 @@ class MissionGameplay extends MissionBase
 			}
 		}
 #endif
-
+		
 #ifdef PLATFORM_XBOX		
 		//Switch beween weapons in quickslots 
 		if( !menu && input.GetActionDown( UAUIRadialMenuPick, false ) )
@@ -490,7 +502,7 @@ class MissionGameplay extends MissionBase
 		}		
 #endif
 		
-		if (player && m_life_state == EPlayerStates.ALIVE)
+		if (player && m_life_state == EPlayerStates.ALIVE && !player.IsUnconscious() )
 		{
 			// enables HUD on spawn
 			if (m_hud_root_widget)
@@ -500,10 +512,12 @@ class MissionGameplay extends MissionBase
 			
 		#ifndef NO_GUI
 			// fade out black screen
+			
 			if ( GetUIManager().ScreenFadeVisible() )
 			{
 				 GetUIManager().ScreenFadeOut(0.5);
 			}
+			
 		#endif
 		
 			if( input.GetActionDown(UAGear, false ) )
@@ -617,15 +631,7 @@ class MissionGameplay extends MissionBase
 				if (m_life_state != EPlayerStates.ALIVE)
 				{
 					CloseAllMenus();
-					/*if (m_life_state == EPlayerStates.DEAD)
-					{
-						GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(SimulateDeath,true);
-					}*/
 				}
-				/*else if (m_life_state == EPlayerStates.ALIVE)
-				{
-					GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(SimulateDeath,false);
-				}*/
 			}
 		}
 		
@@ -685,9 +691,10 @@ class MissionGameplay extends MissionBase
 		super.OnKeyPress(key);
 		m_hud.KeyPress(key);
 		
-		/*
+		
 		//temporary
 		//Gestures [.]
+#ifdef DEVELOPER
 		if ( key == KeyCode.KC_PERIOD )
 		{
 			//open gestures menu
@@ -697,6 +704,8 @@ class MissionGameplay extends MissionBase
 				GesturesMenu.OpenMenu();
 			}
 		}
+#endif
+		/*
 		//temporary
 		//Radial Quickbar [,]
 		if ( key == KeyCode.KC_COMMA )
@@ -715,9 +724,9 @@ class MissionGameplay extends MissionBase
 	{
 		super.OnKeyRelease(key);
 		
-		/*
 		//temporary
 		//Gestures [.]
+#ifdef DEVELOPER
 		if ( key == KeyCode.KC_PERIOD )
 		{
 			//close gestures menu
@@ -727,6 +736,8 @@ class MissionGameplay extends MissionBase
 				GesturesMenu.CloseMenu();
 			}
 		}
+#endif
+		/*
 		//temporary
 		//Radial Quickbar [,]
 		if ( key == KeyCode.KC_COMMA )
@@ -809,16 +820,6 @@ class MissionGameplay extends MissionBase
 			}
 			break;
 		
-		case VONMissingPrivilegeEventTypeID:
-			// without params
-			Print("VONMissingPrivilegeEvent\n");
-			if( m_hud )
-			{
-				m_hud.ShowVONMissingPrivilegeNotify();
-			}
-			
-			break
-		
 		case SetFreeCameraEventTypeID:
 			SetFreeCameraEventParams set_free_camera_event_params = SetFreeCameraEventParams.Cast( params );
 			PluginDeveloper plugin_developer = PluginDeveloper.Cast( GetPlugin(PluginDeveloper) );
@@ -839,10 +840,6 @@ class MissionGameplay extends MissionBase
 					bookMenu.ReadBook(item);
 				}
 			}
-			else if (item.IsInherited(ItemMap))
-			{
-				GetUIManager().EnterScriptedMenu(MENU_MAP, NULL);
-			}
 		}
 	}
 	
@@ -855,10 +852,16 @@ class MissionGameplay extends MissionBase
 	
 	void DestroyAllMenus()
 	{
-		GetUIManager().HideDialog();
+		if( GetUIManager() )
+		{
+			GetUIManager().HideDialog();
+			GetUIManager().CloseAll();
+		}
+		
 		DestroyInventory();
-		GetUIManager().CloseAll();
-		m_chat.Clear();
+		
+		if( m_chat )
+			m_chat.Clear();
 	}
 	
 	void ShowInventory()
@@ -866,7 +869,7 @@ class MissionGameplay extends MissionBase
 		bool init = false;
 		UIScriptedMenu menu = GetUIManager().GetMenu();
 		
-		if (menu == NULL && GetGame().GetPlayer().GetHumanInventory().CanOpenInventory())
+		if (menu == NULL && GetGame().GetPlayer().GetHumanInventory().CanOpenInventory() && !GetGame().GetPlayer().IsInventorySoftLocked() )
 		{
 			if (m_inventory_menu == NULL)
 			{
@@ -911,7 +914,7 @@ class MissionGameplay extends MissionBase
 		bool init = false;
 		UIScriptedMenu menu = GetUIManager().GetMenu();
 		
-		if (menu == NULL && GetGame().GetPlayer().GetHumanInventory().CanOpenInventory())
+		if (menu == NULL && GetGame().GetPlayer().GetHumanInventory().CanOpenInventory() && !GetGame().GetPlayer().IsInventorySoftLocked() )
 		{
 			if (m_inventory_menu_new == NULL)
 			{
@@ -1024,7 +1027,7 @@ class MissionGameplay extends MissionBase
 	
 	override bool IsMissionGameplay()
 	{
-		return false;
+		return true;
 	}
 	
 	override void AbortMission()

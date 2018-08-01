@@ -11,8 +11,8 @@ class ActionEatCharcoalTablets: ActionConsume
 		return AT_EAT_CHARCOAL_TABLETS;
 	}
 
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
-		player.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_POISONING);
+		action_data.m_Player.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_POISONING);
 	}
 };

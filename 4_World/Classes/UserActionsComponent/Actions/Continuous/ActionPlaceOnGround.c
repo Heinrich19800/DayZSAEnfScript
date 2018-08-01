@@ -2,7 +2,7 @@ class ActionPlaceOnGroundCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_PLACE);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_PLACE);
 	}
 };
 
@@ -47,8 +47,8 @@ class ActionPlaceOnGround: ActionContinuousBase
 		}
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		player.DropItem(item);
+		action_data.m_Player.DropItem(action_data.m_MainItem);
 	}
 };

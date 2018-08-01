@@ -26,7 +26,7 @@ class ActionLockedDoors: ActionInteractBase
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		if( !target ) return false;
-		//if( IsDamageDestroyed(target) ) return false;
+		//if( IsDamageDestroyed(action_data.m_Target) ) return false;
 		if( !IsBuilding(target) ) return false;
 		if( !IsInReach(player, target, UAMaxDistances.DEFAULT) ) return false;
 
@@ -40,7 +40,7 @@ class ActionLockedDoors: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 	}
 };

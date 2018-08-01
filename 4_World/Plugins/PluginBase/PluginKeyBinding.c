@@ -64,13 +64,20 @@ class PluginKeyBinding extends PluginBase
 		RegisterKeyBind(	 MENU_SCENE_EDITOR				,KeyCode.KC_LCONTROL	,KeyCode.KC_D		,"PluginSceneManager"	,"SelectedObjectDuplicate"		,"[LCtrl]+[D]"					,"Scene Editor => Duplicate current selected object");
 		RegisterKeyBind(	 MENU_SCENE_EDITOR				,KeyCode.KC_LCONTROL	,KeyCode.KC_F		,"PluginSceneManager"	,"SelectedObjectFocus"			,"[LCtrl]+[F]"					,"Scene Editor => Focus camera on selected object");
 		RegisterKeyBind(	 MENU_SCENE_EDITOR				,KeyCode.KC_LCONTROL	,KeyCode.KC_E		,"PluginSceneManager"	,"RulerToggle"					,"[LCtrl]+[E]"					,"Scene Editor => Enable/Disable addition of ruler points");
-		RegisterKeyBind(	 MENU_SCENE_EDITOR				,KeyCode.KC_LCONTROL	,KeyCode.KC_PRIOR	,"PluginRecipesManager"	,"CallbackGenerateCache"		,"[LCtrl]+[BACKSPACE]"			,"PluginRecipesManager => Generate recipe cache and save it to file");
+		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_LCONTROL	,KeyCode.KC_PRIOR	,"PluginRecipesManager"	,"CallbackGenerateCache"		,"[LCtrl]+[BACKSPACE]"			,"PluginRecipesManager => Generate recipe cache and save it to file");
 		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LCONTROL	,KeyCode.KC_DECIMAL	,"PluginItemDiagnostic"	,"ToggleDebugWindowEvent"		,"[LCtrl]+[DECIMAL]"			,"Close the Item Debug window");
 		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LCONTROL	,KeyCode.KC_NUMPAD0	,"PluginDayzPlayerDebug","ToggleDebugWindowEvent"		,"[LCtrl]+[NUMPAD0]"			,"Open/Close Player debug window");
 		RegisterKeyBind(	 MENU_ANY						,KeyCode.KC_LCONTROL	,KeyCode.KC_DECIMAL	,"PluginDayzPlayerDebug","ToggleDebugWindowEventP"		,"[LCtrl]+[DECIMAL]"			,"Open/Close Player debug window");
 		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_LCONTROL	,KeyCode.KC_NUMPAD9	,"PluginDeveloperSync"	,"ToggleFocus"					,"[LCtrl]+[NUMPAD9]"			,"Toggle game focus");
 		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_LCONTROL	,KeyCode.KC_SCROLL	,"PluginDoorRuler"		,"CheckInit"					,"[LCtrl]+[SCROLL LOCK]"		,"Enable Door Ruler");
 		RegisterKeyBind(	 MENU_NONE						,KeyCode.KC_LCONTROL	,KeyCode.KC_RBRACKET,"PluginCharPlacement"	,"CheckInit"					,"[LCtrl]+[)]"					,"Enable CharPlacer");
+		
+		RegisterKeyBind(	 MENU_NONE|MENU_CAMERA_TOOLS	,KeyCode.KC_LCONTROL	,KeyCode.KC_K		,"PluginCameraTools"	,"ToggleCameraTools"			,"[LCtrl]+[K]"					,"Toggle Camera Recording Tools");
+		RegisterKeyBind(	 MENU_CAMERA_TOOLS				,KeyCode.KC_LCONTROL	,KeyCode.KC_S		,"PluginCameraTools"	,"Save"							,"[X]"							,"Recording Tools => Start Recording Camera Path");
+		RegisterKeyBind(	 MENU_CAMERA_TOOLS				,KeyCode.KC_SPACE		,-1					,"PluginCameraTools"	,"PlayPause"					,"[C]"							,"Recording Tools => Stop Recording Camera Path");
+		RegisterKeyBind(	 MENU_CAMERA_TOOLS				,KeyCode.KC_LCONTROL	,KeyCode.KC_Q		,"PluginCameraTools"	,"AddKeyframe"					,"[C]"							,"Recording Tools => Add Camera Point");
+		RegisterKeyBind(	 MENU_CAMERA_TOOLS				,KeyCode.KC_LCONTROL	,KeyCode.KC_E		,"PluginCameraTools"	,"DeleteKeyframe"				,"[V]"							,"Recording Tools => Play Camera Line");
+
 		//--------------------------------------------------------------------------------------------------------------------------------------------------------------
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,6 +95,7 @@ class PluginKeyBinding extends PluginBase
 		RegisterMouseBind( 	MENU_SCENE_EDITOR	,MouseState.RIGHT		,MB_EVENT_PRESS			,"PluginSceneManager"	,"FreeCameraControlEnable"	,"[RMB] Hold"			,"Mission Editor => Enable camera movement");
 		RegisterMouseBind( 	MENU_SCENE_EDITOR	,MouseState.RIGHT		,MB_EVENT_RELEASE		,"PluginSceneManager"	,"FreeCameraControlDisable"	,"[RMB] Release"		,"Mission Editor => Disable camera movement");
 		RegisterMouseBind( 	MENU_NONE			,MouseState.LEFT		,MB_EVENT_CLICK			,"PluginDayZCreatureAIDebug","Event_OnClick"		,"[LMB] Click"			,"DayZCreature graph debug => Capture entity during capture mode");
+		RegisterMouseBind( 	MENU_CAMERA_TOOLS	,MouseState.RIGHT		,MB_EVENT_RELEASE		,"PluginCameraTools"	,"CursorShow"				,"[LMB] Click"			,"DayZCreature graph debug => Capture entity during capture mode");
 		// TO DO: (Boris V.) Remove the following commented-out mouse binds when weapon particles can be implemented properly. Also remove the events they call.
 		//RegisterMouseBind( 	MENU_NONE			,MouseState.LEFT		,MB_EVENT_PRESS			,"PluginDeveloper"		,"MuzzleParticleTestStart"	,"[LMB] Hold"			,"Debug particle");
 		//RegisterMouseBind( 	MENU_NONE			,MouseState.LEFT		,MB_EVENT_RELEASE		,"PluginDeveloper"		,"MuzzleParticleTestEnd"	,"[LMB] Release"		,"Debug particle2");

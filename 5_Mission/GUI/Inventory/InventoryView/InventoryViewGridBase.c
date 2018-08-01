@@ -19,7 +19,7 @@ class InventoryViewGridBase: InventoryViewBase
 		m_container = container;
 		m_entity = entity;
 		m_cargo_grids = new array<InventoryGrid>;
-		m_cargos = new array<Cargo>;
+		m_cargos = new array<CargoBase>;
 		m_items = new TItemsMap;
 		m_update_lock_timer = new Timer();
 		m_properties = properties;
@@ -56,7 +56,7 @@ class InventoryViewGridBase: InventoryViewBase
 		}
 	}
 
-	override void AddProxyCargo(Cargo proxyCargo)
+	override void AddProxyCargo(CargoBase proxyCargo)
 	{
 		if (m_cargos.Find(proxyCargo) == INDEX_NOT_FOUND)
 		{

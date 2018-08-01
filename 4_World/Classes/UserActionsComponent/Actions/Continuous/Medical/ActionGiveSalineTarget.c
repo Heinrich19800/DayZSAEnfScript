@@ -2,7 +2,7 @@ class ActionGiveSalineTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.SALINE);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.SALINE);
 	}
 };
 
@@ -41,26 +41,26 @@ class ActionGiveSalineTarget: ActionContinuousBase
 		return "Give saline";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		//TODO Daniel: integrate ss 2.0
-		/*float efficiency = player.GetQuantityEfficiency( GetType() );
+		/*float efficiency = action_data.m_Player.GetQuantityEfficiency( GetType() );
 		if ( efficiency == -1 )
 		{
 			efficiency = 1;
 		}*/
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
-		Param1<float> nacdata = Param1<float>.Cast( acdata );
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
+		Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );
 		float delta = nacdata.param1;
 		//ntarget.AddHealth("", "Blood", delta);
 		//ntarget.m_PlayerStats.m_Blood.Add(nacdata.param1 * efficiency);//BLOOD_REPLACE
 		//float delta = nacdata.param1 * efficiency;
-		//player.SetHealth("GlobalHealth", "Blood", player.GetHealth("GlobalHealth", "Blood") + delta );
+		//action_data.m_Player.SetHealth("GlobalHealth", "Blood", action_data.m_Player.GetHealth("GlobalHealth", "Blood") + delta );
 		
 		ntarget.GetModifiersManager().ActivateModifier(eModifiers.MDF_SALINE);
 		
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-
-		item.Delete();
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		
+		action_data.m_MainItem.Delete();
 	}
 };

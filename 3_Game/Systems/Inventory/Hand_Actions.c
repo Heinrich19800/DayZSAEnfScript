@@ -41,15 +41,20 @@ class HandActionTake extends HandActionBase
 		InventoryLocation src = new InventoryLocation;
 		if (item.GetInventory().GetCurrentInventoryLocation(src))
 		{
-			InventoryLocation dst = new InventoryLocation;
-			dst.SetHands(player, item);
-
-			GameInventory.LocationSyncMoveEntity(src, dst);
-
-			player.OnItemInHandsChanged();
+			TakeToHands(player, src);
 		}
 		else
-			Error("[hndfsm] HandActionTake - item " + item + " has no Inventory or Location, inv=" + item.GetInventory());
+			Error("[hndfsm] HandActionTake.TakeToHands - item " + item + " has no Inventory or Location, inv=" + item.GetInventory());
+	}
+
+	static void TakeToHands (notnull Man player, notnull InventoryLocation src)
+	{
+		InventoryLocation dst = new InventoryLocation;
+		dst.SetHands(player, src.GetItem());
+
+		GameInventory.LocationSyncMoveEntity(src, dst);
+
+		player.OnItemInHandsChanged();
 	}
 };
 
@@ -73,32 +78,6 @@ class HandActionDrop extends HandActionBase
 		}
 		else
 			Error("[hndfsm] HandActionDrop - item " + item + " has no Inventory or Location, inv=" + item.GetInventory());
-	}
-};
-
-class HandActionStash extends HandActionBase
-{
-	override void Action (HandEventBase e)
-	{
-		hndDebugPrint("[hndfsm] action=stash");
-		Man player = e.m_Player;
-		EntityAI item = e.m_Entity;
-
-		HandEventStash es = HandEventStash.Cast(e);
-		if (es)
-		{
-			InventoryLocation src = new InventoryLocation;
-			if (item.GetInventory().GetCurrentInventoryLocation(src))
-			{
-				GameInventory.LocationSyncMoveEntity(src, es.m_Dst);
-
-				player.OnItemInHandsChanged();
-			}
-			else
-				Error("[hndfsm] HandActionStash - item " + item + " has no Inventory or Location, inv=" + item.GetInventory());
-		}
-		else
-			Error("[hndfsm] HandActionStash - this is no HandEventStash");
 	}
 };
 
@@ -186,6 +165,14 @@ class HandActionDestroyAndReplaceWithNew extends HandActionBase
 	}
 };
 
+class HandActionDestroyAndReplaceWithNewElsewhere extends HandActionDestroyAndReplaceWithNew
+{
+	override void Action (HandEventBase e)
+	{
+		super.Action(e);
+	}
+};
+
 class HandActionReplaced extends HandActionBase
 {
 	override void Action (HandEventBase e)
@@ -201,7 +188,6 @@ class HandActionSwap extends HandActionBase
 {
 	override void Action (HandEventBase e)
 	{
-		hndDebugPrint("[hndfsm] action=swap");
 		Man player = e.m_Player;
 		EntityAI itemInHands = player.GetHumanInventory().GetEntityInHands();
 		EntityAI itemToHands = e.m_Entity;
@@ -211,20 +197,25 @@ class HandActionSwap extends HandActionBase
 		HandEventSwap es = HandEventSwap.Cast(e);
 		if (es)
 		{
-			InventoryLocation src1, src2, dst1, dst2;
-			if (GameInventory.MakeSrcAndDstForSwap(itemInHands, itemToHands, src1, src2, dst1, dst2))
-			{
-				hndDebugPrint("[hndfsm] Swap src1=" + src1.DumpToString() + "dst1=" + dst1.DumpToString() +  "src2=" + src2.DumpToString() + "dst2=" + dst2.DumpToString());
-
-				GameInventory.LocationSwap(src1, src2, dst1, dst2);
-
-				player.OnItemInHandsChanged();
-			}
-			else
-				Error("[hndfsm] HandActionSwap - cannot get inv location of items");
+			HandActionSwap.Swap(player, itemInHands, itemToHands);
 		}
 		else
 			Error("[hndfsm] HandActionSwap - this is no HandEventSwap");
+	}
+
+	static void Swap (notnull Man player, notnull EntityAI itemInHands, notnull EntityAI itemToHands)
+	{
+		InventoryLocation src1, src2, dst1, dst2;
+		if (GameInventory.MakeSrcAndDstForSwap(itemInHands, itemToHands, src1, src2, dst1, dst2))
+		{
+			hndDebugPrint("[hndfsm] Swap src1=" + src1.DumpToString() + "dst1=" + dst1.DumpToString() +  "src2=" + src2.DumpToString() + "dst2=" + dst2.DumpToString());
+
+			GameInventory.LocationSwap(src1, src2, dst1, dst2);
+
+			player.OnItemInHandsChanged();
+		}
+		else
+			Error("[hndfsm] HandActionSwap - cannot get inv location of items");
 	}
 };
 

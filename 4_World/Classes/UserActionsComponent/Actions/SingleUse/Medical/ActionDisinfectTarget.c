@@ -2,14 +2,15 @@ class ActionDisinfectTargetCB : ActionSingleUseBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CASingleUseQuantity(UAQuantityConsumed.DISINFECT);
+		m_ActionData.m_ActionComponent = new CASingleUseQuantity(UAQuantityConsumed.DISINFECT);
 	}
 
 	bool CancelCondition()
 	{
 		if ( !m_Interrupted && (GetState() == STATE_LOOP_LOOP || GetState() == STATE_LOOP_LOOP2) )
 		{	
-			m_ActionData.Do(this,m_State,m_ActionComponent,m_Player,m_Target,m_Item);
+			AnimatedActionBase action = AnimatedActionBase.Cast(m_ActionData.m_Action);
+			action.Do(m_ActionData,m_ActionData.m_State);
 		}
 		return DefaultCancelCondition(); 
 	}
@@ -48,14 +49,14 @@ class ActionDisinfectTarget: ActionSingleUseBase
 		return "#disinfect";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		//RemoveModifiers(target, item); ?
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-		if ( item && item.GetQuantity() <= 0 ) 
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		if ( action_data.m_MainItem && action_data.m_MainItem.GetQuantity() <= 0 ) 
 		{
-			item.SetQuantity(0);
+			action_data.m_MainItem.SetQuantity(0);
 		}
 	}
 };

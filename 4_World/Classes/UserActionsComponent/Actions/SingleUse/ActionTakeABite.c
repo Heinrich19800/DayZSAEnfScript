@@ -4,7 +4,7 @@ class ActionTakeABiteCB : ActionSingleUseBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CASingleUseQuantityEdible(QUANTITY_USED_PER_SEC2);
+		m_ActionData.m_ActionComponent = new CASingleUseQuantityEdible(QUANTITY_USED_PER_SEC2);
 	}
 };
 

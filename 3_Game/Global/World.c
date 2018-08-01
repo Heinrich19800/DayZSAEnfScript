@@ -62,7 +62,7 @@ class World: Managed
 	
 	/*!
 	@code
-	Material matColors = GetGame().GetWorld().GetMaterial("postprocess/colors");
+	Material matColors = GetGame().GetWorld().GetMaterial("postprocess/glow");
 	SetMaterialParam(matColors, "Saturation", 0.8);
 	float color[4];
 	color[0] = 0.5;

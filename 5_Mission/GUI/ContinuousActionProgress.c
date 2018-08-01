@@ -65,7 +65,7 @@ class ContinuousActionProgress extends ScriptedWidgetEventHandler
 
 		GetActions();
 
-		if(m_Action && m_ActionState != UA_NONE && !GetGame().IsInventoryOpen())
+		if(m_Action && m_Action.HasProgress() && m_ActionState != UA_NONE && !GetGame().IsInventoryOpen())
 		{
 			if(m_ActionState == UA_INITIALIZE || m_ActionState == UA_AM_PENDING)
 			{
@@ -84,7 +84,7 @@ class ContinuousActionProgress extends ScriptedWidgetEventHandler
 			{
 				m_InitProgress = 100;
 				m_LoaderImage.SetRotation(0, 0, 0);
-				SetProgress(Math.AbsFloat(m_Action.GetActionComponentProgress() * 100));
+				SetProgress(Math.AbsFloat(m_AM.GetActionComponentProgress() * 100));
 			}
 			m_Root.Show(true);
 		}

@@ -2,7 +2,7 @@ class ActionDefibrilateSelfCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFIBRILATE);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFIBRILATE);
 	}
 };
 
@@ -57,21 +57,21 @@ class ActionDefibrilateSelf: ActionContinuousBase
 		}
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
 		Defibrillator defib;
-		Class.CastTo(defib, item);
+		Class.CastTo(defib, action_data.m_MainItem);
 		
 		if ( defib.IsCharged() ) 
 		{
-			defib.Discharge(player);
+			defib.Discharge(action_data.m_Player);
 			
-			float regain_energy = player.GetSoftSkillManager().SubtractSpecialtyBonus( defib.GetEnergyNeededToCharge(), this.GetSpecialtyWeight() );
+			float regain_energy = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( defib.GetEnergyNeededToCharge(), this.GetSpecialtyWeight() );
 			regain_energy = defib.GetEnergyNeededToCharge() - regain_energy;
 			
 			ItemBase battery;
 			
-			if (Class.CastTo(battery, item.GetCompEM().GetEnergySource()))
+			if (Class.CastTo(battery, action_data.m_MainItem.GetCompEM().GetEnergySource()))
 			{
 				battery.GetCompEM().AddEnergy( regain_energy );
 			}
@@ -82,9 +82,9 @@ class ActionDefibrilateSelf: ActionContinuousBase
 		}
 		else
 		{
-			player.MessageImportant ( m_MessageStartFail );		
+			action_data.m_Player.MessageImportant ( m_MessageStartFail );		
 		}
 		
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

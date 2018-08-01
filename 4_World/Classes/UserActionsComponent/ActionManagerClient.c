@@ -5,6 +5,7 @@ class ActionManagerClient: ActionManagerBase
 	protected int 								m_LastAcknowledgmentID;
 	protected bool								m_ActionPossible;
 	protected ref array<ref InventoryLocation>	m_ReservedInventoryLocations;
+	protected ref InventoryActionHandler		m_InventoryActionHandler;
 
 	void ActionManagerClient(PlayerBase player)
 	{
@@ -12,50 +13,50 @@ class ActionManagerClient: ActionManagerBase
 		m_LastAcknowledgmentID = 1;
 		m_Targets	= new ActionTargets(player);
 		m_ReservedInventoryLocations = new array<ref InventoryLocation>;
+		m_InventoryActionHandler = new InventoryActionHandler(player);
 		EnableActions();
 	}
 	
 	override void Update(int pCurrentCommandID)
 	{
+		m_InventoryActionHandler.OnUpdate();
 		super.Update(pCurrentCommandID);
 		
 		m_ActionPossible = ActionPossibilityCheck(pCurrentCommandID);
 		
-		switch (m_PendingActionState)
+		if (m_CurrentActionData)
 		{
-			case UA_AM_PENDING:
-				return;
+			switch (m_CurrentActionData.m_State)
+			{
+				case UA_AM_PENDING:
+					return;
 			
-			case UA_AM_ACCEPTED:
-				// check pCurrentCommandID before start or reject 
-				if( m_ActionPossible && pCurrentCommandID != DayZPlayerConstants.COMMANDID_SWIM && pCurrentCommandID != DayZPlayerConstants.COMMANDID_LADDER )
-				{
-					m_PendingAction.Start(m_Player,m_PendingActionTarget, m_Player.GetItemInHands());
-					if( m_PendingAction.IsInstant() )
-						OnActionEnd( m_PendingAction, m_PendingActionTarget, m_Player.GetItemInHands());
-				}
-				else
-				{
-					OnActionEnd(m_PendingAction,m_PendingActionTarget,m_Player.GetItemInHands());
-				}
-				m_PendingAction = NULL;
-				m_PendingActionTarget = NULL;
-				m_PendingActionAcknowledgmentID = -1;
-				m_PendingActionState = UA_NONE;
-				return;
+				case UA_AM_ACCEPTED:
+					// check pCurrentCommandID before start or reject 
+					if( m_ActionPossible && pCurrentCommandID != DayZPlayerConstants.COMMANDID_SWIM && pCurrentCommandID != DayZPlayerConstants.COMMANDID_LADDER )
+					{
+						m_CurrentActionData.m_State = UA_START;
+						m_CurrentActionData.m_Action.Start(m_CurrentActionData);
+						if( m_CurrentActionData.m_Action.IsInstant() )
+							OnActionEnd();
+					}
+					else
+					{
+						OnActionEnd();
+					}
+					m_PendingActionAcknowledgmentID = -1;
+					return;
+				
+				case UA_AM_REJECTED:
+					OnActionEnd();
+					m_PendingActionAcknowledgmentID = -1;
 			
-			case UA_AM_REJECTED:
-				OnActionEnd(m_PendingAction,m_PendingActionTarget,m_Player.GetItemInHands());
-				m_PendingAction = NULL;
-				m_PendingActionTarget = NULL;
-				m_PendingActionAcknowledgmentID = -1;
-				m_PendingActionState = UA_NONE;
+					//m_Player.GetDayZPlayerInventory().UnlockHands();
+					break;
 			
-				//m_Player.GetDayZPlayerInventory().UnlockHands();
-				break;
-			
-			default:
-				break;
+				default:
+					break;
+			}
 		}
 		
 #ifdef DEVELOPER
@@ -85,9 +86,9 @@ class ActionManagerClient: ActionManagerBase
 		if ( AcknowledgmentID == m_PendingActionAcknowledgmentID)
 		{
 			if (pJunctureID == DayZPlayerSyncJunctures.SJ_ACTION_ACK_ACCEPT)
-				m_PendingActionState = UA_AM_ACCEPTED;
+				m_CurrentActionData.m_State = UA_AM_ACCEPTED;
 			else if (pJunctureID == DayZPlayerSyncJunctures.SJ_ACTION_ACK_REJECT)
-				m_PendingActionState = UA_AM_REJECTED;
+				m_CurrentActionData.m_State = UA_AM_REJECTED;
 		}
 	}
 	
@@ -229,6 +230,11 @@ class ActionManagerClient: ActionManagerBase
 	
 	protected void FindContextualUserActions( int pCurrentCommandID )
 	{
+		RemoveActions();
+		m_SelectableActions.Clear();
+		if (m_Player.IsRaised())
+			return;
+		
 		if ( (m_PrimaryActionEnabled || m_SecondaryActionEnabled || m_TertiaryActionEnabled) )
 		{
 			ActionBase action;
@@ -236,7 +242,7 @@ class ActionManagerClient: ActionManagerBase
 			ItemBase 		item;
 
 			// Gathering current inputs
-			RemoveActions();
+			
 			item = FindActionItem();
 			target = FindActionTarget();
 			
@@ -443,9 +449,9 @@ class ActionManagerClient: ActionManagerBase
 		return -1;
 	}
 	//TOOD MW In progress
-	protected bool LockInventory(ActionBase action, ActionTarget target, ItemBase item)
+	protected bool LockInventory(ActionData action_data)
 	{
-		if ( action.IsInstant() )
+		if ( action_data.m_Action.IsInstant() )
 		{
 			Print("[AM][INVL](-) Inventory lock - Not Used");
 				return true;
@@ -453,53 +459,57 @@ class ActionManagerClient: ActionManagerBase
 		else
 		{
 			Print("[AM][INVL](X) Inventory lock");
-			if (action)
-				return action.InventoryReservation(m_Player, target, item, m_ReservedInventoryLocations);
+			if (action_data.m_Action)
+				return action_data.m_Action.InventoryReservation(action_data);
 		}
 		return false;
 	}
-	void UnlockInventory(ActionBase action)
+	void UnlockInventory(ActionData action_data)
 	{
-		if ( action.IsInstant() )
-		{
-			Print("[AM][INVL](-) Inventory unlock - Not Used");
-		}
-		else
-		{
+		//if ( action_data.m_Action.IsInstant() )
+		//{
+		//	Print("[AM][INVL](-) Inventory unlock - Not Used");
+		//}
+		//else
+		//{
 			Print("[AM][INVL](O) Inventory unlock");
-			if (action)
-				action.ClearInventoryReservation(m_Player,m_ReservedInventoryLocations);
-		}
+			if (action_data.m_Action)
+				action_data.m_Action.ClearInventoryReservation(action_data);
+		//}
 	}
 	
-	protected void ActionStart(ActionBase action, ActionTarget target, ItemBase item )
+	protected void ActionStart(ActionBase action, ActionTarget target, ItemBase item , Param extraData = NULL )
 	{
 		if ( action ) 
 		{	
-			if ( !LockInventory(action, target, item) )
-				return;
-			
-			m_RunningAction = action;
-			
 			if ( GetGame().IsMultiplayer() && !action.IsLocal() )
 			{
 				if (!ScriptInputUserData.CanStoreInputUserData())
 				{
-					UnlockInventory(action);
-					m_RunningAction = NULL;
 					Error("ScriptInputUserData already posted - ActionManagerClient");
 					return;
 				}
+			}
+			
+			if( !action.SetupAction(m_Player, target, item, m_CurrentActionData, extraData))
+			{
+				Print("Can not inicialize action - ActionManagerClient");
+				m_CurrentActionData = NULL;
+				return;
+			}
+			
+			m_Player.SetActionEndInput();
+			
+			if ( GetGame().IsMultiplayer() && !action.IsLocal() )
+			{
 				ScriptInputUserData ctx = new ScriptInputUserData;
 				ctx.Write(INPUT_UDT_STANDARD_ACTION);
 				ctx.Write(action.GetType());
-				action.WriteToContext(ctx, target);
+				action.WriteToContext(ctx, m_CurrentActionData);
 					
 				if (action.UseAcknowledgment())
 				{
-					m_PendingAction = action;
-					m_PendingActionTarget = target;
-					m_PendingActionState = UA_AM_PENDING;
+					m_CurrentActionData.m_State = UA_AM_PENDING;
 					m_PendingActionAcknowledgmentID = m_LastAcknowledgmentID++;
 						
 					ctx.Write(m_PendingActionAcknowledgmentID);
@@ -509,16 +519,16 @@ class ActionManagerClient: ActionManagerBase
 					
 				if (!action.UseAcknowledgment())
 				{
-					action.Start(m_Player, target, item);
+					action.Start(m_CurrentActionData);
 					if( action.IsInstant() )
-						OnActionEnd( action, target, item );
+						OnActionEnd();
 				}
 			}
 			else
 			{
-				action.Start(m_Player, target, item);
+				action.Start(m_CurrentActionData);
 				if( action.IsInstant() )
-					OnActionEnd( action, target, item );
+					OnActionEnd();
 			}
 		}
 	}
@@ -529,7 +539,7 @@ class ActionManagerClient: ActionManagerBase
 	//---------------------------------
 	override void OnContinuousStart()
 	{
-		if (!m_PrimaryActionEnabled || !m_ActionPossible )
+		if (!m_PrimaryActionEnabled || !m_ActionPossible || m_CurrentActionData )
 			return;
 								
 		ActionStart(m_PrimaryAction, m_PrimaryActionTarget, m_PrimaryActionItem);
@@ -537,42 +547,24 @@ class ActionManagerClient: ActionManagerBase
 	
 	override void OnContinuousCancel()
 	{
-		if( m_PendingAction )
+		if (!m_CurrentActionData || m_CurrentActionData.m_Action.GetActionCategory()!= AC_CONTINUOUS )
+			return;
+		
+		if( m_CurrentActionData.m_State == UA_AM_PENDING || m_CurrentActionData.m_State == UA_AM_REJECTED || m_CurrentActionData.m_State == UA_AM_ACCEPTED )
 		{
-			OnActionEnd( m_PendingAction, m_PendingActionTarget, m_Player.GetItemInHands() );
-			m_PendingAction = NULL;
-			m_PendingActionTarget = NULL;
+			OnActionEnd();
 			m_PendingActionAcknowledgmentID = -1;
-			m_PendingActionState = UA_NONE;
 		}
-		else	
+		else
 		{
-			ActionContinuousBaseCB callback;
-			if ( !Class.CastTo(callback, m_Player.GetCommandModifier_Action()))
-			{
-				if ( !Class.CastTo(callback, m_Player.GetCommand_Action()) ) 
-				{
-					return;
-				}
-			}
-			if ( callback.GetState() == callback.STATE_LOOP_END || callback.GetState() == callback.STATE_LOOP_END2 )
-			{
-				return;
-			}
-			if ( !callback.IsUserActionCallback() ) 
-			{
-				return;
-			}
-			callback.UserEndsAction();
+			m_CurrentActionData.m_Action.OnContinuousCancel(m_CurrentActionData);
 		}
-		//TODO MW different solution for lock hands
-		//m_Player.GetDayZPlayerInventory().UnlockHands();
 	}
 		
 	// Single----------------------------------------------------
 	override void OnSingleUse()
 	{
-		if (!m_SecondaryActionEnabled || !m_ActionPossible)
+		if (!m_SecondaryActionEnabled || !m_ActionPossible || m_CurrentActionData)
 			return;
 		
 		ActionStart(m_SecondaryAction, m_SecondaryActionTarget, m_SecondaryActionItem);		
@@ -581,7 +573,7 @@ class ActionManagerClient: ActionManagerBase
 	// Interact----------------------------------------------------
 	override void OnInteractAction() //Interact
 	{
-		if(!m_TertiaryActionEnabled || !m_ActionPossible)
+		if(!m_TertiaryActionEnabled || !m_ActionPossible || m_CurrentActionData)
 			return;
 		
 		if ( m_SelectableActions.Count() > 0 )
@@ -619,31 +611,265 @@ class ActionManagerClient: ActionManagerBase
 	//Instant Action (Debug Actions) ---------------------------------
 	override void OnInstantAction(int user_action_id, Param data)
 	{
-		ActionInstantBase i_action;
-		Class.CastTo(i_action, GetAction(user_action_id));
-		if( GetGame().IsMultiplayer() && !i_action.IsLocal() )
-		{
-			if (!ScriptInputUserData.CanStoreInputUserData())
-			{
-				Error("ActionManagerClient - ScriptInputUserData already posted");
-				return;
-			}
-			ScriptInputUserData ctx = new ScriptInputUserData;
-			ctx.Write(INPUT_UDT_STANDARD_ACTION);
-			ctx.Write(i_action.GetType());
-			i_action.WriteToContext(ctx, NULL);
-			ctx.Send();
-		}
-		i_action.PerformAction(m_Player, data);
+		ActionStart(GetAction(user_action_id),NULL,NULL, data);
 	}
 	
-	override void OnActionEnd( ActionBase action, ActionTarget target, ItemBase item )
+	override void OnActionEnd()
 	{
-		super.OnActionEnd( action, target, item );
-		UnlockInventory(action);
-		if( action.RemoveForceTargetAfterUse() )
-			m_Player.GetInventoryActionHandler().DeactiveAction();
+		if(m_CurrentActionData)
+		{
+			UnlockInventory(m_CurrentActionData);
+			if( m_CurrentActionData.m_Action.RemoveForceTargetAfterUse() )
+				m_InventoryActionHandler.DeactiveAction();
+			
+			super.OnActionEnd();
+		}
 	}
+	
+	void SetInventoryAction(int type, int ActionID, ItemBase action_target_item)
+	{
+		m_InventoryActionHandler.SetAction(type, ActionID, action_target_item);
+	}
+	
+	void UnsetInventoryAction()
+	{
+		m_InventoryActionHandler.DeactiveAction();
+	}
+	
+	bool CanPerformActionFromQuickbar(ItemBase mainItem, ItemBase targetItem)
+	{	
+		ItemBase itemInHand = m_Player.GetItemInHands();
+		ActionTarget target;
+		target = new ActionTarget(targetItem, null, -1, vector.Zero, -1);
+		bool hasTarget = targetItem != NULL;
+		
+		if( mainItem )
+		{
+			ref TIntArray action_ids = new TIntArray;
+			ActionBase picked_action;
+			
+			//First check single use actions
+			mainItem.GetSingleUseActions(action_ids);
+			for ( int i = 0; i < action_ids.Count(); i++ )
+			{
+				picked_action = GetAction(action_ids.Get(i));
+				if ( picked_action && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBePerformedFromQuickbar() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+						return true;
+				}
+			}
+			//second continuous actions
+			mainItem.GetContinuousActions(action_ids);
+			for ( int j = 0; j < action_ids.Count(); j++ )
+			{
+				picked_action = GetAction(action_ids.Get(j));
+				if ( picked_action && picked_action.HasTarget() && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBePerformedFromQuickbar() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+						return true;
+				}
+			}
+		}
+	
+		return false;
+	}
+	
+	void PerformActionFromQuickbar(ItemBase mainItem, ItemBase targetItem)
+	{
+		ItemBase itemInHand = m_Player.GetItemInHands();
+		ActionTarget target;
+		target = new ActionTarget(targetItem, null, -1, vector.Zero, -1);
+		bool hasTarget = targetItem != NULL;
+		
+		if( mainItem )
+		{
+			ref TIntArray action_ids = new TIntArray;
+			ActionBase picked_action;
+			
+			//First continuous actions
+			mainItem.GetContinuousActions(action_ids);
+			for ( int i = 0; i < action_ids.Count(); i++ )
+			{
+				picked_action = GetAction(action_ids.Get(i));
+				if ( picked_action && picked_action.HasTarget() && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBePerformedFromQuickbar() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+					{
+						ActionStart(picked_action, target, mainItem);
+						return;
+					}
+				}
+			}
+			//Second check single use actions
+			mainItem.GetSingleUseActions(action_ids);
+			for ( int j = 0; j < action_ids.Count(); j++ )
+			{
+				picked_action = GetAction(action_ids.Get(j));
+				if ( picked_action && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBePerformedFromQuickbar() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+					{
+						ActionStart(picked_action, target, mainItem);
+						return;
+					}
+				}
+			}
+
+		}
+	}
+	
+	bool CanPerformActionFromInventory(ItemBase mainItem, ItemBase targetItem)
+	{	
+		ItemBase itemInHand = m_Player.GetItemInHands();
+		ActionTarget target;
+		target = new ActionTarget(targetItem, null, -1, vector.Zero, -1);
+		bool hasTarget = targetItem != NULL;
+		
+		if( mainItem )
+		{
+			ref TIntArray action_ids = new TIntArray;
+			ActionBase picked_action;
+			
+			//First check single use actions
+			mainItem.GetSingleUseActions(action_ids);
+			for ( int i = 0; i < action_ids.Count(); i++ )
+			{
+				picked_action = GetAction(action_ids.Get(i));
+				if ( picked_action && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBePerformedFromInventory() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+					return true;
+				}
+			}
+				//second continuous actions - performing continuous action from inventory not supported yet
+				/*mainItem.GetContinuousActions(action_ids);
+				for ( int i = 0; i < action_ids.Count(); i++ )
+				{
+					picked_action = GetAction(action_ids.Get(i));
+					if ( picked_action && picked_action.HasTarget() && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBePerformedFromInventory() )
+					{
+						return true;
+					}
+				}*/
+		}
+	
+		return false;
+	}
+	
+	void PerformActionFromInventory(ItemBase mainItem, ItemBase targetItem)
+	{
+		ItemBase itemInHand = m_Player.GetItemInHands();
+		ActionTarget target;
+		target = new ActionTarget(targetItem, null, -1, vector.Zero, -1);
+		bool hasTarget = targetItem != NULL;
+		
+		if( mainItem )
+		{
+			ref TIntArray action_ids = new TIntArray;
+			ActionBase picked_action;
+			
+			//First check single use actions
+			mainItem.GetSingleUseActions(action_ids);
+			for ( int i = 0; i < action_ids.Count(); i++ )
+			{
+				picked_action = GetAction(action_ids.Get(i));
+				if ( picked_action && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBePerformedFromInventory() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+					{
+						ActionStart(picked_action, target, mainItem);
+						return;
+					}
+				}
+			}
+		}
+	}
+	
+	bool CanSetActionFromInventory(ItemBase mainItem, ItemBase targetItem)
+	{
+		ItemBase itemInHand = m_Player.GetItemInHands();
+		ActionTarget target;
+		target = new ActionTarget(targetItem, null, -1, vector.Zero, -1);
+		bool hasTarget = targetItem != NULL;
+		
+		if( mainItem )
+		{
+			ref TIntArray action_ids = new TIntArray;
+			ActionBase picked_action;
+			
+			//First check single use actions
+			mainItem.GetSingleUseActions(action_ids);
+			for ( int i = 0; i < action_ids.Count(); i++ )
+			{
+				picked_action = GetAction(action_ids.Get(i));
+				if ( picked_action && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBeSetFromInventory() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+						return true;
+				}
+			}
+			//second continuous actions
+			mainItem.GetContinuousActions(action_ids);
+			for ( int j = 0; j < action_ids.Count(); j++ )
+			{
+				picked_action = GetAction(action_ids.Get(j));
+				if ( picked_action && picked_action.HasTarget() && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBeSetFromInventory() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+						return true;
+				}
+			}
+		}
+	
+		return false;
+	}
+	
+	void SetActionFromInventory(ItemBase mainItem, ItemBase target_item)
+	{
+		ItemBase itemInHand = m_Player.GetItemInHands();
+		ActionTarget target;
+		target = new ActionTarget(target_item, null, -1, vector.Zero, -1);
+		bool hasTarget = target_item != NULL;
+		
+		if( mainItem )
+		{
+			ref TIntArray action_ids = new TIntArray;
+			ActionBase picked_action;
+			
+			//First continuous actions
+			mainItem.GetContinuousActions(action_ids);
+			for ( int i = 0; i < action_ids.Count(); i++ )
+			{
+				picked_action = GetAction(action_ids.Get(i));
+				if ( picked_action && picked_action.HasTarget() && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBeSetFromInventory() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+					{
+						SetInventoryAction(InventoryActionHandler.IAH_CONTINUOUS, action_ids.Get(i), target_item);
+						return;
+					}
+				}
+			}
+			//Second check single use actions
+			mainItem.GetSingleUseActions(action_ids);
+			for ( int j = 0; j < action_ids.Count(); j++ )
+			{
+				picked_action = GetAction(action_ids.Get(j));
+				if ( picked_action && picked_action.Can(m_Player,target, itemInHand) && picked_action.CanBeSetFromInventory() )
+				{
+					if( hasTarget == picked_action.HasTarget())
+					{
+						SetInventoryAction(InventoryActionHandler.IAH_SINGLE_USE, action_ids.Get(j), target_item);
+						return;
+					}
+				}
+			}
+
+		}
+	
+	}
+	
 	
 	private ref ActionTarget m_ForceTarget;
 	private ref ActionTargets m_Targets;

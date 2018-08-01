@@ -32,9 +32,9 @@ class ActionWorldCraftCancel: ActionSingleUseBase
 		return player.GetCraftingManager().IsInventoryCraft();
 	}
 	
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item ) //Setup on start of action
+	override void Start( ActionData action_data ) //Setup on start of action
 	{	
-		//player.GetCraftingManager().CancelInventoryCraft();
+		//action_data.m_Player.GetCraftingManager().CancelInventoryCraft();
 	}
 	
 	override bool IsLocal()

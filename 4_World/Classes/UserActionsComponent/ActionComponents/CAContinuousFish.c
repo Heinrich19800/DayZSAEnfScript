@@ -2,21 +2,21 @@ class CAContinuousFish : CAContinuousBase
 {
 	protected FishingRod_Base m_Rod;
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
-		Class.CastTo(m_Rod, item);
+		Class.CastTo(m_Rod, action_data.m_MainItem);
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( m_Rod != item )
+		if ( m_Rod != action_data.m_MainItem )
 		{
 			return UA_ERROR;
 		}
 		
 		if ( GetGame().IsServer() ) 
 		{
-			m_Rod.AddPull(player.GetDeltaT());
+			m_Rod.AddPull(action_data.m_Player.GetDeltaT());
 		}
 		return UA_PROCESSING;	
 	}

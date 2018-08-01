@@ -40,17 +40,17 @@ class Hunger: ModifierBase
 		m_LastEnergyLevel = player.GetStatEnergy().Get();
 		
 		player.GetStatEnergy().Add( -metabolic_speed * deltaT );
-		if ( energy <= ModifierConstants.LOW_ENERGY_TRESHOLD )
+		if ( energy <= PlayerConstants.LOW_ENERGY_TRESHOLD )
 		{
 			/*
 			float currenthealth = player.GetHealth("GlobalHealth", "Health");
 			float currentblood = player.GetHealth("GlobalHealth", "Blood");
 			
-			float health_delta = ( 1 - Math.InverseLerp(0,ModifierConstants.LOW_ENERGY_TRESHOLD, player.GetStatEnergy().Get()) ) * -ModifierConstants.DAMAGE_PER_SEC * deltaT;
+			float health_delta = ( 1 - Math.InverseLerp(0,PlayerConstants.LOW_ENERGY_TRESHOLD, player.GetStatEnergy().Get()) ) * -PlayerConstants.DAMAGE_PER_SEC * deltaT;
 			
 			player.AddHealth("GlobalHealth", "", health_delta);
 			*/
-			player.AddHealth("GlobalHealth", "Health", -ModifierConstants.LOW_ENERGY_DAMAGE_PER_SEC * deltaT );
+			player.AddHealth("GlobalHealth", "Health", -PlayerConstants.LOW_ENERGY_DAMAGE_PER_SEC * deltaT );
 		}
 	}
 	

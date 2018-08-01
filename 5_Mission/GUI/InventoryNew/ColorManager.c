@@ -14,11 +14,6 @@ class ColorManager
 		m_Instance = this;
 	}
 	
-	void Test()
-	{
-		Print("teset");
-	}
-	
 	static ColorManager GetInstance()
 	{
 		return m_Instance;

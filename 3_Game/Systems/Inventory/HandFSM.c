@@ -14,16 +14,16 @@ typedef FSMTransition<HandStateBase, HandEventBase, HandActionBase, HandGuardBas
 /**@class		HandFSM
  * @brief		Hand finite state machine
  **/
-class HandFSM extends OFSMBase<HandStateBase, HandEventBase, HandActionBase, HandGuardBase>
+class HandFSM extends HFSMBase<HandStateBase, HandEventBase, HandActionBase, HandGuardBase>
 {
 	int GetCurrentStateID ()
 	{
-		if (m_States.Count() == 2)
+		/*if (m_States.Count() == 2)
 		{
 			int s0 = m_States[0].GetCurrentStateID();
 			int s1 = m_States[1].GetCurrentStateID() << 8;
 			return s1 | s0;
-		}
+		}*/
 		return 0;
 	}
 
@@ -33,7 +33,7 @@ class HandFSM extends OFSMBase<HandStateBase, HandEventBase, HandActionBase, Han
 	 **/
 	protected bool SyncStateFromID (int id)
 	{
-		if (id == 0)
+		/*if (id == 0)
 			return false;
 
 		int s0 = id & 0x000000ff;
@@ -57,7 +57,7 @@ class HandFSM extends OFSMBase<HandStateBase, HandEventBase, HandActionBase, Han
 			}
 			if (set0 && set1)
 				return true;
-		}
+		}*/
 		return false;
 	}
 
@@ -66,12 +66,12 @@ class HandFSM extends OFSMBase<HandStateBase, HandEventBase, HandActionBase, Han
 	 **/
 	void OnStoreLoad (ParamsReadContext ctx)
 	{
-		int id = 0;
+		/*int id = 0;
 		ctx.Read(id);
 		if (SyncStateFromID(id))
 			hndDebugPrint("[hndfsm] OnStoreLoad - loaded current state from id=" + id);
 		else
-			Print("[hndfsm] Warning! OnStoreLoad - cannot load curent hand state, id=" + id);
+			Print("[hndfsm] Warning! OnStoreLoad - cannot load curent hand state, id=" + id);*/
 	}
 
 	/**@fn			OnStoreSave
@@ -79,9 +79,9 @@ class HandFSM extends OFSMBase<HandStateBase, HandEventBase, HandActionBase, Han
 	 **/
 	void OnStoreSave (ParamsWriteContext ctx)
 	{
-		int id = GetCurrentStateID();
+		/*int id = GetCurrentStateID();
 		ctx.Write(id);
-		hndDebugPrint("[hndfsm] OnStoreSave - saving current state=" + GetCurrentState() + " id=" + id);
+		hndDebugPrint("[hndfsm] OnStoreSave - saving current state=" + GetCurrentState() + " id=" + id);*/
 	}
 
 	/**@fn			NetSyncCurrentStateID
@@ -89,18 +89,10 @@ class HandFSM extends OFSMBase<HandStateBase, HandEventBase, HandActionBase, Han
 	 **/
 	void NetSyncCurrentStateID (int id)
 	{
-		if (SyncStateFromID(id))
+		/*if (SyncStateFromID(id))
 			hndDebugPrint("[hndfsm] NetSyncCurrentStateID - loaded current state from id=" + id);
 		else
-			Print("[hndfsm] NetSyncCurrentStateID called with null, ignoring request to set current fsm state.");
-	}
-
-	bool IsInLockedState ()
-	{
-		for (int s = 0; s < m_States.Count(); ++s)
-			if (m_States[s].GetCurrentStateID() == HandStateID.Locked)
-				return true;
-		return false;
+			Print("[hndfsm] NetSyncCurrentStateID called with null, ignoring request to set current fsm state.");*/
 	}
 };
 

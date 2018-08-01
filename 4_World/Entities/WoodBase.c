@@ -38,75 +38,36 @@ class WoodBase extends Plant
 			}
 		}
 	}
-
-	string GetMaterial(ItemBase item)
+	
+	void GetMaterialAndQuantityMap(ItemBase item, out map<string,int> output_map)
 	{
 		if ( IsTree() )
 		{
 			if ( item && item.KindOf("Knife") )
 			{
-				return "Bark_Oak";
+				output_map.Insert("Bark_Oak",10);
 			}
 			else if ( item && item.KindOf("Axe") )
 			{
-				return "FireWood";
-			}
-			else
-			{
-				return "LongWoodenStick"; 
+				output_map.Insert("FireWood",1);
+				output_map.Insert("WoodenStick",1);
+				//output_map.Insert("TacticalBaconCan",1);
+				//output_map.Insert("HumanSteakMeat",1);
 			}
 		}
 		else
 		{
 			if ( item && item.KindOf("Knife") )
 			{
-				return "LongWoodenStick";
+				output_map.Insert("LongWoodenStick",1);
 			}
 			else if ( item && item.KindOf("Axe") )
 			{
-				return "LongWoodenStick";
-			}
-			else
-			{
-				return "WoodenStick";
+				output_map.Insert("LongWoodenStick",1);
 			}
 		}
 	}
-
-	int GetAmountOfMaterialPerDrop(ItemBase item)
-	{
-		if ( IsTree() )
-		{
-			if ( item && item.KindOf("Knife") )
-			{
-				return 1;
-			}
-			else if ( item && item.KindOf("Axe") )
-			{
-				return 1;
-			}
-			else
-			{
-				return 1; 
-			}
-		}
-		else
-		{
-			if ( item && item.KindOf("Knife") )
-			{
-				return 1;
-			}
-			else if ( item && item.KindOf("Axe") )
-			{
-				return 1;
-			}
-			else
-			{
-				return 1;
-			}
-		}
-	}
-
+	
 	float GetDamageToMiningItemEachDrop(ItemBase item)
 	{
 		if ( IsTree() )

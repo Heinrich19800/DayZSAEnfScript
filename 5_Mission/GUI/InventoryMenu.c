@@ -656,13 +656,13 @@ class InventoryMenu extends UIScriptedMenu
 
 	void PerformRefreshInventory()
 	{
-		Man player = GetGame().GetPlayer();
+		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
 		if( player == NULL)
 		{
 			return;
 		}
 		
-		if (player.GetHumanInventory().CanOpenInventory() == false)
+		if (player.GetHumanInventory().CanOpenInventory() == false || player.IsInventorySoftLocked() )
 		{
 			GetGame().GetUIManager().GetMenu().UnlockControls();
 			GetGame().GetUIManager().HideMenu(MENU_INVENTORY);
@@ -698,7 +698,7 @@ class InventoryMenu extends UIScriptedMenu
 
 		
 		Object obj;
-		Cargo cargo;
+		CargoBase cargo;
 		int i,c;
 		InventoryContainerEntity container;
 		InventoryContainerZombie zombie_container;
@@ -707,7 +707,7 @@ class InventoryMenu extends UIScriptedMenu
 		vector pos = player.GetPosition();
 		vector dir = player.GetDirection();
 		ref array<Object> objects = new array<Object>;
-		ref array<Cargo> proxyCargos = new array<Cargo>;
+		ref array<CargoBase> proxyCargos = new array<CargoBase>;
 		GetGame().GetObjectsAtPosition(pos + (dir * 0.75), 1.0, objects, proxyCargos);
 
 		// remove container objects which are not anymore in list of nearby objects

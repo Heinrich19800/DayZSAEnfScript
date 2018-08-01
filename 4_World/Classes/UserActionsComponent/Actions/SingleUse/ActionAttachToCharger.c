@@ -44,17 +44,17 @@ class ActionAttachToCharger: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		ItemBase target_IB;
-		Class.CastTo(target_IB,  target.GetObject() ); // cast to ItemBase
-		target_IB.LocalTakeEntityAsAttachment(item);
+		Class.CastTo(target_IB,  action_data.m_Target.GetObject() ); // cast to ItemBase
+		target_IB.LocalTakeEntityAsAttachment(action_data.m_MainItem);
 	}
 
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
 		ItemBase target_IB;
-		Class.CastTo(target_IB,  target.GetObject() ); // cast to ItemBase
-		target_IB.LocalTakeEntityAsAttachment(item);
+		Class.CastTo(target_IB,  action_data.m_Target.GetObject() ); // cast to ItemBase
+		target_IB.LocalTakeEntityAsAttachment(action_data.m_MainItem);
 	}
 };

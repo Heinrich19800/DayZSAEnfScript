@@ -2,7 +2,7 @@ class ActionUseRangefinderCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime( 1.0 );
+		m_ActionData.m_ActionComponent = new CAContinuousTime( 1.0 );
 	}
 };
 
@@ -11,6 +11,8 @@ class ActionUseRangefinder : ActionContinuousBase
 	void ActionUseRangefinder()
 	{
 		m_CallbackClass = ActionUseRangefinderCB;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_LOOKOPTICS;
+		m_CommandUIDProne = DayZPlayerConstants.CMD_ACTIONFB_LOOKOPTICS;
 		m_MessageStartFail = "ActionUseRangefinder - m_MessageStartFail";
 		m_MessageStart = "ActionUseRangefinder - m_MessageStart";
 		m_MessageSuccess = "ActionUseRangefinder - m_MessageSuccess";
@@ -42,19 +44,24 @@ class ActionUseRangefinder : ActionContinuousBase
 		return false;
 	}
 
+	override bool HasProneException()
+	{
+		return true;
+	}
+	
 	override bool ActionCondition ( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		return item.GetCompEM().CanWork() && Rangefinder.Cast( item ).IsInOptics();
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		if (player)
+		/*if (action_data.m_Player)
 		{
-			string message = Rangefinder.Cast( item ).DoMeasurement(player);
-			SendMessageToClient(player,message);
-		}
+			string message = Rangefinder.Cast( action_data.m_MainItem ).DoMeasurement(action_data.m_Player);
+			SendMessageToClient(action_data.m_Player,message);
+		}*/
 		
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }

@@ -3,7 +3,7 @@ class ActionSwitchLights: ActionInteractBase
 	void ActionSwitchLights()
 	{
 		m_MessageSuccess    = "";
-		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP;
+		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS;
 		m_StanceMask        = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
 		m_HUDCursorIcon     = CursorIcons.LootCorpse;
 	}
@@ -29,11 +29,11 @@ class ActionSwitchLights: ActionInteractBase
 		return true;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Print(target);
+		Print(action_data.m_Target);
 		Car car;
-		if ( Class.CastTo(car, target.GetObject()) )
+		if ( Class.CastTo(car, action_data.m_Target.GetObject()) )
 		{
 			car.SwitchLights();
 		}

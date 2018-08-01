@@ -34,7 +34,12 @@ class ActionDrinkPond: ActionInteractBase
 			return true;
 		
 		vector pos_cursor = target.GetCursorHitPos();
-		if( g_Game.SurfaceIsPond(pos_cursor[0], pos_cursor[2]) )
+		string surfType;
+		int liquidType;
+
+		g_Game.SurfaceUnderObject(player, surfType, liquidType);
+
+		if ( liquidType == LIQUID_WATER )
 		{
 			pos_cursor[1] = g_Game.SurfaceY(pos_cursor[0],pos_cursor[2]);
 			// TODO: use some automatic way for setting of surface description (when it's possible)
@@ -47,8 +52,8 @@ class ActionDrinkPond: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		player.Consume(NULL, UAQuantityConsumed.DRINK, EConsumeType.ENVIRO_POND);
+		action_data.m_Player.Consume(NULL, UAQuantityConsumed.DRINK, EConsumeType.ENVIRO_POND);
 	}
 };

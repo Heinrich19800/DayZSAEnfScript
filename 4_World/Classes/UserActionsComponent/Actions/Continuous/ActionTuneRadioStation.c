@@ -4,7 +4,7 @@ class ActionTuneRadioStationCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousRepeat(REPEAT_AFTER_SEC);
+		m_ActionData.m_ActionComponent = new CAContinuousRepeat(REPEAT_AFTER_SEC);
 	}
 }
 
@@ -60,14 +60,14 @@ class ActionTuneRadioStation: ActionContinuousBase
 		return false;
 	}
 
-	override void OnRepeatServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnRepeatServer( ActionData action_data )
 	{	
-		Radio radio = Radio.Cast( item );
+		Radio radio = Radio.Cast( action_data.m_MainItem );
 		radio.TuneNextStation();
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }

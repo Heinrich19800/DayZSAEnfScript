@@ -10,11 +10,13 @@ class ModifierBase
 	float				m_TickIntervalInactive = 5;
 	float				m_TickIntervalActive = 3;
 	bool				m_IsActive;
+	bool				m_ShouldBeActive;
 	float				m_AccumulatedTimeActive;
 	float				m_AccumulatedTimeInactive;
 	float				m_LastTickedActive;
 	float				m_LastTickedInactive;
 	bool				m_IsLocked = false;
+	EActivationType		m_ActivationType;
 	
 	PluginPlayerStatus 		m_ModulePlayerStatus;
 
@@ -53,6 +55,11 @@ class ModifierBase
 
 	void Tick(float delta_time)
 	{
+		if( !IsActive() && m_ShouldBeActive )
+		{
+			Activate();
+		}
+		//PrintString(this.ToString() + " " +IsActive().ToString());
 		if( IsActive() )
 		{
 			m_AccumulatedTimeActive += delta_time;
@@ -88,7 +95,7 @@ class ModifierBase
 				{
 					if( !IsLocked() ) 
 					{
-						Activate(true);
+						ActivateRequest(EActivationType.TRIGGER_EVENT_ON_ACTIVATION);
 					}
 				}
 				m_AccumulatedTimeInactive = 0;
@@ -100,6 +107,8 @@ class ModifierBase
 	{
 		return m_IsActive;
 	}
+	
+	
 	
 	void SetLock(bool state)
 	{
@@ -162,16 +171,23 @@ class ModifierBase
 	{
 
 	}
-
-	void Activate(EActivationType trigger)
+	
+	void Activate()
 	{
 		m_IsActive = true;
-		if( trigger == EActivationType.TRIGGER_EVENT_ON_ACTIVATION ) OnActivate(m_Player);
-		else if(trigger == EActivationType.TRIGGER_EVENT_ON_CONNECT ) OnReconnect(m_Player);
+		if( m_ActivationType == EActivationType.TRIGGER_EVENT_ON_ACTIVATION ) OnActivate(m_Player);
+		else if(m_ActivationType == EActivationType.TRIGGER_EVENT_ON_CONNECT ) OnReconnect(m_Player);
+	}
+	
+	void ActivateRequest(EActivationType trigger)
+	{
+		m_ShouldBeActive = true;
+		m_ActivationType = trigger;
 	}
 
 	void Deactivate(bool trigger = true)
 	{
+		m_ShouldBeActive = false;
 		m_IsActive = false;
 		m_ActivatedTime = 0;
 		if(trigger) OnDeactivate(m_Player);

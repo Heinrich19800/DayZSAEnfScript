@@ -8,7 +8,7 @@ class ParticleList
 	// REGISTER ALL PARTICLES BELOW:
 	
 	static const int INVALID						= -1;
-	static const int PARTICLE_TEST					= RegisterParticle("smoke_small_generator_01");
+	static const int PARTICLE_TEST					= RegisterParticle("_test_orientation");
 	
 	// FIREPLACE
 	// Normal fireplace
@@ -31,13 +31,20 @@ class ParticleList
 	static const int BARREL_FIRE_START				= RegisterParticle("fire_small_barrel_01_start");
 	static const int BARREL_SMALL_FIRE 				= RegisterParticle("fire_small_barrel_01");
 	static const int BARREL_SMALL_SMOKE 			= RegisterParticle("smoke_small_barrel_01");
-	static const int BARREL_NORMAL_FIRE				= RegisterParticle("fire_medium_barel_01");
+	static const int BARREL_NORMAL_FIRE				= RegisterParticle("fire_medium_barrel_01");
 	static const int BARREL_NORMAL_SMOKE			= RegisterParticle("smoke_medium_barrel_01");
 	static const int BARREL_FIRE_END				= RegisterParticle("fire_small_barrel_01_end");
 	static const int BARREL_FIRE_STEAM_2END			= RegisterParticle("steam_medium_camp_2end");
 	
 	// COOKING
-	static const int BOILING_WATER_STEAM			= RegisterParticle("steam_small_cook_01");
+	static const int COOKING_BOILING_EMPTY			= RegisterParticle("cooking_boiling_empty");
+	static const int COOKING_BOILING_START			= RegisterParticle("cooking_boiling_start");
+	static const int COOKING_BOILING_DONE			= RegisterParticle("cooking_boiling_done");
+	static const int COOKING_BAKING_START			= RegisterParticle("cooking_baking_start");
+	static const int COOKING_BAKING_DONE			= RegisterParticle("cooking_baking_done");	
+	static const int COOKING_DRYING_START			= RegisterParticle("cooking_drying_start");
+	static const int COOKING_DRYING_DONE			= RegisterParticle("cooking_drying_done");
+	static const int COOKING_BURNING_DONE			= RegisterParticle("cooking_burning_done");
 	
 	// TORCH
 	static const int TORCH							= RegisterParticle("fire_small_torch_01");
@@ -48,6 +55,8 @@ class ParticleList
 	static const int ROADFLARE_BURNING_ENDING		= RegisterParticle("fire_small_roadflare_red_02");
 	static const int ROADFLARE_BURNING_SMOKE		= RegisterParticle("fire_small_roadflare_red_03");
 	
+	// DIGGING
+	static const int DIGGING_STASH					= RegisterParticle("digging_ground");
 	
 	// SMOKE GRENADES
 	static const int RDG2 							= RegisterParticle("POI_orange_long_2xspeed");
@@ -94,45 +103,52 @@ class ParticleList
 	static const int IMPACT_TEST_ENTER_DEBUG		= RegisterParticle("impacts/_test_impact_enter_debug");
 	static const int IMPACT_TEST_RICOCHET_DEBUG		= RegisterParticle("impacts/_test_impact_ricochet_debug");
 	static const int IMPACT_TEST_EXIT_DEBUG			= RegisterParticle("impacts/_test_impact_exit_debug");
+	static const int IMPACT_TEST_NO_MATERIAL_ERROR	= RegisterParticle("_test_no_material");
 	static const int IMPACT_WOOD_ENTER				= RegisterParticle("impacts/hit_wood_ent_01");
 	static const int IMPACT_WOOD_RICOCHET			= RegisterParticle("impacts/hit_wood_ric_01");
 	static const int IMPACT_WOOD_EXIT				= RegisterParticle("impacts/hit_wood_ext_01");
-	static const int IMPACT_CONCRETE_ENTER			= RegisterParticle("impacts/bullet_impact_placeholder");
-	static const int IMPACT_CONCRETE_RICOCHET		= RegisterParticle("impacts/bullet_riochet_placeholder");
-	static const int IMPACT_CONCRETE_EXIT			= RegisterParticle("impacts/bullet_riochet_placeholder");
-	static const int IMPACT_FOLIAGE_ENTER			= RegisterParticle("impacts/hit_wood_ent_01");
-	static const int IMPACT_FOLIAGE_RICOCHET		= RegisterParticle("impacts/hit_wood_ric_01");
-	static const int IMPACT_FOLIAGE_EXIT			= RegisterParticle("impacts/hit_wood_ext_01");
-	static const int IMPACT_DIRT_ENTER				= RegisterParticle("impacts/hit_wood_ent_01");
-	static const int IMPACT_DIRT_RICOCHET			= RegisterParticle("impacts/hit_wood_ric_01");
-	static const int IMPACT_DIRT_EXIT				= RegisterParticle("impacts/hit_wood_ext_01");
-	static const int IMPACT_RUBBER_ENTER			= RegisterParticle("impacts/bullet_impact_placeholder");
-	static const int IMPACT_RUBBER_RICOCHET			= RegisterParticle("impacts/bullet_riochet_placeholder");
-	static const int IMPACT_RUBBER_EXIT				= RegisterParticle("impacts/bullet_impact_placeholder");
-	static const int IMPACT_GRAVEL_ENTER			= RegisterParticle("impacts/hit_wood_ent_01");
-	static const int IMPACT_GRAVEL_RICOCHET			= RegisterParticle("impacts/hit_wood_ric_01");
-	static const int IMPACT_GRAVEL_EXIT				= RegisterParticle("impacts/hit_wood_ext_01");
-	static const int IMPACT_PLASTER_ENTER			= RegisterParticle("impacts/hit_wood_ent_01");
-	static const int IMPACT_PLASTER_RICOCHET		= RegisterParticle("impacts/hit_wood_ric_01");
-	static const int IMPACT_PLASTER_EXIT			= RegisterParticle("impacts/hit_wood_ext_01");
-	static const int IMPACT_METAL_ENTER				= RegisterParticle("impacts/bullet_impact_placeholder");
-	static const int IMPACT_METAL_RICOCHET			= RegisterParticle("impacts/bullet_riochet_placeholder");
-	static const int IMPACT_METAL_EXIT				= RegisterParticle("impacts/bullet_riochet_placeholder");
-	static const int IMPACT_MEAT_ENTER				= RegisterParticle("impacts/bullet_impact_placeholder");
-	static const int IMPACT_MEAT_RICOCHET			= RegisterParticle("impacts/bullet_riochet_placeholder");
-	static const int IMPACT_MEAT_EXIT				= RegisterParticle("impacts/bullet_riochet_placeholder");
-	static const int IMPACT_MEATBONES_ENTER			= RegisterParticle("blood_medium_01");
-	static const int IMPACT_MEATBONES_RICOCHET		= RegisterParticle("blood_medium_01_upscaled");
-	static const int IMPACT_MEATBONES_EXIT			= RegisterParticle("blood_medium_01_upscaled");
-	static const int IMPACT_GLASS_ENTER				= RegisterParticle("impacts/bullet_impact_placeholder");
-	static const int IMPACT_GLASS_RICOCHET			= RegisterParticle("impacts/bullet_riochet_placeholder");
-	static const int IMPACT_GLASS_EXIT				= RegisterParticle("impacts/bullet_riochet_placeholder");
+	static const int IMPACT_CONCRETE_ENTER			= RegisterParticle("impacts/hit_concrete_ent_01");
+	static const int IMPACT_CONCRETE_RICOCHET		= RegisterParticle("impacts/hit_concrete_ric_01");
+	static const int IMPACT_CONCRETE_EXIT			= RegisterParticle("impacts/hit_concrete_ext_01");
+	static const int IMPACT_FOLIAGE_ENTER			= RegisterParticle("impacts/hit_foliage_ent_01");
+	static const int IMPACT_FOLIAGE_RICOCHET		= RegisterParticle("impacts/hit_foliage_ric_01");
+	static const int IMPACT_FOLIAGE_EXIT			= RegisterParticle("impacts/hit_foliage_ext_01");
+	static const int IMPACT_GRASS_ENTER				= RegisterParticle("impacts/hit_dirt_ent_01");
+	static const int IMPACT_GRASS_RICOCHET			= RegisterParticle("impacts/hit_dirt_ric_01");
+	static const int IMPACT_DIRT_ENTER				= RegisterParticle("impacts/hit_dirt_ent_01");
+	static const int IMPACT_DIRT_RICOCHET			= RegisterParticle("impacts/hit_dirt_ric_01");
+	static const int IMPACT_DIRT_EXIT				= RegisterParticle("impacts/hit_dirt_ext_01");
+	static const int IMPACT_RUBBER_ENTER			= RegisterParticle("impacts/hit_rubber_ent_01");
+	static const int IMPACT_RUBBER_RICOCHET			= RegisterParticle("impacts/hit_rubber_ric_01");
+	static const int IMPACT_RUBBER_EXIT				= RegisterParticle("impacts/hit_rubber_ext_01");
+	static const int IMPACT_GRAVEL_ENTER			= RegisterParticle("impacts/hit_gravel_ent_01");
+	static const int IMPACT_GRAVEL_RICOCHET			= RegisterParticle("impacts/hit_gravel_ric_01");
+	static const int IMPACT_GRAVEL_EXIT				= RegisterParticle("impacts/hit_gravel_ext_01");
+	static const int IMPACT_PLASTER_ENTER			= RegisterParticle("impacts/hit_plaster_ent_01");
+	static const int IMPACT_PLASTER_RICOCHET		= RegisterParticle("impacts/hit_plaster_ric_01");
+	static const int IMPACT_PLASTER_EXIT			= RegisterParticle("impacts/hit_plaster_ext_01");
+	static const int IMPACT_METAL_ENTER				= RegisterParticle("impacts/hit_metal_ent_01");
+	static const int IMPACT_METAL_RICOCHET			= RegisterParticle("impacts/hit_metal_ric_01");
+	static const int IMPACT_METAL_EXIT				= RegisterParticle("impacts/hit_metal_ext_01");
+	static const int IMPACT_MEAT_ENTER				= RegisterParticle("impacts/hit_meat_ent_01");
+	static const int IMPACT_MEAT_RICOCHET			= RegisterParticle("impacts/hit_meat_ric_01");
+	static const int IMPACT_MEAT_EXIT				= RegisterParticle("impacts/hit_meat_ext_01");
+	static const int IMPACT_MEATBONES_ENTER			= RegisterParticle("impacts/hit_meatbones_ent_01");
+	static const int IMPACT_MEATBONES_RICOCHET		= RegisterParticle("impacts/hit_meatbones_ent_01");
+	static const int IMPACT_MEATBONES_EXIT			= RegisterParticle("impacts/hit_meatbones_ext_01");
+	static const int IMPACT_GLASS_ENTER				= RegisterParticle("impacts/hit_glass_ent_01");
+	static const int IMPACT_GLASS_RICOCHET			= RegisterParticle("impacts/hit_glass_ric_01");
+	static const int IMPACT_GLASS_EXIT				= RegisterParticle("impacts/hit_glass_ext_01");
+	static const int IMPACT_WATER_SMALL_ENTER		= RegisterParticle("impacts/hit_water_ent_01");
+	static const int IMPACT_WATER_MEDIUM_ENTER		= RegisterParticle("impacts/hit_water_ent_02");
+	static const int IMPACT_WATER_LARGE_ENTER		= RegisterParticle("impacts/hit_water_ent_03");
 	
 	// EXPLOSIONS
-	static const int EXPLOSION_TEST					= RegisterParticle("explosion_landmine_01");
-	static const int EXPLOSION_TEST_SIMPLE			= RegisterParticle("explosion_placeholder");
+	static const int EXPLOSION_LANDMINE				= RegisterParticle("explosion_landmine_01");
+	static const int EXPLOSION_TEST					= RegisterParticle("explosion_placeholder");
 	
-	
+	// ENVIRO EFX
+	static const int SMOKING_HELI_WRECK				= RegisterParticle("smoke_heli_wreck_01");
 	
 	static int RegisterParticle (string file_name)
 	{
@@ -144,6 +160,13 @@ class ParticleList
 	{
 		if (!m_ParticlePaths)
 			m_ParticlePaths = new map<int, string>;
+		
+		string path = root_path + file_name + ".ptc";
+		
+		bool file_exist = FileExist(path);
+		
+		if ( !file_exist )
+			Error("ERROR! Particle file not found! <" + path + ">  Correct path to this particle in file ParticleList.c!");
 		
 		m_ParticlePaths.Insert(m_lastID++, root_path + file_name);
 		return m_lastID;

@@ -31,6 +31,27 @@ class VicinityContainer: CollapsibleContainer
 			m_ShowedItems.GetElement( i ).RefreshQuantity( item_to_refresh );
 		}
 	}
+	
+	override void SelectItem()
+	{
+		if( m_FocusedContainer.IsInherited( ItemWithCargo ) || m_FocusedContainer.IsInherited( ItemWithCargoAndAttachments ) )
+		{
+			ItemWithCargo iwc = ItemWithCargo.Cast( m_FocusedContainer );
+			ItemWithCargoAndAttachments iwca = ItemWithCargoAndAttachments.Cast( m_FocusedContainer );
+			if( iwc )
+			{
+				iwc.SelectItem();
+			}
+			else if ( iwca )
+			{
+				//iwca.SelectItem();
+			}
+		}
+		else
+		{
+			//m_VicinityIconsContainer.SelectItem();
+		}
+	}
 
 	override void Select()
 	{
@@ -551,17 +572,18 @@ class VicinityContainer: CollapsibleContainer
 
 	override void UpdateInterval()
 	{
-
 		// GetObjectsInVicinity
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+		
 		if(!player)
-		return;
+			return;
+		
 		vector pos = player.GetPosition();
 		vector dir = player.GetDirection();
 		ref array<Object> objects = new array<Object>;
 		ref array<Object> objects_in_cone = new array<Object>;
-		ref array<Cargo> proxyCargos = new array<Cargo>;
-		GetGame().GetObjectsAtPosition( pos, 1.0, objects, proxyCargos );
+		ref array<CargoBase> proxyCargos = new array<CargoBase>;
+		GetGame().GetObjectsAtPosition3D( pos, 1.0, objects, proxyCargos );
 		objects_in_cone = ActionTargets.GetVicinityObjects();
 
 		for ( int i = 0; i < objects_in_cone.Count(); i++ )
@@ -604,15 +626,16 @@ class VicinityContainer: CollapsibleContainer
 			}
 		}
 
-		if( m_Parent.m_Parent.GetMainPanel().IsVisible() && !this.m_Hidden )
+		if( m_Parent.m_Parent.GetMainPanel().IsVisible() && !m_Hidden )
 		{
-			{ //ShowCargoItems
-				ref map<EntityAI, ref Container> new_showed_items = new ref map<EntityAI, ref Container>;
-				ref map<int, ref Container> showed_items_IDs = new ref map<int, ref Container>;
-				for ( i = 0; i < showable_items.Count(); i++ )
+			ref map<EntityAI, ref Container> new_showed_items = new ref map<EntityAI, ref Container>;
+			ref map<int, ref Container> showed_items_IDs = new ref map<int, ref Container>;
+			for ( i = 0; i < showable_items.Count(); i++ )
+			{
+				EntityAI entity = EntityAI.Cast( showable_items.Get( i ) );
+				if( entity )
 				{
-					EntityAI entity = EntityAI.Cast( showable_items.Get( i ) );
-					if( m_ShowedItems.Contains( entity ) == false )
+					if( !m_ShowedItems.Contains( entity ) )
 					{
 						string config = "CfgVehicles " + entity.GetType() + " GUIInventoryAttachmentsProps";
 
@@ -666,7 +689,7 @@ class VicinityContainer: CollapsibleContainer
 							{
 								if ( entity.IsInherited( PlayerBase ) )
 								{
-									if( entity.IsAlive() )
+									if( entity.IsAlive() && !PlayerBase.Cast( entity ).IsUnconscious() )
 									{
 										continue;
 									}
@@ -688,26 +711,31 @@ class VicinityContainer: CollapsibleContainer
 					}
 					else
 					{
-						new_showed_items.Insert( entity, m_ShowedItems.Get( entity ) );
-						showed_items_IDs.Insert( entity.GetID(), m_ShowedItemsIDs.Get( entity.GetID() ) );
+						if( m_ShowedItems.Get( entity ) )
+						{
+							new_showed_items.Insert( entity, m_ShowedItems.Get( entity ) );
+							showed_items_IDs.Insert( entity.GetID(), m_ShowedItemsIDs.Get( entity.GetID() ) );
+						}
 					}
 				}
-
-				for ( i = 0; i < m_ShowedItems.Count(); i++ )
-				{
-					EntityAI ent = m_ShowedItems.GetKey( i );
-					m_ShowedItems.GetElement( i ).UpdateInterval();
-					if( new_showed_items.Contains( ent ) == false )
-					{
-						Container con = m_ShowedItems.GetElement( i );
-						( Container.Cast( con.m_Parent ) ).Remove( con );
-						RecomputeOpenedContainers();
-					}
-				}
-				m_ShowedItems = new_showed_items;
-				m_ShowedItemsIDs = showed_items_IDs;
 			}
-
+			
+			for ( i = 0; i < m_ShowedItems.Count(); i++ )
+			{
+				EntityAI ent = m_ShowedItems.GetKey( i );
+				m_ShowedItems.GetElement( i ).UpdateInterval();
+				if( !new_showed_items.Contains( ent ) )
+				{
+					Container con = m_ShowedItems.GetElement( i );
+					( Container.Cast( con.m_Parent ) ).Remove( con );
+					RecomputeOpenedContainers();
+				}
+			}
+			
+			m_ShowedItems = new_showed_items;
+			m_ShowedItemsIDs = showed_items_IDs;
+			RecomputeOpenedContainers();
+	
 			m_VicinityIconsContainer.ShowItemsInContainers( m_ShowedItemIcons );
 		}
 	}

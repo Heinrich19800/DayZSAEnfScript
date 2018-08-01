@@ -47,20 +47,14 @@ class ActionManagerBase
 	bool							m_PrimaryActionEnabled;
 	bool							m_SecondaryActionEnabled;
 	bool							m_TertiaryActionEnabled;
-//	const int 						AT_WORLD_CRAFT= 181;
 	ref TSelectableActionInfoArray	m_SelectableActions;
 	int                             m_SelectedActionIndex;
 	bool                            m_SelectableActionsHasChanged;
 		
 //Pending actions waiting for acknowledgment
-	protected ActionBase 			m_PendingAction;
-	protected ref ActionTarget		m_PendingActionTarget;
-	protected int					m_PendingActionState;
 	protected int 					m_PendingActionAcknowledgmentID;
 	
-	protected ActionBase 			m_RunningAction;
-	
-	protected Serializer			m_PendingActionData;
+	protected ref ActionData		m_CurrentActionData;
 	
 	void ActionManagerBase(PlayerBase player)
 	{
@@ -85,22 +79,28 @@ class ActionManagerBase
 			m_SelectedActionIndex = 0;
 			m_SelectableActionsHasChanged = false;
 			
-			m_PendingAction = NULL;
-			m_PendingActionTarget = NULL;
 			m_PendingActionAcknowledgmentID = -1;
-			m_PendingActionState = UA_NONE;
 			
-			m_RunningAction = NULL;
+			m_CurrentActionData = NULL;
 		}
 	}
 	
 	ActionBase GetRunningAction()
 	{
-		return m_RunningAction;
+		if( m_CurrentActionData )
+			return m_CurrentActionData.m_Action;
+		return NULL;
 	}
 	
 	void Update(int pCurrentCommandID)
 	{
+		if(m_CurrentActionData)
+		{
+			if(m_CurrentActionData.m_State != UA_AM_PENDING && m_CurrentActionData.m_State != UA_AM_REJECTED && m_CurrentActionData.m_State != UA_AM_ACCEPTED)
+			{
+				m_CurrentActionData.m_Action.OnUpdate(m_CurrentActionData);
+			}
+		}
 	}
 	
 	void OnSyncJuncture(int pJunctureID, ParamsReadContext pCtx)
@@ -198,10 +198,10 @@ class ActionManagerBase
 	//------------------------------------------------------
 	bool ActionPossibilityCheck(int pCurrentCommandID)
 	{
-		if ( m_Player.IsSprinting() || m_Player.GetCommandModifier_Action() || m_Player.GetCommand_Action() )
+		if ( m_Player.IsSprinting() || m_Player.IsUnconscious() || m_Player.GetCommandModifier_Action() || m_Player.GetCommand_Action() )
 			return false;
 		
-		if (pCurrentCommandID == DayZPlayerConstants.COMMANDID_ACTION || pCurrentCommandID == DayZPlayerConstants.COMMANDID_MOVE || pCurrentCommandID == DayZPlayerConstants.COMMANDID_SWIM || pCurrentCommandID == DayZPlayerConstants.COMMANDID_LADDER )
+		if (pCurrentCommandID == DayZPlayerConstants.COMMANDID_ACTION || pCurrentCommandID == DayZPlayerConstants.COMMANDID_MOVE || pCurrentCommandID == DayZPlayerConstants.COMMANDID_SWIM || pCurrentCommandID == DayZPlayerConstants.COMMANDID_LADDER || pCurrentCommandID == DayZPlayerConstants.COMMANDID_VEHICLE)
 			return true;
 		
 		return false;
@@ -291,14 +291,11 @@ class ActionManagerBase
 		
 	int GetActionState(ActionBase action)
 	{
-		if( m_PendingAction == action )
+		if( m_CurrentActionData )
 		{
-			return m_PendingActionState;
+			return m_CurrentActionData.m_State;
 		}
-		else
-		{
-			return action.GetActionState(); 
-		}
+		return UA_NONE; // TODO check if it is correct constant
 	}
 	
 	//---------------------------------
@@ -324,13 +321,37 @@ class ActionManagerBase
 	{
 	}
 	
-	void OnActionEnd( ActionBase action, ActionTarget target, ItemBase item )
+	void OnActionEnd( )
 	{
-		m_RunningAction = NULL;
+		m_CurrentActionData = NULL;
+		m_Player.ResetActionEndInput();
+	}
+	
+	void OnWeaponFsmEnd()
+	{
+		FirearmActionBase weapon_action = FirearmActionBase.Cast(GetRunningAction());
+		if(weapon_action)
+		{
+			weapon_action.OnWeaponFsmEnd(m_CurrentActionData);
+		}
 	}
 
 	bool OnInputUserDataProcess(int userDataType, ParamsReadContext ctx)
 	{
 		return false;
+	}
+	
+	float GetActionComponentProgress()
+	{
+		if(m_CurrentActionData)
+			return m_CurrentActionData.m_Action.GetProgress(m_CurrentActionData);
+		return 0.0;
+	}
+	
+	int GetActionState()
+	{
+		if(m_CurrentActionData)
+			return m_CurrentActionData.m_Action.GetState(m_CurrentActionData);
+		return UA_NONE;
 	}
 };

@@ -1,6 +1,5 @@
 class InventoryMenuNew extends UIScriptedMenu
 {
-	Widget main_container;
 	ref Inventory m_Inventory;
 	private ref ContextMenu m_context_menu;
 	protected bool m_IsOpened;
@@ -8,19 +7,23 @@ class InventoryMenuNew extends UIScriptedMenu
 
 	void InventoryMenuNew()
 	{
-		main_container = GetGame().GetWorkspace().CreateWidgets( WidgetLayoutName.Inventory );
 		m_Inventory = new Inventory(NULL);
 		m_Inventory.Reset();
 		m_Inventory.UpdateInterval();
 		m_context_menu = new ContextMenu;
-		main_container.Show( false );
 	}
 
+	void ~InventoryMenuNew()
+	{
+		UnlockControls();
+	}
+	
 	override Widget Init()
 	{
 		m_Inventory.Init();
 		m_context_menu.Init(layoutRoot);
-		return main_container;
+		layoutRoot = m_Inventory.GetMainPanel();
+		return layoutRoot;
 	}
 	
 	void RefreshQuickbar()
@@ -49,34 +52,20 @@ class InventoryMenuNew extends UIScriptedMenu
 
 	override void OnShow()
 	{
-		#ifdef PLATFORM_XBOX
-			if( !m_OnlyFirstTime )
-			{
-				m_OnlyFirstTime = true;
-				GetGame().GetUIManager().HideScriptedMenu( this );
-			}
-			else
-			{
-				super.OnShow();
-				m_IsOpened = true;
-				PPEffects.SetBlurInventory(1);
-				main_container.Show( false );
-				m_Inventory.OnShow();
-			}
-		#else
-			super.OnShow();
-			m_IsOpened = true;
-			PPEffects.SetBlurInventory(1);
-			main_container.Show( false );
+		super.OnShow();
+		m_IsOpened = true;
+		PPEffects.SetBlurInventory(1);
+		if(m_Inventory)
 			m_Inventory.OnShow();
-		#endif
+		LockControls();
+		SetFocus( layoutRoot );
 	}
-
-	int Reset2asd()
+	
+	override bool OnController( Widget w, int control, int value )
 	{
-		//Print("testfunc");
+		return m_Inventory.Controller( w, control, value );
 	}
-
+	
 	int Reset()
 	{
 		m_Inventory.Reset();
@@ -87,6 +76,14 @@ class InventoryMenuNew extends UIScriptedMenu
 	{
 		return m_IsOpened;
 	}
+	
+	override bool UseMouse()
+	{
+#ifdef PLATFORM_XBOX
+		return false;
+#endif
+		return true;
+	}
 
 	override void OnHide()
 	{
@@ -94,6 +91,7 @@ class InventoryMenuNew extends UIScriptedMenu
 		m_IsOpened = false;
 		PPEffects.SetBlurInventory(0);
 		if(m_Inventory)
-		m_Inventory.OnHide();
+			m_Inventory.OnHide();
+		UnlockControls();
 	}
 }

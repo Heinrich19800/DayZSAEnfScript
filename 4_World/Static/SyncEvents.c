@@ -2,7 +2,7 @@ class SyncEvents
 {
 	static void RegisterEvents()
 	{
-		DayZGame dz_game = GetGame();
+		DayZGame dz_game = DayZGame.Cast( GetGame() );
 		
 		dz_game.Event_OnRPC.Insert( Event_OnRPC );
 		Print("SyncEvents -> RegisterEvents");

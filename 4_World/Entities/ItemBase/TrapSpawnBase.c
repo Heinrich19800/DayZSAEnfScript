@@ -72,7 +72,7 @@ class TrapSpawnBase extends ItemBase
 	{
 		if ( g_Game.IsServer() )
 		{
-			Cargo itemcargo = this.GetInventory().GetCargo();
+			CargoBase itemcargo = this.GetInventory().GetCargo();
 			int cargo_count = itemcargo.GetItemCount();
 			if ( cargo_count > 0 )
 			{
@@ -282,7 +282,7 @@ class TrapSpawnBase extends ItemBase
 
 			if ( m_BaitNeeded )
 			{
-				Cargo itemcargo = this.GetInventory().GetCargo();
+				CargoBase itemcargo = this.GetInventory().GetCargo();
 				int cargo_count = itemcargo.GetItemCount();
 
 				if ( itemcargo && cargo_count > 0 )
@@ -425,9 +425,9 @@ class TrapSpawnBase extends ItemBase
 
 	}
 
-	override void EEItemLocationChanged  ( EntityAI old_owner, EntityAI new_owner ) 
+	override void OnItemLocationChanged  ( EntityAI old_owner, EntityAI new_owner ) 
 	{
-		super.EEItemLocationChanged(old_owner, new_owner);
+		super.OnItemLocationChanged(old_owner, new_owner);
 		
 		if ( g_Game.IsServer() )
 		{

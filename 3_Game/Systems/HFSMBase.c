@@ -1,10 +1,10 @@
 void fsmDebugPrint (string s)
 {
-	//Print("" + s); // comment/uncomment to hide/see debug logs
+	Print("" + s); // comment/uncomment to hide/see debug logs
 }
 void fsmDebugSpam (string s)
 {
-	//Print("" + s); // comment/uncomment to hide/see debug spam
+	Print("" + s); // comment/uncomment to hide/see debug spam
 }
 
 
@@ -51,9 +51,9 @@ class HFSMBase<Class FSMStateBase, Class FSMEventBase, Class FSMActionBase, Clas
 	 * @param[out] path  \p  current hierarchic state
 	 * @return	true if current state returned in path argument, false otherwise
 	 **/
-	bool GetHierarchyPath (WeaponStateBase state, out ref array<WeaponStateBase> path)
+	bool GetHierarchyPath (FSMStateBase state, out ref array<FSMStateBase> path)
 	{
-		WeaponStateBase curr = state;
+		FSMStateBase curr = state;
 		while (curr)
 		{
 		  path.Insert(curr);

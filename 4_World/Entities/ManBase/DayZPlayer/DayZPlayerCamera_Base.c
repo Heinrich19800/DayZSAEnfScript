@@ -61,6 +61,7 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 		m_fLRAngleVel[0] = 0;
 		m_fUDAngleVel[0] = 0;
 		m_fFovAbsVel[0] = 0;
+		m_WeaponSwayModifier = 1;
 		
 		if (m_pPlayer.IsEyeZoom())
 		{
@@ -70,7 +71,7 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 		{
 			m_fFovAbsolute		= g_Game.GetUserFOV();
 		}
-
+		
 		//!
 		/*
 		{
@@ -79,6 +80,7 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 			Print(a);
 		}
 		*/
+		m_CameraPPDelay = 0;
 	};
 
 
@@ -150,9 +152,48 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 		}
 	}
 
+	override void OnActivate(DayZPlayerCamera pPrevCamera, DayZPlayerCameraResult pPrevCameraResult)
+	{
+		//PrintString("OnActivate DayZPlayerCameraBase");
+		PlayerBase.Cast(m_pPlayer).OnCameraChanged(this);
+		SetCameraPPDelay(pPrevCamera);
+		GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(SetCameraPP,m_CameraPPDelay*1000,false,true,this);
+	}
+	
+	float GetWeaponSwayModifier()
+	{
+		return m_WeaponSwayModifier;
+	}
+	
+	override string GetCameraName()
+	{
+		return "DayZPlayerCameraBase";
+	}
+	
+	void SetCameraPPDelay(DayZPlayerCamera pPrevCamera)
+	{
+	}
+	
+	//! by default sets camera PP to zero, regardless of parameter. Override if needed.
+	void SetCameraPP(bool state, DayZPlayerCamera launchedFrom)
+	{
+		PPEffects.ResetPPMask();
+		PPEffects.SetLensEffect(0, 0, 0, 0);
+		PPEffects.OverrideDOF(false, 0, 0, 0, 0, 0);
+		PPEffects.SetBlurOptics(0);
+	}
+	
+	float GetCurrentPitch()
+	{
+		return m_CurrentCameraPitch;
+	}
+	
 	protected float 	m_fLRAngleVel[1];
 	protected float 	m_fUDAngleVel[1];
 	protected float		m_fFovAbsVel[1];
 	protected float		m_fFovAbsolute;
 	protected bool		m_bForceFreeLook;
+	protected float		m_WeaponSwayModifier;
+	protected float 	m_CameraPPDelay;
+	protected float 	m_CurrentCameraPitch;
 }

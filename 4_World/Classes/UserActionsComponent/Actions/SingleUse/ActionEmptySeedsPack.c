@@ -36,9 +36,9 @@ class ActionEmptySeedsPack: ActionSingleUseBase
 		return true;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		SeedPackBase item_SPB = SeedPackBase.Cast( item );
-		item_SPB.EmptySeedPack( player );
+		SeedPackBase item_SPB = SeedPackBase.Cast( action_data.m_MainItem );
+		item_SPB.EmptySeedPack( action_data.m_Player );
 	}
 };

@@ -41,11 +41,7 @@ class IngameHud extends Hud
 	protected ref WidgetFadeTimer m_fade_timer_walkie_talkie;
 	protected ref WidgetFadeTimer m_fade_timer_walkie_talkie_text;
 	
-	protected ref Timer m_Timer_VON_Permission_Notify;
-	protected ref WidgetFadeTimer m_Fade_Timer_VON_Permission_Notify;
-	
 	protected ProgressBarWidget m_stamina;
-	protected Widget m_VON_Permission_Notify_Widget;
 	protected Widget m_stamina_background;
 	protected Widget m_specializationPanel;
 	protected Widget m_specializationIcon;
@@ -115,10 +111,6 @@ class IngameHud extends Hud
 		 m_fade_timer_quickbar = new WidgetFadeTimer;
 		 m_fade_timer_walkie_talkie = new WidgetFadeTimer;
  		 m_fade_timer_walkie_talkie_text = new WidgetFadeTimer;
-		
-		m_Fade_Timer_VON_Permission_Notify = new WidgetFadeTimer;
-		m_Timer_VON_Permission_Notify = new Timer(CALL_CATEGORY_GUI);
-		
 		m_hide_timer = new Timer(CALL_CATEGORY_GUI);
 		m_vehicle_timer = new Timer( CALL_CATEGORY_GAMEPLAY );
 		//m_zeroing_and_weaponmode_timer = new Timer( CALL_CATEGORY_GAMEPLAY );
@@ -192,7 +184,6 @@ class IngameHud extends Hud
 		m_stanceCar = m_HudPanelWidget.FindAnyWidget("StanceCar");
 		m_stancePanel = m_HudPanelWidget.FindAnyWidget("StancePanel");
 		m_ActionTarget = m_HudPanelWidget.FindAnyWidget("ActionTargetsCursorWidget");
-		m_VON_Permission_Notify_Widget = m_HudPanelWidget.FindAnyWidget("VONDeniedNotfication");
 		Class.CastTo(m_BloodType, m_HudPanelWidget.FindAnyWidget("BloodType") );
 		
 		// state notifiers
@@ -243,7 +234,7 @@ class IngameHud extends Hud
 			m_BadgesWidgetNames.Set( NTFKEY_FRACTURE, "Fracture" );
 			m_BadgesWidgetNames.Set( NTFKEY_STUFFED, "Stomach" );
 			m_BadgesWidgetNames.Set( NTFKEY_SICK, "Pill" );
-			m_BadgesWidgetNames.Set( NTFKEY_BLEEDISH, "Wetness" );
+			m_BadgesWidgetNames.Set( NTFKEY_WETNESS, "Wetness" );
 			m_BadgesWidgetNames.Set( NTFKEY_FEVERISH, "Skull" );
 			// NTFKEY_SICK
 			// NTFKEY_BLEEDISH
@@ -298,6 +289,16 @@ class IngameHud extends Hud
 		ToggleHud( g_Game.GetProfileOption( EDayZProfilesOptions.HUD ) );
 		ToggleQuickBar( g_Game.GetProfileOption( EDayZProfilesOptions.QUICKBAR ) );
 	}
+	
+	override bool IsXboxDebugCursorEnabled()
+	{
+		#ifdef DEVELOPER
+			PluginDiagMenu plugin_diag_menu = PluginDiagMenu.Cast( GetPlugin(PluginDiagMenu) );
+			return plugin_diag_menu.GetXboxCursor();
+		#else
+			return false;
+		#endif
+	}
 
 	override void Show( bool show )
 	{
@@ -325,24 +326,6 @@ class IngameHud extends Hud
 		TextWidget txt;
 		Class.CastTo(txt, m_WalkieTalkie.FindAnyWidget("Text"));
 		txt.SetText(text);
-	}
-	
-	void ShowVONMissingPrivilegeNotify()
-	{
-		if( m_Timer_VON_Permission_Notify.IsRunning() )
-		{
-			m_Timer_VON_Permission_Notify.Stop();
-		}
-		else
-		{
-			m_Fade_Timer_VON_Permission_Notify.FadeIn( m_VON_Permission_Notify_Widget, 1, true );
-		}
-		m_Timer_VON_Permission_Notify.Run( 7.0, this, "HideVONMissingPrivilegeNotify" );
-	}
-	
-	void HideVONMissingPrivilegeNotify()
-	{
-		m_Fade_Timer_VON_Permission_Notify.FadeOut( m_VON_Permission_Notify_Widget, 1, false );
 	}
 	
 	override void SetCursorIcon( string icon )
@@ -651,6 +634,18 @@ class IngameHud extends Hud
 	void ZeroingKeyPress()
 	{
 		m_ZeroingKeyPressed = true;
+	}
+	
+	override void InitInventory()
+	{
+		UIManager manager = GetGame().GetUIManager();
+		InventoryMenuNew inventory = InventoryMenuNew.Cast(manager.FindMenu( MENU_INVENTORY ));
+		MissionGameplay mission = MissionGameplay.Cast(GetGame().GetMission());
+
+		if(	mission )
+		{
+			mission.InitInventory();
+		}
 	}
 	
 	override void DisplayStance( int stance )

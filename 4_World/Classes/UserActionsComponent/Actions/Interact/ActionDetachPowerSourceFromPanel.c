@@ -39,19 +39,19 @@ class ActionDetachPowerSourceFromPanel: ActionInteractBase
 		return false;
 	}
 	
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
-		Process(player, target, item, acdata);
+		Process(action_data);
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Process(player, target, item, acdata);
+		Process(action_data);
 	}
 
-	void Process( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	void Process( ActionData action_data )
 	{
-		EntityAI target_entity = EntityAI.Cast( target.GetObject() );
+		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
 		
 		EntityAI attachment;
 		int attachments_count = target_entity.GetInventory().AttachmentCount();
@@ -65,7 +65,7 @@ class ActionDetachPowerSourceFromPanel: ActionInteractBase
 		
 		if ( attachment )
 		{
-			player.PredictiveTakeEntityToHands(attachment );
+			action_data.m_Player.PredictiveTakeEntityToHands(attachment );
 		}
 	}
 }

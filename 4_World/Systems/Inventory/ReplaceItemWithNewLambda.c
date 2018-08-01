@@ -20,7 +20,7 @@ class ReplaceItemWithNewLambda : ReplaceItemWithNewLambdaBase
 	 *
 	 * @NOTE:	This is supposed to be overriden in derived classes, like for example right now.
 	 **/
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
 	{
 		super.CopyOldPropertiesToNew(old_item, new_item);
 

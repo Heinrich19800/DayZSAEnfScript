@@ -54,7 +54,7 @@ class PluginConfigViewer extends PluginBase
 		int count = class_path.Length() - start;
 		string class_path_without_config_class = GetOnlyChildPath( config_class_path, class_path );
 		
-		local ref TStringArray full_path = new TStringArray;
+		ref TStringArray full_path = new TStringArray;
 		GetGame().ConfigGetFullPath( config_class_path, full_path );
 		
 		if ( full_path.Count() > 1 && class_path_without_config_class != "" )
@@ -89,7 +89,7 @@ class PluginConfigViewer extends PluginBase
 		return result;
 	}
 
-	string GetBaseClassPathRecursive( local string config_class_path, local string class_path, local string config_class )
+	string GetBaseClassPathRecursive( string config_class_path, string class_path, string config_class )
 	{
 		if ( ContainsFirstClass(config_class_path, class_path) )
 		{
@@ -97,7 +97,7 @@ class PluginConfigViewer extends PluginBase
 		}
 		else 
 		{
-			local ref TStringArray full_path = new TStringArray;
+			ref TStringArray full_path = new TStringArray;
 			GetGame().ConfigGetFullPath( config_class_path, full_path );
 		
 			if ( full_path.Count() > 1 )
@@ -150,24 +150,24 @@ class PluginConfigViewer extends PluginBase
 		}
 	}
 
-	TStringArray GetConfigRecursive( local string path, local string name, local string config_class_path, local string config_class, local array<string> overridden, local int depth = 0, local bool check_base_class_of_class = false )
+	TStringArray GetConfigRecursive( string path, string name, string config_class_path, string config_class, local array<string> overridden, int depth = 0, local bool check_base_class_of_class = false )
 	{
-		local string tabs = MakeTabs( depth + 1 );
-		local string child_path = path;
-		local int count = GetGame().ConfigGetChildrenCount( child_path );
-		local int i = 0;
+		string tabs = MakeTabs( depth + 1 );
+		string child_path = path;
+		int count = GetGame().ConfigGetChildrenCount( child_path );
+		int i = 0;
 	  
-		local bool name_printed = false;
+		bool name_printed = false;
 	  
-		local TStringArray result = new TStringArray;
+		TStringArray result = new TStringArray;
 
 		for ( i = 0; i < count; i++ )
 		{
-			local string child_name = "";
+			string child_name = "";
 			GetGame().ConfigGetChildName( child_path, i, child_name );
-			local string c_child_path = child_path + " " + child_name;
+			string c_child_path = child_path + " " + child_name;
 
-			local string child_name_lower = child_name;
+			string child_name_lower = child_name;
 			child_name_lower.ToLower();
 
 			if ( overridden.Find(child_name_lower) == -1 )
@@ -179,7 +179,7 @@ class PluginConfigViewer extends PluginBase
 				}
 				overridden.Insert( child_name_lower );
 					
-				local int type = GetGame().ConfigGetType( c_child_path );
+				int type = GetGame().ConfigGetType( c_child_path );
 				
 				if ( type != CT_CLASS )
 				{
@@ -191,7 +191,7 @@ class PluginConfigViewer extends PluginBase
 					{
 						result.Insert( "-" + tabs + "!" + child_name + "[] = {" );
 						
-						local TStringArray strs = new TStringArray;
+						TStringArray strs = new TStringArray;
 						GetGame().ConfigGetTextArray( c_child_path, strs );
 						string tabs_array = MakeTabs( depth + 2 );
 						int j;
@@ -225,7 +225,7 @@ class PluginConfigViewer extends PluginBase
 					
 					while ( true ) 
 					{
-						local string base_class = "";
+						string base_class = "";
 					
 						GetGame().ConfigGetBaseName( cc_child_path, base_class );
 					
@@ -236,7 +236,7 @@ class PluginConfigViewer extends PluginBase
 						
 						if ( base_class != "" )
 						{
-							local string only_child_path = "";
+							string only_child_path = "";
 							if ( len < 0 )
 							{
 								only_child_path = base_class;

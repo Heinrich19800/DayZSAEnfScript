@@ -1,31 +1,89 @@
-/**@class	Cargo
- * @brief	represents grid like storage for entities
+/**@class	CargoBase
+ * @brief	represents base for cargo storage for entities
+ *
+ * @NOTE: rows == y axis
  **/
-class Cargo : Managed
+class CargoBase : Managed
 {
-	/// width of the cargo
-	proto native int GetWidth ();
-	/// height of the cargo
-	proto native int GetHeight ();
-	/// number of items in cargo
-	proto native int GetItemCount ();
-	/// get item at specific index
-	proto native EntityAI GetItem (int index);
-	/// get item at coordinates (row, col)
-	proto native EntityAI FindEntityInCargoOn (int row, int col);
-	/// return index of item in cargo (or -1 if not found)
-	proto native int FindEntityInCargo (EntityAI e);
-
-	proto native bool CanMoveEntityInCargoEx (EntityAI e, int row, int col); /// can move from current location in cargo to new one
-	proto native bool CanSwapEntityInCargo (EntityAI oldItem, EntityAI newItem);
-
-	/// get cargo owning entity
-	proto native EntityAI GetParent ();
-
-	proto void GetItemSize (int index, out int w, out int h);
-	proto void GetItemPos (int index, out int x, out int y);
+	/**@fn			GetCargoOwner
+	 * @brief		get the entity that owns the cargo
+	 * @return		cargo owner
+	 **/
+	proto native EntityAI GetCargoOwner ();
 	
-	private void Cargo();
-	private void ~Cargo();
+	/**@fn			GetItemCount
+	 * @return		number of items in cargo
+	 **/
+	proto native int GetItemCount ();
+	/**@fn			GetItem
+	 * @return		get item at specific index
+	 **/
+	proto native EntityAI GetItem (int index);
+
+	/**@fn			GetWidth
+	 * @return		width of the cargo
+	 **/
+	proto native int GetWidth ();
+	/**@fn			GetHeight
+	 * @return		height of the cargo
+	 **/
+	proto native int GetHeight ();
+	/**@fn			GetItemRowCol
+	 * @param[out]	row			returned row of the item at internal index
+	 * @param[out]	col			returned col. 0 on xbox
+	 **/
+	proto void GetItemRowCol (int index, out int row, out int col);
+	/**@fn			GetItemSize
+	 * @param[out]	w			returned width of the item at internal index
+	 * @param[out]	h			returned height of the item at internal index
+	 **/
+	proto void GetItemSize (int index, out int w, out int h);
+
+	/**@fn			FindEntityInCargoOn
+	 * @return		get item at coordinates (row, col). col is 0 on xbox.
+	 **/
+	proto native EntityAI FindEntityInCargoOn (int row, int col);
+
+	/**@fn			FindEntityInCargo
+	 * @return		find internal index of the entity in cargo or -1 if not found
+	 **/
+	proto native int FindEntityInCargo (notnull EntityAI e);
+
+	private void CargoBase ();
+	private void ~CargoBase ();
+	
+	/**@fn			CanReceiveItemIntoCargo
+	 * @brief		condition EntityAI::CanReceiveItemIntoCargo for Cargo.
+	 * @return		true if cargo can be added, false otherwise
+	 **/
+	bool CanReceiveItemIntoCargo (EntityAI cargo) { return true; }
+};
+
+class CargoGrid : CargoBase
+{
+};
+
+class CargoList : CargoBase
+{
+	/**@fn			GetMaxWeight
+	 * @return		maximum weight that the cargo can hold
+	 **/
+	proto native int GetMaxWeight ();
+
+	/**@fn			GetTotalWeight
+	 * @brief		sums weight of all items in cargo and adds weight of item if item != null
+	 * @return		sum of weights plus weight of item (if !null)
+	 **/
+	proto native int GetTotalWeight (EntityAI item);
+	
+	/**@fn			CanReceiveItemIntoCargo
+	 * @return		true if adding item does not exceed GetMaxWeight, false otherwise
+	 **/
+	override bool CanReceiveItemIntoCargo (EntityAI cargo)
+	{
+		int with_item = GetTotalWeight(cargo);
+		int max = GetMaxWeight();
+		return with_item <= max;
+	}
 };
 

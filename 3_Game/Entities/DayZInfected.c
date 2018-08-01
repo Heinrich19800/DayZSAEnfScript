@@ -20,6 +20,7 @@ class DayZInfectedCommandMove
 {
 	proto native void SetStanceVariation(int pStanceVariation);
 	proto native void SetIdleState(int pIdleState);
+	proto native bool IsTurning();
 }
 
 class DayZInfectedCommandVault

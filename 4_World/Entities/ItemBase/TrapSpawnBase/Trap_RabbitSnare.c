@@ -41,6 +41,16 @@ class Trap_RabbitSnare extends TrapSpawnBase
 		m_CatchesGroundAnimal.Insert("Animal_LepusEuropaeus",1);
 	}
 	
+	override bool IsOneHandedBehaviour()
+	{
+		return true;
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
 	override void SetupTrap()
 	{
 		if ( g_Game.IsServer() )

@@ -35,11 +35,5 @@ class PaintItem
 
 class PaintItemLambda : TurnItemIntoItemLambda
 {
-	void PaintItemLambda (EntityAI old_item, string new_item_type, PlayerBase player) {}
-
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
-	{
-		super.CopyOldPropertiesToNew(old_item, new_item);
-		Print("PaintItemLambda::OnCreated object=" + new_item);
-	}
+	void PaintItemLambda (EntityAI old_item, string new_item_type, PlayerBase player) { }
 };

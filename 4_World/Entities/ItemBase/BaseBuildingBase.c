@@ -68,7 +68,7 @@ class BaseBuildingBase extends ItemBase
 	{
 		return true;
 	}
-
+	
 	//on store save/load
 	override void OnStoreSave( ParamsWriteContext ctx )
 	{
@@ -76,13 +76,13 @@ class BaseBuildingBase extends ItemBase
 		
 		GetConstruction().OnStoreSave( ctx );
 	}
-
+	
 	override void OnStoreLoad( ParamsReadContext ctx )
 	{
 		super.OnStoreLoad( ctx );
 		
 		GetConstruction().OnStoreLoad( ctx );
-	}
+	}	
 	
 	//construction init
 	void ConstructionInit()
@@ -92,7 +92,7 @@ class BaseBuildingBase extends ItemBase
 	Construction GetConstruction()
 	{
 		return m_Construction;
-	}
+	}	
 	
 	// --- EVENTS
 	override void EEItemAttached ( EntityAI item, string slot_name )
@@ -101,10 +101,10 @@ class BaseBuildingBase extends ItemBase
 		
 		ItemBase item_IB = ItemBase.Cast( item );
 		string item_type = item_IB.GetType();
-		
+
 		// Attachment control
 		switch (item_type)
-		{
+	{
 			case "BarbedWire":
 				BarbedWire attached_BW = BarbedWire.Cast( item_IB );
 				OnBarbedWireAttached(attached_BW, slot_name); // Removed function
@@ -128,17 +128,17 @@ class BaseBuildingBase extends ItemBase
 		
 		// this.OnItemAttached ( item ); // Removed function
 	}
-	
+
 	override void EEItemDetached ( EntityAI item, string slot_name )
 	{
 		super.EEItemDetached ( item, slot_name );
 		
 		ItemBase item_IB = ItemBase.Cast( item );
 		string item_type = item_IB.GetType();
-		
+	
 		// Attachment control
 		switch (item_type)
-		{
+	{
 			case "BarbedWire":
 				BarbedWire detached_BW = BarbedWire.Cast( item_IB );
 				OnBarbedWireDetached(detached_BW, slot_name); // Removed function
@@ -158,10 +158,10 @@ class BaseBuildingBase extends ItemBase
 				XmasLights fence_light = XmasLights.Cast( item_IB );
 				fence_light.DetachFromObject( this );
 			break;
-		}
+	}
 	}
 	
-
+	
 	// construction ^
 	//==============================================================================
 	
@@ -178,6 +178,7 @@ class BaseBuildingBase extends ItemBase
 		SetWire(slot_name, attached_BW);
 		UpdateDamageTriggers();
 		ShowSelection(ANIMATION_BARBED_WIRE);
+		AddProxyPhysics( ANIMATION_BARBED_WIRE );
 	}
 	
 	// Creates all damage triggers this structure needs. They are tied to the barbed wire item.
@@ -185,21 +186,21 @@ class BaseBuildingBase extends ItemBase
 	{
 		DestroyDamageTriggers();
 		
-		for ( local int i = 0; i < 3; ++i )
+		for ( int i = 0; i < 3; ++i )
 		{
-			local string slot_name = BARBEDWIRE_SLOTS[i];
-			local BarbedWire bw = BarbedWire.Cast( FindAttachmentBySlotName( slot_name ) );
+			string slot_name = BARBEDWIRE_SLOTS[i];
+			BarbedWire bw = BarbedWire.Cast( FindAttachmentBySlotName( slot_name ) );
 			
 			if (bw)
 			{
-				local vector local_pos = m_DmgTrgLocalPos[ i ];
+				vector local_pos = m_DmgTrgLocalPos[ i ];
 				if ( local_pos != "0 0 0" ) // "0 0 0" is considered as undefined!
 				{
-					local vector global_pos	= ModelToWorld (local_pos);
-					local BarbedWireTrigger dmg_trg = BarbedWireTrigger.Cast( GetGame().CreateObject( "BarbedWireTrigger", global_pos, false ) );
+					vector global_pos	= ModelToWorld (local_pos);
+					BarbedWireTrigger dmg_trg = BarbedWireTrigger.Cast( GetGame().CreateObject( "BarbedWireTrigger", global_pos, false ) );
 					vector mins = "-1.8 -0.4 -0.6";
 					vector maxs = "1.8 0.4 0.6";
-					local vector ori = GetOrientation();
+					vector ori = GetOrientation();
 					ori[0] = ori[0] + m_DmgTrgLocalDir[i]; // rotate the trigger
 					dmg_trg.SetOrientation( ori );
 					dmg_trg.SetExtents(mins, maxs);	
@@ -213,9 +214,9 @@ class BaseBuildingBase extends ItemBase
 	// Removes all damage triggers
 	void DestroyDamageTriggers()
 	{
-		local int count = m_DmgTriggers.Count();
+		int count = m_DmgTriggers.Count();
 		--count;
-		for ( local int i = count; i >= 0; --i )
+		for ( int i = count; i >= 0; --i )
 		{
 			BarbedWireTrigger trg = m_DmgTriggers.Get(i);
 			
@@ -259,6 +260,7 @@ class BaseBuildingBase extends ItemBase
 		SetWire(slot_name, NULL);
 		UpdateDamageTriggers();
 		HideSelection(ANIMATION_BARBED_WIRE);
+		RemoveProxyPhysics( ANIMATION_BARBED_WIRE );
 	}
 	
 	// !Returns array of barbed wires attached to this BBB object
@@ -266,7 +268,7 @@ class BaseBuildingBase extends ItemBase
 	{
 		array<BarbedWire> return_array = new array<BarbedWire>;
 		
-		for ( local int i = 0; i < 3; ++i )
+		for ( int i = 0; i < 3; ++i )
 		{
 			BarbedWire bw = m_BarbedWires.Get( BARBEDWIRE_SLOTS[i] );
 			
@@ -285,9 +287,9 @@ class BaseBuildingBase extends ItemBase
 		int total_count = m_BarbedWires.Count();
 		int counter = 0;
 		
-		for ( local int i = 0; i < total_count; ++i )
+		for ( int i = 0; i < total_count; ++i )
 		{
-			local BarbedWire bw = m_BarbedWires.Get( BARBEDWIRE_SLOTS[i] );
+			BarbedWire bw = m_BarbedWires.Get( BARBEDWIRE_SLOTS[i] );
 			
 			if (bw)
 			{

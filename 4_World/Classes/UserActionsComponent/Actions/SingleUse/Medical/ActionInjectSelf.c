@@ -35,9 +35,9 @@ class ActionInjectSelf: ActionSingleUseBase
 		return "#inject";
 	}
 
-	override void OnExecuteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnExecuteServer( ActionData action_data )
 	{	
-		item.Delete();
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_MainItem.Delete();
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

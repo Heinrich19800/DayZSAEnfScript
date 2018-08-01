@@ -2,7 +2,7 @@ class ActionFillObjectCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_FILL);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_FILL);
 	}
 };
 
@@ -77,13 +77,13 @@ class ActionFillObject: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		HescoBox hesco;
-		if ( Class.CastTo(hesco,target.GetObject()) )
+		if ( Class.CastTo(hesco,action_data.m_Target.GetObject()) )
 		{
 			const float ITEM_DAMAGE = 0.05;
-			item.DecreaseHealth ( "", "", player.GetSoftSkillManager().SubtractSpecialtyBonus( ITEM_DAMAGE, this.GetSpecialtyWeight() )*100 );
+			action_data.m_MainItem.DecreaseHealth ( "", "", action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( ITEM_DAMAGE, this.GetSpecialtyWeight() )*100 );
 			
 			if ( hesco.GetState() == HescoBox.UNFOLDED )
 			{
@@ -95,6 +95,6 @@ class ActionFillObject: ActionContinuousBase
 			}
 		}
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

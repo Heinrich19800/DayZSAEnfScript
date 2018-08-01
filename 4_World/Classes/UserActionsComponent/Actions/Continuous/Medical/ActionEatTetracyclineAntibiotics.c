@@ -11,8 +11,8 @@ class ActionEatTetracyclineAntibiotics: ActionConsume
 		return AT_EAT_TETRACYCLINE_ANTIBIOTICS;
 	}
 
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
-		//player.m_ModifiersManager.ActivateModifier(eModifiers.MDF_CHEMICALPOISON);
+		//action_data.m_Player.m_ModifiersManager.ActivateModifier(eModifiers.MDF_CHEMICALPOISON);
 	}
 };

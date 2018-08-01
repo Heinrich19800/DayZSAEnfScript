@@ -7,26 +7,9 @@ class InventorySlots
 	/**@NOTE: engine pre-populates this class with first N slots from DZ/data/config.cpp
 	 * i.e. currently defined values are
 	 *   InventorySlots.INVALID  (has value -1)
-	 *   InventorySlots.SHOULDER (0)
-	 *   InventorySlots.MELEE
-	 *   InventorySlots.BOW
-	 *   InventorySlots.HEADGEAR
-	 *   InventorySlots.MASK
-	 *   InventorySlots.EYEWEAR
-	 *   InventorySlots.HANDS
-	 *   InventorySlots.LEFTHAND
-	 *   InventorySlots.GLOVES
-	 *   InventorySlots.ARMBAND
-	 *   InventorySlots.VEST
-	 *   InventorySlots.BODY
-	 *   InventorySlots.BACK
-	 *   InventorySlots.HIPS
-	 *   InventorySlots.LEGS
-	 *   InventorySlots.FEET
-	 *   InventorySlots.MAGAZINE
-	 *   InventorySlots.MAGAZINE2
-	 *   InventorySlots.MAGAZINE3
-	 *   InventorySlots.DRIVER
+	 *
+	 * @NOTE: first 32 slots from DZ/data/config.cpp is cached directly here in InventorySlots (uppercased)
+	 *
 	 **/
 
 	/**@fn		GetSlotIdFromString

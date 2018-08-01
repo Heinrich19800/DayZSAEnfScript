@@ -16,7 +16,7 @@ class DayZPlayerImplementAiming
 	//! 
 
 
-	protected const float SWAY_WEIGHT_SCALER = 0.2;//use this to scale the sway effect up/down
+	protected const float SWAY_WEIGHT_SCALER = 1;//use this to scale the sway effect up/down
 	protected float CONST_SPEED = 2;
 	protected float m_HorizontalNoise;
 	protected float m_HorizontalTargetValue;
@@ -65,11 +65,6 @@ class DayZPlayerImplementAiming
 
 	bool ProcessAimFilters(float pDt, SDayZPlayerAimingModel pModel, int stance_index)
 	{
-		PlayerBase player = PlayerBase.Cast( m_PlayerDpi );
-		float player_stamina = player.GetStaminaHandler().GetStaminaNormalized();
-		
-		m_SwayWeight = CalculateAimingNoiseWeight(	stance_index, player_stamina );
-		
 		float breathing_offset_x;
 		float breathing_offset_y;
 		
@@ -82,18 +77,25 @@ class DayZPlayerImplementAiming
 		float recoil_offset_hands_x;
 		float recoil_offset_hands_y;
 		
-		float speed = ((1.0 - player_stamina) * 4.0) + 1.0;
-		if( m_PlayerPb.IsHoldingBreath() )
+	
+		if( m_PlayerPb.IsRaised() )
 		{
-			speed = 0.1;
+			float player_stamina = m_PlayerPb.GetStaminaHandler().GetStaminaNormalized();
+			float speed = ((1.0 - player_stamina) * 4.0) + 1.0;
+			if( m_PlayerPb.IsHoldingBreath() )
+			{
+				speed *= 0.1;
+			}
+			m_TotalTime += pDt * speed;
+			m_SwayWeight = CalculateAimingNoiseWeight(	stance_index, player_stamina, m_PlayerPb.m_CameraSwayModifier );
+			
+
+			
+			//! get sway
+			ApplyBreathingPattern(breathing_offset_x, breathing_offset_y, 3.0, m_TotalTime, m_SwayWeight);
+			ApplyHorizontalNoise(noise_offset_x, noise_offset_y, 0.2, 0.5, 3.0, speed, 3 * m_SwayWeight, pDt);
 		}
 		
-		m_TotalTime += pDt * speed;
-		
-		//! get sway
-		ApplyBreathingPattern(breathing_offset_x, breathing_offset_y, 3.0, m_TotalTime, m_SwayWeight);
-		ApplyHorizontalNoise(noise_offset_x, noise_offset_y, 0.2, 0.5, 3.0, speed, 3 * m_SwayWeight, pDt);
-
 		//! get recoil
 		if( m_CurrentRecoil )
 		{
@@ -146,7 +148,7 @@ class DayZPlayerImplementAiming
 		x_axis = (m_HorizontalNoise - 1) * weight;
 	}
 
-	protected float CalculateAimingNoiseWeight(int stance_index, float current_stamina)
+	protected float CalculateAimingNoiseWeight(int stance_index, float current_stamina, float camera_sway_modifier)
 	{
 		float stance_modifier;
 		switch( stance_index )
@@ -168,7 +170,8 @@ class DayZPlayerImplementAiming
 
 		//is_holding_breath = !is_holding_breath;
 		//return (1 - current_stamina * stance_modifier) * m_AimNoiseAllowed;
-		return (1 - stance_modifier) * m_AimNoiseAllowed * SWAY_WEIGHT_SCALER;
+		//PrintString(camera_sway_modifier.ToString());
+		return (1 - stance_modifier) * m_AimNoiseAllowed * camera_sway_modifier * SWAY_WEIGHT_SCALER;
 	}
 }
 

@@ -39,8 +39,6 @@ enum DiagMenuIDs
 	DM_MELEE_SHOW_TARGETS,
 	DM_MELEE_DRAW_TARGETS,
 	DM_MELEE_DRAW_RANGE,
-	DM_MELEE_BLOCK_STANCE,
-	DM_MELEE_FIGHT_SINGLE,
 	DM_WEAPON_DEBUG_MENU,
 	DM_WEAPON_DEBUG_ENABLE,
 	DM_WEAPON_AIM_NOISE,
@@ -51,6 +49,9 @@ enum DiagMenuIDs
 	DM_DRAW_CHECKERBOARD,
 	DM_BULLET_IMPACT,
 	DM_PRESENCE_NOTIFIER_DBG,
+	DM_XBOX_CURSOR,
+	DM_GO_UNCONSCIOUS,
+	DM_GO_UNCONSCIOUS_DELAYED,
 };
 
 enum DebugActionType
@@ -82,11 +83,10 @@ class PluginDiagMenu extends PluginBase
 	int m_DisplayPlayerInfo			= false;
 	bool m_ProceduralRecoilEnabled 	= true;
 	bool m_StaminaDisabled			= false;
-	bool m_MeleeBlockStance			= false;
-	bool m_MeleeFight				= false;
 	bool m_EnvironmentStats			= false;
 	bool m_DrawCheckerboard			= false;
 	bool m_PresenceNotifierDebug	= false;
+	bool m_XboxCursor	= false;
 	float m_SpecialtyLevel			= 0;
 	float m_LifespanLevel			= 0;
 	int  m_DayzPlayerDebugMenu		= -1;
@@ -186,18 +186,22 @@ class PluginDiagMenu extends PluginBase
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_BULLET_IMPACT, "ralt+0", "BulletImpact", "Misc");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_PLAYER_STATS_LOG_ENABLE, "", "Log Player Stats", "Misc");
 				DiagMenu.RegisterMenu(DiagMenuIDs.DM_ACTION_TARGETS_MENU, "Action Targets", "Misc");
-					//---------------------------------------------------------------
-					// LEVEL 3
-					//---------------------------------------------------------------
-					DiagMenu.RegisterBool(DiagMenuIDs.DM_ACTION_TARGETS_NEW, "", "New AT Selection", "Action Targets", true);
-					DiagMenu.RegisterBool(DiagMenuIDs.DM_ACTION_TARGETS_DEBUG, "", "Show Debug", "Action Targets");
-					DiagMenu.RegisterBool(DiagMenuIDs.DM_ACTION_TARGETS_SELPOS_DEBUG, "", "Show selection pos debug", "Action Targets");
+				DiagMenu.RegisterBool(DiagMenuIDs.DM_XBOX_CURSOR, "", "XboxCursor", "Misc");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_PERMANENT_CROSSHAIR, "", "Enable permanent crosshair", "Misc");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_TOGGLE_HUD, "", "Toggle HUD on/off", "Misc", true);
 				DiagMenu.RegisterRange(DiagMenuIDs.DM_DISPLAY_PLAYER_INFO, "", "Display Player Info", "Misc", "0,2,0,1");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_ENVIRONMENT_DEBUG_ENABLE, "", "Show Environment stats", "Misc");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_DRAW_CHECKERBOARD, "", "Draw Checkerboard on screen", "Misc");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_PRESENCE_NOTIFIER_DBG, "", "Show Presence to AI dbg", "Misc");
+				DiagMenu.RegisterBool(DiagMenuIDs.DM_GO_UNCONSCIOUS, "", "Go Unconscious", "Misc");
+				DiagMenu.RegisterBool(DiagMenuIDs.DM_GO_UNCONSCIOUS_DELAYED, "", "Uncons. in 10sec", "Misc");
+					//---------------------------------------------------------------
+					// LEVEL 3
+					//---------------------------------------------------------------
+					DiagMenu.RegisterBool(DiagMenuIDs.DM_ACTION_TARGETS_NEW, "", "New AT Selection", "Action Targets", true);
+					DiagMenu.RegisterBool(DiagMenuIDs.DM_ACTION_TARGETS_DEBUG, "", "Show Debug", "Action Targets");
+					DiagMenu.RegisterBool(DiagMenuIDs.DM_ACTION_TARGETS_SELPOS_DEBUG, "", "Show selection pos debug", "Action Targets");
+
 			//---------------------------------------------------------------
 			// LEVEL 1
 			//---------------------------------------------------------------
@@ -209,8 +213,6 @@ class PluginDiagMenu extends PluginBase
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_MELEE_SHOW_TARGETS, "", "Show targets", "Melee");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_MELEE_DRAW_TARGETS, "", "Draw targets", "Melee");
 				DiagMenu.RegisterBool(DiagMenuIDs.DM_MELEE_DRAW_RANGE, "", "Draw range", "Melee");
-				DiagMenu.RegisterBool(DiagMenuIDs.DM_MELEE_BLOCK_STANCE, "", "Block stance", "Melee");
-				DiagMenu.RegisterBool(DiagMenuIDs.DM_MELEE_FIGHT_SINGLE, "", "Single Hit (cont)", "Melee");
 			//---------------------------------------------------------------
 			// LEVEL 1
 			//---------------------------------------------------------------
@@ -260,13 +262,13 @@ class PluginDiagMenu extends PluginBase
 		CheckProceduralRecoil();
 		CheckUnlimitedAmmo();
 		CheckCraftingDump();
-		CheckMeleeBlockStance();
-		CheckMeleeFight();
 		CheckEnvironmentStats();
 		CheckDisplayMenu();
 		CheckDrawCheckerboard();
 		CheckBulletImpact();
 		CheckPresenceNotifierDebug();
+		CheckGoUnconscious();
+		CheckGoUnconsciousDelayed();
 	}
 	//---------------------------------------------
 	void CheckModifiers()
@@ -329,6 +331,25 @@ class PluginDiagMenu extends PluginBase
 		}
 	}
 	//---------------------------------------------
+	void CheckGoUnconscious()
+	{
+		if( DiagMenu.GetBool(DiagMenuIDs.DM_GO_UNCONSCIOUS) )
+		{
+			SendGoUnconsciousRPC(false);
+			DiagMenu.SetValue(DiagMenuIDs.DM_GO_UNCONSCIOUS, false);//to prevent constant RPC calls, switch back to false
+		}
+	}
+	//---------------------------------------------
+	void CheckGoUnconsciousDelayed()
+	{
+		if( DiagMenu.GetBool(DiagMenuIDs.DM_GO_UNCONSCIOUS_DELAYED) )
+		{
+			SendGoUnconsciousRPC(true);
+			DiagMenu.SetValue(DiagMenuIDs.DM_GO_UNCONSCIOUS_DELAYED, false);//to prevent constant RPC calls, switch back to false
+		}
+	}
+	
+	//---------------------------------------------
 	void CheckItemDebugActions()
 	{
 		if( DiagMenu.GetBool(DiagMenuIDs.DM_ITEM_DEBUG_ACTIONS_SHOW) )
@@ -364,6 +385,11 @@ class PluginDiagMenu extends PluginBase
 		{
 			
 		}
+	}
+	
+	bool GetXboxCursor()
+	{
+		return DiagMenu.GetBool(DiagMenuIDs.DM_XBOX_CURSOR);
 	}
 	
 	//---------------------------------------------
@@ -818,47 +844,6 @@ class PluginDiagMenu extends PluginBase
 		}
 	}
 
-	
-	
-	//---------------------------------------------
-	void CheckMeleeBlockStance()
-	{
-		if( DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DEBUG_ENABLE) && DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_BLOCK_STANCE) )
-		{
-			if(!m_MeleeBlockStance)
-			{
-				SendMeleeBlockStanceRPC(true);
-				m_MeleeBlockStance = true;
-			}
-		}
-		else
-		{
-			if(m_MeleeBlockStance)
-			{
-				SendMeleeBlockStanceRPC(false);
-				m_MeleeBlockStance = false;
-			}
-		}
-	}
-
-	//---------------------------------------------	
-	void CheckMeleeFight()
-	{
-		if( DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DEBUG_ENABLE) && DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_FIGHT_SINGLE) )
-		{
-			SendMeleeFightRPC(DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_FIGHT_SINGLE));
-			m_MeleeFight = true;
-		}
-		else
-		{
-			if(m_MeleeFight)
-			{
-				SendMeleeFightRPC(false);
-				m_MeleeFight = false;
-			}
-		}
-	}
-	
 	void CheckEnvironmentStats()
 	{
 		if(DiagMenu.GetBool(DiagMenuIDs.DM_ENVIRONMENT_DEBUG_ENABLE))
@@ -994,6 +979,12 @@ class PluginDiagMenu extends PluginBase
 		GetGame().RPCSingleParam( GetGame().GetPlayer(),ERPCs.DEV_RPC_MELEE_FIGHT, CashedObjectsParams.PARAM1_BOOL, true, GetGame().GetPlayer().GetIdentity() );
 	}
 	//---------------------------------------------
+	void SendGoUnconsciousRPC(bool is_delayed)
+	{
+		Param1<bool> p1 = new Param1<bool>(is_delayed);
+		GetGame().RPCSingleParam( GetGame().GetPlayer(),ERPCs.DEV_GO_UNCONSCIOUS, p1, true, GetGame().GetPlayer().GetIdentity() );
+ 	}
+	//---------------------------------------------
 	void OnRPC(PlayerBase player, int rpc_type, ParamsReadContext ctx)
 	{
 		switch(rpc_type)
@@ -1108,18 +1099,41 @@ class PluginDiagMenu extends PluginBase
 				Class.CastTo(module_lifespan_update, GetPlugin( PluginLifespan ));
 				module_lifespan_update.UpdateLifespan( player, true );
 			break;
-			case ERPCs.DEV_RPC_MELEE_BLOCK_STANCE:
-				ctx.Read(CashedObjectsParams.PARAM1_BOOL);
-				bool blockStanceEnabled = CashedObjectsParams.PARAM1_BOOL.param1;
-				player.SetMeleeBlockingStance(blockStanceEnabled);
-			break;
-			case ERPCs.DEV_RPC_MELEE_FIGHT:
-				ctx.Read(CashedObjectsParams.PARAM1_BOOL);
-				bool fightEnabled = CashedObjectsParams.PARAM1_BOOL.param1;
-				player.SetMeleeFight(fightEnabled);
+			case ERPCs.DEV_GO_UNCONSCIOUS:
+				ctx.Read( CashedObjectsParams.PARAM1_BOOL );
+				if(!CashedObjectsParams.PARAM1_BOOL.param1)
+				{
+					if(player.IsUnconscious())
+					{
+						player.SetHealth("","Shock",100);
+					}
+					else
+					{
+						player.SetHealth("","Shock",0);
+					}
+				}
+				else
+				{
+					GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(GoUnconsciousDelayed, 10000, false, new Param1<PlayerBase>(player));
+				}
+			//DayZPlayerSyncJunctures.SendPlayerUnconsciousness(player, !player.IsUnconscious() );
 			break;
 		}
 		
 	}
+	// Helper diag functions
+	void GoUnconsciousDelayed(Param1<PlayerBase> p1)
+	{
+		PlayerBase player = p1.param1;
+		if(player.IsUnconscious())
+		{
+			player.SetHealth("","Shock",100);
+		}
+		else
+		{
+			player.SetHealth("","Shock",0);
+		}
+	}
+	
 #endif
 }

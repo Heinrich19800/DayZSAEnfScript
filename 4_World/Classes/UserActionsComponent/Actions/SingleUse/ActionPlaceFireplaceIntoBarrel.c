@@ -44,21 +44,20 @@ class ActionPlaceFireplaceIntoBarrel: ActionSingleUseBase
 		return false;
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		FireplaceBase fireplace_in_hands = FireplaceBase.Cast( item );
+		FireplaceBase fireplace_in_hands = FireplaceBase.Cast( action_data.m_MainItem );
 		
-		BarrelHoles_ColorBase fireplace_barrel = BarrelHoles_ColorBase.Cast( target.GetObject() );
+		BarrelHoles_ColorBase fireplace_barrel = BarrelHoles_ColorBase.Cast( action_data.m_Target.GetObject() );
 		
 		//transfer all attachments to this object
 		int item_attachments_count = fireplace_in_hands.GetInventory().AttachmentCount();
 		for ( int j = 0; j < item_attachments_count; j++ )
 		{
 			EntityAI entity = fireplace_in_hands.GetInventory().GetAttachmentFromIndex( 0 );
-            Error("Mojmir: TODO");
-			//fireplace_barrel.SynchronizedTakeEntityAsAttachment( true, entity );
+			fireplace_barrel.PredictiveTakeEntityAsAttachment( entity );
 		}
 		
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }

@@ -33,7 +33,7 @@ class Thirsty: NotifierBase
 		float tendency = CalculateTendency(delta, INC_TRESHOLD_LOW, INC_TRESHOLD_MED, INC_TRESHOLD_HIGH, DEC_TRESHOLD_LOW, DEC_TRESHOLD_MED, DEC_TRESHOLD_HIGH);
 		GetDisplayStatus().SetStatus(eDisplayElements.DELM_TDCY_WATER,tendency);
 		
-		DSLevels level = DetermineLevel( GetObservedValue(), ModifierConstants.THRESHOLD_WATER_WARNING, ModifierConstants.THRESHOLD_WATER_CRITICAL, ModifierConstants.THRESHOLD_WATER_EMPTY);
+		DSLevels level = DetermineLevel( GetObservedValue(), PlayerConstants.THRESHOLD_WATER_WARNING, PlayerConstants.THRESHOLD_WATER_CRITICAL, PlayerConstants.THRESHOLD_WATER_EMPTY);
 		GetDisplayStatus().SetLevel(eDisplayElements.DELM_TDCY_WATER, level);
 	}
 	

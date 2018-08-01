@@ -26,7 +26,7 @@ class ActionGetInTransport: ActionInteractBase
 
 	override string GetText()
 	{
-		return "Get in driver";
+		return "Get in vehicle";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -40,56 +40,40 @@ class ActionGetInTransport: ActionInteractBase
 		if ( !Class.CastTo(m_transport, target.GetObject()) )
 			return false;
 
+		if ( player.GetCommand_Vehicle() )
+			return false;
+		
 		//if ( !IsInReach(player, target, UAMaxDistances.DEFAULT) )
 		//	return false;
 
 		int componentIndex = target.GetComponentIndex();
-		//Print( " component( " + componentIndex + " ) " );
-
-		// check if doors are present and opened
-		//if ( car.IsActionComponentPartOfSelection(componentIndex, "doors_driver") )
-		//{
-		//	if ( !car.GetAnimationPhase("DoorsDriver") >= 0.5 )
-		//	{
-		//		return false;
-		//	}
-		//}
 
 		m_crewIdx = m_transport.CrewPositionIndex(componentIndex);
 		if ( m_crewIdx < 0 )
 			return false;
 
+		Human crew = m_transport.CrewMember( m_crewIdx );
+		if ( crew )
+			return false;
+		
+		if ( !m_transport.CrewCanGetThrough( m_crewIdx ) )
+			return false;
+		
 		return true;
 	}
 
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Start( ActionData action_data )
 	{
-		HumanCommandVehicle vehCommand = player.StartCommand_Vehicle(m_transport, m_crewIdx, DayZPlayerConstants.VEHICLESEAT_DRIVER);
+		int seat = m_transport.GetSeatAnimationType(m_crewIdx);
+		HumanCommandVehicle vehCommand = action_data.m_Player.StartCommand_Vehicle(m_transport, m_crewIdx, seat);
 		if( vehCommand )
 		{
-			vehCommand.SetVehicleType(3);
+			vehCommand.SetVehicleType(m_transport.GetAnimInstance());
 		}
-		m_transport.CrewGetIn(player, m_crewIdx);
 	}
-	
-	override bool IsLocal()
-	{
-		return true;
-	}
-	
+
 	override bool IsInstant()
 	{
 		return true;
 	}
-/*	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{
-		if ( m_crewIdx >= 0 )
-			m_transport.CrewGetIn(player, m_crewIdx);
-	}
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{
-		if ( m_crewIdx >= 0 )
-			m_transport.CrewGetIn(player, m_crewIdx);
-	}*/
 };

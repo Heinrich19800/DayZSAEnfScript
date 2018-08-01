@@ -37,15 +37,15 @@ class ActionFoldObject: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		HescoBox hesco = HescoBox.Cast( targetObject );
 		if ( hesco.GetState() == HescoBox.UNFOLDED )
 		{
 			hesco.Fold();
 		}
 		
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

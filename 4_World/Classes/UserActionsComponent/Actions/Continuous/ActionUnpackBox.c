@@ -2,7 +2,7 @@ class ActionUnpackBoxCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.UNPACK);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.UNPACK);
 	}
 };
 
@@ -53,11 +53,11 @@ class ActionUnpackBox: ActionContinuousBase
 		return "Unbox";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		if ( item && item.GetHierarchyRootPlayer() == player )
+		if ( action_data.m_MainItem && action_data.m_MainItem.GetHierarchyRootPlayer() == action_data.m_Player )
 		{
-			string path = "CfgVehicles " + item.GetType();
+			string path = "CfgVehicles " + action_data.m_MainItem.GetType();
 			string child_name = "";
 			int count;
 			array<string> resources = new array<string>;
@@ -80,11 +80,11 @@ class ActionUnpackBox: ActionContinuousBase
 				string itemType = resources.Get(0);
 				int itemCount = GetGame().ConfigGetInt( path + " " + itemType + " value" );
 				
-				UnboxLambda lambda = new UnboxLambda(item, itemType, player, itemCount);
-				player.LocalReplaceItemInHandsWithNew(lambda);
+				UnboxLambda lambda = new UnboxLambda(action_data.m_MainItem, itemType, action_data.m_Player, itemCount);
+				action_data.m_Player.ServerReplaceItemInHandsWithNew(lambda);
 				
 				//spawns wrapping Paper
-				ItemBase paper = ItemBase.Cast( GetGame().CreateObject("Paper", player.GetPosition(), false) );
+				ItemBase paper = ItemBase.Cast( GetGame().CreateObject("Paper", action_data.m_Player.GetPosition(), false) );
 			}
 		}
 	}
@@ -95,7 +95,7 @@ class UnboxLambda : ReplaceItemWithNewLambdaBase
 	int m_ItemCount;
 	void UnboxLambda (EntityAI old_item, string new_item_type, PlayerBase player, int count) { m_ItemCount = count; }
 
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
 	{
 		super.CopyOldPropertiesToNew(old_item, new_item);
 

@@ -2,7 +2,7 @@ class ActionTestBloodSelfCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.TEST_BLOOD);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.TEST_BLOOD);
 	}
 };
 
@@ -44,15 +44,15 @@ class ActionTestBloodSelf: ActionContinuousBase
 		return "Test blood";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
 		PluginLifespan module_lifespan = PluginLifespan.Cast( GetPlugin( PluginLifespan ) );
-		int blood_type = player.GetStatBloodType().Get();
+		int blood_type = action_data.m_Player.GetStatBloodType().Get();
 		
-		module_lifespan.UpdateBloodType( player, blood_type );
-		module_lifespan.UpdateBloodTypeVisibility( player, true );
+		module_lifespan.UpdateBloodType( action_data.m_Player, blood_type );
+		module_lifespan.UpdateBloodTypeVisibility( action_data.m_Player, true );
 		
-		item.Delete();
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_MainItem.Delete();
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

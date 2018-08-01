@@ -15,7 +15,7 @@ class CAContinuousQuantityRepeat : CAContinuousBase
 		m_DefaultTimeToRepeat = time_to_repeat;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		m_TimeElpased = 0;
 		m_SpentQuantity = 0;
@@ -29,14 +29,14 @@ class CAContinuousQuantityRepeat : CAContinuousBase
 			m_SpentUnits.param1 = 0;
 		}		
 		
-		m_ItemMaxQuantity = item.GetQuantityMax();
-		m_ItemQuantity = item.GetQuantity();
+		m_ItemMaxQuantity = action_data.m_MainItem.GetQuantityMax();
+		m_ItemQuantity = action_data.m_MainItem.GetQuantity();
 	}
 	
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item  )
+	override int Execute( ActionData action_data  )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
@@ -49,35 +49,35 @@ class CAContinuousQuantityRepeat : CAContinuousBase
 		{
 			if ( m_SpentQuantity < m_ItemQuantity )
 			{
-				m_AdjustedQuantityUsedPerSecond = player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);		
-				m_SpentQuantity += m_AdjustedQuantityUsedPerSecond * player.GetDeltaT();
-				m_TimeElpased += player.GetDeltaT();
+				m_AdjustedQuantityUsedPerSecond = action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);		
+				m_SpentQuantity += m_AdjustedQuantityUsedPerSecond * action_data.m_Player.GetDeltaT();
+				m_TimeElpased += action_data.m_Player.GetDeltaT();
 				
 				if ( m_TimeElpased >= m_DefaultTimeToRepeat )
 				{
-					CalcAndSetQuantity( player, target, item );
-					Setup( player, target, item );	//reset data after repeat
+					CalcAndSetQuantity( action_data );
+					Setup(action_data);	//reset data after repeat
 				}
 				
 				return UA_PROCESSING;
 			}
 			else
 			{
-				CalcAndSetQuantity( player, target, item );
+				CalcAndSetQuantity( action_data );
 				return UA_FINISHED;
 			}
 		}
 	}
 	
-	override int Cancel( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Cancel( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		
-		CalcAndSetQuantity( player, target, item );
-		return UA_INTERRUPT;
+		CalcAndSetQuantity( action_data );
+		return UA_CANCEL;
 	}	
 	
 	override float GetProgress()
@@ -89,7 +89,7 @@ class CAContinuousQuantityRepeat : CAContinuousBase
 	//---------------------------------------------------------------------------
 	
 	
-	void CalcAndSetQuantity( PlayerBase player, ActionTarget target, ItemBase item )
+	void CalcAndSetQuantity( ActionData action_data )
 	{
 		if ( GetGame().IsServer() )
 		{
@@ -99,7 +99,7 @@ class CAContinuousQuantityRepeat : CAContinuousBase
 				SetACData(m_SpentUnits);
 			}
 			
-			item.AddQuantity( -m_SpentQuantity, false, false );
+			action_data.m_MainItem.AddQuantity( -m_SpentQuantity, false, false );
 		}
 	}
 }

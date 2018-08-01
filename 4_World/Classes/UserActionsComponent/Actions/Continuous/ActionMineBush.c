@@ -4,7 +4,7 @@ class ActionMineBushCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousMineWood(TIME_BETWEEN_MATERIAL_DROPS);
+		m_ActionData.m_ActionComponent = new CAContinuousMineWood(TIME_BETWEEN_MATERIAL_DROPS);
 	}
 };
 
@@ -13,6 +13,9 @@ class ActionMineBush: ActionContinuousBase
 	void ActionMineBush()
 	{
 		m_CallbackClass = ActionMineBushCB;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_HACKBUSH;
+		m_FullBody = true;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
 		m_MessageStartFail = "My tool is too damaged to cut.";
 		m_MessageStart = "I started cutting the bush down.";
 		m_MessageSuccess = "I have cut the bush down.";
@@ -20,10 +23,6 @@ class ActionMineBush: ActionContinuousBase
 		//m_AnimationOneHanded = "DRINK";
 		//m_AnimationTwoHanded = "DIGGINGSHOVEL";
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
-		
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BERRIES;
-		m_FullBody = true;
-		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
 	}
 	
 	override void CreateConditionComponents()  
@@ -53,8 +52,8 @@ class ActionMineBush: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{	
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+	override void OnCompleteServer( ActionData action_data )
+	{		
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

@@ -2,7 +2,7 @@ class ActionShaveCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.SHAVE);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.SHAVE);
 	}
 };
 
@@ -55,9 +55,9 @@ class ActionShave: ActionContinuousBase
 		return "Shave myself";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		player.ShavePlayer();
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.ShavePlayer();
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

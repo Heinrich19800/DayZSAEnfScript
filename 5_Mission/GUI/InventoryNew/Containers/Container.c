@@ -48,6 +48,11 @@ class Container: ContainerBase
 		m_FocusedContainer.Select();
 	}
 	
+	void SelectItem()
+	{
+		
+	}
+	
 	void Combine()
 	{
 		if(m_FocusedContainer)
@@ -109,9 +114,11 @@ class Container: ContainerBase
 			}
 			else
 			{
-
-				ContainerBase cnt = ContainerBase.Cast( m_Body.Get( 0 ) );
-				cnt.GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
+				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
+				{
+					ContainerBase cnt = ContainerBase.Cast( m_Body.Get( 0 ) );
+					cnt.GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
+				}
 			}
 		}
 	}
@@ -199,6 +206,10 @@ class Container: ContainerBase
 
 	void SetNextActive()
 	{
+		if( ItemManager.GetInstance().IsMicromanagmentMode() )
+		{
+			ItemManager.GetInstance().SetItemMoving( true );
+		}
 		Container active = Container.Cast( m_OpenedContainers[activeIndex] );
 		if( !active.IsActive() )
 		{
@@ -206,7 +217,6 @@ class Container: ContainerBase
 		}
 		active.SetActive( false );
 		Container next;
-		Print( m_OpenedContainers.Count() );
 		++activeIndex;
 		if( activeIndex < m_OpenedContainers.Count() )
 		{
@@ -244,6 +254,10 @@ class Container: ContainerBase
 
 	void SetPreviousActive()
 	{
+		if( ItemManager.GetInstance().IsMicromanagmentMode() )
+		{
+			ItemManager.GetInstance().SetItemMoving( true );
+		}
 		Container active = Container.Cast( m_OpenedContainers[activeIndex] );
 		if( !active.IsActive() )
 		{
@@ -350,7 +364,8 @@ class Container: ContainerBase
 
 	void UpdateSpacer()
 	{
-		m_Spacer.Update();
+		if( m_Spacer )
+			m_Spacer.Update();
 		if(m_SpacerBody)
 			m_SpacerBody.Update();
 	}

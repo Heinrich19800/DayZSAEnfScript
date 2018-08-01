@@ -11,7 +11,7 @@ class PluginHorticulture extends PluginBase
 
 	void LoadFromCfg()
 	{
-		string cfg_access = "CfgHorticulture"; // it is stored in dz\modulesDayz\cfgHorticulture.cpp
+		string cfg_access = "CfgHorticulture"; // it is stored in dz\gear\cultivation\cfgHorticulture.hpp
 		int cfg_horticulture_count = GetGame().ConfigGetChildrenCount( cfg_access );
 
 		for ( int i = 0; i < cfg_horticulture_count; i++ )

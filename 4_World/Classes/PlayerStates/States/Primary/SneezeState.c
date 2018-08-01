@@ -18,13 +18,12 @@ class SneezeState extends StateBase
 
 	override void OnUpdateClient(PlayerBase player, float deltatime)
 	{
-		int i = 1 + 1;
 	}
 	
 	//!gets called once on an state which is being activated
 	override void OnGetActivatedServer(PlayerBase player)
 	{
-		PlaySound("sneeze");
+		PlaySound(EPlayerSoundEventID.SYMPTOM_LAUGHTER);
 		ManTrigger trigger = ManTrigger.Cast(GetGame().CreateObject("ManTrigger", player.GetPosition(),true, false));
 		PluginTransmissionAgents plugin = PluginTransmissionAgents.Cast(GetPlugin(PluginTransmissionAgents));
 

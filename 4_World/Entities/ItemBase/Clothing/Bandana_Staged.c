@@ -23,25 +23,25 @@ class Universal_Bandana_Redpattern extends ClothingBase
 		return false;
 	}
 	
-	override void OnWasAttached( EntityAI parent, string slot_name )
+	override void OnWasAttached( EntityAI parent, int slot_id )
 	{
-		super.OnWasAttached(parent, slot_name);
+		super.OnWasAttached(parent, slot_id);
 		
-		switch (slot_name)
+		switch (slot_id)
 		{
-			case "mask":
+			case InventorySlots.MASK:
 				SetItemStage(EUniversal_Bandana_Redpattern_stages.MASK);
 			break;
-			case "headgear":
+			case InventorySlots.HEADGEAR:
 				SetItemStage(EUniversal_Bandana_Redpattern_stages.HEADHEAR);
 			break;
 		}
 		Print("stage_attach = " + m_Item_Stage);
 	}
 	
-	override void OnWasDetached( EntityAI parent, string slot_name )
+	override void OnWasDetached( EntityAI parent, int slot_id )
 	{
-		super.OnWasDetached(parent, slot_name);
+		super.OnWasDetached(parent, slot_id);
 		
 		SetItemStage(EUniversal_Bandana_Redpattern_stages.UNTIED);
 		Print("stage_unattach = " + m_Item_Stage);

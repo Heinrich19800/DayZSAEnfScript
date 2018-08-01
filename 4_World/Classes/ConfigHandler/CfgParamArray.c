@@ -25,12 +25,12 @@ class CfgParamArray extends CfgParam
 		return m_Values;
 	}
 	
-	CfgParam GetValue(local int i)
+	CfgParam GetValue(int i)
 	{
 		return m_Values.Get(i);
 	}
 	
-	void InsertValue(local CfgParam value)
+	void InsertValue(CfgParam value)
 	{
 		if ( m_Values == NULL )
 		{
@@ -40,16 +40,16 @@ class CfgParamArray extends CfgParam
 		m_Values.Insert(value);
 	}
 	
-	bool IsParamExist(local string name, local int cfg_type)
+	bool IsParamExist(string name, int cfg_type)
 	{
 		if ( m_Values == NULL )
 		{
 			m_Values = new array<ref CfgParam>;
 		}
 		
-		for ( local int i = 0; i < m_Values.Count(); ++i )
+		for ( int i = 0; i < m_Values.Count(); ++i )
 		{
-			local CfgParam p = m_Values.Get(i);
+			CfgParam p = m_Values.Get(i);
 			
 			if ( name == p.GetName() )
 			{
@@ -60,16 +60,16 @@ class CfgParamArray extends CfgParam
 		return false;
 	}
 	
-	bool RenameParam(local string name, local int cfg_type, string new_name)
+	bool RenameParam(string name, int cfg_type, string new_name)
 	{
 		if ( m_Values == NULL )
 		{
 			m_Values = new array<ref CfgParam>;
 		}
 		
-		for ( local int i = 0; i < m_Values.Count(); ++i )
+		for ( int i = 0; i < m_Values.Count(); ++i )
 		{
-			local CfgParam p = m_Values.Get(i);
+			CfgParam p = m_Values.Get(i);
 			
 			if ( name == p.GetName() )
 			{
@@ -81,16 +81,16 @@ class CfgParamArray extends CfgParam
 		return false;		
 	}
 	
-	CfgParam GetValueByName(local string name, local int cfg_type)
+	CfgParam GetValueByName(string name, int cfg_type)
 	{
 		if ( m_Values == NULL )
 		{
 			m_Values = new array<ref CfgParam>;
 		}
 		
-		for ( local int i = 0; i < m_Values.Count(); ++i )
+		for ( int i = 0; i < m_Values.Count(); ++i )
 		{
-			local CfgParam p = m_Values.Get(i);
+			CfgParam p = m_Values.Get(i);
 			
 			if ( name == p.GetName() )
 			{

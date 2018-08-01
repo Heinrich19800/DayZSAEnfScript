@@ -199,8 +199,11 @@ class ContextMenu extends ScriptedWidgetEventHandler
 		for ( i = 0; i < ITEMS_COUNT; i++)
 		{
 			ButtonWidget menu_button = ButtonWidget.Cast( m_context_menu_root_widget.FindAnyWidget( String( "Button" + (i+1).ToString() ) ) );
-			menu_button.Show( false );
-			menu_button.SetText( "" );
+			if( menu_button )
+			{
+				menu_button.Show( false );
+				menu_button.SetText( "" );
+			}
 		}
 		m_count = 0;
 		m_max_item_width = 0;

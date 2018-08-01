@@ -7,6 +7,12 @@ class Camera extends Entity
 	static proto native Camera GetCurrentCamera();
 
 	/**
+	\brief Returns FOV of current camera object
+	\return float \p FOV of current camera object
+	*/
+	static proto native float GetCurrentFOV();
+
+	/**
 	\brief Interpolation between camera instances (current camera becomes targetCamera at the end of interpolation)
 	\param targetCamera \p to which camera we want to interpolate
 	\param time \p true interpolation time
@@ -16,6 +22,17 @@ class Camera extends Entity
 		2 = first third - acceleration, second third - linear movement, last third - deceleration
 	*/
 	static proto native void InterpolateTo(Camera targetCamera, float time, int type);
+
+	/*!
+	set near plane of camera
+	\param nearPlane clamped internally to 0.01m
+	*/
+	proto native void SetNearPlane(float nearPlane);
+
+	/*!
+	get near plane of camera
+	*/
+	proto native float GetNearPlane();
 
 	/**
 	\brief Sets this camera as active

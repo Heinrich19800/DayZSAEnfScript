@@ -2,7 +2,7 @@ class ActionMeasureTemperatureTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.MEASURE_TEMP);	
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.MEASURE_TEMP);	
 	}
 };
 
@@ -39,15 +39,15 @@ class ActionMeasureTemperatureTarget : ActionContinuousBase
 		return "Measure temperature";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		if (ntarget.GetStatTemperature()) 
 		{ 
 			float temperature = Math.Floor(ntarget.GetStatTemperature().Get()*10)/10;
 			string message = "Thermometer displays "+temperature.ToString()+" ?C";
-			SendMessageToClient(player, message);
-			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+			SendMessageToClient(action_data.m_Player, message);
+			action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 		}
 	}
 };

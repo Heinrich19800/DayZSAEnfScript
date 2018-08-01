@@ -2,7 +2,7 @@ class ActionWashHandsWaterCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousRepeat(UATimeSpent.WASH_HANDS);
+		m_ActionData.m_ActionComponent = new CAContinuousRepeat(UATimeSpent.WASH_HANDS);
 	}
 };
 
@@ -53,14 +53,14 @@ class ActionWashHandsWater: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnRepeatServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnRepeatServer( ActionData action_data )
 	{
 		PluginLifespan module_lifespan = PluginLifespan.Cast( GetPlugin( PluginLifespan ) );
-		module_lifespan.UpdateBloodyHandsVisibility( player, false );
+		module_lifespan.UpdateBloodyHandsVisibility( action_data.m_Player, false );
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		OnRepeatServer(player,target,item, acdata);
+		OnRepeatServer(action_data);
 	}
 };

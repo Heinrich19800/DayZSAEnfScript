@@ -38,8 +38,8 @@ class ActionTurnOffWhileInHands: ActionSingleUseBase
 		}
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		item.GetCompEM().SwitchOff();
+		action_data.m_MainItem.GetCompEM().SwitchOff();
 	}
 };

@@ -51,12 +51,10 @@ class TelescopicBaton : ItemBase
 	{
 		if ( IsOpen() )
 		{
-			Print("set baton to OPENED state");
 			SetAnimationPhase("Doors1", 0.0);
 		}
 		else
 		{
-			Print("set baton to CLOSED state");
 			SetAnimationPhase("Doors1", 1.0);
 		}
 	}

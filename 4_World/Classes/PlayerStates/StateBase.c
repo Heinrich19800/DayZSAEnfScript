@@ -212,12 +212,20 @@ class StateBase
 		m_AnimCallback.Init(this, running_time);
 		*/
 	}
-	
+	/*
 	void PlaySound(string sound, bool destroy_on_finish = true)
 	{
 		//m_SoundObject = GetGame().CreateSoundOnObject(GetPlayer(), sound, 0, false);
 		m_SoundObject = GetPlayer().PlaySound( sound, 0);
+		
 		PrintString("sample length:" + m_SoundObject.GetSoundLength().ToString() );
+		m_PlayedSound = true;
+	}
+	*/
+	
+	void PlaySound(EPlayerSoundEventID id, bool destroy_on_finish = true)
+	{
+		GetPlayer().SendSoundEvent(id);
 		m_PlayedSound = true;
 	}
 

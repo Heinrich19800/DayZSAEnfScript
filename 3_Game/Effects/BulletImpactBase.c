@@ -1,13 +1,20 @@
 class EffBulletImpactBase : Effect
 {
-	float 		m_stopping_force
-	int 		m_impact_type
-	vector 		m_pos
-	vector 		m_surfNormal
-	vector 		m_exitPos
-	vector 		m_inSpeed
-	vector 		m_outSpeed
-	string 		m_ammoType
+	static const int	SURVIVOR_HEAD = 0; // Head component
+	static const int	INFECTED_HEAD = 3; // Head component
+	
+	static const float	MIN_SCALING_PARAM = 0.5;
+	
+	Object 				m_directHit;
+	float 				m_stopping_force;
+	int 				m_impact_type;
+	int 				m_componentIndex;
+	vector 				m_pos;
+	vector 				m_surfNormal;
+	vector 				m_exitPos;
+	vector 				m_inSpeed;
+	vector 				m_outSpeed;
+	string 				m_ammoType;
 	
 	static vector INVALID = "0 0 0";
 	
@@ -17,10 +24,10 @@ class EffBulletImpactBase : Effect
 	int m_ParticleRicochet = -1;
 	
 	// Calculations
-	float m_EnterSplashCoef = 0.01;
-	float m_ExitSplashCoef = 0.05;
-	float m_RicochetSplashCoef = 0.02;
-	float m_EnterAngledSplashCoef = 0.015;
+	float m_EnterSplashCoef = 0.0015;
+	float m_ExitSplashCoef = 0.0015;
+	float m_RicochetSplashCoef = 0.0015;
+	float m_EnterAngledSplashCoef = 0.0015;
 	float m_AngledEnter = 0.40;
 	
 	void EffBulletImpactBase()
@@ -48,17 +55,19 @@ class EffBulletImpactBase : Effect
 		m_AngledEnter = f;
 	}
 	
-	void EvaluateEffect(vector pos, int impact_type, vector surfNormal, vector exitPos, vector inSpeed, vector outSpeed, string ammoType)
+	void EvaluateEffect(Object directHit, int componentIndex, vector pos, int impact_type, vector surfNormal, vector exitPos, vector inSpeed, vector outSpeed, string ammoType)
 	{
-		m_pos = pos;
-		m_impact_type = impact_type;
-		m_surfNormal = surfNormal;
-		m_exitPos = exitPos;
-		m_inSpeed = inSpeed;
-		m_outSpeed = outSpeed;
-		m_ammoType = ammoType;
+		m_directHit 		= directHit;
+		m_pos 				= pos;
+		m_impact_type 		= impact_type;
+		m_componentIndex 	= componentIndex;
+		m_surfNormal 		= surfNormal;
+		m_exitPos 			= exitPos;
+		m_inSpeed 			= inSpeed;
+		m_outSpeed 			= outSpeed;
+		m_ammoType 			= ammoType;
 		
-		m_stopping_force = CalculateStoppingForce(m_inSpeed.Length(), m_outSpeed.Length(), ammoType);
+		m_stopping_force 	= CalculateStoppingForce(m_inSpeed.Length(), m_outSpeed.Length(), ammoType);
 	}
 	
 	float CalculateStoppingForce(float in_speedf, float out_speedf, string ammoType)
@@ -68,48 +77,100 @@ class EffBulletImpactBase : Effect
 			return 500;
 		}
 		
-		return in_speedf - out_speedf;
+		float stopping_force = in_speedf - out_speedf;
+		
+		return stopping_force;
 	}
 	
 	void OnEnterCalculations( Particle p )
 	{
-		float velocity_rnd = m_stopping_force * m_EnterSplashCoef;
-		float birth_rate_rnd = m_stopping_force;
+		// All values represent scale
+		float velocity_min = MIN_SCALING_PARAM + (m_stopping_force * m_EnterSplashCoef);
+		float velocity_max = MIN_SCALING_PARAM + (m_stopping_force * m_EnterSplashCoef);
+		float size = MIN_SCALING_PARAM + ( m_stopping_force * m_EnterSplashCoef);
+		float birth_rate = MIN_SCALING_PARAM + (m_stopping_force * m_EnterSplashCoef);
 		
-		p.SetParameter(-1, EmitorParam.VELOCITY_RND, velocity_rnd);
-		p.SetParticleParam(EmitorParam.VELOCITY_RND, velocity_rnd);
-		p.SetParticleParam(EmitorParam.BIRTH_RATE_RND, birth_rate_rnd);
-		p.IncrementParticleParam(EmitorParam.BIRTH_RATE, birth_rate_rnd);
+		if (velocity_min < MIN_SCALING_PARAM)
+			velocity_min = MIN_SCALING_PARAM;
+		
+		if (size < MIN_SCALING_PARAM)
+			size = MIN_SCALING_PARAM;
+		
+		if (birth_rate < MIN_SCALING_PARAM)
+			birth_rate = MIN_SCALING_PARAM;
+		
+		
+		
+		p.ScaleParticleParam(EmitorParam.VELOCITY, velocity_min);
+		p.ScaleParticleParam(EmitorParam.VELOCITY_RND, velocity_max);
+		p.ScaleParticleParam(EmitorParam.SIZE, size);
+		p.ScaleParticleParam(EmitorParam.BIRTH_RATE, birth_rate);
 	}
 	
 	void OnExitCalculations(Particle p, float outSpeedf)
 	{
-		float velocity_rnd = outSpeedf * m_ExitSplashCoef;
-		float birth_rate_rnd = outSpeedf;
+		float velocity_min = 1 + (outSpeedf * m_ExitSplashCoef);
+		float velocity_max = 1 + (outSpeedf * m_ExitSplashCoef);
+		float size = 1 + ( outSpeedf * m_ExitSplashCoef);
+		float birth_rate = 1 + (outSpeedf * m_ExitSplashCoef);
 		
-		p.SetParticleParam(EmitorParam.VELOCITY_RND, velocity_rnd);
-		p.SetParticleParam(EmitorParam.BIRTH_RATE_RND, birth_rate_rnd);
-		p.IncrementParticleParam(EmitorParam.BIRTH_RATE, birth_rate_rnd);
+		if (velocity_min < MIN_SCALING_PARAM)
+			velocity_min = MIN_SCALING_PARAM;
+		
+		if (size < MIN_SCALING_PARAM)
+			size = MIN_SCALING_PARAM;
+		
+		if (birth_rate < MIN_SCALING_PARAM)
+			birth_rate = MIN_SCALING_PARAM;
+		
+		p.ScaleParticleParam(EmitorParam.VELOCITY, velocity_min);
+		p.ScaleParticleParam(EmitorParam.VELOCITY_RND, velocity_max);
+		p.ScaleParticleParam(EmitorParam.SIZE, size);
+		p.ScaleParticleParam(EmitorParam.BIRTH_RATE, birth_rate);
 	}
 	
 	void OnRicochetCalculations(Particle p, float outspeedf)
 	{
-		float velocity_rnd_def = m_stopping_force * m_RicochetSplashCoef;
-		float birth_rate_rnd_def = m_stopping_force;
+		float velocity_min = 1 + (m_stopping_force * m_RicochetSplashCoef);
+		float velocity_max = 1 + (m_stopping_force * m_RicochetSplashCoef);
+		float size = 1 + ( m_stopping_force * m_RicochetSplashCoef);
+		float birth_rate = 1 + (m_stopping_force * m_RicochetSplashCoef);
 		
-		p.SetParticleParam(EmitorParam.VELOCITY_RND, velocity_rnd_def);
-		p.SetParticleParam(EmitorParam.BIRTH_RATE_RND, birth_rate_rnd_def);
-		p.IncrementParticleParam(EmitorParam.BIRTH_RATE, birth_rate_rnd_def);
+		if (velocity_min < MIN_SCALING_PARAM)
+			velocity_min = MIN_SCALING_PARAM;
+		
+		if (size < MIN_SCALING_PARAM)
+			size = MIN_SCALING_PARAM;
+		
+		if (birth_rate < MIN_SCALING_PARAM)
+			birth_rate = MIN_SCALING_PARAM;
+		
+		p.ScaleParticleParam(EmitorParam.VELOCITY, velocity_min);
+		p.ScaleParticleParam(EmitorParam.VELOCITY_RND, velocity_max);
+		p.ScaleParticleParam(EmitorParam.SIZE, size);
+		p.ScaleParticleParam(EmitorParam.BIRTH_RATE, birth_rate);
 	}
 	
 	void OnEnterAngledCalculations(Particle p)
 	{
-		float velocity_rnd_def2 = m_stopping_force * m_EnterAngledSplashCoef;
-		float birth_rate_rnd_def2 = m_stopping_force;
+		float velocity_min = 1 + (m_stopping_force * m_EnterAngledSplashCoef);
+		float velocity_max = 1 + (m_stopping_force * m_EnterAngledSplashCoef);
+		float size = 1 + (m_stopping_force * m_EnterAngledSplashCoef);
+		float birth_rate = 1 + (m_stopping_force * m_EnterAngledSplashCoef);
 		
-		p.SetParticleParam(EmitorParam.VELOCITY_RND, velocity_rnd_def2);
-		p.SetParticleParam(EmitorParam.BIRTH_RATE_RND, birth_rate_rnd_def2);
-		p.IncrementParticleParam(EmitorParam.BIRTH_RATE, birth_rate_rnd_def2);
+		if (velocity_min < MIN_SCALING_PARAM)
+			velocity_min = MIN_SCALING_PARAM;
+		
+		if (size < MIN_SCALING_PARAM)
+			size = MIN_SCALING_PARAM;
+		
+		if (birth_rate < MIN_SCALING_PARAM)
+			birth_rate = MIN_SCALING_PARAM;
+		
+		p.ScaleParticleParam(EmitorParam.VELOCITY, velocity_min);
+		p.ScaleParticleParam(EmitorParam.VELOCITY_RND, velocity_max);
+		p.ScaleParticleParam(EmitorParam.SIZE, size);
+		p.ScaleParticleParam(EmitorParam.BIRTH_RATE, birth_rate);
 	}
 	
 	override void OnPlay()

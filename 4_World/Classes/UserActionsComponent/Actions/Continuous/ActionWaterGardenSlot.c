@@ -4,7 +4,7 @@ class ActionWaterGardenSlotCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousWaterSlot(QUANTITY_USED_PER_SEC);
+		m_ActionData.m_ActionComponent = new CAContinuousWaterSlot(QUANTITY_USED_PER_SEC);
 	}
 };
 
@@ -66,7 +66,7 @@ class ActionWaterGardenSlot: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		// The functionality is in the Execute event of this user action's component.
 	}

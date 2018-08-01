@@ -1,28 +1,33 @@
 class ActionFillBottleBaseCB : ActionContinuousBaseCB
 {
 	private const float QUANTITY_FILLED_PER_SEC = 50;
+	private int m_liquid_type;
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousFill(QUANTITY_FILLED_PER_SEC);
+		m_liquid_type = ActionFillBottleBase.Cast( m_ActionData.m_Action ).GetLiquidType( m_ActionData.m_Player, m_ActionData.m_Target, m_ActionData.m_MainItem );
+		
+		m_ActionData.m_ActionComponent = new CAContinuousFill(QUANTITY_FILLED_PER_SEC, m_liquid_type);
 	}
 };
 
 class ActionFillBottleBase: ActionContinuousBase
-{	
+{
+	private const float WATER_DEPTH = 0.5;
+	
 	void ActionFillBottleBase()
 	{
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_FILLBOTTLEWELL;
+		m_CallbackClass = ActionFillBottleBaseCB;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_FILLBOTTLEPOND;
+		m_FullBody = true;
+		m_StanceMask = 0;
+		
 		m_MessageStartFail = "It's ruined.";
 		m_MessageStart = "I have started filling the bottle.";
 		m_MessageSuccess = "I have finished filling the bottle..";
 		m_MessageFail = "Player moved and filling the bottle was canceled.";
 		m_MessageCancel = "I stopped filling the bottle.";
 		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
-		
-		m_CallbackClass = ActionFillBottleBaseCB;
-		m_FullBody = true;
-		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
 	}
 	
 	override void CreateConditionComponents()  
@@ -52,34 +57,91 @@ class ActionFillBottleBase: ActionContinuousBase
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{	
-		if( GetGame().IsServer() && GetGame().IsMultiplayer() )
+		if ( GetGame().IsServer() && GetGame().IsMultiplayer() )
+			return true;
+		if ( GetLiquidType( player,target,item ) != -1 && !player.IsPlacingLocal() )
 			return true;
 		
+		return false;
+	}
+	
+	override bool ActionConditionContinue( ActionData action_data )
+	{
+		if (action_data.m_MainItem.GetQuantity() < action_data.m_MainItem.GetQuantityMax())
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extraData = NULL)
+	{	
+		SetupStance( player );
+	
+		if( super.SetupAction(player, target, item, action_data, extraData ))
+		{
+			if ( target.GetObject() )
+			{
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_FILLBOTTLEWELL;
+			}
+			else
+			{
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_FILLBOTTLEPOND;
+			}
+			
+			return true;
+		}
+		return false;
+	}
+	
+	/*override void OnCompleteLoopServer( ActionData action_data )
+	{
+		//item.TransferModifiers(player);
+		Param1<float> nacdata;
+		Class.CastTo(nacdata,  action_data.m_ActionComponent.GetACData() );
+		float delta = nacdata.param1;
+		int liquid_type = GetLiquidType( action_data.m_Player,action_data.m_Target,action_data.m_MainItem );
+		Liquid.FillContainerEnviro( action_data.m_MainItem, liquid_type, delta );
+
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+	}*/
+	
+	/*override void OnCancelServer( ActionData action_data )
+	{
+		OnCompleteLoopServer(action_data);
+	}*/
+	
+	int GetLiquidType( PlayerBase player, ActionTarget target, ItemBase item )
+	{
 		vector pos_cursor = target.GetCursorHitPos();
 		if( g_Game.SurfaceIsPond(pos_cursor[0], pos_cursor[2]) || (target.GetObject() && (target.GetObject().GetType() == "Land_Misc_Well_Pump_Yellow" || target.GetObject().GetType() == "Land_Misc_Well_Pump_Blue")) )
 		{
 			if ( vector.Distance(player.GetPosition(), pos_cursor) < UAMaxDistances.DEFAULT && Liquid.CanFillContainer(item, LIQUID_WATER ) )
 			{
-				return true;
+				return LIQUID_WATER;
 			}
 		}
-		return false;
-	}	
-	
-	
-	override void OnCompleteLoopServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{
-		//item.TransferModifiers(player);
-		Param1<float> nacdata;
-		Class.CastTo(nacdata,  acdata );
-		float delta = nacdata.param1;
-		Liquid.FillContainerEnviro( item, LIQUID_WATER, delta );
-
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		else if(target.GetObject() && target.GetObject().GetType() == "Land_FuelStation_Feed")
+		{
+			if ( vector.Distance(player.GetPosition(), pos_cursor) < UAMaxDistances.DEFAULT && Liquid.CanFillContainer(item, LIQUID_GASOLINE ) )
+			{
+				return LIQUID_GASOLINE;
+			}
+		}
+		return -1;
 	}
 	
-	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	void SetupStance( PlayerBase player )
 	{
-		OnCompleteLoopServer( player, target, item, acdata );
+		//returns in format (totalWaterDepth, characterDepht, 0)
+		vector water_info = HumanCommandSwim.WaterLevelCheck( player, player.GetPosition() );
+		if ( water_info[1] > WATER_DEPTH )
+		{
+			m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;
+		}
+		else
+		{
+			m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
+		}
 	}
 };

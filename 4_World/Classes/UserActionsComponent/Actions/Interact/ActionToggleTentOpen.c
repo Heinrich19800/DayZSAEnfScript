@@ -30,7 +30,7 @@ class ActionToggleTentOpen: ActionInteractBase
 			
 			float distance = Math.AbsInt(vector.Distance(targetObject.GetPosition(),player.GetPosition()));
 			
-			if (  distance <= max_action_distance /*&& player.IsFacingTarget(targetObject) */ )	
+			if (  distance <= max_action_distance /*&& action_data.m_Player.IsFacingTarget(targetObject) */ )	
 			{
 				if ( targetObject.IsInherited(TentBase) ) 
 				{
@@ -53,12 +53,12 @@ class ActionToggleTentOpen: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		if ( targetObject != NULL && targetObject.IsInherited(TentBase) ) 
 		{
-			string selection = targetObject.GetActionComponentName(target.GetComponentIndex());
+			string selection = targetObject.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 			
 			TentBase tent = TentBase.Cast( targetObject );
 			tent.ToggleSelection( selection );
@@ -66,7 +66,7 @@ class ActionToggleTentOpen: ActionInteractBase
 			//regenerate pathgraph
 			tent.SetAffectPathgraph( true, false );
 			
-			if (item.CanAffectPathgraph())
+			if (action_data.m_MainItem.CanAffectPathgraph())
 			{
 				//Start update
 				GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GetGame().UpdatePathgraphRegionByObject, 100, false, tent);

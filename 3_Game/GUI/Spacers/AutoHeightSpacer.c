@@ -10,16 +10,16 @@ class AutoHeightSpacer : ScriptedWidgetEventHandler
 
 	void Update()
 	{
-		local float x = 0;
-		local float y = 0;
-		local float width = 0;
-		local float height = 0;
-		local float heightOld = 0;
-		local float top = Top;
-		local float rowRight;
-		local float rowHeight;
-		local float rowWidth;
-		local Widget child = m_root.GetChildren();
+		float x = 0;
+		float y = 0;
+		float width = 0;
+		float height = 0;
+		float heightOld = 0;
+		float top = Top;
+		float rowRight;
+		float rowHeight;
+		float rowWidth;
+		Widget child = m_root.GetChildren();
 
 		//PrintString(m_root.GetName() + ": AutoHeightSpacer::Update()");
 
@@ -100,7 +100,7 @@ class AutoHeightSpacer : ScriptedWidgetEventHandler
 
 		if (Math.AbsInt(heightOld - height) > 1)
 		{
-			m_root.SetSize(width, height, true);
+			m_root.SetSize(width, height);
 		}
 		else if (AlignChilds)
 		{
@@ -118,28 +118,12 @@ class AutoHeightSpacer : ScriptedWidgetEventHandler
 		Update();
 	}
 
-	override bool OnChildAdd( Widget  w, Widget  child) {
-		if (w == m_root)
-		{
-			Update();
-		}
-		return false;
-	}
 	override bool OnChildRemove( Widget  w, Widget  child) {
 		if (w == m_root)
 		{
 			Update();
 		}
 
-		return false;
-	}
-	override bool OnResize( Widget  w, int x, int y) {
-		if (/*w == m_root ||*/ w.GetParent() == m_root)
-		{
-			//Print(w.GetName());
-			if(GetGame().IsOldInventory())
-			Update();
-		}
 		return false;
 	}
 };

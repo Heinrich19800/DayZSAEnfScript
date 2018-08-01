@@ -45,7 +45,7 @@ class BloodRegen: ModifierBase
 	{
 		float regen_modifier_water = GetRegenModifierWater( player.GetStatWater().Get() );
 		float regen_modifier_energy = GetRegenModifierWater( player.GetStatEnergy().Get() );
-		float blood_regen_speed = ModifierConstants.BLOOD_REGEN_SPEED * regen_modifier_water * regen_modifier_energy;
+		float blood_regen_speed = PlayerConstants.BLOOD_REGEN_SPEED * regen_modifier_water * regen_modifier_energy;
 		/*
 		PrintString("regen_modifier_water" + regen_modifier_water);
 		PrintString("regen_modifier_energy" + regen_modifier_energy);
@@ -56,17 +56,17 @@ class BloodRegen: ModifierBase
 	
 	float GetRegenModifierWater(float water)
 	{
-		float modifier = ModifierConstants.BLOOD_REGEN_MODIFIER_WATER_HIGH;
-		if( water < ModifierConstants.BLOOD_REGEN_THRESHOLD_WATER_MID ) {modifier = ModifierConstants.BLOOD_REGEN_MODIFIER_WATER_MID}
-		if( water < ModifierConstants.BLOOD_REGEN_THRESHOLD_WATER_LOW ) {modifier = ModifierConstants.BLOOD_REGEN_MODIFIER_WATER_LOW}
+		float modifier = PlayerConstants.BLOOD_REGEN_MODIFIER_WATER_HIGH;
+		if( water < PlayerConstants.BLOOD_REGEN_THRESHOLD_WATER_MID ) {modifier = PlayerConstants.BLOOD_REGEN_MODIFIER_WATER_MID}
+		if( water < PlayerConstants.BLOOD_REGEN_THRESHOLD_WATER_LOW ) {modifier = PlayerConstants.BLOOD_REGEN_MODIFIER_WATER_LOW}
 		return modifier;
 	}
 	
 	float GetRegenModifierEnergy(float energy)
 	{
-		float modifier = ModifierConstants.BLOOD_REGEN_MODIFIER_ENERGY_HIGH;
-		if( energy < ModifierConstants.BLOOD_REGEN_THRESHOLD_ENERGY_MID ) {modifier = ModifierConstants.BLOOD_REGEN_MODIFIER_ENERGY_MID}
-		if( energy < ModifierConstants.BLOOD_REGEN_THRESHOLD_ENERGY_LOW ) {modifier = ModifierConstants.BLOOD_REGEN_MODIFIER_WATER_LOW}
+		float modifier = PlayerConstants.BLOOD_REGEN_MODIFIER_ENERGY_HIGH;
+		if( energy < PlayerConstants.BLOOD_REGEN_THRESHOLD_ENERGY_MID ) {modifier = PlayerConstants.BLOOD_REGEN_MODIFIER_ENERGY_MID}
+		if( energy < PlayerConstants.BLOOD_REGEN_THRESHOLD_ENERGY_LOW ) {modifier = PlayerConstants.BLOOD_REGEN_MODIFIER_WATER_LOW}
 		return modifier;
 	}
 	

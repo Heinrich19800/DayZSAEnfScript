@@ -58,7 +58,7 @@ class GameInventory
 
 
 	///@{ cargo
-	proto native Cargo GetCargo ();
+	proto native CargoBase GetCargo ();
 	/**
 	 * @brief Create Entity of specified type in cargo of entity
 	 **/
@@ -224,6 +224,14 @@ class GameInventory
 	 **/
 	static proto native EntityAI LocationCreateEntity (notnull InventoryLocation inv_loc, string type);
 	/**
+	 * @fn		LocationCreateLocalEntity
+	 * @brief	creates new <b>local</b> item directly at location
+	 * 			@NOTE: the item is created localy, i.e. it's not registered to network
+	 * @param[in]	type	\p		item type to be placed in inventory
+	 * @return	created entity, null otherwise
+	 **/	
+	static proto native EntityAI LocationCreateLocalEntity (notnull InventoryLocation inv_loc, string type);
+	/**
 	 * @fn		LocationCanAddEntity
 	 * @brief	queries if the entity contained in inv_loc.m_item can be added to ground/attachment/cargo/hands/...
 	 * @return true if can be added, false otherwise
@@ -271,7 +279,7 @@ class GameInventory
 
 				if (!src.GetItem() || !dst.GetItem())
 				{
-					syncDebugPrint("[syncinv] ServerInventoryCommand (cmd=SYNC_MOVE) dropped, item not in bubble");
+					Error("[syncinv] ServerInventoryCommand (cmd=SYNC_MOVE) dropped, item not in bubble");
 					break; // not in bubble
 				}
 
@@ -286,14 +294,14 @@ class GameInventory
 				
 				if (!e.m_Entity)
 				{
-					syncDebugPrint("[syncinv] ServerInventoryCommand (cmd=HAND_EVENT) dropped, item not in bubble");
+					Error("[syncinv] ServerInventoryCommand (cmd=HAND_EVENT) dropped, item not in bubble");
 					break; // not in bubble
 				}
 
 				if (e.m_Entity.GetInventory().GetCurrentInventoryLocation(src))
 				{
 					dst = e.GetDst();
-					e.m_Player.PostHandEvent(e);
+					e.m_Player.GetHumanInventory().PostHandEvent(e);
 				}
 				else
 					Error("ServerInventoryCommand HandEvent - no inv loc");
@@ -308,7 +316,7 @@ class GameInventory
 				
 				if (!item1 || !item2)
 				{
-					syncDebugPrint("[syncinv] ServerInventoryCommand (cmd=SWAP) dropped, item not in bubble");
+					Error("[syncinv] ServerInventoryCommand (cmd=SWAP) dropped, item not in bubble");
 					break; // not in bubble
 				}
 
@@ -387,7 +395,7 @@ class GameInventory
 	 *			no anims involved
 	 * @return true if success, false otherwise
 	 **/
-	static proto native bool ServerLocationSyncMoveEntity (notnull EntityAI item, ParamsWriteContext ctx);
+	static proto native bool ServerLocationSyncMoveEntity (Man player, notnull EntityAI item, ParamsWriteContext ctx);
 
 	/**
 	 * @fn		ServerLocationSwap
@@ -654,7 +662,7 @@ class GameInventory
 	**/
 	bool TakeEntityToInventory (InventoryMode mode, FindInventoryLocationType flags, notnull EntityAI item)
 	{
-		Print("[inv] Take2Inv(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		Print("[inv] I::Take2Inv(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 
 		InventoryLocation src = new InventoryLocation;
 		if (item.GetInventory().GetCurrentInventoryLocation(src))
@@ -663,33 +671,42 @@ class GameInventory
 			if (FindFreeLocationFor(item, flags, dst))
 				return TakeToDst(mode, src, dst);
 
-			Print("[inv] no room for item=" + item);
+			Print("[inv] I::Take2Inv(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " Warning - no room for item");
 			return false;
 		}
-		Error("No inventory location");
+		Error("[inv] I::Take2Inv(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " Error - src has no inventory location");
 		return false;
 	}
 
+	/// helper that finds location first, then moves the entity into it
+	bool TakeEntityToTargetInventory (InventoryMode mode, notnull EntityAI target, FindInventoryLocationType flags, notnull EntityAI item)
+	{
+		Print("[inv] I::Take2Target(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+
+		InventoryLocation src = new InventoryLocation;
+		if (item.GetInventory().GetCurrentInventoryLocation(src))
+		{
+			InventoryLocation dst = new InventoryLocation;
+				
+			if (target.GetInventory().FindFreeLocationFor(item, flags, dst))
+				return TakeToDst(mode, src, dst);
+
+			Print("[inv] I::Take2Target(" + typename.EnumToString(InventoryMode, mode) + ") target=" + target + " item=" + item + " Warning - no room for item in target");
+			return false;
+		}
+		Error("[inv] I::Take2Target(" + typename.EnumToString(InventoryMode, mode) + ") target=" + target + " item=" + item + " Error - src has no inventory location");
+		return false;
+	}
+
+	/**@fn			TakeToDst
+	 * @brief		move src to dst
+	 * @param[in]	mode				inventory mode
+	 * @param[in]	src					source location of the item
+	 * @param[in]	dst					destination location of the item
+	 **/
 	bool TakeToDst (InventoryMode mode, notnull InventoryLocation src, notnull InventoryLocation dst)
 	{
-		Print("[inv] Take2Dst(" + typename.EnumToString(InventoryMode, mode) + ") src=" + src.DumpToString() + " dst=" + dst.DumpToString());
-		if (src.GetType() == InventoryLocationType.HANDS /*&& GetInventoryOwner().IsAlive()*/)
-		{
-			Print("[inv] Source location == HANDS, player has to handle this - redirecting");
-			Man man = Man.Cast(src.GetParent());
-			if (man.IsAlive())
-			{
-				man.GetHumanInventory().HandEvent(mode, new HandEventMoveTo(man, src.GetItem(), dst));
-				return true;
-			}
-		}
-
-		if (dst.GetType() == InventoryLocationType.HANDS)
-		{
-			Man man_dst = Man.Cast(dst.GetParent());
-			if (!man_dst.IsAlive())
-				return false;
-		}
+		Print("[inv] I::Take2Dst(" + typename.EnumToString(InventoryMode, mode) + ") src=" + src.DumpToString() + " dst=" + dst.DumpToString());
 
 		switch (mode)
 		{
@@ -705,26 +722,43 @@ class GameInventory
 				return LocationSyncMoveEntity(src, dst);
 
 			case InventoryMode.SERVER:
-				bool ret = LocationSyncMoveEntity(src, dst);
-				InventoryInputUserData.SendServerMove(InventoryCommandType.SYNC_MOVE, src, dst);
-				return ret;
-
+				Error("Server side inventory command without player is not implemented.. none shall pass!");
+				return false;
+				//bool ret = LocationSyncMoveEntity(src, dst);
+				//InventoryInputUserData.SendServerMove(nullptr, InventoryCommandType.SYNC_MOVE, src, dst);
+				//return ret;
 			default:
 				Error("HandEvent - Invalid mode");
 		}
 		return false;
 	}
 
-	/// Put item into into cargo
+	/**@fn			TakeEntityToCargo
+	 * @brief		moves item to cargo of this intentory
+	 * @param[in]	mode				inventory mode
+	 * @param[in]	item				item to be put in this inventory as cargo
+	 **/
 	bool TakeEntityToCargo (InventoryMode mode, notnull EntityAI item)
 	{
-		Print("[inv] Take2Cgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		Print("[inv] I::Take2Cgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		return TakeEntityToInventory(mode, FindInventoryLocationType.CARGO, item);
 	}
-	/// Put item into into cargo on specific cargo location
+
+	/// Put item into into cargo of another entity
+	bool TakeEntityToTargetCargo (InventoryMode mode, notnull EntityAI target, notnull EntityAI item)
+	{
+		Print("[inv] I::Take2TargetCgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + "to cargo of target=" + target);
+		return TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.CARGO, item);
+	}
+
+	/**@fn			TakeEntityToCargoEx
+	 * @brief		moves item on specific cargo location
+	 * @param[in]	mode				inventory mode
+	 * @param[in]	item				item to be put in this inventory as cargo
+	 **/
 	bool TakeEntityToCargoEx (InventoryMode mode, notnull EntityAI item, int idx, int row, int col)
 	{
-		Print("[inv] Take2Cgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " row=" + row + " col=" + col);
+		Print("[inv] I::Take2Cgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " row=" + row + " col=" + col);
 		InventoryLocation src = new InventoryLocation;
 		if (item.GetInventory().GetCurrentInventoryLocation(src))
 		{
@@ -733,13 +767,14 @@ class GameInventory
 
 			return TakeToDst(mode, src, dst);
 		}
-		Error("No inventory location");
+		Error("[inv] I::Take2Cgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " row=" + row + " col=" + col + " Error - src has no inventory location");
 		return false;
 	}
+
 	/// Put item into into cargo on specific cargo location of another entity
 	bool TakeEntityToTargetCargoEx (InventoryMode mode, notnull EntityAI target, notnull EntityAI item, int idx, int row, int col)
 	{
-		Print("[inv] Take2TargetCgoEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + "to cargo of target=" + target + " row=" + row + " col=" + col);
+		Print("[inv] I::Take2TargetCgoEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + "to cargo of target=" + target + " row=" + row + " col=" + col);
 		InventoryLocation src = new InventoryLocation;
 		if (item.GetInventory().GetCurrentInventoryLocation(src))
 		{
@@ -748,19 +783,13 @@ class GameInventory
 
 			return TakeToDst(mode, src, dst);
 		}
-		Error("No inventory location");
+		Error("[inv] I::Take2TargetCgoEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + "to cargo of target=" + target + " row=" + row + " col=" + col);
 		return false;
-	}
-	/// Put item into into cargo of another entity
-	bool TakeEntityToTargetCargo (InventoryMode mode, notnull EntityAI target, notnull EntityAI item)
-	{
-		Print("[inv] Take2TargetCgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + "to cargo of target=" + target);
-		return target.GetInventory().TakeEntityToInventory(mode, FindInventoryLocationType.CARGO, item);
 	}
 
 	bool TakeEntityAsAttachmentEx (InventoryMode mode, notnull EntityAI item, int slot)
 	{
-		Print("[inv] Take2Att(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " slot=" + slot);
+		Print("[inv] I::Take2AttEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " slot=" + slot);
 		InventoryLocation src = new InventoryLocation;
 		if (item.GetInventory().GetCurrentInventoryLocation(src))
 		{
@@ -769,16 +798,30 @@ class GameInventory
 
 			return TakeToDst(mode, src, dst);
 		}
-		Error("No inventory location");
+		Error("[inv] I::Take2AttEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " Error - src has no inventory location");
 		return false;
+	}
+
+	/// put item as attachment of target
+	bool TakeEntityAsTargetAttachmentEx (InventoryMode mode, notnull EntityAI target, notnull EntityAI item, int slot)
+	{
+		Print("[inv] I::Take2TargetAttEx(" + typename.EnumToString(InventoryMode, mode) + ") as ATT of target=" + target + " item=" + item + " slot=" + slot);
+		return TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.ATTACHMENT, item);
 	}
 
 	bool TakeEntityAsAttachment (InventoryMode mode, notnull EntityAI item)
 	{
-		Print("[inv] Take2Att(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		Print("[inv] I::Take2Att(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		return TakeEntityToInventory(mode, FindInventoryLocationType.ATTACHMENT, item);
 	}
 
+	bool TakeEntityAsTargetAttachment (InventoryMode mode, notnull EntityAI target, notnull EntityAI item)
+	{
+		Print("[inv] I::Take2AttEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		return TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.ATTACHMENT, item);
+	}
+
+	/// helper function for swap
 	static bool MakeDstForSwap (notnull ref InventoryLocation src1, notnull ref InventoryLocation src2, out ref InventoryLocation dst1, out ref InventoryLocation dst2)
 	{
 		if (dst1 == null)
@@ -793,8 +836,8 @@ class GameInventory
 		return true;
 	}
 
-	static bool MakeSrcAndDstForSwap (notnull EntityAI item1, notnull EntityAI item2,
-			out ref InventoryLocation src1, out ref InventoryLocation src2, out ref InventoryLocation dst1, out ref InventoryLocation dst2)
+	/// helper function for swap
+	static bool MakeSrcAndDstForSwap (notnull EntityAI item1, notnull EntityAI item2, out ref InventoryLocation src1, out ref InventoryLocation src2, out ref InventoryLocation dst1, out ref InventoryLocation dst2)
 	{
 		if (src1 == null)
 			src1 = new InventoryLocation;
@@ -810,7 +853,7 @@ class GameInventory
 		InventoryLocation src1, src2, dst1, dst2;
 		if (GameInventory.MakeSrcAndDstForSwap(item1, item2, src1, src2, dst1, dst2))
 		{
-			Print("[inv] Swap(" + typename.EnumToString(InventoryMode, mode) + ") src1=" + src1.DumpToString() + "dst1=" + dst1.DumpToString() +  "src2=" + src2.DumpToString() + "dst2=" + dst2.DumpToString());
+			Print("[inv] I::Swap(" + typename.EnumToString(InventoryMode, mode) + ") src1=" + src1.DumpToString() + "dst1=" + dst1.DumpToString() +  "src2=" + src2.DumpToString() + "dst2=" + dst2.DumpToString());
 
 			switch (mode)
 			{
@@ -846,7 +889,7 @@ class GameInventory
 
 	bool DropEntity (InventoryMode mode, EntityAI owner, notnull EntityAI item)
 	{
-		Print("[inv] Drop(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		Print("[inv] I::Drop(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		InventoryLocation src = new InventoryLocation;
 		if (item.GetInventory().GetCurrentInventoryLocation(src))
 		{
@@ -862,7 +905,7 @@ class GameInventory
 
 	bool LocalDestroyEntity (notnull EntityAI item)
 	{
-		Print("[inv] Destroy inv item=" + item);
+		Print("[inv] I::LocalDestroyEntity inv item=" + item);
 		InventoryLocation src = new InventoryLocation;
 		if (item.GetInventory().GetCurrentInventoryLocation(src))
 		{
@@ -877,20 +920,20 @@ class GameInventory
 		return false;
 	}
 
-	bool LocalReplaceItemWithNew (ReplaceItemWithNewLambdaBase lambda)
+	bool ReplaceItemWithNew (InventoryMode mode, ReplaceItemWithNewLambdaBase lambda)
 	{
-		Print("[inv] ReplaceItemWithNew inv old_item=" + lambda.m_OldItem);
 		InventoryLocation src = new InventoryLocation;
 		if (lambda.m_OldItem.GetInventory().GetCurrentInventoryLocation(src))
 		{
+			Print("[inv] I::ReplaceItemWithNew executing lambda=" + lambda + "on old_item=" + lambda.m_OldItem);
 			if (src.GetType() == InventoryLocationType.HANDS)
-				Error("[inv] Source location == HANDS, player has to handle this");
+				Error("[inv] I::ReplaceItemWithNew Source location == HANDS, player has to handle this");
 
 			lambda.Execute();
 			return true;
 		}
 
-		Error("LocalReplaceItemWithNew: No inventory location");
+		Error("[inv] I::ReplaceItemWithNew - no inventory location");
 		return false;
 	}
 
@@ -920,28 +963,38 @@ class ReplaceItemWithNewLambdaBase
 		m_OldLocation = new InventoryLocation;
 		if (old_item.GetInventory().GetCurrentInventoryLocation(m_OldLocation)) // A.1) store old location
 		{
-			m_NewLocation = new InventoryLocation;
-			m_NewLocation.CopyLocationFrom(m_OldLocation);	// A.2) preare new location from old
+			if (m_NewLocation == null)
+			{
+				m_NewLocation = new InventoryLocation;
+				m_NewLocation.CopyLocationFrom(m_OldLocation);	// A.2) prepare new location from old
+			}
 
 			old_item.GetInventory().LocationRemoveEntity(m_OldLocation); // A.3) remove entity from old inventory location (making it free for new item)
 
-			GetGame().RemoteObjectDelete(m_OldItem); // A.4) this forces server to send DeleteObject Message to client. This is needed for preserving the appearance of network operations on client (so that DeleteObject(old) arrives before CreateVehicle(new)). @NOTE: this does not delete the object on server, only it's network representation.
+			GetGame().RemoteObjectTreeDelete(m_OldItem); // A.4) this forces server to send DeleteObject Message to client. This is needed for preserving the appearance of network operations on client (so that DeleteObject(old) arrives before CreateVehicle(new)). @NOTE: this does not delete the object on server, only it's network representation.
 			// @NOTE: the item is not deleted right now on server, but rather after copying the properties in Step C)
 		}
 	}
 
 	/**@fn		CreateNewEntity
-	 * @brief	Step B. - create new entity with specified type
+	 * @brief	Step B. - create new entity (LOCAL) with specified type
+	 *
+	 * @NOTE: if (!m_NewLocation || m_NewItemType.Empty) ==> this function does not create a new entity
 	 **/
 	protected EntityAI CreateNewEntity ()
 	{
-		if (m_NewLocation)
+		if (m_NewLocation && m_NewItemType != string.Empty)
 		{
-			EntityAI new_item = GameInventory.LocationCreateEntity(m_NewLocation, m_NewItemType); // 2) create new one in the place of old one
+			EntityAI new_item = GameInventory.LocationCreateLocalEntity(m_NewLocation, m_NewItemType); // create LOCAL new one in the place of old one
 			hndDebugPrint("[inv] ReplaceItemWithNewLambdaBase Step B) Created new new_item=" + new_item);
-			return new_item;
+			if (new_item)
+				return new_item;
+			else
+			{
+				Error("[inv] ReplaceItemWithNewLambdaBase Step B) wanted to create=" + m_NewItemType + ", but failed");
+				return null;
+			}
 		}
-		Error("[inv] ReplaceItemWithNewLambdaBase - m_NewLocation is null");
 		return null;
 	}
 
@@ -950,7 +1003,7 @@ class ReplaceItemWithNewLambdaBase
 	 *
 	 * @NOTE: This is supposed to be overriden in derived classes
 	 **/
-	void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
+	void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
 	{
 		hndDebugPrint("[inv] ReplaceItemWithNewLambdaBase Step C) Copying props " + old_item + " --> " + new_item);
 	}
@@ -963,6 +1016,18 @@ class ReplaceItemWithNewLambdaBase
 		hndDebugPrint("[inv] ReplaceItemWithNewLambdaBase Step D) delete old item=" + m_OldItem);
 		GetGame().ObjectDelete(m_OldItem);
 	}
+	
+	/**@fn		OnNewEntityCreated
+	 * @brief	Step E. - notification on UA_FINISHED
+	 *
+	 * @NOTE: new_item can be null if the lambda did not create any item (intentionaly)
+	 **/
+	protected void OnNewEntityCreated (EntityAI new_item)
+	{
+		hndDebugPrint("[inv] ReplaceItemWithNewLambdaBase Step E) OnNewEntityCreated=" + new_item);
+		if (new_item)
+			GetGame().RemoteObjectTreeCreate(new_item); // E.1) this forces server to send CreateVehicle Message to client. This is needed for preserving the appearance of network operations on client (so that DeleteObject(old) arrives before CreateVehicle(new)). @NOTE: this does not delete the object on server, only it's network representation.
+	}
 
 	void Execute ()
 	{
@@ -974,6 +1039,8 @@ class ReplaceItemWithNewLambdaBase
 		CopyOldPropertiesToNew(m_OldItem, new_item);
 		// D) del old
 		DeleteOldEntity();
+		// E) notification
+		OnNewEntityCreated(new_item);
 	}
 
 	string DumpToString ()
@@ -981,6 +1048,12 @@ class ReplaceItemWithNewLambdaBase
 		string s = "{ old=" + m_OldItem + " newType=" + m_NewItemType + "}";
 		return s;
 	}
+	
+	void OverrideNewLocation (InventoryLocation newLocation)
+	{
+		m_NewLocation = newLocation;
+	}
+
 };
 
 

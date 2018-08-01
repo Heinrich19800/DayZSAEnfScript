@@ -35,9 +35,9 @@ class CfgParam: Managed
 		return false;
 	}
 	
-	static CfgParam CreateParam(local string name, local int cfg_type)
+	static CfgParam CreateParam(string name, int cfg_type)
 	{
-		local CfgParam param;
+		CfgParam param;
 
 		switch (cfg_type)
 		{

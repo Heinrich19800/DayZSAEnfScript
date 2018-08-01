@@ -2,7 +2,7 @@ class ActionForceConsumeCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousQuantityEdible(UAQuantityConsumed.DEFAULT,UATimeSpent.DEFAULT);
+		m_ActionData.m_ActionComponent = new CAContinuousQuantityEdible(UAQuantityConsumed.DEFAULT,UATimeSpent.DEFAULT);
 	}
 };
 
@@ -32,19 +32,19 @@ class ActionForceConsume: ActionContinuousBase
 		return "Force feed";
 	}
 
-	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCancelServer( ActionData action_data )
 	{	
-		if ( item && item.GetQuantity() <= 0.01 ) 
+		if ( action_data.m_MainItem && action_data.m_MainItem.GetQuantity() <= 0.01 ) 
 		{
-			item.SetQuantity(0);
+			action_data.m_MainItem.SetQuantity(0);
 		}
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		if ( item && item.GetQuantity() <= 0.01 ) 
+		if ( action_data.m_MainItem && action_data.m_MainItem.GetQuantity() <= 0.01 ) 
 		{
-			item.SetQuantity(0);
+			action_data.m_MainItem.SetQuantity(0);
 		}
 	}
 	

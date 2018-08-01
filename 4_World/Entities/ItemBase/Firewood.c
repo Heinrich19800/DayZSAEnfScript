@@ -2,8 +2,7 @@ class Firewood extends ItemBase
 {
 	override bool CanPutInCargo( EntityAI parent )
 	{
-		if( !super.CanPutInCargo(parent) ) {return false;}
-		if ( !( this.GetQuantity() > 5 ) )
+		if ( super.CanPutInCargo(parent) || !( this.GetQuantity() > 5 ) )
 		{
 			return true;
 		}

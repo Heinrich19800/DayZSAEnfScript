@@ -11,7 +11,17 @@ class Fireplace extends FireplaceBase
 		PARTICLE_FIRE_END 		= ParticleList.CAMP_FIRE_END;
 		PARTICLE_STEAM_END		= ParticleList.CAMP_STEAM_2END;
 	}
+	
+	override bool IsTwoHandedBehaviour()
+	{
+		return true;
+	}
 
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
 	override bool IsBaseFireplace()
 	{
 		return true;
@@ -199,8 +209,9 @@ class Fireplace extends FireplaceBase
 			//rotate handle
 			item_base.SetAnimationPhase( ANIMATION_COOKWARE_HANDLE, 1 );
 			
-			//stop steam particle
-			ParticleCookingEquipmentSteamStop();
+			//remove audio visuals
+			Bottle_Base cooking_pot = Bottle_Base.Cast( item );
+			cooking_pot.RemoveAudioVisuals();
 		}
 		
 		//refresh fireplace visuals

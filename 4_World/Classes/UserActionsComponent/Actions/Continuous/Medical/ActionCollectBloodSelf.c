@@ -2,7 +2,7 @@ class ActionCollectBloodSelfCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.COLLECT_BLOOD);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.COLLECT_BLOOD);
 	}
 };
 
@@ -44,19 +44,19 @@ class ActionCollectBloodSelf: ActionContinuousBase
 		return "Collect blood";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		Param1<float> nacdata;
-		Class.CastTo(nacdata,  acdata );
+		Class.CastTo(nacdata,  action_data.m_ActionComponent.GetACData() );
 		float delta = (nacdata.param1 / UATimeSpent.COLLECT_BLOOD);
 		
-		ActionCollectBloodTargetLambda lambda = new ActionCollectBloodTargetLambda(item, "BloodBagFull", player, m_SpecialtyWeight, player, delta);
-		player.LocalReplaceItemInHandsWithNew(lambda);
+		ActionCollectBloodTargetLambda lambda = new ActionCollectBloodTargetLambda(action_data.m_MainItem, "BloodBagFull", action_data.m_Player, m_SpecialtyWeight, action_data.m_Player, delta);
+		action_data.m_Player.ServerReplaceItemInHandsWithNew(lambda);
 	}
 	
-	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCancelServer( ActionData action_data )
 	{
-		OnCompleteServer( player, target, item, acdata );
+		OnCompleteServer(action_data);
 	}
 };
 

@@ -2,14 +2,15 @@ class ActionSingleUseBaseCB : ActionBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CASingleUse;
+		m_ActionData.m_ActionComponent = new CASingleUse;
 	}
 
 	override void OnAnimationEvent(int pEventID)	
 	{
 		if ( !m_Interrupted && pEventID == UA_ANIM_EVENT ) 
 		{
-			m_ActionData.Do(this,UA_ANIM_EVENT,m_ActionComponent,m_Player,m_Target,m_Item);
+			AnimatedActionBase action = AnimatedActionBase.Cast(m_ActionData.m_Action);
+			action.Do(m_ActionData, UA_ANIM_EVENT);
 		}	
 	}
 	
@@ -19,27 +20,27 @@ class ActionSingleUseBaseCB : ActionBaseCB
 		m_Canceled = false;
 
 		CreateActionComponent();
-		if ( m_ActionComponent )
+		if ( m_ActionData.m_ActionComponent )
 		{ 
-			m_ActionComponent.Init(m_ActionData, m_Player, m_Target, m_Item);
+			m_ActionData.m_ActionComponent.Init(m_ActionData);
 		}
-		m_State = UA_PROCESSING;
+		m_ActionData.m_State = UA_PROCESSING;
 		RegisterAnimationEvent("ActionExec", UA_ANIM_EVENT);
-		m_SoundObject = m_ActionData.PlayActionSound(m_Player);			
-	}	
+		m_SoundObject = m_ActionData.m_Action.PlayActionSound(m_ActionData.m_Player);
+		}	
 	
 	override void EndActionComponent()
 	{
-		m_State = UA_FINISHED;
+		m_ActionData.m_State = UA_FINISHED;
 	}	
 };
 
-class ActionSingleUseBase : ActionBase
+class ActionSingleUseBase : AnimatedActionBase
 {
 	void ActionSingleUseBase()
 	{
 		m_CallbackClass = ActionSingleUseBaseCB;
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS;
 	}
 	
 	override int GetActionCategory()

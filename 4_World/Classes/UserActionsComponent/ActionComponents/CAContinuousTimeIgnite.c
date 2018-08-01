@@ -17,7 +17,7 @@ class CAContinuousTimeIgnite : CAContinuousBase
 		m_TimeToRepeatCheck = time_to_repeat_check;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		m_TimeElpased = 0;
 		if ( !m_SpentUnits )
@@ -31,20 +31,20 @@ class CAContinuousTimeIgnite : CAContinuousBase
 		
 		m_IgniteFireplaceAction = ActionIgniteFireplace.Cast( m_Action );
 		
-		m_AdjustedTimeToComplete = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
+		m_AdjustedTimeToComplete = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		
 		if ( m_TimeElpased < m_AdjustedTimeToComplete )
 		{
-			m_TimeElpased += player.GetDeltaT();
-			m_TimeElapsedRepeat += player.GetDeltaT();
+			m_TimeElpased += action_data.m_Player.GetDeltaT();
+			m_TimeElapsedRepeat += action_data.m_Player.GetDeltaT();
 			
 			if ( m_TimeElapsedRepeat >= m_TimeToRepeatCheck )
 			{
@@ -53,7 +53,7 @@ class CAContinuousTimeIgnite : CAContinuousBase
 				//get reason to cancel action
 				if ( GetGame() && GetGame().IsServer() )
 				{
-					string reason = GetReasonToCancel( target, item );
+					string reason = GetReasonToCancel( action_data.m_Target, action_data.m_MainItem );
 					if ( reason != "" )
 					{
 						m_IgniteFireplaceAction.SetReasonToCancel( reason );
@@ -96,7 +96,7 @@ class CAContinuousTimeIgnite : CAContinuousBase
 
 		//COMMON REASONS
 		//check kindling
-		if ( !fireplace_target.HasAnyKindling() )
+		if ( !m_IgniteFireplaceAction.m_SkipKindlingCheck && !fireplace_target.HasAnyKindling() )
 		{
 			if ( item )
 			{
@@ -111,12 +111,12 @@ class CAContinuousTimeIgnite : CAContinuousBase
 		//check roof
 		if ( fireplace_target.IsBaseFireplace() || fireplace_target.IsBarrelWithHoles() )	//base fireplace and barrel with Holes only
 		{
-			if ( fireplace_target.IsRoofAbove() )
+			if ( !fireplace_target.IsEnoughRoomForFireAbove() )
 			{
-				return fireplace_target.MESSAGE_IGNITE_UNDER_ROOF;
+				return fireplace_target.MESSAGE_IGNITE_UNDER_LOW_ROOF;
 			}
 		}
-
+		
 		//check surface
 		if ( fireplace_target.IsWaterSurface() )
 		{

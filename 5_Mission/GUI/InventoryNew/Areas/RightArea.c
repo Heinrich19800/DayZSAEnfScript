@@ -28,6 +28,11 @@ class RightArea: Container
 		m_PlayerContainer.Select();
 	}
 	
+	void SelectItem()
+	{
+		m_PlayerContainer.SelectItem();
+	}
+	
 	override void Combine()
 	{
 		m_PlayerContainer.Combine();

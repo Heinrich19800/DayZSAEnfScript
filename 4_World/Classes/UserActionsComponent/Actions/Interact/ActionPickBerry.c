@@ -2,7 +2,7 @@ class ActionPickBerryCB : ActionInteractLoopBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAInteractLoop(UATimeSpent.DEFAULT_PICK);
+		m_ActionData.m_ActionComponent = new CAInteractLoop(UATimeSpent.DEFAULT_PICK);
 	}
 	/*override void OnAnimationEvent(int pEventID)	
 	{
@@ -58,18 +58,19 @@ class ActionPickBerry: ActionInteractLoopBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	//deprecated
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		/*Object targetObject = action_data.m_Target.GetObject();
 		WoodBase ntarget = WoodBase.Cast( targetObject );
 		string drop_name = ntarget.GetMaterial(NULL);
-		float drop_quantity = ntarget.GetAmountOfMaterialPerDrop(item);
+		float drop_quantity = ntarget.GetAmountOfMaterialPerDrop(action_data.m_MainItem);
 		
-		targetObject.DecreaseHealth( "", "", (1 / Math.Max(1,ntarget.GetAmountOfDrops(item)))*100, true );
+		targetObject.DecreaseHealth( "", "", (1 / Math.Max(1,ntarget.GetAmountOfDrops(action_data.m_MainItem)))*100, true );
 				
-		ItemBase drop = ItemBase.Cast( GetGame().CreateObject(drop_name, player.GetPosition(), false) );
+		ItemBase drop = ItemBase.Cast( GetGame().CreateObject(drop_name, action_data.m_Player.GetPosition(), false) );
 		drop.SetQuantity(drop_quantity, false);
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );*/
 	}
 };

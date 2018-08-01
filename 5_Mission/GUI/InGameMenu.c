@@ -16,6 +16,7 @@ class InGameMenu extends UIScriptedMenu
 				hud.ToggleHud( g_Game.GetProfileOption( EDayZProfilesOptions.HUD ), true );
 			}
 		}
+		UnlockControls();
 	}
 
 	override Widget Init()
@@ -35,7 +36,7 @@ class InGameMenu extends UIScriptedMenu
 		ButtonWidget restart_btn;
 		Class.CastTo(restart_btn, layoutRoot.FindAnyWidgetById(IDC_INT_RETRY));
 		
-		Man player = GetGame().GetPlayer();
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 		bool player_is_alive = false;
 		if (player)
 		{
@@ -55,8 +56,8 @@ class InGameMenu extends UIScriptedMenu
 		{
 			restart_btn.SetText("#main_menu_restart");
 		}
-
-		if (GetGame().IsMultiplayer() && GetGame().CanRespawnPlayer() == false)
+		
+		if ( GetGame().IsMultiplayer() && !( GetGame().CanRespawnPlayer() || ( player && player.IsUnconscious() ) ) )
 		{
 			restart_btn.Enable(false);
 		}
@@ -104,7 +105,7 @@ class InGameMenu extends UIScriptedMenu
 			}
 			else
 			{
-				GetGame().GetUIManager().ShowDialog("#main_menu_respawn", "#main_menu_respawn_question", 0, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
+				GetGame().GetUIManager().ShowDialog("#main_menu_respawn", "#main_menu_respawn_question", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 			}
 			return true;
 		}
@@ -115,7 +116,6 @@ class InGameMenu extends UIScriptedMenu
 	override bool OnModalResult(Widget w, int x, int y, int code, int result)
 	{
 		super.OnModalResult(w, x, y, code, result);
-		
 		if ( code == IDC_INT_EXIT && result == DBB_YES )
 		{
 			if (GetGame().IsMultiplayer())
@@ -127,12 +127,17 @@ class InGameMenu extends UIScriptedMenu
 			{
 				// skip logout screen in singleplayer
 				GetGame().GetMission().AbortMission();
+				GetGame().GetUIManager().ShowDialog("Quit", "Tralala?", 6666, DBT_OK, DBB_OK, DMT_QUESTION, null);
 			}	
 			g_Game.CancelQueueTime();
 			return true;
 		
 		}
-		else if (result == DBB_YES && GetGame().IsMultiplayer())
+		else if ( code == IDC_INT_EXIT && result == DBB_NO )
+		{
+			g_Game.CancelQueueTime();
+		}
+		else if ( code == IDC_INT_RETRY && result == DBB_YES && GetGame().IsMultiplayer() )
 		{
 			GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RespawnPlayer);
 			//turns off dead screen, hides HUD for countdown

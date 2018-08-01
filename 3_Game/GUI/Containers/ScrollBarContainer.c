@@ -61,8 +61,11 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 	
 	void ScrollToTop()
 	{
-		m_position = 0;
-		UpdateScroller();
+		if( m_position != 0 )
+		{
+			m_position = 0;
+			UpdateScroller();
+		}
 	}
 	
 	float GetContentYPos()

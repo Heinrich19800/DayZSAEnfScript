@@ -3,7 +3,7 @@ class ItemWithCargoAndAttachments: ClosableContainer
 	//protected EntityAI m_Entity;
 	protected ref Attachments m_Atts;
 	protected ref ItemsContainer m_ItemsContainer;
-	protected ref CargoGrid m_CargoGrid;
+	protected ref UICargoGrid m_CargoGrid;
 
 	void ItemWithCargoAndAttachments( Container parent )
 	{
@@ -19,9 +19,14 @@ class ItemWithCargoAndAttachments: ClosableContainer
 		}
 	}
 	
+	void TransferItemToVicinity()
+	{
+		m_Atts.TransferItemToVicinity();
+	}
+	
 	EntityAI GetFocusedItem()
 	{
-		return m_CargoGrid.GetFocusedItem().GetObject();
+		return EntityAI.Cast( m_CargoGrid.GetFocusedItem().GetObject() );
 	}	
 	
 	/*void SetLastActive()
@@ -67,7 +72,7 @@ class ItemWithCargoAndAttachments: ClosableContainer
 		{
 			m_ItemsContainer = new ItemsContainer( this );
 			m_ItemsContainer.SetGap( 1 );
-			m_CargoGrid = new CargoGrid( entity, m_ItemsContainer );
+			m_CargoGrid = new UICargoGrid( entity, m_ItemsContainer );
 			this.Insert( m_ItemsContainer );
 		}
 		( Container.Cast( m_Parent ) ).Insert( this );

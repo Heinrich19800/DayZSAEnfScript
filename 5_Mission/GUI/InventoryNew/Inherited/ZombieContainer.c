@@ -439,4 +439,27 @@ class ZombieContainer: CollapsibleContainer
 		m_RootSpacer.Update();
 		( LeftArea.Cast( m_Parent ) ).UpdateSpacer();
 	}
+	
+	override void SelectItem()
+	{
+		if( m_FocusedContainer.IsInherited( ItemWithCargo ) || m_FocusedContainer.IsInherited( ItemWithCargoAndAttachments ) )
+		{
+			ItemWithCargo iwc = ItemWithCargo.Cast( m_FocusedContainer );
+			ItemWithCargoAndAttachments iwca = ItemWithCargoAndAttachments.Cast( m_FocusedContainer );
+			if( iwc )
+			{
+				iwc.SelectItem();
+			}
+			else if ( iwca )
+			{
+				//iwca.SelectItem();
+			}
+		}
+		else
+		{
+			ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_Container.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+			ItemBase item = ItemBase.Cast( item_preview.GetItem() );
+			ItemManager.GetInstance().SetSelectedItem( item, NULL );
+		}
+	}
 }

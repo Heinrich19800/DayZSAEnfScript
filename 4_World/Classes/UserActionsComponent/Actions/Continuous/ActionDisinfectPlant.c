@@ -2,7 +2,7 @@ class ActionDisinfectPlantCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousDisinfectPlant(UAQuantityConsumed.GARDEN_DISINFECT_PLANT);
+		m_ActionData.m_ActionComponent = new CAContinuousDisinfectPlant(UAQuantityConsumed.GARDEN_DISINFECT_PLANT);
 	}
 };
 
@@ -57,15 +57,15 @@ class ActionDisinfectPlant: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		PlantBase plant;
-		if ( Class.CastTo(plant, target.GetObject()) )
+		if ( Class.CastTo(plant, action_data.m_Target.GetObject()) )
 		{
-			Param1<float> nacdata = Param1<float>.Cast( acdata );
-			SendMessageToClient(player,plant.StopInfestation( nacdata.param1 ));
+			Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );
+			SendMessageToClient(action_data.m_Player,plant.StopInfestation( nacdata.param1 ));
 		}
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

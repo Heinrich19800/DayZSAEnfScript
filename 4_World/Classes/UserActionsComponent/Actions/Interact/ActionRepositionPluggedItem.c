@@ -37,9 +37,9 @@ class ActionRepositionPluggedItem: ActionInteractBase
 		return false;
 	}
 
-	override void OnStartServer( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartServer( ActionData action_data )
 	{	
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		ItemBase target_IB = ItemBase.Cast( targetObject );
 		EntityAI replug_device = target_IB.GetCompEM().GetEnergySource();
 		m_SourceForReplug = ItemBase.Cast(replug_device);
@@ -47,17 +47,17 @@ class ActionRepositionPluggedItem: ActionInteractBase
 		if ( target_IB.IsKindOf("CableReel") )
 		{
 			CableReel CR = CableReel.Cast( target_IB );
-			CR.ForceIntoHandsNow(player);
+			CR.ForceIntoHandsNow(action_data.m_Player);
 		}
 		else
 		{
-			player.LocalTakeEntityToHands(target_IB);
+			action_data.m_Player.LocalTakeEntityToHands(target_IB);
 		}
 	}
 
-	override void OnStartClient( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartClient( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		ItemBase target_IB = ItemBase.Cast( targetObject );
 		EntityAI replug_device = target_IB.GetCompEM().GetEnergySource();
 		m_SourceForReplug = ItemBase.Cast(replug_device);
@@ -65,17 +65,17 @@ class ActionRepositionPluggedItem: ActionInteractBase
 		if ( target_IB.IsKindOf("CableReel") )
 		{
 			CableReel CR = CableReel.Cast( target_IB );
-			CR.ForceIntoHandsNow(player);
+			CR.ForceIntoHandsNow(action_data.m_Player);
 		}
 		else
 		{
-			player.LocalTakeEntityToHands(target_IB);
+			action_data.m_Player.LocalTakeEntityToHands(target_IB);
 		}
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		Object targetObject = target.GetObject();	
+		Object targetObject = action_data.m_Target.GetObject();	
 		ItemBase target_IB = ItemBase.Cast( targetObject );
 		
 		if ( m_SourceForReplug.HasEnergyManager() )
@@ -89,7 +89,7 @@ class ActionRepositionPluggedItem: ActionInteractBase
 			
 			target_IB.GetCompEM().PlugThisInto(m_SourceForReplug);
 					
-			if ( !player.IsPlacingServer() )
+			if ( !action_data.m_Player.IsPlacingServer() )
 			{
 				target_IB.GetInventory().TakeEntityAsAttachment( InventoryMode.LOCAL, m_SourceForReplug );
 			}
@@ -98,11 +98,11 @@ class ActionRepositionPluggedItem: ActionInteractBase
 		m_SourceForReplug = NULL;
 	}
 	
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{	
-		if ( !player.IsPlacingLocal() )
+		if ( !action_data.m_Player.IsPlacingLocal() )
 		{
-			player.TogglePlacingLocal();
+			action_data.m_Player.TogglePlacingLocal();
 		}
 		
 		m_SourceForReplug = NULL;

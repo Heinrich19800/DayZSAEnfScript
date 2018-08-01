@@ -1,8 +1,26 @@
+class PlaceObjectActionData : ActionData
+{
+	vector m_Position;
+	vector m_Orientation;
+}
+
 class ActionPlaceObjectCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_PLACE);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_PLACE);
+	}
+	
+	override void EndActionComponent()
+	{
+		super.EndActionComponent();
+		
+		if (m_ActionData.m_State == UA_CANCEL )
+		{
+			m_Canceled = true;
+ 			SetCommand(DayZPlayerConstants.CMD_ACTIONINT_END2);
+			return;
+		}
 	}
 };
 
@@ -11,12 +29,11 @@ class ActionPlaceObject: ActionContinuousBase
 	void ActionPlaceObject()
 	{
 		m_CallbackClass		= ActionPlaceObjectCB;
-		m_CommandUID		= DayZPlayerConstants.CMD_ACTIONFB_BERRIES;
+		m_CommandUID		= 0;
 		m_FullBody			= true;
 		m_StanceMask		= DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
-		m_SpecialtyWeight 	= UASoftSkillsWeight.PRECISE_LOW;
 	}
-	
+		
 	override void CreateConditionComponents()  
 	{	
 		m_ConditionItem = new CCINonRuined;
@@ -33,10 +50,45 @@ class ActionPlaceObject: ActionContinuousBase
 		return false;
 	}
 
+	override bool HasProgress()
+	{
+		return false;
+	}
+	
 	override string GetText()
 	{
 		return "Place object";
 	}
+
+	override ActionData CreateActionData()
+	{
+		PlaceObjectActionData action_data = new PlaceObjectActionData;
+		return action_data;
+	}
+	
+	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extraData = NULL)
+	{	
+		SetupAnimation( item );
+		
+		if( super.SetupAction(player, target, item, action_data, extraData ))
+		{
+			if (!GetGame().IsMultiplayer() || GetGame().IsClient() )
+			{
+				PlaceObjectActionData poActionData;
+				poActionData = Class.Cast(action_data);
+			
+				poActionData.m_Position = player.GetHologramLocal().GetProjectionPosition();
+				poActionData.m_Orientation = player.GetHologramLocal().GetProjectionOrientation();
+			
+				poActionData.m_Player.SetLocalProjectionPosition( poActionData.m_Position );
+				poActionData.m_Player.SetLocalProjectionOrientation( poActionData.m_Orientation );
+			}
+			
+			return true;
+		}
+		return false;
+	}
+	
 	
 	override bool Can( PlayerBase player, ActionTarget target, ItemBase item )
 	{	
@@ -58,118 +110,73 @@ class ActionPlaceObject: ActionContinuousBase
 		//Server
 		return true; 
 	}
-			
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item ) //Setup on start of action
+	
+	override void OnStartClient( ActionData action_data )
+	{		
+		action_data.m_Player.PlacingCompleteLocal();
+	}
+	
+	override void OnStartServer( ActionData action_data )
 	{
-		super.Start(player, target, item);	
-		
 		if( GetGame().IsMultiplayer() )
 		{
-			if( GetGame().IsServer() )
-			{
-				player.PlacingStartServer();
-			}
-			else
-			{
-				player.PlacingCompleteLocal();
-			}
-		}
-		else
-		{	
-			//local singleplayer
-			player.GetHologramLocal().SetUpdatePosition( false );
-		}
-	}
-		
-	override void OnCancelClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
-	{
-		//local singleplayer
-		player.PlacingCancelLocal();
-	}
-		
-	override void OnInterruptClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
-	{
-		//local singleplayer
-		player.PlacingCancelLocal();
-	}
-	
-	override void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
-	{
-		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
-		{	
-			player.PlacingCancelServer();
+			PlaceObjectActionData poActionData;
+			poActionData = Class.Cast(action_data);
+			
+			poActionData.m_Player.SetLocalProjectionPosition( poActionData.m_Position );
+			poActionData.m_Player.SetLocalProjectionOrientation( poActionData.m_Orientation );
+			poActionData.m_Player.PlacingStartServer();
 		}
 		else
 		{
 			//local singleplayer
-			player.PlacingCancelLocal();
+			action_data.m_Player.GetHologramLocal().SetUpdatePosition( false );
 		}
 	}
 		
-	override void OnInterruptServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  )
+	override void OnCancelClient( ActionData action_data  )
+	{
+		//local singleplayer
+		action_data.m_Player.PlacingCancelLocal();
+	}
+		
+	override void OnCancelServer( ActionData action_data  )
+	{
+		if( GetGame().IsMultiplayer() )
+		{	
+			action_data.m_Player.PlacingCancelServer();
+		}
+		else
+		{
+			//local singleplayer
+			action_data.m_Player.PlacingCancelLocal();
+		}
+	}
+	
+	override void OnInterruptClient( ActionData action_data  )
+	{
+		//local singleplayer
+		action_data.m_Player.PlacingCancelLocal();
+	}
+
+	override void OnInterruptServer( ActionData action_data  )
 	{		
-		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
+		if( GetGame().IsMultiplayer() )
 		{	
-			player.PlacingCancelServer();
+			action_data.m_Player.PlacingCancelServer();
 		}
 		else
 		{
 			//local singleplayer
-			player.PlacingCancelLocal();
+			action_data.m_Player.PlacingCancelLocal();
 		}
 	}
 
-	override void OnCompleteLoopServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteLoopClient( ActionData action_data )
 	{	
-		EntityAI entity_for_placing = EntityAI.Cast( item );
-		
-		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
-		{	
-			player.GetHologramServer().PlaceEntity( entity_for_placing, player.GetLocalProjectionPosition(), player.GetLocalProjectionOrientation() );
-			player.GetHologramServer().CheckPowerSource();
-			player.PlacingCompleteServer();
-		}
-		
-		//local singleplayer
-		if( !GetGame().IsMultiplayer() && GetGame().IsServer() )
-		{	
-			vector position = player.GetHologramLocal().GetProjectionPosition();
-			vector orientation = player.GetHologramLocal().GetProjectionOrientation();
-			vector rotation_matrix[3];
-			float direction[4];
-			InventoryLocation source = new InventoryLocation;
-			InventoryLocation destination = new InventoryLocation;
-			
-			Math3D.YawPitchRollMatrix( orientation, rotation_matrix );
-			Math3D.MatrixToQuat( rotation_matrix, direction );
-			
-			if (entity_for_placing.GetInventory().GetCurrentInventoryLocation( source ))
-			{
-				destination.SetGroundEx( entity_for_placing, position, direction );
-				entity_for_placing.LocalTakeToDst( source, destination );
-			}
-			
-			player.GetHologramLocal().PlaceEntity( entity_for_placing, player.GetHologramLocal().GetProjectionPosition(), player.GetHologramLocal().GetProjectionOrientation() );
-			player.PlacingCompleteLocal();
-			
-			entity_for_placing.OnPlacementComplete( player );
-			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-		}
-	}
-	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{	
-		EntityAI entity_for_placing = EntityAI.Cast( item );
-
-		entity_for_placing.OnPlacementComplete( player );
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-	}
-
-	override void OnCompleteLoopClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{	
-		EntityAI entity_for_placing = EntityAI.Cast( item );
-		vector position = player.GetLocalProjectionPosition();
-		vector orientation = player.GetLocalProjectionOrientation();
+		EntityAI entity_for_placing = EntityAI.Cast( action_data.m_MainItem );
+		vector position = action_data.m_Player.GetLocalProjectionPosition();
+		vector orientation = action_data.m_Player.GetLocalProjectionOrientation();
 		vector rotation_matrix[3];
 		float direction[4];
 		InventoryLocation source = new InventoryLocation;
@@ -184,20 +191,62 @@ class ActionPlaceObject: ActionContinuousBase
 			entity_for_placing.PredictiveTakeToDst( source, destination );
 		}
 	}
-	
-	override void WriteToContext(ParamsWriteContext ctx,ActionTarget target)
-	{
-		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
-		vector player_position = player.GetHologramLocal().GetProjectionPosition();
-		vector player_orientation = player.GetHologramLocal().GetProjectionOrientation();
-		ctx.Write( player_position );
-		ctx.Write( player_orientation );
+
+	override void OnCompleteLoopServer( ActionData action_data )
+	{			
+		EntityAI entity_for_placing = EntityAI.Cast( action_data.m_MainItem );
 		
-		player.SetLocalProjectionPosition( player_position );
-		player.SetLocalProjectionOrientation( player_orientation );
+		if ( GetGame().IsMultiplayer() )
+		{
+			action_data.m_Player.GetHologramServer().PlaceEntity( entity_for_placing, action_data.m_Player.GetLocalProjectionPosition(), action_data.m_Player.GetLocalProjectionOrientation() );
+			action_data.m_Player.GetHologramServer().CheckPowerSource();
+			action_data.m_Player.PlacingCompleteServer();
+		}			
+		
+		//local singleplayer
+		if ( !GetGame().IsMultiplayer() )
+		{			
+			vector position = action_data.m_Player.GetHologramLocal().GetProjectionPosition();
+			vector orientation = action_data.m_Player.GetHologramLocal().GetProjectionOrientation();
+			vector rotation_matrix[3];
+			float direction[4];
+			InventoryLocation source = new InventoryLocation;
+			InventoryLocation destination = new InventoryLocation;
+			
+			Math3D.YawPitchRollMatrix( orientation, rotation_matrix );
+			Math3D.MatrixToQuat( rotation_matrix, direction );
+		
+			if ( entity_for_placing.GetInventory().GetCurrentInventoryLocation( source ) )
+			{
+				destination.SetGroundEx( entity_for_placing, position, direction );
+				entity_for_placing.LocalTakeToDst( source, destination );
+			}
+		
+			action_data.m_Player.GetHologramLocal().PlaceEntity( entity_for_placing, action_data.m_Player.GetHologramLocal().GetProjectionPosition(), action_data.m_Player.GetHologramLocal().GetProjectionOrientation() );
+			action_data.m_Player.PlacingCompleteLocal();
+		}
 	}
-	override bool ReadFromContext(ParamsReadContext ctx, out ActionReceived actionReceived)
+
+	override void OnCompleteServer( ActionData action_data )
+	{	
+		EntityAI entity_for_placing = EntityAI.Cast( action_data.m_MainItem );
+
+		entity_for_placing.OnPlacementComplete( action_data.m_Player );
+	}
+	
+	override void WriteToContext(ParamsWriteContext ctx, ActionData action_data)
 	{
+		PlaceObjectActionData poActionData;
+		poActionData = Class.Cast(action_data);
+
+		ctx.Write( poActionData.m_Position );
+		ctx.Write( poActionData.m_Orientation );
+	}
+	override bool ReadFromContext(ParamsReadContext ctx, ActionData action_data )
+	{
+		PlaceObjectActionData poActionData;
+		poActionData = Class.Cast(action_data);
+		
 		vector entity_position = "0 0 0";
 		vector entity_orientation = "0 0 0";
 		if (!ctx.Read(entity_position))
@@ -205,9 +254,51 @@ class ActionPlaceObject: ActionContinuousBase
 		if (!ctx.Read(entity_orientation))
 			return false;
 		
-		actionReceived.entity_position = entity_position;
-		actionReceived.entity_orientation = entity_orientation;
+		poActionData.m_Position = entity_position;
+		poActionData.m_Orientation = entity_orientation;
 		
 		return true;
+	}
+	
+	void SetupAnimation( ItemBase item )
+	{
+		if ( item.IsDeployable() )
+		{
+			if ( item.IsHeavyBehaviour() )
+			{
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DEPLOY_HEAVY;
+			}
+			else if ( item.IsOneHandedBehaviour() )
+			{
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DEPLOY_1HD; 
+			}
+			else if ( item.IsTwoHandedBehaviour() )
+			{
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DEPLOY_2HD;
+			}
+			else
+			{
+				Print("check " + item + " behaviour");
+			}
+		}
+		else
+		{
+			if ( item.IsHeavyBehaviour() )
+			{
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_PLACING_HEAVY;
+			}
+			else if ( item.IsOneHandedBehaviour() )
+			{
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_PLACING_1HD; 
+			}
+			else if ( item.IsTwoHandedBehaviour() )
+			{
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_PLACING_2HD;
+			}
+			else
+			{
+				Print("check " + item + " behaviour");
+			}
+		}
 	}
 };

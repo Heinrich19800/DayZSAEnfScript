@@ -42,7 +42,7 @@ class ActionWorldCraftSwitch: ActionSingleUseBase
 		return "#next_recipe";
 	}
 	
-	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
+	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item )
 	{	
 		if( player.GetCraftingManager().GetRecipesCount() > 1 )
 		{
@@ -51,9 +51,9 @@ class ActionWorldCraftSwitch: ActionSingleUseBase
 		return false;
 	}
 	
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item ) //Setup on start of action
+	override void Start( ActionData action_data ) //Setup on start of action
 	{
-		player.GetCraftingManager().SetNextRecipe();
+		action_data.m_Player.GetCraftingManager().SetNextRecipe();
 	}
 	
 };

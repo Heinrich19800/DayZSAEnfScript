@@ -76,6 +76,67 @@ class HandGuardHasItemInEvent extends HandGuardBase
 	}
 };
 
+class HandGuardHasWeaponInEvent extends HandGuardHasItemInEvent
+{
+	void HandGuardHasWeapoonInEvent (Man p = NULL) { }
+
+	override bool GuardCondition (HandEventBase e)
+	{
+		EntityAI eai = e.m_Entity;
+		if (eai != NULL)
+		{
+			if (eai.IsWeapon())
+			{
+				hndDebugPrint("[hndfsm] guard - has valid weapon in event");
+				return true;
+			}
+			else
+			{
+				hndDebugPrint("[hndfsm] guard - entity, but not weapon in event");
+				return false;
+			}
+		}
+		hndDebugPrint("[hndfsm] guard - no entity in event");
+		return false;
+	}
+};
+
+class HandGuardHasAttachedWeaponInEvent extends HandGuardHasItemInEvent
+{
+	void HandGuardHasAttachedWeapoonInEvent (Man p = NULL) { }
+
+	override bool GuardCondition (HandEventBase e)
+	{
+		EntityAI eai = e.m_Entity;
+		if (eai != NULL)
+		{
+			if (eai.IsWeapon())
+			{
+				InventoryLocation il = new InventoryLocation;
+				if (eai.GetInventory().GetCurrentInventoryLocation(il))
+				{
+					if (il.GetType() == InventoryLocationType.ATTACHMENT)
+					{
+						// @TODO: check slots
+						hndDebugPrint("[hndfsm] guard - has valid weapon in event");
+						return true;
+					}
+				}
+
+				hndDebugPrint("[hndfsm] guard - weapon, but not attachment");
+				return false;
+			}
+			else
+			{
+				hndDebugPrint("[hndfsm] guard - entity, but not weapon in event");
+				return false;
+			}
+		}
+		hndDebugPrint("[hndfsm] guard - no entity in event");
+		return false;
+	}
+};
+
 class HandGuardIsSameItemInHands extends HandGuardBase
 {
 	protected Man m_Player;
@@ -146,6 +207,36 @@ class HandGuardHasItemInHands extends HandGuardBase
 	}
 };
 
+class HandGuardHasWeaponInHands extends HandGuardBase
+{
+	protected Man m_Player;
+	void HandGuardHasWeaponInHands (Man p = NULL) { m_Player = p; }
+
+	override bool GuardCondition (HandEventBase e)
+	{
+		EntityAI eai = m_Player.GetHumanInventory().GetEntityInHands();
+		if (eai)
+		{
+			//hndDebugPrint("[hndfsm] guard - has valid entity in hands");
+			//return true;
+			if (eai.IsWeapon())
+			{
+				hndDebugPrint("[hndfsm] guard - has valid weapon in event");
+				return true;
+			}
+			else
+			{
+				hndDebugPrint("[hndfsm] guard - entity, but not weapon in event");
+				return false;
+			}
+
+		}
+
+		hndDebugPrint("[hndfsm] guard - no entity in hands");
+		return false;
+	}
+};
+
 class HandGuardHasRoomForItem extends HandGuardBase
 {
 	protected Man m_Player;
@@ -155,7 +246,7 @@ class HandGuardHasRoomForItem extends HandGuardBase
 	{
 		EntityAI eai = e.m_Entity;
 
-		HandEventStash es = HandEventStash.Cast(e);
+		HandEventMoveTo es = HandEventMoveTo.Cast(e);
 		if (es)
 		{
 			if (GameInventory.LocationCanAddEntity(es.m_Dst))
@@ -171,6 +262,38 @@ class HandGuardHasRoomForItem extends HandGuardBase
 		return false;
 	}
 };
-///@} guards
 
+class HandGuardHasRoomForAttachment extends HandGuardBase
+{
+	protected Man m_Player;
+	void HandGuardHasRoomForAttachment (Man p = NULL) { m_Player = p; }
+
+	override bool GuardCondition (HandEventBase e)
+	{
+		EntityAI eai = e.m_Entity;
+
+		HandEventMoveTo es = HandEventMoveTo.Cast(e);
+		if (es)
+		{
+			if (es.m_Dst.GetType() == InventoryLocationType.ATTACHMENT)
+			{
+				// @TODO: check slots
+				if (GameInventory.LocationCanAddEntity(es.m_Dst))
+				{
+					hndDebugPrint("[hndfsm] guard - has valid entity in hands");
+					return true;
+				}
+				else
+					Error("[hndfsm] HandGuardHasRoomForItem - no room at dst=" + es.m_Dst.DumpToString());
+
+				return false;
+			}
+		}
+
+		hndDebugPrint("[hndfsm] guard - no room for item in hands");
+		return false;
+	}
+};
+
+///@} guards
 

@@ -12,9 +12,9 @@ class ActionInjectMorphineTarget: ActionInjectTarget
 		return AT_INJECT_MORPHINE_T;
 	}
 		
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
+		//PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
 		//target.m_ModifiersManager.ActivateModifier(eModifiers.MDF_CHEMICALPOISON);
 	}
 };

@@ -4,7 +4,7 @@ class ActionMineTreeCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousMineWood(TIME_BETWEEN_MATERIAL_DROPS);
+		m_ActionData.m_ActionComponent = new CAContinuousMineWood(TIME_BETWEEN_MATERIAL_DROPS);
 	}
 };
 
@@ -13,7 +13,7 @@ class ActionMineTree: ActionContinuousBase
 	void ActionMineTree()
 	{
 		m_CallbackClass = ActionMineTreeCB;
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CHOPTREE;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_HACKTREE;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;
 		m_MessageStartFail = "My tool is too damaged to cut.";
@@ -48,9 +48,18 @@ class ActionMineTree: ActionContinuousBase
 		}
 		return false;
 	}
-
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
-	{	
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+	
+	override void OnCompleteServer( ActionData action_data )
+	{			
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		GetGame().ObjectDelete(action_data.m_Target.GetObject());
+	}
+	
+	override void OnCompleteClient( ActionData action_data )
+	{
+		if (action_data && action_data.m_Target)
+		{
+			GetGame().ObjectDelete(action_data.m_Target.GetObject());
+		}
 	}
 };

@@ -285,7 +285,7 @@ class Particle extends ScriptedEntity
 	*/
 	
 	/**
-	\brief [server] Creates a particle emitter and attaches it on the given object
+	\brief Creates a particle emitter and attaches it on the given object
 		\param particle_id \p int Particle ID registered in ParticleList.c
 		\param parent_obj \p Object Instance on which this particle will be attached
 		\param local_pos \p vector Attachment position local to the parent (optional)
@@ -307,7 +307,7 @@ class Particle extends ScriptedEntity
 	}
 	
 	/**
-	\brief [server] Creates a particle emitter on the given position
+	\brief Creates a particle emitter on the given position
 		\param particle_id \p int Particle ID registered in ParticleList.c
 		\param global_pos \p Vector Position where the particel will be created
 		\param global_ori \p vector Orientation (Pitch, Yawn, Roll in degrees) (Optional)
@@ -315,8 +315,8 @@ class Particle extends ScriptedEntity
 	*/
 	static Particle Create( int particle_id, vector global_pos, vector global_ori = "0 0 0" )
 	{
-		bool is_local = !( GetGame().IsMultiplayer() && GetGame().IsServer() );
-		Particle p = Particle.Cast( GetGame().CreateObject("Particle", global_pos, is_local) );
+		
+		Particle p = Particle.Cast( GetGame().CreateObject("Particle", global_pos, true) );
 		
 		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
 		{
@@ -334,7 +334,7 @@ class Particle extends ScriptedEntity
 	
 	
 	/**
-	\brief [server] Creates a particle emitter, attaches it on the given object and activates it
+	\brief Creates a particle emitter, attaches it on the given object and activates it
 		\param particle_id \p int Particle ID registered in ParticleList.c
 		\param parent_obj \p Object Instance on which this particle will be attached
 		\param local_pos \p vector Attachment position local to the parent (optional)
@@ -350,7 +350,7 @@ class Particle extends ScriptedEntity
 	}
 	
 	/**
-	\brief [server] Creates a particle emitter on the given position and activates it
+	\brief Creates a particle emitter on the given position and activates it
 		\param particle_id \p int Particle ID registered in ParticleList.c
 		\param global_pos \p Vector Position where the particel will be created
 		\return \p Particle Created particle instance
@@ -363,7 +363,7 @@ class Particle extends ScriptedEntity
 		return p;
 	}
 	
-	//! [server] Plays the current particle. The optional parameter changes this particle for the new one.
+	//! Plays the current particle. The optional parameter changes this particle for the new one.
 	void Play(int particle_id = -1)
 	{
 		if ( particle_id > -1 )
@@ -376,7 +376,7 @@ class Particle extends ScriptedEntity
 		UpdateState();
 	}
 	
-	//! [server] Stops generating particles. Emitter is later automatically removed from memory on clients when its particle count is 0.
+	//! Stops generating particles. Emitter is later automatically removed from memory on clients when its particle count is 0.
 	void Stop()
 	{
 		m_IsPlaying = false;
@@ -384,7 +384,7 @@ class Particle extends ScriptedEntity
 	}
 	
 	/**
-	\brief [server] Attaches this particle onto some object. If NULL value is provided then the particle will be detached from the current parent.
+	\brief Attaches this particle onto some object. If NULL value is provided then the particle will be detached from the current parent.
 		\param parent \p Object Parent onto which this particle will be attached
 		\param local_pos \p vector Attachment position local to the parent (optional)
 		\param local_ori \p vector Orientation local to the parent (Pitch, Yawn, Roll in degrees) (Optional)
@@ -410,7 +410,7 @@ class Particle extends ScriptedEntity
 		}
 	}
 	
-	//! [server] Sets particle id
+	//! Sets particle id
 	void SetSource(int particle_id)
 	{
 		m_ParticleID = particle_id;

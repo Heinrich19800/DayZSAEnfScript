@@ -9,6 +9,7 @@ enum StateIDs {
 	STATE_SNEEZE,
 	STATE_FEVERBLUR,
 	STATE_LAUGHTER,
+	STATE_UNCONSCIOUS,
 };
 
 enum StateTypes 
@@ -218,7 +219,6 @@ class StateManager
 			CleanDebug1("States Client",50);
 			CleanDebug2("States Server",300);
 			CleanAvailableStates();
-			
 		}
 		#endif
 	}
@@ -318,39 +318,7 @@ class StateManager
 	{
 		m_StateQueuePrimary.Clear();
 	}
-	/*
-	StateBase QueueUpPrimaryState(int state_id, int uid = -1)
-	{
-		StateBase state;
-		for(int i = 0; i < m_StateQueuePrimary.Count(); i++)
-		{
-			if( ComparePriority( GetStatePriority(state_id), m_StateQueuePrimary.Get(i).GetPriority() ) == 1 )
-			{
-				state = SpawnState( state_id, uid );
-			
-				m_StateQueuePrimary.InsertAt(state,i);
 
-				if( m_StateQueuePrimary.Count() > MAX_QUEUE_SIZE )
-				{
-					delete m_StateQueuePrimary.Get(MAX_QUEUE_SIZE);//delete the last element in the queue, no need to remove from the array, that's done via state callback on destruct
-				}
-				SendServerDebugToClient();
-				Debug.Log("queing up a new primary state with state_id: "+state_id.ToString(), "PlayerStates");
-				return state;
-			}
-		}
-		if( m_StateQueuePrimary.Count() < MAX_QUEUE_SIZE) 
-		{
-			state = SpawnState( state_id, uid );
-			m_StateQueuePrimary.Insert(state);
-			SendServerDebugToClient();
-			Debug.Log("queing up a new primary state with state_id: "+state_id.ToString(), "PlayerStates");
-			return state;
-		}
-		
-		return NULL;
-	}
-*/
 	StateBase QueueUpPrimaryState(int state_id, int uid = -1)
 	{
 		StateBase state;
@@ -390,7 +358,7 @@ class StateManager
 		m_StateQueueSecondary.Insert(state);
 	}
 	
-	//! Removes a single state of a given type
+	//! Removes a single state
 	void RemoveSecondaryState(int state_id)
 	{
 		for(int i = 0; i < m_StateQueueSecondary.Count();i++)
@@ -502,8 +470,8 @@ class StateManager
 				{
 					m_StateQueueServerDbgSecondary.Insert(p3);
 				}
-				PrintString("elements m_StateQueueServerDbgPrimary:" + m_StateQueueServerDbgPrimary.Count());
-				PrintString("elements m_StateQueueServerDbgSecondary:" + m_StateQueueServerDbgSecondary.Count());
+				//PrintString("elements m_StateQueueServerDbgPrimary:" + m_StateQueueServerDbgPrimary.Count());
+				//PrintString("elements m_StateQueueServerDbgSecondary:" + m_StateQueueServerDbgSecondary.Count());
 				
 			}
 			/*
@@ -539,6 +507,7 @@ class StateManager
 	
 	void SendServerDebugToClient()
 	{
+		if( !GetGame().IsDebug() && !GetPlayer().IsPlayerSelected() ) return;
 		array<ref Param> debug_list = new array<ref Param>;
 		
 		Param1<int> p1 = new Param1<int>(0);

@@ -350,8 +350,10 @@ class PlayerIdentity: Managed
 	proto native owned string GetName();
 	//! full name of player
 	proto native owned string GetFullName();
-	//! unique id of player (derived from CD key, may include verified userId after a double colon)
+	//! unique id of player (hashed steamID, database Xbox id...) can be used in database or logs
 	proto native owned string GetId();
+	//! plaintext unique id of player (cannot be used in database or logs)
+	proto native owned string GetPlainId();
 	//!  id of player in one session (is reused after player disconnects)
 	proto native owned int GetPlayerId();
 
@@ -489,8 +491,6 @@ enum EventType
 	ScriptLogEventTypeID,
 	//! params: \ref VONStateEventParams
 	VONStateEventTypeID,
-	//! no params
-	VONMissingPrivilegeEventTypeID,
 	//! params: \ref SetFreeCameraEventParams
 	SetFreeCameraEventTypeID,
 	//! params: \ref MPConnectionLostEventParams
@@ -586,6 +586,8 @@ class Hud: Managed
 	void UpdateBloodName() {}
 	void RefreshItemPosition( EntityAI item_to_refresh ) {}
 	void Update(){}
+	void InitInventory();
+	bool IsXboxDebugCursorEnabled();
 
 	void SetPermanentCrossHair( bool show ) {}
 
@@ -623,6 +625,11 @@ class Mission
 	
 	UIScriptedWindow	CreateScriptedWindow( int id ) 
 	{ 
+		return NULL;
+	}
+	
+	WorldData GetWorldData()
+	{
 		return NULL;
 	}
 	
@@ -674,10 +681,8 @@ class MenuData: Managed
 	
 	proto native void 	SaveCharacters();
 	proto native void 	LoadCharacters();
+	proto native void 	ClearCharacters();
 	
-	//! User's Gamertag from xbox live
-	proto bool			GetUserGamertag(out string gamertag);
-
 	//proto native void	GetCharacterStringList(int characterID, string name, out TStringArray values);
 	//proto bool			GetCharacterString(int characterID,string name, out string value);
 }

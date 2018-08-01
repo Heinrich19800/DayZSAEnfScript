@@ -86,7 +86,7 @@ class PluginConfigEmotesProfile extends PluginConfigHandler
 		m_DefaultValues.Insert( EMOTE_9,  GetNewCfgParamInt(ID_EMOTE_THUMB) );
 		m_DefaultValues.Insert( EMOTE_10, GetNewCfgParamInt(ID_EMOTE_THROAT) );
 		m_DefaultValues.Insert( EMOTE_11, GetNewCfgParamInt(ID_EMOTE_SUICIDE) );
-		m_DefaultValues.Insert( EMOTE_12, GetNewCfgParamInt(ID_EMOTE_DANCE) );
+		//m_DefaultValues.Insert( EMOTE_12, GetNewCfgParamInt(ID_EMOTE_DANCE) );
 		//m_DefaultValues.Insert( EMOTE_12, GetNewCfgParamInt(ID_EMOTE_SOS) );
 	}
 	
@@ -211,7 +211,7 @@ class PluginConfigEmotesProfile extends PluginConfigHandler
 		SetInt( EMOTE_11, emoted_id );
 	}
 	
-	int GetEmoteSlot12()
+	/*int GetEmoteSlot12()
 	{
 		return GetInt( EMOTE_12 );
 	}
@@ -219,5 +219,5 @@ class PluginConfigEmotesProfile extends PluginConfigHandler
 	void SetEmoteSlot12( int emoted_id )
 	{
 		SetInt( EMOTE_12, emoted_id );
-	}
+	}*/
 }

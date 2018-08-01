@@ -196,7 +196,7 @@ class MissionServer extends MissionBase
 				return;
 			}
 						
-			InvokeOnDisconnect(player);	
+			InvokeOnDisconnect(player);
 			OnClientDisconnectedEvent(identity, player, discTime, authFailed);	
 			break;
 			
@@ -235,7 +235,7 @@ class MissionServer extends MissionBase
 		if( player ) player.OnDisconnect();
 		
 		// Send list of players at all clients
-		SyncEvents.SendPlayerList();
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater( SyncEvents.SendPlayerList, 500 );
 	}
 
 	void OnPreloadEvent(PlayerIdentity identity, out bool useDB, out vector pos, out float yaw, out int queueTime)
@@ -341,7 +341,9 @@ class MissionServer extends MissionBase
 		if (CreateCharacter(identity, pos, ctx, characterName))
 		{
 			EquipCharacter();
-		}		
+			GetGame().RPCSingleParam(m_player, ERPCs.RPC_CHARACTER_EQUIPPED, NULL, true, m_player.GetIdentity());
+		}
+		
 		return m_player;
 	}
 	
@@ -357,12 +359,19 @@ class MissionServer extends MissionBase
 		{
 			GetHive().CharacterKill(player);
 		}*/
+		if(player)
+		{
+			if (player.IsUnconscious() || player.IsRestrained())
+			{
+				// kill character
+				player.SetHealth("", "", 0.0);
+			}
+		}
 	}
 	
 	void OnClientDisconnectedEvent(PlayerIdentity identity, PlayerBase player, int queueTime, bool authFailed)
 	{
 		// TODO: get out of vehicle
-		
 		// using database and no saving if authorization failed
 		if (GetHive() && !authFailed && queueTime > 0)
 		{
@@ -410,16 +419,16 @@ class MissionServer extends MissionBase
 	
 	void HandleBody(PlayerBase player)
 	{
-		if (player.IsAlive() && !player.IsRestrained())
+		if (player.IsAlive() && !player.IsRestrained() && !player.IsUnconscious())
 		{
 			// remove the body
 			player.Delete();	
 		}
-		else if (/* TODO if player.IsUnconscious() || */ player.IsRestrained())
+		else if (player.IsUnconscious() || player.IsRestrained())
 		{
 			// kill character
-			player.SetHealth("", "", 0.0);	
-		}		
+			player.SetHealth("", "", 0.0);
+		}
 	}
 	
 	

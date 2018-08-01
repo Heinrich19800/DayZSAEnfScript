@@ -31,6 +31,11 @@ class PowerGenerator extends ItemBase
 		RegisterNetSyncVariableInt("m_FuelPercentage");
 	}
 
+	override bool IsHeavyBehaviour()
+	{
+		return true;
+	}
+	
 	// Play the loop sound
 	void StartLoopSound()
 	{
@@ -138,9 +143,9 @@ class PowerGenerator extends ItemBase
 	}
 	
 	// Called when this generator is picked up
-	override void EEItemLocationChanged  ( EntityAI old_owner, EntityAI new_owner ) 
+	override void OnItemLocationChanged  ( EntityAI old_owner, EntityAI new_owner ) 
 	{
-		super.EEItemLocationChanged(old_owner, new_owner);
+		super.OnItemLocationChanged(old_owner, new_owner);
 		UpdateFuelMeter();
 	}
 	

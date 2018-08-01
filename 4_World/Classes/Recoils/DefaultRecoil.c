@@ -2,7 +2,7 @@ class DefaultRecoil: RecoilBase
 {
 	override void Init()
 	{
-		m_HandsCurvePoints.Insert("0 0 0");//forms a 2 dimentional spline(z is ignored)
+		m_HandsCurvePoints.Insert("0 0 0");//forms a 2 dimensional spline(z is ignored)
 		m_HandsCurvePoints.Insert("0 1 0");
 		m_HandsCurvePoints.Insert("0 0 0");
 		

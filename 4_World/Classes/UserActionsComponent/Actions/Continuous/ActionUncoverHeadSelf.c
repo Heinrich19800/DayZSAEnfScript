@@ -2,7 +2,7 @@ class ActionUncoverHeadSelfCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.COVER_HEAD);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.COVER_HEAD);
 	}
 };
 
@@ -48,18 +48,18 @@ class ActionUncoverHeadSelf: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		player.GetInventory().CreateInInventory("BurlapSack");
+		action_data.m_Player.GetInventory().CreateInInventory("BurlapSack");
 		
 		EntityAI attachment;
-		Class.CastTo(attachment, player.GetInventory().FindAttachment(InventorySlots.HEADGEAR));
+		Class.CastTo(attachment, action_data.m_Player.GetInventory().FindAttachment(InventorySlots.HEADGEAR));
 		if ( attachment && attachment.GetType() == "BurlapSackCover" )
 		{
 			attachment.Delete();
 		}
 		
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 
 

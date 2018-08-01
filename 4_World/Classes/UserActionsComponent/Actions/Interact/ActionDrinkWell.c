@@ -44,12 +44,12 @@ class ActionDrinkWell extends ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		player.Consume(NULL, UAQuantityConsumed.DRINK, EConsumeType.ENVIRO_WELL);
-		if(player.HasBloodyHands())
+		action_data.m_Player.Consume(NULL, UAQuantityConsumed.DRINK, EConsumeType.ENVIRO_WELL);
+		if(action_data.m_Player.HasBloodyHands())
 		{
-			player.InsertAgent(AGT_CHOLERA, UAQuantityConsumed.DRINK);
+			action_data.m_Player.InsertAgent(AGT_CHOLERA, UAQuantityConsumed.DRINK);
 		}
 	}
 }

@@ -21,6 +21,11 @@ class TentBase extends ItemBase
 		Pack( false );
 	}
 	
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
 	bool ConditionIntoInventory( EntityAI player )
 	{
 		return CanBeManipulated();

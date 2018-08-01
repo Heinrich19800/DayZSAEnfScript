@@ -64,7 +64,7 @@ class PortableGasStove extends ItemBase
 			ClearCookingEquipment();
 			
 			//stop steam particle
-			StopCookingEquipmentSteam();			
+			RemoveCookingAudioVisuals();			
 		}	
 	}
 	
@@ -84,7 +84,7 @@ class PortableGasStove extends ItemBase
 		SetObjectTexture( 0, FLAME_BUTANE_OFF );
 		
 		//stop steam particle
-		StopCookingEquipmentSteam();
+		RemoveCookingAudioVisuals();
 		
 		//stop sound
 		SoundBurningStop();
@@ -128,12 +128,12 @@ class PortableGasStove extends ItemBase
 	// PARTICLES
 	//================================================================	
 	//cooking equipment steam
-	protected void StopCookingEquipmentSteam()
+	protected void RemoveCookingAudioVisuals()
 	{
 		if ( GetCookingEquipment() )
 		{
 			Bottle_Base cooking_pot = Bottle_Base.Cast( GetCookingEquipment() );
-			cooking_pot.SteamStop();
+			cooking_pot.RemoveAudioVisuals();
 		}
 	}	
 	

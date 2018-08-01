@@ -2,7 +2,7 @@ class ActionSewTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.SEW_CUTS);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.SEW_CUTS);
 	}
 };
 
@@ -17,9 +17,9 @@ class ActionSewTarget: ActionContinuousBase
 		m_MessageFail = "Player moved and sewing was canceled.";
 		m_MessageCancel = "You stopped sewing.";
 		//m_Animation = "sew";
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERACTITEM;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERACT;
 		m_FullBody = true;
-		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
 		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 	}
 	
@@ -39,15 +39,15 @@ class ActionSewTarget: ActionContinuousBase
 		return "Sew target's cuts";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{			
 		const float ITEM_DAMAGE = 10;
-		float delta = player.GetSoftSkillManager().SubtractSpecialtyBonus( ITEM_DAMAGE, this.GetSpecialtyWeight() );
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
+		float delta = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( ITEM_DAMAGE, this.GetSpecialtyWeight() );
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		
 		ntarget.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_BLEEDING);
-		item.AddHealth("GlobalHealth","Health",-delta);
+		action_data.m_MainItem.AddHealth("GlobalHealth","Health",-delta);
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

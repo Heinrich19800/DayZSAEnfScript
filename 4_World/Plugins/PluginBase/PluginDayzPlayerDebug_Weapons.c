@@ -121,6 +121,14 @@ class PluginDayzPlayerDebug_Weapons
 		PluginDayzPlayerDebug_AbilityConfig("Chamb Loopable Start Opened", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_OPENED),
 		PluginDayzPlayerDebug_AbilityConfig("Chamb Loopable Start Closed", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_CLOSED),
 		PluginDayzPlayerDebug_AbilityConfig("Chamb Loopable End", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE),
+		
+		PluginDayzPlayerDebug_AbilityConfig("Chamb Loopable Shotgun Start Uncocked", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_SHOTGUN_UNCOCKED),
+		PluginDayzPlayerDebug_AbilityConfig("Chamb Loopable Shotgun Start Cocked", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_SHOTGUN_COCKED),
+
+		PluginDayzPlayerDebug_AbilityConfig("Chamb 1", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_DOUBLE_1),
+		PluginDayzPlayerDebug_AbilityConfig("Chamb 2", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_DOUBLE_2),
+		PluginDayzPlayerDebug_AbilityConfig("Chamb 3", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_DOUBLE_3),
+		PluginDayzPlayerDebug_AbilityConfig("Chamb 4", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_DOUBLE_4),		
 
 		PluginDayzPlayerDebug_AbilityConfig("Crossbow Opened", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_CROSSBOW_OPENED),
 		PluginDayzPlayerDebug_AbilityConfig("Crossbow Close", WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_CROSSBOW_CLOSED),

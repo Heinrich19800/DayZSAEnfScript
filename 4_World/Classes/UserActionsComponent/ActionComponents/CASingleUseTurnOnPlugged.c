@@ -1,12 +1,12 @@
 class CASingleUseTurnOnPlugged : CASingleUse
 {	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !item )
+		if ( !action_data.m_MainItem )
 		{
 			return UA_ERROR;
 		}
-		if ( !item.GetCompEM().CanWork() )
+		if ( !action_data.m_MainItem.GetCompEM().CanWork() )
 		{
 			return UA_SETEND_2;
 		}

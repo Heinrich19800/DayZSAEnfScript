@@ -33,7 +33,17 @@ class TripwireTrap : TrapBase
 		m_SurfaceForSetup.Insert("cp_gravel");
 		m_SurfaceForSetup.Insert("cp_rock");
 	}
+	
+	override bool IsOneHandedBehaviour()
+	{
+		return true;
+	}
 
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
 	override void CreateTrigger()
 	{
 		m_TrapTrigger = TrapTrigger.Cast( GetGame().CreateObject( "TrapTrigger", this.GetPosition(), false ) );
@@ -60,9 +70,9 @@ class TripwireTrap : TrapBase
 		UpdateProxySelections();
 	}
 	
-	override void EEItemLocationChanged ( EntityAI old_owner, EntityAI new_owner ) 
+	override void OnItemLocationChanged ( EntityAI old_owner, EntityAI new_owner ) 
 	{
-		super.EEItemLocationChanged( old_owner, new_owner );
+		super.OnItemLocationChanged( old_owner, new_owner );
 		
 		FoldTripWire();
 		UpdateProxySelections();

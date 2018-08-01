@@ -27,7 +27,7 @@ class OpenItem
 		string old_name = old_item.GetType();
 		string new_name = old_name + "_Opened";
 		OpenAndSwitchLambda l = new OpenAndSwitchLambda(old_item, new_name, player, spill_modificator, specialty_weight);
-		l.SetTransferParams(true, false);
+		l.SetTransferParams(true, true);
 		MiscGameplayFunctions.TurnItemIntoItemEx(player, l);
 	}
 };
@@ -39,7 +39,7 @@ class OpenAndSwitchLambda : TurnItemIntoItemLambda
 	float m_SpecialtyWeight;
 	void OpenAndSwitchLambda (EntityAI old_item, string new_item_type, PlayerBase player, float spill_modificator, float specialty_weight) { m_SpillModifier = spill_modificator; m_SpecialtyWeight = specialty_weight; }
 
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
 	{
 		super.CopyOldPropertiesToNew(old_item, new_item);
 

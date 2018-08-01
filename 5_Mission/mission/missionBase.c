@@ -92,6 +92,7 @@ class MissionBase extends Mission
 	
 	ref NotificationMessage m_notification_widget;
 	ref WidgetEventHandler 	m_WidgetEventHandler;
+	ref WorldData			m_WorldData;
 	
 	ref array<PlayerBase> m_DummyPlayers = new array<PlayerBase>;
 	
@@ -110,8 +111,12 @@ class MissionBase extends Mission
 		//TODO clea up after Gamescom
 		m_ModuleServerInfo = PluginAdditionalInfo.Cast( GetPlugin(PluginAdditionalInfo) );
 		//
-		PPEffects.ResetAll();
 		SoundSetMap.Init();
+
+		if (GetGame().IsServer())
+		{
+			m_WorldData = new WorldData;
+		}
 	}
 
 	void ~MissionBase()
@@ -121,6 +126,11 @@ class MissionBase extends Mission
 		PluginManagerDelete();
 	}
 	
+	override WorldData GetWorldData()
+	{
+		return m_WorldData;
+	}
+	
 	override UIScriptedMenu CreateScriptedMenu(int id)
 	{
 		UIScriptedMenu menu = NULL;
@@ -128,17 +138,10 @@ class MissionBase extends Mission
 		switch (id)
 		{
 		case MENU_MAIN:
-#ifdef PLATFORM_XBOX
-			menu = new MainMenuXbox;
-#else
-#ifdef PLATFORM_PS4
-		menu = new MainMenuXbox;
-#else
-		menu = new MainMenuNew;
-#endif
+			menu = new MainMenu;
 			break;
 		case MENU_INGAME:
-#ifdef PLATFORM_XBOX
+#ifdef PLATFORM_CONSOLE
 			menu = new InGameMenuXbox;
 #else
 #ifdef PLATFORM_PS4
@@ -149,10 +152,10 @@ class MissionBase extends Mission
 #endif
 			break;
 		case MENU_CHARACTER:
-			menu = new CharacterMenu;
+			menu = new CharacterCreationMenu;
 			break;
 		case MENU_OPTIONS:
-#ifdef PLATFORM_XBOX
+#ifdef PLATFORM_CONSOLE
 			menu = new OptionsMenuXbox;
 #else
 #ifdef PLATFORM_PS4
@@ -232,6 +235,15 @@ class MissionBase extends Mission
 		case MENU_RADIAL_QUICKBAR:
 			menu = new RadialQuickbarMenu;
 			break;			
+		case MENU_SERVER_BROWSER:
+			menu = new ServerBrowserMenuNew;
+			break;
+		case MENU_LOGIN_QUEUE:
+			menu = new LoginQueueMenu;
+			break;
+		case MENU_CAMERA_TOOLS:
+			menu = new CameraToolsMenu;
+			break;
 		}
 
 		if (menu)

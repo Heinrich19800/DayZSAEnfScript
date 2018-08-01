@@ -1,4 +1,4 @@
-class BUISOptic extends Inventory_Base
+class BUISOptic extends ItemOptics
 {
 	override bool CanPutAsAttachment( EntityAI parent )
 	{

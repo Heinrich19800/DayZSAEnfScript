@@ -174,7 +174,11 @@ class DayZIntroScene: Managed
 		m_Weather.GetRain().Set( rain, 0, 0);
 		m_Weather.GetFog().Set( fog, 0, 0);
 		
-		if ( storm.Count() > 1 ) 	m_Weather.SetStorm(storm.Get(0),storm.Get(1));
+		if ( storm.Count() == 3 )
+		{
+			m_Weather.SetStorm(storm.Get(0),storm.Get(1),storm.Get(2));
+		}
+		
 		if ( windspeed != -1 )
 		{
 			m_Weather.SetWindSpeed(windspeed);
@@ -221,14 +225,13 @@ class DayZIntroScene: Managed
 		ChangeCharacter(m_currentCharacterID);
 		
 		PPEffects.Init();
+		PPEffects.DisableBurlapSackBlindness(); //HOTFIX
+		//PPEffects.ResetAll();
 	}
 	
 	void RandomSelectGender()
 	{
-		int rnd = Math.RandomInt(0, 2);
-		
-		if (rnd == 0)	m_female = true;
-		else			m_female = false;
+		m_female = Math.RandomInt(0, 2);
 	}
 	
 	// ------------------------------------------------------------
@@ -280,6 +283,22 @@ class DayZIntroScene: Managed
 		}
 	}
 	
+	void GetSelectedUserName()
+	{
+		string name;
+		BiosUserManager user_manager = GetGame().GetUserManager();
+		if( user_manager )
+		{
+			BiosUser user = user_manager.GetSelectedUser();
+			if( user )
+			{
+				g_Game.SetPlayerGameName( user.GetName() );
+				return;
+			}
+		}
+		g_Game.SetPlayerGameName(DEFAULT_CHARACTER_NAME);
+	}
+	
 	// ------------------------------------------------------------
 	void ChangeCharacter(int characterID)
 	{
@@ -290,13 +309,14 @@ class DayZIntroScene: Managed
 			m_DemoUnit = NULL;
 		}
 		m_currentCharacterID = characterID;
+		BiosUserManager user_manager;
+		
 		
 		//random character
 		if(characterID == - 1)
 		{
-#ifdef PLATFORM_XBOX
-			m_data.GetUserGamertag(name);
-			g_Game.SetPlayerGameName(name);
+#ifdef PLATFORM_CONSOLE
+			GetSelectedUserName();
 #else
 			g_Game.SetPlayerGameName(DEFAULT_CHARACTER_NAME);
 #endif
@@ -321,8 +341,8 @@ class DayZIntroScene: Managed
 			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(SceneCharacterSetPos, 250);
 		}
 
-#ifdef PLATFORM_XBOX
-		m_data.GetUserGamertag(name);
+#ifdef PLATFORM_CONSOLE
+			GetSelectedUserName();
 #else
 		m_data.GetCharacterName(m_currentCharacterID, name);
 #endif
@@ -433,7 +453,7 @@ class DayZIntroScene: Managed
 	
 			if (item.GetInventory().GetCargo())
 			{
-				Cargo cargo = item.GetInventory().GetCargo();
+				CargoBase cargo = item.GetInventory().GetCargo();
 	
 				for (int j = 0; j < cargo.GetItemCount(); j++)
 				{
@@ -653,7 +673,7 @@ class DayZIntroScene: Managed
 		string child_name = ""; 
 		int count = GetGame().ConfigGetChildrenCount ( path );
 		Man character;
-		vector preloadPos = Vector(m_DemoPos[0], m_DemoPos[1] - 3, m_DemoPos[2]);
+		vector preloadPos = Vector(m_DemoPos[0], m_DemoPos[1] - 10, m_DemoPos[2]);
 		
 		for (int p = 0; p < count; p++)
 		{
@@ -694,10 +714,28 @@ class DayZIntroScene: Managed
 	
 	void SetCharacterInfo()
 	{
-		int topIndex = m_shirtList.Find(m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY).GetType());
-		int bottomIndex = m_pantsList.Find(m_DemoUnit.GetInventory().FindAttachment(InventorySlots.LEGS).GetType());
-		int shoesIndex = m_shoesList.Find(m_DemoUnit.GetInventory().FindAttachment(InventorySlots.FEET).GetType());
-		int characterIndex = GetGame().ListAvailableCharacters().Find(m_DemoUnit.GetType());
+		int topIndex; 
+		int bottomIndex;
+		int shoesIndex;
+		int characterIndex;
+		
+		if( m_DemoUnit )
+		{
+			Object obj = m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY);
+			if( obj )
+				topIndex = m_shirtList.Find( obj.GetType() );
+			
+			obj = m_DemoUnit.GetInventory().FindAttachment(InventorySlots.LEGS);
+			if( obj )
+				bottomIndex = m_pantsList.Find( obj.GetType() );
+			
+			obj = m_DemoUnit.GetInventory().FindAttachment(InventorySlots.FEET);
+			if( obj )
+				shoesIndex = m_shoesList.Find( obj.GetType() );
+			
+			characterIndex = GetGame().ListAvailableCharacters().Find( m_DemoUnit.GetType() );
+		}
+		
 		
 		//saves player' type and clothes to g_Game to sync with server
 		GetGame().SetCharacterInfo(topIndex, bottomIndex, shoesIndex, characterIndex);

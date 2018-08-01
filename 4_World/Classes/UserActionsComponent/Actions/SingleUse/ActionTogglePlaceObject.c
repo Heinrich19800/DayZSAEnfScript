@@ -49,9 +49,19 @@ class ActionTogglePlaceObject: ActionSingleUseBase
 		return "#toggle_placing";
 	}
 	
+	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
+	{	
+		// not placeable if liquid is present; exception for barrels, for now
+		if ( !item.IsKindOf("Barrel_ColorBase") && item.IsLiquidPresent() )
+		{
+			return false;
+		}
+		
+		return true;
+	}
 	
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item ) //Setup on start of action
+	override void Start( ActionData action_data ) //Setup on start of action
 	{
-		player.TogglePlacingLocal();
+		action_data.m_Player.TogglePlacingLocal();
 	}
 };

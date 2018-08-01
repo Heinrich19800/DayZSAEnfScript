@@ -23,12 +23,14 @@ class DayZPlayerCamera3rdPerson extends DayZPlayerCameraBase
 
 		m_fCameraLRShoulderVel[0]	= 0.0;
 		m_fRoll						= 0.0;
+		m_WeaponSwayModifier		= 1;
 	}
 		
 
 	//
 	override void 		OnActivate (DayZPlayerCamera pPrevCamera, DayZPlayerCameraResult pPrevCameraResult)
 	{
+		super.OnActivate(pPrevCamera, pPrevCameraResult);
 		if (pPrevCamera)
 		{
 			vector 	f = pPrevCamera.GetBaseAngles();
@@ -44,6 +46,7 @@ class DayZPlayerCamera3rdPerson extends DayZPlayerCameraBase
 	{
 		//! update angles from input 
 		float 	udAngle 	= UpdateUDAngle(m_fUpDownAngle, m_fUpDownAngleAdd, CONST_UD_MIN, CONST_UD_MAX, pDt);
+		m_CurrentCameraPitch = udAngle;
 		m_fLeftRightAngle	= UpdateLRAngle(m_fLeftRightAngle, CONST_LR_MIN, CONST_LR_MAX, pDt);
 
 		// update l/r offsets and set it as 
@@ -109,6 +112,11 @@ class DayZPlayerCamera3rdPerson extends DayZPlayerCameraBase
 		a[1] = m_fLeftRightAngle;
 		a[2] = m_fUpDownAngleAdd;
 		return a;
+	}
+	
+	override string GetCameraName()
+	{
+		return "DayZPlayerCamera3rdPerson";
 	}
 
 	//! runtime config
@@ -363,6 +371,7 @@ class DayZPlayerCamera3rdPersonProneBase extends DayZPlayerCamera3rdPerson
 	{
 		//! update angles from input 
 		float 	udAngle 	= UpdateUDAngle(m_fUpDownAngle, m_fUpDownAngleAdd, CONST_UD_MIN, CONST_UD_MAX, pDt);
+		m_CurrentCameraPitch = udAngle;
 
 		float 	orientYaw	= m_pPlayer.GetOrientation()[0];
 		float 	headYaw 	= m_pInput.GetHeadingAngle() * Math.RAD2DEG;	//! this is actually negative to yaw
@@ -460,5 +469,21 @@ class DayZPlayerCamera3rdPersonProneRaised extends DayZPlayerCamera3rdPersonPron
 		m_CameraOffsetMS	= "0.0 0.4 0.0";
 		m_CameraOffsetLS	= "0.0 0.2 0.0";
 		m_fShoulderWidth	= 0.5;
+	}
+}
+
+// *************************************************************************************
+// ! DayZPlayerCamera3rdPersonVehicle - 3rd person in vehicle (generic)
+// *************************************************************************************
+class DayZPlayerCamera3rdPersonVehicle extends DayZPlayerCamera3rdPerson
+{
+	void DayZPlayerCamera3rdPersonVehicle (DayZPlayer pPlayer, HumanInputController pInput)
+	{
+		Print("new camera: DayZPlayerCamera3rdPersonVehicle");
+		
+		m_fDistance 		= 4.0;
+		m_CameraOffsetMS	= "0.0 0.7 0.0";
+		m_CameraOffsetLS	= "0.0 0.3 0.0";
+		m_fShoulderWidth	= 0.0;
 	}
 }

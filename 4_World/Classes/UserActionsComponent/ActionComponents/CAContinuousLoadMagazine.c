@@ -13,9 +13,9 @@ class CAContinuousLoadMagazine : CAContinuousRepeat
 		m_DefaultTimeToComplete = time_to_complete_action;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
-		super.Setup( player, target, item);
+		super.Setup(action_data);
 		m_SpentQuantity = 0;
 		if ( !m_SpentUnits )
 		{ 
@@ -27,11 +27,11 @@ class CAContinuousLoadMagazine : CAContinuousRepeat
 		}
 		
 		Magazine itm;
-		Class.CastTo(itm, item);
+		Class.CastTo(itm, action_data.m_MainItem);
 		m_ItemQuantity = itm.GetAmmoCount();
 		m_ItemMaxQuantity = itm.GetAmmoMax();
 		Magazine trg;
-		Class.CastTo(trg,  target.GetObject() );
+		Class.CastTo(trg,  action_data.m_Target.GetObject() );
 		m_SourceQuantity = trg.GetAmmoCount();
 		m_TargetUnits = itm.GetAmmoMax();		
 	}

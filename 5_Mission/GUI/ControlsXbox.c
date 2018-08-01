@@ -52,7 +52,7 @@ class ControlsXbox extends UIScriptedMenu
 		float dot_width, dot_height;
 		float draw_pos_x, draw_pos_y;
 		
-		CanvasWidget canvas_widget = layoutRoot.FindAnyWidget("CanvasWidget_" + index);
+		CanvasWidget canvas_widget = CanvasWidget.Cast( layoutRoot.FindAnyWidget("CanvasWidget_" + index) );
 		control_mapping_info  = GetControlMappingInfo();
 		
 		for( int i = 0; i < 4; i++ )
@@ -111,6 +111,48 @@ class ControlsXbox extends UIScriptedMenu
 			child = child.GetSibling();
 			child.Show(false);
 		}
+		Widget panel_widget;
+		Widget button_marker_widget;
+		
+		for( l = 0; l < tab_array[index].Count(); l++ )
+		{
+			panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + l );
+			if( tab_array[index][l] != NULL )
+			{
+				TextWidget text_widget = TextWidget.Cast( panel_widget.FindAnyWidget( "TextWidget" + l ) );
+				button_marker_widget = layoutRoot.FindAnyWidget( "button_marker_" + tab_array[index][l].m_ButtonName );
+				text_widget.SetText( tab_array[index][l].m_InfoText );
+				panel_widget.Show( true );
+				button_marker_widget.Show( true );
+				panel_widget.Update();
+				if( !button_marker_groups.Contains(tab_array[index][l].m_ButtonName ))
+				{
+					panel_widget.GetScreenPos( text_widget_pos_x, text_widget_pos_y );
+					panel_widget.GetScreenSize( text_widget_width,text_widget_height );
+					
+					button_marker_widget.GetScreenPos( dot_pos_x, dot_pos_y );
+					button_marker_widget.GetScreenSize( dot_width, dot_height );
+					
+					draw_pos_y = text_widget_pos_y + text_widget_height / 2;
+					if( l < 10 )
+					{
+						draw_pos_x = text_widget_pos_x + text_widget_width - 1;
+					}
+					else
+					{
+						draw_pos_x = text_widget_pos_x;
+					}
+					canvas_widget.DrawLine( draw_pos_x, draw_pos_y, dot_pos_x+dot_width/2, draw_pos_y, 2, ARGBF( 0.6, 1, 1, 1 ) );
+					canvas_widget.DrawLine( dot_pos_x+dot_width/2, draw_pos_y, dot_pos_x+dot_width/2, dot_pos_y+dot_height/2, 2, ARGBF( 0.6, 1, 1, 1 ) );	
+				}
+				
+			}
+			else
+			{
+				panel_widget.Show( false );
+			}
+			panel_widget.Update();
+		}
 		
 		// draw connecting lines 
 		for( l = 0; l <  button_marker_groups.Count(); l++ )
@@ -124,11 +166,12 @@ class ControlsXbox extends UIScriptedMenu
 			
 			ref array<int> element = button_marker_groups.GetElement( l );
 			string key_name = button_marker_groups.GetKey( l );
-			Widget button_marker_widget = layoutRoot.FindAnyWidget( "button_marker_" + key_name );
+			button_marker_widget = layoutRoot.FindAnyWidget( "button_marker_" + key_name );
 			
 			for( int g = 0; g < element.Count(); g++ )
 			{
-				Widget panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + element[g] );
+				panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + element[g] );
+				
 				panel_widget.GetScreenPos( text_widget_pos_x, text_widget_pos_y );
 				panel_widget.GetScreenSize( text_widget_width, text_widget_height );
 				
@@ -179,44 +222,6 @@ class ControlsXbox extends UIScriptedMenu
 			else
 			{
 				canvas_widget.DrawLine( first_x, first_y, text_widget_pos_x - 50, text_widget_pos_y + text_widget_height/2, 2, ARGBF( 0.6, 1, 1, 1 ) );
-			}
-		}
-		
-		for( l = 0; l < tab_array[index].Count(); l++ )
-		{
-			if( tab_array[index][l] != NULL )
-			{
-				panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + l );
-				TextWidget text_widget = panel_widget.FindAnyWidget( "TextWidget" + l );
-				button_marker_widget = layoutRoot.FindAnyWidget( "button_marker_" + tab_array[index][l].m_ButtonName );
-				text_widget.SetText( tab_array[index][l].m_InfoText );
-				panel_widget.Show( true );
-				button_marker_widget.Show( true );
-				if( !button_marker_groups.Contains(tab_array[index][l].m_ButtonName ))
-				{
-					panel_widget.GetScreenPos( text_widget_pos_x, text_widget_pos_y );
-					panel_widget.GetScreenSize( text_widget_width,text_widget_height );
-					
-					button_marker_widget.GetScreenPos( dot_pos_x, dot_pos_y );
-					button_marker_widget.GetScreenSize( dot_width, dot_height );
-					
-					draw_pos_y = text_widget_pos_y + text_widget_height / 2;
-					if( l < 10 )
-					{
-						draw_pos_x = text_widget_pos_x + text_widget_width - 1;
-					}
-					else
-					{
-						draw_pos_x = text_widget_pos_x;
-					}
-					canvas_widget.DrawLine( draw_pos_x, draw_pos_y, dot_pos_x+dot_width/2, draw_pos_y, 2, ARGBF( 0.6, 1, 1, 1 ) );
-					canvas_widget.DrawLine( dot_pos_x+dot_width/2, draw_pos_y, dot_pos_x+dot_width/2, dot_pos_y+dot_height/2, 2, ARGBF( 0.6, 1, 1, 1 ) );	
-				}
-			}
-			else
-			{
-				panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + l );
-				panel_widget.Show( false );
 			}
 		}
 	}

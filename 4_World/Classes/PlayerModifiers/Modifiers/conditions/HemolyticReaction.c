@@ -46,12 +46,12 @@ class HemolyticReaction: ModifierBase
 
 	override void OnTick(PlayerBase player, float deltaT)
 	{
-		player.AddHealth("","Blood",-ModifierConstants.HEMOLYTIC_BLOOD_DRAIN_PER_SEC * deltaT);
+		player.AddHealth("","Blood",-PlayerConstants.HEMOLYTIC_BLOOD_DRAIN_PER_SEC * deltaT);
 	}
 	
 	float CalculateRunTime()
 	{
-		float time = ModifierConstants.HEMOLYTIC_BLOODLOSS_AMOUNT / ModifierConstants.SALINE_BLOOD_REGEN_PER_SEC;
+		float time = PlayerConstants.HEMOLYTIC_BLOODLOSS_AMOUNT / PlayerConstants.SALINE_BLOOD_REGEN_PER_SEC;
 		return time;
 	}
 };

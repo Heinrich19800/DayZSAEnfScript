@@ -2,7 +2,7 @@ class ActionStripCarrierVestCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT);
 	}
 };
 
@@ -56,13 +56,13 @@ class ActionStripCarrierVest: ActionContinuousBase
 		return "Strip vest";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		if ( item && item.GetHierarchyRootPlayer() == player )
+		if ( action_data.m_MainItem && action_data.m_MainItem.GetHierarchyRootPlayer() == action_data.m_Player )
 		{
 			TStringArray results;
 			Class.CastTo(results, new TStringArray);
-			string itemName = item.GetType();
+			string itemName = action_data.m_MainItem.GetType();
 			EntityAI object;
 			results.Insert("PlateCarrierBlank");
 			
@@ -84,11 +84,11 @@ class ActionStripCarrierVest: ActionContinuousBase
 
 			for ( int i = 0; i < results.Count(); i++ )
 			{
-				object = EntityAI.Cast( GetGame().CreateObject(results.Get(i), player.GetPosition(), false) );
-				object.SetHealth("","",item.GetHealth("",""));
+				object = EntityAI.Cast( GetGame().CreateObject(results.Get(i), action_data.m_Player.GetPosition(), false) );
+				object.SetHealth("","",action_data.m_MainItem.GetHealth("",""));
 			}
-			item.Delete();
-			item = NULL;
+			action_data.m_MainItem.Delete();
+			action_data.m_MainItem = NULL;
 		}
 	}
 };

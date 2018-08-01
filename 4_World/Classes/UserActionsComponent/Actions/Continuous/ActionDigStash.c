@@ -2,7 +2,7 @@ class ActionDigStashCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DIG_STASH);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DIG_STASH);
 	}
 };
 
@@ -39,7 +39,7 @@ class ActionDigStash: ActionContinuousBase
 	{
 		return "Dig stash";
 	}
-
+	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		ItemBase target_IB;
@@ -57,8 +57,7 @@ class ActionDigStash: ActionContinuousBase
 					return true;
 				}
 				
-				// TO DO: Create IsOnSoftSurface() method and use that instead of this long if
-				if ( surface_type == "cp_dirt"  ||  surface_type == "cp_broadleaf_dense1"  ||  surface_type == "cp_broadleaf_dense2"  ||  surface_type == "cp_broadleaf_sparse1"  ||  surface_type == "cp_broadleaf_sparse2"  ||  surface_type == "cp_conifer_common1"  ||  surface_type == "cp_grass"  ||  surface_type == "cp_grass_tall"  ||  surface_type == "grass_dry_ext" )
+				if ( GetGame().IsSurfaceSoft(surface_type) )
 				{
 					// Check slope angle
 					vector posA = position + "0.5 0 0.5";
@@ -85,9 +84,33 @@ class ActionDigStash: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnExecuteClient( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		super.OnExecuteClient( action_data );
+		
+		SpawnParticleShovelRaise( action_data );
+	}
+	
+	override void OnExecuteServer( ActionData action_data )
+	{
+		super.OnExecuteServer( action_data );
+		
+		if ( !GetGame().IsMultiplayer() ) // Only in singleplayer
+		{
+			SpawnParticleShovelRaise( action_data );
+		}
+	}
+	
+	void SpawnParticleShovelRaise( ActionData action_data )
+	{
+		PlayerBase player = action_data.m_Player;
+		Particle.Play( ParticleList.DIGGING_STASH, player );
+	}
+	
+	
+	override void OnCompleteServer( ActionData action_data )
+	{
+		Object targetObject = action_data.m_Target.GetObject();
 		UndergroundStash target_stash;		
 		if ( Class.CastTo(target_stash, targetObject) )
 		{
@@ -95,11 +118,11 @@ class ActionDigStash: ActionContinuousBase
 			
 			if (chest)
 			{
-				chest.SetPosition( target_stash.GetPosition() );
-				target_stash.SetStashedItem(NULL);
+				DigOutStashLambda lambda(target_stash, "", action_data.m_Player);
+				action_data.m_Player.ServerReplaceItemWithNew(lambda);
 			}
-			
-			g_Game.ObjectDelete( target_stash );
+			else
+				g_Game.ObjectDelete( target_stash );
 		}
 		else
 		{
@@ -107,15 +130,15 @@ class ActionDigStash: ActionContinuousBase
 			UndergroundStash stash;
 			vector pos = targetObject.GetPosition();
 			
-			targetObject.SetPosition( targetObject.GetPosition() + "0 -5 0" ); // TO DO: Do not use teleportation hack if possible!
+			//targetObject.SetPosition( targetObject.GetPosition() + "0 -5 0" ); // TO DO: Do not use teleportation hack if possible!
 			
 			Class.CastTo(stashed_item,  targetObject );
 			Class.CastTo(stash,  GetGame().CreateObject("UndergroundStash", pos, false) );
-			
+			  
 			if ( stash )
 			{
-				stash.SetStashedItem(stashed_item);
 				stash.PlaceOnGround();
+				action_data.m_Player.ServerTakeEntityToTargetCargo(stash, stashed_item);
 			}
 			else
 			{
@@ -123,6 +146,17 @@ class ActionDigStash: ActionContinuousBase
 			}
 		}
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+	}
+};
+
+class DigOutStashLambda : DropEquipAndDestroyRootLambda
+{
+	void DigOutStashLambda (EntityAI old_item, string new_item_type, PlayerBase player)
+	{ }
+
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
+	{
+		super.CopyOldPropertiesToNew(old_item, new_item);
 	}
 };

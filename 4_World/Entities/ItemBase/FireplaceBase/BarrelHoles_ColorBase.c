@@ -21,6 +21,11 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		RegisterNetSyncVariableBool( "m_IsOpened" );
 	}
 	
+	override bool IsHeavyBehaviour()
+	{
+		return true;
+	}
+	
 	override bool IsBarrelWithHoles()
 	{
 		return true;
@@ -153,8 +158,9 @@ class BarrelHoles_ColorBase extends FireplaceBase
 			//rotate handle
 			item_base.SetAnimationPhase ( ANIMATION_COOKWARE_HANDLE, 1 );
 			
-			//stop steam particle
-			ParticleCookingEquipmentSteamStop();	
+			//remove audio visuals
+			Bottle_Base cooking_pot = Bottle_Base.Cast( item );
+			cooking_pot.RemoveAudioVisuals();	
 		}
 		
 		//refresh fireplace visuals
@@ -202,7 +208,7 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		{
 			return false;
 		}
-		if ( HasAshes() || IsBurning() || !IsCargoEmpty() || IsItemTypeAttached( ATTACHMENT_COOKING_POT ) )
+		if ( HasAshes() || IsBurning() || !IsCargoEmpty() || IsItemTypeAttached( ATTACHMENT_COOKING_POT ) || IsOpened() )
 		{
 			return false;
 		}
@@ -216,7 +222,7 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		return m_IsOpened;
 	}
 	
-	void SetOpenState( bool state )
+	override void SetOpenState( bool state )
 	{
 		m_IsOpened = state;
 		
@@ -233,7 +239,7 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		SetOpenState( true );
 		
 		//refresh
-		RefreshFireParticlesAndSounds();
+		RefreshFireParticlesAndSounds( true );
 	}
 	
 	override void Close()
@@ -246,15 +252,15 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		SetOpenState( false );
 		
 		//refresh
-		RefreshFireParticlesAndSounds();
+		RefreshFireParticlesAndSounds( true );
 	}
 	
 	//particles
-	override void RefreshFireParticlesAndSounds()
+	override void RefreshFireParticlesAndSounds( bool force_refresh = false )
 	{
 		FireplaceFireState fire_state = GetFireState();
 		
-		if ( m_LastFireState != fire_state )
+		if ( m_LastFireState != fire_state || force_refresh )
 		{
 			if ( fire_state == FireplaceFireState.START_FIRE )
 			{

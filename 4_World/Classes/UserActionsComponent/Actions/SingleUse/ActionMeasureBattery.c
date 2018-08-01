@@ -36,22 +36,22 @@ class ActionMeasureBattery: ActionSingleUseBase
 		return "#lick_battery";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
 		
 		float energy = 0;
-		if ( item.HasEnergyManager() ) 
+		if ( action_data.m_MainItem.HasEnergyManager() ) 
 		{
-			energy = item.GetCompEM().GetEnergy();
+			energy = action_data.m_MainItem.GetCompEM().GetEnergy();
 		}
-		item.TransferModifiers(player);
+		action_data.m_MainItem.TransferModifiers(action_data.m_Player);
 		if(energy > 0) 
 		{
-			InformPlayers(player,target,UA_FINISHED);
+			InformPlayers(action_data.m_Player,action_data.m_Target,UA_FINISHED);
 		}
 		if(energy == 0) 
 		{
-			InformPlayers(player,target,UA_FAILED);
+			InformPlayers(action_data.m_Player,action_data.m_Target,UA_FAILED);
 		}
 	}
 };

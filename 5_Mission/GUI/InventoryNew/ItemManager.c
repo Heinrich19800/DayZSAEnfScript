@@ -13,10 +13,13 @@ class ItemManager
 	protected ref Timer m_ToolTipTimer;
 
 	protected EntityAI m_SelectedItem;
-	protected Widget m_SelectedWidget;
+	protected ref Icon m_SelectedIcon;
 	protected ItemPreviewWidget m_Ipw;
 	
 	protected HandsPreview m_HandsPreview;
+	
+	protected bool m_ItemMicromanagmentMode;
+	protected bool m_ItemMoving;
 	
 	protected const float TOOLTIP_DELAY = 0.25; // in seconds
 	
@@ -28,6 +31,26 @@ class ItemManager
 		m_TooltipWidget = GetGame().GetWorkspace().CreateWidgets("gui/layouts/inventory_new/day_z_inventory_new_tooltip.layout", NULL );
 		m_TooltipWidget.Show( false );
 		m_Instance = this;
+	}
+	
+	void SetItemMoving( bool item_moving )
+	{
+		m_ItemMoving = item_moving;
+	}
+	
+	bool IsItemMoving()
+	{
+		return m_ItemMoving;
+	}
+	
+	void SetItemMicromanagmentMode( bool item_micromanagment_mode )
+	{
+		m_ItemMicromanagmentMode = item_micromanagment_mode;
+	}
+	
+	bool IsMicromanagmentMode()
+	{
+		return m_ItemMicromanagmentMode;
 	}
 	
 	HandsPreview GetHandsPreview()
@@ -45,20 +68,15 @@ class ItemManager
 		return m_SelectedItem;
 	}
 
-	Widget GetSelectedWidget()
+	Icon GetSelectedIcon()
 	{
-		return m_SelectedWidget;
+		return m_SelectedIcon;
 	}
 
-	void SetSelectedItem( EntityAI selected_item, Widget selected_widget )
+	void SetSelectedItem( EntityAI selected_item, Icon selected_icon )
 	{
-		if( m_SelectedWidget != NULL )
-		{
-			m_SelectedWidget.Show( false );
-		}
-
 		m_SelectedItem = selected_item;
-		m_SelectedWidget = selected_widget;
+		m_SelectedIcon = selected_icon;
 	}
 
 	void SetSelectedVicinityItem( ItemPreviewWidget ipw )

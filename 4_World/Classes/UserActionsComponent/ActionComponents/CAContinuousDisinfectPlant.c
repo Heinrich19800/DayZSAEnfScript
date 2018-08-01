@@ -8,10 +8,10 @@ class CAContinuousDisinfectPlant : CAContinuousQuantity
 		m_QuantityUsedPerSecond = quantity_used_per_second;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		PlantBase target_PB;
-		if (Class.CastTo(target_PB, target.GetObject()))
+		if (Class.CastTo(target_PB, action_data.m_Target.GetObject()))
 		{
 			m_SpentQuantity = 0;
 			if ( !m_SpentUnits )
@@ -22,9 +22,9 @@ class CAContinuousDisinfectPlant : CAContinuousQuantity
 			{	
 				m_SpentUnits.param1 = 0;
 			}
-			if ( item )
+			if ( action_data.m_MainItem )
 			{
-				m_ItemQuantity = item.GetQuantity();
+				m_ItemQuantity = action_data.m_MainItem.GetQuantity();
 			}
 			if ( target_PB ) 
 			{
@@ -35,11 +35,11 @@ class CAContinuousDisinfectPlant : CAContinuousQuantity
 		}
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item  )
+	override int Execute( ActionData action_data  )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
@@ -52,23 +52,23 @@ class CAContinuousDisinfectPlant : CAContinuousQuantity
 		{
 			if ( m_SpentQuantity < m_ItemQuantity  &&  m_SpentQuantity < m_PlantNeededSpraying )
 			{
-				m_SpentQuantity += m_QuantityUsedPerSecond * player.GetDeltaT();
-				float transfered_spray = player.GetSoftSkillManager().AddSpecialtyBonus( m_SpentQuantity, m_Action.GetSpecialtyWeight(), true );
+				m_SpentQuantity += m_QuantityUsedPerSecond * action_data.m_Player.GetDeltaT();
+				float transfered_spray = action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( m_SpentQuantity, m_Action.GetSpecialtyWeight(), true );
 				
 				if ( m_Action ) 
 				{
 					PlantBase plant;
 					Class.CastTo(plant,  targetObject );
-					m_Action.SendMessageToClient(player, plant.StopInfestation( transfered_spray ));
+					m_Action.SendMessageToClient(action_data.m_Player, plant.StopInfestation( transfered_spray ));
 				}
 				
-				CalcAndSetQuantity(player, target, item);
+				CalcAndSetQuantity( action_data );
 				
 				return UA_PROCESSING;
 			}
 			else
 			{
-				CalcAndSetQuantity(player, target, item);
+				CalcAndSetQuantity( action_data );
 				return UA_FINISHED;
 			}
 		}

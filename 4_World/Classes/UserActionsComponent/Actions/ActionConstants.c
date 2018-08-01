@@ -9,7 +9,7 @@ class UAQuantityConsumed
 	const float POUR_LIQUID = 50;
 	const float DRAIN_LIQUID = 50;
 	const float DRINK = 50;
-	const float BLOOD = 100;
+	const float BLOOD = 50;
 	const float SALINE = 100;
 	const float FUEL = 500;
 	const float FIREPLACE_EXTINGUISHER = 200;
@@ -29,7 +29,8 @@ class UATimeSpent
 	const float DEFAULT_SORT = 2;
 	const float DEFAULT_CONSTRUCT = 5;
 	const float DEFAULT_DECONSTRUCT = 5;
-	const float DEFAULT_PLACE = 2;
+	const float DEFAULT_PLACE = 0;
+	const float DEFAULT_DEPLOY = 5;
 	const float DEFAULT_CRAFT = 6;
 	
 	const float BANDAGE = 5;
@@ -69,6 +70,8 @@ class UATimeSpent
 	const float FIREPLACE_IGNITE = 4;
 	const float FIREPLACE_HANDDRILL = 8;
 	const float SALINE = 10;
+	
+	const float START_ENGINE = 3;
 };
 
 /**@class	Constants for maximal Distances where from the action can be done

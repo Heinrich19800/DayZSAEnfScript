@@ -1,11 +1,11 @@
-class ModifierConstants 
+class PlayerConstants 
 {
-	const float STOMACH_ENERGY_TRANSFERED_PER_SEC 		= 10;	//amount of kcal transfered to energy per second
-	const float STOMACH_WATER_TRANSFERED_PER_SEC 		= 20;	//amount of ml transfered to water per second
-	const float STOMACH_SOLID_EMPTIED_PER_SEC 			= 5;	//amount of g/ml emptied from stomach per second
-	//const float STOMACH_EMPTIED_LIQUID_PER_SEC	 		= ModifierConstants.WATER_TRANSFERED_PER_SEC;
+	const float STOMACH_ENERGY_TRANSFERED_PER_SEC 		= 1;	//amount of kcal transfered to energy per second(this should ideally be higher than what player burns under high metabolic load[sprint])
+	const float STOMACH_WATER_TRANSFERED_PER_SEC 		= 4;	//amount of ml transfered to water per second(this should ideally be higher than what player burns under high metabolic load[sprint])
+	const float STOMACH_SOLID_EMPTIED_PER_SEC 			= 1;	//amount of g/ml emptied from stomach per second
+	//const float STOMACH_EMPTIED_LIQUID_PER_SEC	 		= PlayerConstants.WATER_TRANSFERED_PER_SEC;
 	const float LOW_WATER_TRESHOLD 						= 250;	//threshold from which water affects health
-	const float WATER_DECREMENT_PER_SEC 				= ModifierConstants.STOMACH_WATER_TRANSFERED_PER_SEC / 4; //used in poisoning for now
+	const float WATER_DECREMENT_PER_SEC 				= PlayerConstants.STOMACH_WATER_TRANSFERED_PER_SEC / 4; //used in poisoning for now
 	const float LOW_ENERGY_TRESHOLD 					= 200;	//threshold from which energy affects health
 	//const float ENERGY_DECREMENT_PER_SEC 				= 0.035; //not used?
 	//const float DAMAGE_PER_SEC 							= 1; //not used? (was how much HP is lowered while low on energy/water)
@@ -71,4 +71,20 @@ class ModifierConstants
 	
 	const float HEALTH_REGEN_MIN					= 0.025;	//health regen rate at BLOOD_THRESHOLD_FATAL blood level
 	const float HEALTH_REGEN_MAX					= 0.15;		//health regen rate at MAXIMUM blood level
+	
+	const float UNCONSCIOUS_THRESHOLD				= 25.0;		//player goes unconscious when we get under this threshold
+	const float CONSCIOUS_THRESHOLD					= 75.0;		//player regains consciousness when he gets above this threshold
+	
+	const float SHOCK_REFILL_CONSCIOS_SPEED			= 10;	//shock refill speed when the player is conscious
+	const float SHOCK_REFILl_UNCONSCIOUS_SPEED		= 0.1;  //shock refill speed when the player is unconscious
+	
+	const float SHOCK_DAMAGE_BLOOD_THRESHOLD_HIGH	= 2750; // we start dealing shock damage over time when we get at this value or lower
+	const float SHOCK_DAMAGE_BLOOD_THRESHOLD_LOW	= 2500; // the closer we get to this value, the higher the over time shock damage we deal
+	
+	const float SHOCK_DAMAGE_HIGH	= 11; // shock damage when the blood near the upper blood threshold
+	const float SHOCK_DAMAGE_LOW	= 10; // shock damage when the blood near the lower blood threshold
+	
+	const float SHOCK_REFILL_COOLDOWN_AFTER_HIT = 15;
+	
+	const float UNCONSCIOUS_IN_WATER_TIME_LIMIT_TO_DEATH	=	20;// how long can player survive while unconscious when in water in secs 
 }

@@ -14,6 +14,7 @@ class DayZPlayerCameraResult
 	vector		m_CameraTM[4];			//!< transformation matrix - pos + orient of the camera
 	float 		m_fFovMultiplier;		//!< fov multiplier - 1.0 default - used for modifying fov - 
 	float 		m_fFovAbsolute;			//!< fov absolute value override - -1.0 default, if set - overrides absolute fov setting
+	float		m_fNearPlane;			//!< nearplane distance
 	float 		m_fPositionModelSpace;  //!< 0.0 position is in heading space, 1.0 position is in model space
 	float 		m_fDistance;			//!< camera distance (external cameras only)
 	float 		m_fUseHeading;			//!< 0..1 (0 uses direct dir returned, 1 uses heading from player)
@@ -74,6 +75,11 @@ class DayZPlayerCamera
 		return	"0 0 0";
 	}
 	
+	string GetCameraName()
+	{
+		return "DayZPlayerCamera";
+	}
+	
 	//! data 
 	protected 	DayZPlayer 				m_pPlayer;		//!< player camera is attached to
 	protected 	HumanInputController	m_pInput;		//!< human input 
@@ -97,6 +103,14 @@ class DayZPlayerTypeStepSoundLookupTable
 class DayZPlayerTypeAttachmentSoundLookupTable
 {
 	SoundObjectBuilder GetSoundBuilder(int eventId, string slotName, int attachmentHash)
+	{
+		return null;
+	}
+}
+
+class DayZPlayerTypeAnimTable
+{
+	AnimSoundEvent GetSoundEvent(int event_id)
 	{
 		return null;
 	}
@@ -217,6 +231,26 @@ class DayZPlayerType
 		return m_pAttachmentSoundLookupTable;
 	}
 	
+	void RegisterSoundTable(DayZPlayerTypeAnimTable pST)
+	{
+		m_pSoundTable = pST;
+	}
+	
+	DayZPlayerTypeAnimTable GetSoundTable()
+	{
+		return m_pSoundTable;
+	}
+	
+	void RegisterSoundVoiceTable(DayZPlayerTypeAnimTable pVST)
+	{
+		m_pSoundVoiceTable = pVST;
+	}
+	
+	DayZPlayerTypeAnimTable GetSoundVoiceTable()
+	{
+		return m_pSoundVoiceTable;
+	}
+	
 	NoiseParams GetNoiseParamsStand()
 	{
 		return m_pNoiseStepStand;
@@ -295,14 +329,19 @@ class DayZPlayerType
 	// returns command move setting for write - in init phase
 	proto native 	SHumanCommandMoveSettings	CommandMoveSettingsW();
 
-	// returns command move setting for write - in init phase
+	// returns command swim setting for write - in init phase
 	proto native 	SHumanCommandSwimSettings	CommandSwimSettingsW();
+
+	// returns command swim setting for write - in init phase
+	proto native 	SHumanCommandClimbSettings	CommandClimbSettingsW();
 
 
 	//!< this is used for getting appropriate sound effect to play step event on various surfaces && boots
 	//!< it's downcasted to StepSoundLookupTable
 	ref DayZPlayerTypeStepSoundLookupTable m_pStepSoundLookupTable;
 	ref DayZPlayerTypeAttachmentSoundLookupTable m_pAttachmentSoundLookupTable;
+	ref DayZPlayerTypeAnimTable m_pSoundTable;
+	ref DayZPlayerTypeAnimTable m_pSoundVoiceTable;
 	ref NoiseParams m_pNoiseStepStand;
 	ref NoiseParams m_pNoiseStepCrouch;
 	ref NoiseParams m_pNoiseStepProne;
@@ -407,11 +446,11 @@ enum DayZPlayerConstants
     //! ---------------------------------------------------------
 
 	//! internal action commands used in HumanCommandActionCallback.InternalCommand()
-	CMD_ACTIONINT_INTERRUPT		= -2,	//!< secondary ending
-	CMD_ACTIONINT_END2			= -1,	//!< secondary ending
-	CMD_ACTIONINT_END			= 0, 	//!< end action
-	CMD_ACTIONINT_ACTION		= 1, 	//!< one time secondary action within an action
-	CMD_ACTIONINT_ACTIONLOOP	= 2, 	//!< loop secondary action within an action
+	CMD_ACTIONINT_INTERRUPT				= -2,		//!< secondary ending
+	CMD_ACTIONINT_END2					= -1,		//!< secondary ending
+	CMD_ACTIONINT_END					= 0,		//!< end action
+	CMD_ACTIONINT_ACTION				= 1,		//!< one time secondary action within an action
+	CMD_ACTIONINT_ACTIONLOOP			= 2,		//!< loop secondary action within an action
 
 
 	//! animations constants 
@@ -423,125 +462,144 @@ enum DayZPlayerConstants
 		
     //! --------------------------
     //! modifier (differential animation)
-    CMD_ACTIONMOD_DRINK = 0,					// erc,cro    		[end, end2]
-	CMD_ACTIONMOD_EAT = 1,						// erc,cro    		[end, end2]
-	CMD_ACTIONMOD_EMPTYCANISTER = 2,			// erc,cro          [end]
-	CMD_ACTIONMOD_CATCHRAIN = 3,				// erc,cro			[end]
-	CMD_ACTIONMOD_EATPILLS = 4,					// erc,cro			[end]
-	CMD_ACTIONMOD_EATTABLETS = 5,				// erc,cro   	    [end]
-	CMD_ACTIONMOD_EMPTYBOTTLE = 6,				// erc,cro          [end]
-	CMD_ACTIONMOD_OPENCOMPASS = 7,				// erc              [end]
-	CMD_ACTIONMOD_DRINKCAN = 8,					// erc,cro			[end]
-	CMD_ACTIONMOD_WALKIETALKIETUNE = 9,			// erc,cro			[end]
-	CMD_ACTIONMOD_GIVEL = 10,					// erc,cro			[end]
-	CMD_ACTIONMOD_GIVER = 11,					// erc,cro			[end]
-	CMD_ACTIONMOD_SHAVE = 12,					// erc,cro			[end]
-	CMD_ACTIONMOD_FILLMAG = 13,					// erc,cro			[end]
-	CMD_ACTIONMOD_EMPTYMAG = 14,				// erc,cro			[end]
-	CMD_ACTIONMOD_DRINKPOT = 15,				// erc,cro			[end]
-	CMD_ACTIONMOD_EMPTYPOT = 16,				// erc,cro			[end]
-	CMD_ACTIONMOD_EATFRUIT = 17,				// erc,cro			[end]
-	CMD_ACTIONMOD_TAKETEMPSELF = 18,			// erc,cro			[end]
-	CMD_ACTIONMOD_CLEANHANDSBOTTLE = 19,		// erc,cro			[end]
+    CMD_ACTIONMOD_DRINK					= 0,		// erc,cro    		[end, end2]
+	CMD_ACTIONMOD_EAT					= 1,		// erc,cro    		[end, end2]
+	CMD_ACTIONMOD_EMPTYCANISTER			= 2,		// erc,cro          [end]
+	CMD_ACTIONMOD_CATCHRAIN				= 3,		// erc,cro			[end]
+	CMD_ACTIONMOD_EATPILLS				= 4,		// erc,cro			[end]
+	CMD_ACTIONMOD_EATTABLETS			= 5,		// erc,cro   	    [end]
+	CMD_ACTIONMOD_EMPTYBOTTLE			= 6,		// erc,cro          [end]
+	CMD_ACTIONMOD_VIEWCOMPASS			= 7,		// erc,cro          [end]
+	CMD_ACTIONMOD_DRINKCAN				= 8,		// erc,cro			[end]
+	CMD_ACTIONMOD_WALKIETALKIETUNE		= 9,		// erc,cro			[end]
+	CMD_ACTIONMOD_GIVEL					= 10,		// erc,cro			[end]
+	CMD_ACTIONMOD_GIVER					= 11,		// erc,cro			[end]
+	CMD_ACTIONMOD_SHAVE					= 12,		// erc,cro			[end]
+	CMD_ACTIONMOD_FILLMAG				= 13,		// erc,cro			[end]
+	CMD_ACTIONMOD_EMPTYMAG				= 14,		// erc,cro			[end]
+	CMD_ACTIONMOD_DRINKPOT				= 15,		// erc,cro			[end]
+	CMD_ACTIONMOD_EMPTYPOT				= 16,		// erc,cro			[end]
+	CMD_ACTIONMOD_EATFRUIT				= 17,		// erc,cro			[end]
+	CMD_ACTIONMOD_TAKETEMPSELF			= 18,		// erc,cro			[end]
+	CMD_ACTIONMOD_VIEWMAP				= 19,		// erc,cro			[end]
+	CMD_ACTIONMOD_RAISEMEGAPHONE		= 20,		// erc				[end]
+	CMD_ACTIONMOD_SEARCHINVENTORY		= 21,		// erc				[end]
+	CMD_ACTIONMOD_CRAFTING				= 22,		// erc,cro			[end]
+	CMD_ACTIONMOD_LOOKOPTICS			= 23,		// erc,cro			[end]
 	
 	// onetime 
-	CMD_ACTIONMOD_LICKBATTERY = 500,    		// erc,cro,pne
-	CMD_ACTIONMOD_PICKUP = 501,         		// erc,cro,pne
-	CMD_ACTIONMOD_LIGHTFLARE = 502,     		// erc,cro,pne
-	CMD_ACTIONMOD_LITCHEMLIGHT = 503,   		// erc,cro,pne
-	CMD_ACTIONMOD_UNPINGRENAGE = 504,   		// erc,cro,pne
-	CMD_ACTIONMOD_OPENDOORFW = 505,     		// erc,cro
-	CMD_ACTIONMOD_OPENLID = 506,        		// erc,cro 
-	CMD_ACTIONMOD_CLOSELID = 507,       		// erc,cro 	
-	CMD_ACTIONMOD_WALKIETALKIEON = 508, 		// erc,cro,pne
-	CMD_ACTIONMOD_WALKIETALKIEOFF = 509,		// erc,cro,pne
-	CMD_ACTIONMOD_BATONEXTEND = 510,    		// erc,cro
-	CMD_ACTIONMOD_BATONRETRACT = 511,   		// erc,cro
-	CMD_ACTIONMOD_UNLOCKHANDCUFFTARGET = 512,   // erc,cro
-	CMD_ACTIONMOD_FISHINGRODEXTEND = 513,   	// erc,cro
-	CMD_ACTIONMOD_FISHINGRODRETRACT = 514,   	// erc,cro
-	CMD_ACTIONMOD_TAKEITEM = 515,   			// erc,cro,pne
-	CMD_ACTIONMOD_HIDEITEM = 516,   			// erc,cro,pne
+	CMD_ACTIONMOD_PICKUP_HANDS			= 500,		// erc,cro
+	CMD_ACTIONMOD_PICKUP_INVENTORY		= 501,		// erc,cro
+	CMD_ACTIONMOD_LICKBATTERY			= 502,		// erc,cro
+	CMD_ACTIONMOD_LIGHTFLARE			= 503,		// erc,cro
+	CMD_ACTIONMOD_LITCHEMLIGHT			= 504,		// erc,cro
+	CMD_ACTIONMOD_UNPINGRENAGE			= 505,		// erc,cro
+	CMD_ACTIONMOD_OPENDOORFW			= 506,		// erc,cro
+	CMD_ACTIONMOD_OPENLID				= 507,		// erc,cro 
+	CMD_ACTIONMOD_CLOSELID				= 508,		// erc,cro 	
+	CMD_ACTIONMOD_WALKIETALKIEON		= 509,		// erc,cro
+	CMD_ACTIONMOD_WALKIETALKIEOFF		= 510,		// erc,cro
+	CMD_ACTIONMOD_BATONEXTEND			= 511,		// erc,cro
+	CMD_ACTIONMOD_BATONRETRACT			= 512,		// erc,cro
+	CMD_ACTIONMOD_UNLOCKHANDCUFFTARGET	= 513,		// erc,cro
+	CMD_ACTIONMOD_FISHINGRODEXTEND		= 514,		// erc,cro
+	CMD_ACTIONMOD_FISHINGRODRETRACT		= 515,		// erc,cro
+	CMD_ACTIONMOD_CLEANHANDSBOTTLE		= 516,		// erc,cro
+	CMD_ACTIONMOD_OPENFOOD				= 517,		// erc,cro
+	CMD_ACTIONMOD_ATTACHSCOPE			= 518,		// erc,cro
+	CMD_ACTIONMOD_ATTACHBARREL			= 519,		// erc,cro
 
     //! --------------------------
     //! fb (full body)
-    CMD_ACTIONFB_DRINK = 0,						// pne				[end, end2]
-	CMD_ACTIONFB_EAT = 1,						// pne				[end, end2]
-	CMD_ACTIONFB_CATCHRAIN = 3,					// pne				[end]
-	CMD_ACTIONFB_EATPILLS = 4,					// pne				[end]
-	CMD_ACTIONFB_EATTABLETS = 5,				// pne				[end]
-	CMD_ACTIONFB_DRINKCAN = 8,					// pne				[end]
-	CMD_ACTIONFB_WALKIETALKIETUNE = 9,			// pne				[end]
-	CMD_ACTIONFB_GIVEL = 10,					// pne				[end]
-	CMD_ACTIONFB_GIVER = 11,					// pne				[end]
-	CMD_ACTIONFB_FILLMAG = 13,					// pne				[end]
-	CMD_ACTIONFB_EMPTYMAG = 14,					// pne				[end]
-	CMD_ACTIONFB_DRINKPOND = 50,	        	// cro 	      	    [end]
-	CMD_ACTIONFB_DRINKWELL = 51,         		// cro 	            [end]
-	CMD_ACTIONFB_FILLBOTTLEWELL = 52,    		// cro	            [end]
-	CMD_ACTIONFB_FIREESTINGUISHER = 53,  		// erc              [end]
-	CMD_ACTIONFB_WRING = 54,   		    		// cro 		        [end]
-	CMD_ACTIONFB_BERRIES = 55,           		// erc,cro		    [end]
-	CMD_ACTIONFB_CHOPTREE = 56,          		// erc			    [end]
-	CMD_ACTIONFB_DIGSHOVEL = 57,         		// erc		        [end]
-	CMD_ACTIONFB_DIGHOE = 58,            		// erc			    [end]
-	CMD_ACTIONFB_FISHING = 59,           		// cro			    [action, end(catch fish), end2(not catching anything) ]
-	CMD_ACTIONFB_CPR = 60,              		// cro     		    [end]
-	CMD_ACTIONFB_BANDAGE = 61,          		// cro		        [end]
-	CMD_ACTIONFB_CRAFTING = 62,         		// cro		        [end]
-	CMD_ACTIONFB_INTERRACTPLAYER = 63,  		// cro 	            [end]
-	CMD_ACTIONFB_DRINKCANISTER = 64, 			// erc,cro          [end]
-	CMD_ACTIONFB_FORCEFEED = 65, 	    		// erc,cro          [end]
-	CMD_ACTIONFB_BANDAGETARGET = 66, 			// erc,cro          [end]
-	CMD_ACTIONFB_DISINFECTTARGET = 67, 			// cro     		    [end]
-	CMD_ACTIONFB_DEPLOY = 68,           		// cro			    [end]
-	CMD_ACTIONFB_STARTFIREMATCH = 69,   		// cro			    [end]
-	CMD_ACTIONFB_ANIMALSKINNING = 70,   		// cro				[end]
-	CMD_ACTIONFB_WASHHANDSWELL = 71,			// cro				[end]
-	CMD_ACTIONFB_WASHHANDSPOND = 72,    		// cro				[end]
-	CMD_ACTIONFB_SALINEBLOODBAGTARGET = 73,  	// erc,cro			[end]
-	CMD_ACTIONFB_SALINEBLOODBAG = 74,  			// erc,cro			[end]
-	CMD_ACTIONFB_STITCHUPSELF = 75,   			// erc,cro			[end]
-	CMD_ACTIONFB_VOMIT = 76,            		// cro				[end]
-	CMD_ACTIONFB_CUTTIESTARGET = 77,    		// erc,cro			[end (finish cutting), end2 (cancel cutting)]
-	CMD_ACTIONFB_TIEUPTARGET = 78,  			// erc,cro			[end (finish tying up), end2 (cancel tying up)]
-	CMD_ACTIONFB_STARTFIRETORCH = 79,			// erc,cro			[end]
-	CMD_ACTIONFB_CHECKPULSE = 80,				// cro				[end]
-	CMD_ACTIONFB_EMPTYSEEDSPACK = 81,			// erc, cro			[end]
-	CMD_ACTIONFB_CLEANWOUNDSTARGET = 82,		// erc, cro			[end]
-	CMD_ACTIONFB_STARTFIREDRILL = 83,			// erc, cro			[end]
-	CMD_ACTIONFB_STARTFIRELIGHTER = 84,			// erc, cro			[end]
-	CMD_ACTIONFB_COLLECTBLOODSELF = 85,			// erc, cro			[end]
-	CMD_ACTIONFB_POURBOTTLE = 86,				// erc, cro			[end]
-	CMD_ACTIONFB_INTERACTITEM = 87,				// cro				[end]
-	CMD_ACTIONFB_POURCAN = 88,					// erc, cro			[end]
-	CMD_ACTIONFB_EATFRUIT = 89,					// pne				[end]
-	CMD_ACTIONFB_HACKBUSH = 90,					// erc				[end]
-	CMD_ACTIONFB_HACKTREE = 91,					// erc				[end]
-	CMD_ACTIONFB_TAKETEMPSELF = 92,				// pne				[end]
-	CMD_ACTIONFB_DIGHOLE = 93,					// erc				[end]
-	CMD_ACTIONFB_DIGUPCACHE = 94,				// erc				[end]
-	CMD_ACTIONFB_DEPLOY_HEAVY = 95,				// erc				[end]
-	CMD_ACTIONFB_DEPLOY_1HD = 96,				// cro				[end]
-	CMD_ACTIONFB_DEPLOY_2HD = 97,				// cro				[end]
-	CMD_ACTIONFB_BLOWFIREPLACE = 98,    		// cro				[end]
-	CMD_ACTIONFB_CLEANHANDSBOTTLE = 99,			// pne				[end]
+    CMD_ACTIONFB_DRINK					= 0,		// pne				[end, end2]
+	CMD_ACTIONFB_EAT					= 1,		// pne				[end, end2]
+	CMD_ACTIONFB_CATCHRAIN				= 3,		// pne				[end]
+	CMD_ACTIONFB_EATPILLS				= 4,		// pne				[end]
+	CMD_ACTIONFB_EATTABLETS				= 5,		// pne				[end]
+	CMD_ACTIONFB_DRINKCAN				= 8,		// pne				[end]
+	CMD_ACTIONFB_WALKIETALKIETUNE		= 9,		// pne				[end]
+	CMD_ACTIONFB_GIVEL					= 10,		// pne				[end]
+	CMD_ACTIONFB_GIVER					= 11,		// pne				[end]
+	CMD_ACTIONFB_FILLMAG				= 13,		// pne				[end]
+	CMD_ACTIONFB_EMPTYMAG				= 14,		// pne				[end]
+	CMD_ACTIONFB_DRINKPOND				= 50,		// cro 	      	    [end]
+	CMD_ACTIONFB_DRINKWELL				= 51,		// cro 	            [end]
+	CMD_ACTIONFB_FILLBOTTLEWELL			= 52,		// cro	            [end]
+	CMD_ACTIONFB_FIREESTINGUISHER		= 53,		// erc              [end]
+	CMD_ACTIONFB_WRING					= 54,		// cro 		        [end]
+	CMD_ACTIONFB_BERRIES				= 55,		// erc,cro		    [end]
+	CMD_ACTIONFB_DIGSHOVEL				= 57,		// erc		        [end]
+	CMD_ACTIONFB_DIGHOE					= 58,		// erc			    [end]
+	CMD_ACTIONFB_FISHING				= 59,		// cro			    [action (check fish), end(catch fish), end2(not catching anything ]
+	CMD_ACTIONFB_CPR					= 60,		// cro     		    [end]
+	CMD_ACTIONFB_BANDAGE				= 61,		// cro		        [end]
+	CMD_ACTIONFB_CRAFTING				= 62,		// cro		        [end]
+	CMD_ACTIONFB_INTERACT				= 63,		// erc,cro			[end]
+	CMD_ACTIONFB_DRINKCANISTER			= 64,		// erc,cro          [end]
+	CMD_ACTIONFB_FORCEFEED				= 65,		// erc,cro          [end]
+	CMD_ACTIONFB_BANDAGETARGET			= 66,		// erc,cro          [end]
+	CMD_ACTIONFB_DISINFECTTARGET		= 67,		// cro     		    [end]
+	CMD_ACTIONFB_DEPLOY					= 68,		// cro			    [end]
+	CMD_ACTIONFB_STARTFIREMATCH			= 69,		// cro			    [end]
+	CMD_ACTIONFB_ANIMALSKINNING			= 70,		// cro				[end]
+	CMD_ACTIONFB_WASHHANDSWELL			= 71,		// cro				[end]
+	CMD_ACTIONFB_WASHHANDSPOND			= 72,		// cro				[end]
+	CMD_ACTIONFB_SALINEBLOODBAGTARGET	= 73,		// erc,cro			[end]
+	CMD_ACTIONFB_SALINEBLOODBAG			= 74,		// erc,cro			[end]
+	CMD_ACTIONFB_STITCHUPSELF			= 75,		// erc,cro			[end]
+	CMD_ACTIONFB_VOMIT					= 76,		// cro				[end]
+	CMD_ACTIONFB_CUTTIESTARGET			= 77,		// erc,cro			[end (finish cutting), end2 (cancel cutting)]
+	CMD_ACTIONFB_TIEUPTARGET			= 78,		// erc,cro			[end (finish tying up), end2 (cancel tying up)]
+	CMD_ACTIONFB_STARTFIRETORCH			= 79,		// erc,cro			[end]
+	CMD_ACTIONFB_CHECKPULSE				= 80,		// cro				[end]
+	CMD_ACTIONFB_EMPTYSEEDSPACK			= 81,		// erc, cro			[end]
+	CMD_ACTIONFB_CLEANWOUNDSTARGET		= 82,		// erc, cro			[end]
+	CMD_ACTIONFB_STARTFIREDRILL			= 83,		// erc, cro			[end]
+	CMD_ACTIONFB_STARTFIRELIGHTER		= 84,		// erc, cro			[end]
+	CMD_ACTIONFB_COLLECTBLOODSELF		= 85,		// erc, cro			[end]
+	CMD_ACTIONFB_POURBOTTLE				= 86,		// erc, cro			[end]
+	CMD_ACTIONFB_POURCAN				= 88,		// erc, cro			[end]
+	CMD_ACTIONFB_EATFRUIT				= 89,		// pne				[end]
+	CMD_ACTIONFB_HACKBUSH				= 90,		// erc				[end, end2]
+	CMD_ACTIONFB_HACKTREE				= 91,		// erc				[end, end2]
+	CMD_ACTIONFB_TAKETEMPSELF			= 92,		// pne				[end]
+	CMD_ACTIONFB_DIGHOLE				= 93,		// erc				[end, end2]
+	CMD_ACTIONFB_DIGUPCACHE				= 94,		// erc				[end, end2]
+	CMD_ACTIONFB_DEPLOY_HEAVY			= 95,		// erc				[end, end2]
+	CMD_ACTIONFB_DEPLOY_1HD				= 96,		// cro				[end, end2]
+	CMD_ACTIONFB_DEPLOY_2HD				= 97,		// cro				[end, end2]
+	CMD_ACTIONFB_BLOWFIREPLACE			= 98,		// cro				[end]
+	CMD_ACTIONFB_VIEWMAP				= 99,		// pne				[end]
+	CMD_ACTIONFB_VIEWCOMPASS			= 100,		// pne				[end]
+	CMD_ACTIONFB_FILLBOTTLEPOND			= 101,		// erc, cro			[end]
+	CMD_ACTIONFB_PLACING_HEAVY			= 102,		// erc				[end, end2]
+	CMD_ACTIONFB_PLACING_1HD			= 103,		// cro				[end, end2]
+	CMD_ACTIONFB_PLACING_2HD			= 104,		// cro				[end, end2]
+	CMD_ACTIONFB_CUTBARK				= 105,		// erc,cro			[end, end2]
+	CMD_ACTIONFB_VIEWNOTE				= 106,		// erc,cro,pne		[end]
+	CMD_ACTIONFB_SEARCHINVENTORY		= 107,		// pne				[end]
+	CMD_ACTIONFB_LOOKOPTICS				= 108,		// pne				[end]
+	CMD_ACTIONFB_MINEROCK				= 109,		// erc				[end, end2]
 	
 	// onetime 
-	CMD_ACTIONFB_LICKBATTERY = 500,    			// pne
-	CMD_ACTIONFB_PICKUP = 501,         			// pne
-	CMD_ACTIONFB_LIGHTFLARE = 502,     			// pne
-	CMD_ACTIONFB_LITCHEMLIGHT = 503,   			// pne
-	CMD_ACTIONFB_UNPINGRENAGE = 504,   			// pne
-	CMD_ACTIONFB_WALKIETALKIEON = 508, 			// pne
-	CMD_ACTIONFB_WALKIETALKIEOFF = 509,			// pne
-	CMD_ACTIONFB_TAKEITEM = 515,   				// pne
-	CMD_ACTIONFB_HIDEITEM = 516,   				// pne
-	CMD_ACTIONFB_HANDCUFFTARGET = 550,    		// erc,cro
-	CMD_ACTIONFB_MORPHINE = 551,    			// cro
-	CMD_ACTIONFB_INJECTION = 552,    			// cro
-	CMD_ACTIONFB_INJECTIONTARGET = 553,    		// erc,cro
-	CMD_ACTIONFB_DRINKSIP = 554,    			// cro
+	CMD_ACTIONFB_PICKUP_HANDS			= 500,		// pne
+	CMD_ACTIONFB_PICKUP_INVENTORY		= 501,		// pne
+	CMD_ACTIONFB_LICKBATTERY			= 502,		// pne
+	CMD_ACTIONFB_LIGHTFLARE				= 503,		// pne
+	CMD_ACTIONFB_LITCHEMLIGHT			= 504,		// pne
+	CMD_ACTIONFB_UNPINGRENAGE			= 505,		// pne
+	CMD_ACTIONFB_WALKIETALKIEON			= 506,		// pne
+	CMD_ACTIONFB_WALKIETALKIEOFF		= 507,		// pne
+	CMD_ACTIONFB_HANDCUFFTARGET			= 508,		// erc,cro
+	CMD_ACTIONFB_MORPHINE				= 509,		// cro
+	CMD_ACTIONFB_INJECTION				= 510,		// cro
+	CMD_ACTIONFB_INJECTIONTARGET		= 511,		// erc,cro
+	CMD_ACTIONFB_DRINKSIP				= 512,		// cro
+	CMD_ACTIONFB_CLEANHANDSBOTTLE		= 513,		// pne
+	CMD_ACTIONFB_OPENFOOD				= 514,		// pne
+	CMD_ACTIONFB_POKE					= 515,		// cro
+	CMD_ACTIONFB_ATTACHSCOPE			= 516,		// pne
+	CMD_ACTIONFB_ATTACHBARREL			= 517,		// pne
 	
     
     //! ---------------------------------------------------------
@@ -549,14 +607,14 @@ enum DayZPlayerConstants
     //! ---------------------------------------------------------
 	
 	// looping actions
-	CMD_ACTIONMOD_STARTENGINE = 300,    		// [end]
+	CMD_ACTIONMOD_STARTENGINE			= 300,    		// [end]
 	
 	// onetime actions
-	CMD_ACTIONMOD_DRIVER_DOOR_OPEN = 400,
-	CMD_ACTIONMOD_DRIVER_DOOR_CLOSE = 401,
-	CMD_ACTIONMOD_CODRIVER_DOOROPEN = 402,
-	CMD_ACTIONMOD_CODRIVER_DOORCLOSE = 403,
-	CMD_ACTIONMOD_STOPENGINE = 404,
+	CMD_ACTIONMOD_DRIVER_DOOR_OPEN		= 400,
+	CMD_ACTIONMOD_DRIVER_DOOR_CLOSE		= 401,
+	CMD_ACTIONMOD_CODRIVER_DOOROPEN		= 402,
+	CMD_ACTIONMOD_CODRIVER_DOORCLOSE	= 403,
+	CMD_ACTIONMOD_STOPENGINE			= 404,
 	
 	
 	
@@ -565,99 +623,104 @@ enum DayZPlayerConstants
     //! ---------------------- GESTURES -------------------------
     //! ---------------------------------------------------------
     //! modifier (differential animation)
-    CMD_GESTUREMOD_GREETING = 1000,				// erc,cro	 	    [end]
-    CMD_GESTUREMOD_POINT = 1001,				// erc,cro	 	    [end]
-    CMD_GESTUREMOD_THUMB = 1002,				// erc,cro	 	    [end, CMD_ACTIONINT_ACTION to switch to THUMB DOWN]
-    CMD_GESTUREMOD_THUMBDOWN = 1003,			// erc,cro	 	    [end, CMD_ACTIONINT_ACTION to switch to THUMB UP]
-    CMD_GESTUREMOD_SILENCE = 1004,				// erc,cro	 	    [end]
-    CMD_GESTUREMOD_TAUNT = 1005,				// erc,cro	 	    [end]
-    CMD_GESTUREMOD_TIMEOUT = 1006,				// erc,cro	 	    [end]
-    CMD_GESTUREMOD_HEART = 1007,				// erc,cro	 	    [end]
-    CMD_GESTUREMOD_FACEPALM = 1008,				// erc,cro   	    [end]
-    CMD_GESTUREMOD_WATCHING = 1009,				// erc,cro	 	    [end]
-    CMD_GESTUREMOD_HOLD = 1010,					// erc,cro	 	    [end]
-    CMD_GESTUREMOD_LISTENING = 1011,			// erc,cro	 	    [end]
-    CMD_GESTUREMOD_POINTSELF = 1012,			// erc,cro	 	    [end]
-    CMD_GESTUREMOD_LOOKATME = 1013,				// erc,cro	 	    [end]
+    CMD_GESTUREMOD_GREETING				= 1000,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_POINT				= 1001,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_THUMB				= 1002,			// erc,cro	 	    [end, CMD_ACTIONINT_ACTION to switch to THUMB DOWN]
+    CMD_GESTUREMOD_THUMBDOWN			= 1003,			// erc,cro	 	    [end, CMD_ACTIONINT_ACTION to switch to THUMB UP]
+    CMD_GESTUREMOD_SILENCE				= 1004,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_TAUNT				= 1005,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_TIMEOUT				= 1006,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_HEART				= 1007,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_FACEPALM				= 1008,			// erc,cro   	    [end]
+    CMD_GESTUREMOD_WATCHING				= 1009,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_HOLD					= 1010,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_LISTENING			= 1011,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_POINTSELF			= 1012,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_LOOKATME				= 1013,			// erc,cro	 	    [end]
+    CMD_GESTUREMOD_OKAY					= 1014,			// erc,cro	 	    [end]
 
-    CMD_GESTUREMOD_RPS = 10000,		    		// erc 	            [SPECIAL, SEE BELOW]
+    CMD_GESTUREMOD_RPS					= 10000,		// erc 	            [SPECIAL, SEE BELOW]
 
-    CMD_ACTIONINT_RPS_ROCK 	= 10,	    		// RPS Internal Gesture
-    CMD_ACTIONINT_RPS_PAPER = 11,				// RPS Internal Gesture
-    CMD_ACTIONINT_RPS_SCISSORS = 12,			// RPS Internal Gesture
+    CMD_ACTIONINT_RPS_ROCK				= 10,	    	// RPS Internal Gesture
+    CMD_ACTIONINT_RPS_PAPER				= 11,			// RPS Internal Gesture
+    CMD_ACTIONINT_RPS_SCISSORS			= 12,			// RPS Internal Gesture
 	
 	
     // onetime 		
-    CMD_GESTUREMOD_THROAT = 1100,				// erc,cro,pne
-    CMD_GESTUREMOD_CLAP = 1101,		    		// erc,cro
-    CMD_GESTUREMOD_DABBING = 1102,				// erc,cro
-    CMD_GESTUREMOD_MOVE = 1103,					// erc,cro,pne
-    CMD_GESTUREMOD_DOWN = 1104,					// erc,cro,pne
-    CMD_GESTUREMOD_COME = 1105,					// erc,cro,pne
-    CMD_GESTUREMOD_TAUNTKISS = 1106,			// erc,cro,pne
-    CMD_GESTUREMOD_TAUNTELBOW = 1107,			// erc,cro
-    CMD_GESTUREMOD_TAUNTTHINK = 1108,			// erc,cro,pne
+    CMD_GESTUREMOD_THROAT				= 1100,			// erc,cro
+    CMD_GESTUREMOD_CLAP					= 1101,			// erc,cro
+    CMD_GESTUREMOD_DABBING				= 1102,			// erc,cro
+    CMD_GESTUREMOD_MOVE					= 1103,			// erc,cro
+    CMD_GESTUREMOD_DOWN					= 1104,			// erc,cro
+    CMD_GESTUREMOD_COME					= 1105,			// erc,cro
+    CMD_GESTUREMOD_TAUNTKISS			= 1106,			// erc,cro
+    CMD_GESTUREMOD_TAUNTELBOW			= 1107,			// erc,cro
+    CMD_GESTUREMOD_TAUNTTHINK			= 1108,			// erc,cro
+    CMD_GESTUREMOD_NODHEAD				= 1109,			// erc,cro
+    CMD_GESTUREMOD_SHAKEHEAD			= 1110,			// erc,cro
+    CMD_GESTUREMOD_SHRUG				= 1111,			// erc,cro
 	
     //! --------------------------
     //! fb (full body)
-    CMD_GESTUREFB_GREETING = 1000,				// pne 	    [end]
-    CMD_GESTUREFB_POINT = 1001,					// pne 	    [end]
-    CMD_GESTUREFB_THUMB = 1002,					// pne 	    [end, CMD_ACTIONINT_ACTION to switch to THUMB DOWN]
-    CMD_GESTUREFB_THUMBDOWN = 1003,				// pne 	    [end, CMD_ACTIONINT_ACTION to switch to THUMB UP]
-    CMD_GESTUREFB_SILENCE = 1004,				// pne 	    [end]
-    CMD_GESTUREFB_TAUNT = 1005,					// pne 	    [end]
-    CMD_GESTUREFB_TIMEOUT = 1006,				// pne 	    [end]
-    CMD_GESTUREFB_HEART = 1007,					// pne 	    [end]
-    CMD_GESTUREFB_WATCHING = 1009,				// pne 	    [end]
-    CMD_GESTUREFB_HOLD = 1010,					// pne 	    [end]
-    CMD_GESTUREFB_LISTENING = 1011,				// pne 	    [end]
-    CMD_GESTUREFB_POINTSELF = 1012,				// pne 	    [end]
-    CMD_GESTUREFB_LOOKATME = 1013,				// pne 	    [end]
+    CMD_GESTUREFB_GREETING				= 1000,			// pne 	    [end]
+    CMD_GESTUREFB_POINT					= 1001,			// pne 	    [end]
+    CMD_GESTUREFB_THUMB					= 1002,			// pne 	    [end, CMD_ACTIONINT_ACTION to switch to THUMB DOWN]
+    CMD_GESTUREFB_THUMBDOWN				= 1003,			// pne 	    [end, CMD_ACTIONINT_ACTION to switch to THUMB UP]
+    CMD_GESTUREFB_SILENCE				= 1004,			// pne 	    [end]
+    CMD_GESTUREFB_TAUNT					= 1005,			// pne 	    [end]
+    CMD_GESTUREFB_TIMEOUT				= 1006,			// pne 	    [end]
+    CMD_GESTUREFB_HEART					= 1007,			// pne 	    [end]
+    CMD_GESTUREFB_WATCHING				= 1009,			// pne 	    [end]
+    CMD_GESTUREFB_HOLD					= 1010,			// pne 	    [end]
+    CMD_GESTUREFB_LISTENING				= 1011,			// pne 	    [end]
+    CMD_GESTUREFB_POINTSELF				= 1012,			// pne 	    [end]
+    CMD_GESTUREFB_LOOKATME				= 1013,			// pne 	    [end]
+    CMD_GESTUREFB_OKAY					= 1014,			// pne 	    [end]
 	
-    CMD_GESTUREFB_SALUTE = 1050,	    		// erc              [end]
-    CMD_GESTUREFB_CAMPFIRE = 1051,	    		// cro              [end]
-    CMD_GESTUREFB_LYINGDOWN = 1052,	    		// cro              [end]
-    CMD_GESTUREFB_SOS = 1053,	        		// erc              [end]
-    CMD_GESTUREFB_SITA = 1054,	        		// cro              [end]
-    CMD_GESTUREFB_SITB = 1055,	        		// cro              [end]
-    CMD_GESTUREFB_DABBING = 1056,				// erc, cro         [end]
+    CMD_GESTUREFB_SALUTE				= 1050,			// erc              [end]
+    CMD_GESTUREFB_CAMPFIRE				= 1051,			// cro              [end]
+    CMD_GESTUREFB_LYINGDOWN				= 1052,			// cro              [end]
+    CMD_GESTUREFB_SOS					= 1053,			// erc              [end]
+    CMD_GESTUREFB_SITA					= 1054,			// cro              [end]
+    CMD_GESTUREFB_SITB					= 1055,			// cro              [end]
+    CMD_GESTUREFB_DABBING				= 1056,			// erc, cro         [end]
 
     // onetime 
-    CMD_GESTUREFB_THROAT = 1100,				// pne
-    CMD_GESTUREFB_MOVE = 1103,					// pne
-    CMD_GESTUREFB_DOWN = 1104,					// pne
-    CMD_GESTUREFB_COME = 1105,					// pne
-    CMD_GESTUREFB_TAUNTKISS = 1106,				// pne
-    CMD_GESTUREFB_TAUNTTHINK = 1108,			// pne
-    CMD_GESTUREFB_DANCE = 1109,	        		// erc
+    CMD_GESTUREFB_THROAT				= 1100,			// pne
+    CMD_GESTUREFB_MOVE					= 1103,			// pne
+    CMD_GESTUREFB_DOWN					= 1104,			// pne
+    CMD_GESTUREFB_COME					= 1105,			// pne
+    CMD_GESTUREFB_TAUNTKISS				= 1106,			// pne
+    CMD_GESTUREFB_TAUNTTHINK			= 1108,			// pne
+    CMD_GESTUREFB_DANCE					= 1109,			// erc
+	CMD_GESTUREFB_NODHEAD				= 1110,			// pne
+	CMD_GESTUREFB_SHAKEHEAD				= 1111,			// pne
+    CMD_GESTUREFB_SHRUG					= 1112,			// pne
 	
+
+    //! ---------------------------------------------------------
+    //! ---------------------- TRAILER --------------------------
+    //! ---------------------------------------------------------
+	CMD_TRAILER_WAKE_UP 				= 3000,
+	CMD_TRAILER_DEAD_BODY 				= 3001,
+	CMD_TRAILER_WALKIE_TALKIE 			= 3002,
+	CMD_TRAILER_WOUNDED 				= 3003,
+	CMD_TRAILER_WALK_AWAY 				= 3004,
 	
-	/*CMD_FUNNYSTUFF_VIKTOR 		= 3000,
-	CMD_FUNNYSTUFF_VIKTOR_LOOP 	= 3001,
-	CMD_FUNNYSTUFF_MAREK 		= 3002,
-	CMD_FUNNYSTUFF_MAREK_LOOP 	= 3003,
-	CMD_FUNNYSTUFF_KAKEE 		= 3004,
-	CMD_FUNNYSTUFF_KAKEE_LOOP 	= 3005,
-	CMD_FUNNYSTUFF_JONNY 		= 3006,
-	CMD_FUNNYSTUFF_JONNY_LOOP 	= 3007,
-	CMD_FUNNYSTUFF_MARTIN 		= 3008,
-	CMD_FUNNYSTUFF_MARTIN_LOOP 	= 3009,
-	CMD_FUNNYSTUFF_ADAM		 	= 3010,
-	CMD_FUNNYSTUFF_ADAM_LOOP 	= 3011,*/
     
     //! ---------------------------------------------------------
     //! ---------------------- SUICIDE --------------------------
     //! ---------------------------------------------------------
     //! fb (full body)
-    CMD_SUICIDEFB_1HD = 2000,	        		// cro              [end (cancel), end2 (commit)]
-    CMD_SUICIDEFB_FIREAXE = 2001,	    		// erc              [end (cancel), end2 (commit)]
-    CMD_SUICIDEFB_PITCHFORK = 2002,	    		// erc              [end (cancel), end2 (commit)]
-    CMD_SUICIDEFB_PISTOL = 2003,	    		// cro              [end (cancel), end2 (commit)]
-    CMD_SUICIDEFB_RIFLE = 2004,	        		// cro              [end (cancel), end2 (commit)]
-    CMD_SUICIDEFB_SWORD = 2005,	        		// erc              [end (cancel), end2 (commit)]
-    CMD_SUICIDEFB_UNARMED = 2006,	    		// cro              [end (cancel), end2 (commit)]
-    CMD_SUICIDEFB_WOODAXE = 2007,	    		// erc              [end (cancel), end2 (commit)]
-    CMD_SUICIDEFB_SPEAR = 2008,	        		// erc              [end (cancel), end2 (commit)]
+    CMD_SUICIDEFB_1HD					= 2000,			// cro              [end (cancel), end2 (commit)]
+    CMD_SUICIDEFB_FIREAXE				= 2001,			// erc              [end (cancel), end2 (commit)]
+    CMD_SUICIDEFB_PITCHFORK				= 2002,			// erc              [end (cancel), end2 (commit)]
+    CMD_SUICIDEFB_PISTOL				= 2003,			// cro              [end (cancel), end2 (commit)]
+    CMD_SUICIDEFB_RIFLE					= 2004,			// cro              [end (cancel), end2 (commit)]
+    CMD_SUICIDEFB_SWORD					= 2005,			// erc              [end (cancel), end2 (commit)]
+    CMD_SUICIDEFB_UNARMED				= 2006,			// cro              [end (cancel), end2 (commit)]
+    CMD_SUICIDEFB_WOODAXE				= 2007,			// erc              [end (cancel), end2 (commit)]
+    CMD_SUICIDEFB_SPEAR					= 2008,			// erc              [end (cancel), end2 (commit)]
 
 	// 32767 is totaly MAXIMAL index !!!!!
 

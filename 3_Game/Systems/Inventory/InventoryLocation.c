@@ -158,6 +158,12 @@ class InventoryLocation
 	proto native bool CompareLocationOnly (notnull InventoryLocation other);
 
 	/**
+	 * @fn		CollidesWith
+	 * @brief	checks if inventory locations collides each with other
+	 **/
+	proto native bool CollidesWith (notnull InventoryLocation rhs);
+
+	/**
 	 * @fn		Copy
 	 * @brief	copies location data to another location
 	 *
@@ -184,7 +190,11 @@ class InventoryLocation
 			case InventoryLocationType.GROUND:
 			{
 				res = res + " item=" + GetItem();
-				res = res + " pos=" + GetPos();
+				vector pos = GetPos();
+				float dir[4];
+				GetDir(dir);
+				res = res + " pos=(" + pos[0] + ", " + pos[1] + ", " + pos[2] + ")";
+				res = res + " dir=(" + dir[0] + ", " + dir[1] + ", " + dir[2] + ", " + dir[3] + ")";
 				break;
 			}
 			case InventoryLocationType.ATTACHMENT:
@@ -248,6 +258,7 @@ class InventoryLocation
 				vector pos;
 				if (!ctx.Read(pos))
 					return false;
+
 				float dir[4];
 				if (!ctx.Read(dir))
 					return false;
@@ -334,9 +345,14 @@ class InventoryLocation
 		return true;
 	}
 
-	void WriteToContext (ParamsWriteContext ctx)
+	bool WriteToContext (ParamsWriteContext ctx)
 	{
-		ctx.Write(GetType());
+		if (!ctx.Write(GetType()))
+		{
+			Error("InventoryLocation::WriteToContext - cannot write to context! failed to write type");
+			return false;
+		}
+
 		switch (GetType())
 		{
 			case InventoryLocationType.UNKNOWN:
@@ -345,51 +361,127 @@ class InventoryLocation
 			}
 			case InventoryLocationType.GROUND:
 			{
-				ctx.Write(GetItem());
+				if (!ctx.Write(GetItem()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed GND, arg=item");
+					return false;
+				}
+
 				vector pos = GetPos();
-				ctx.Write(pos);
+				if (!ctx.Write(pos))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed GND, arg=pos");
+					return false;
+				}
+
 				float dir[4];
 				GetDir(dir);
-				ctx.Write(dir);
+				if (!ctx.Write(dir))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed GND, arg=dir");
+					return false;
+				}
+
 				break;
 			}
 			case InventoryLocationType.ATTACHMENT:
 			{
-				ctx.Write(GetParent());
-				ctx.Write(GetItem());
-				ctx.Write(GetSlot());
+				if (!ctx.Write(GetParent()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed ATT, arg=parent");
+					return false;
+				}
+				if (!ctx.Write(GetItem()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed ATT, arg=item");
+					return false;
+				}
+				if (!ctx.Write(GetSlot()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed ATT, arg=slot");
+					return false;
+				}
 				break;
 			}
 			case InventoryLocationType.CARGO:
 			{
-				ctx.Write(GetParent());
-				ctx.Write(GetItem());
-				ctx.Write(GetIdx());
-				ctx.Write(GetRow());
-				ctx.Write(GetCol());
+				if (!ctx.Write(GetParent()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed CGO, arg=parent");
+					return false;
+				}
+				if (!ctx.Write(GetItem()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed CGO, arg=item");
+					return false;
+				}
+				if (!ctx.Write(GetIdx()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed CGO, arg=idx");
+					return false;
+				}
+				if (!ctx.Write(GetRow()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed CGO, arg=row");
+					return false;
+				}
+				if (!ctx.Write(GetCol()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed CGO, arg=col");
+					return false;
+				}
 				break;
 			}
 			case InventoryLocationType.HANDS:
 			{
-				ctx.Write(GetParent());
-				ctx.Write(GetItem());
+				if (!ctx.Write(GetParent()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed HND, arg=parent");
+					return false;
+				}
+				if (!ctx.Write(GetItem()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed HND, arg=item");
+					return false;
+				}
 				break;
 			}
 			case InventoryLocationType.PROXYCARGO:
 			{
-				ctx.Write(GetParent());
-				ctx.Write(GetItem());
-				ctx.Write(GetIdx());
-				ctx.Write(GetRow());
-				ctx.Write(GetCol());
+				if (!ctx.Write(GetParent()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed PXY, arg=parent");
+					return false;
+				}
+				if (!ctx.Write(GetItem()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed PXY, arg=item");
+					return false;
+				}
+				if (!ctx.Write(GetIdx()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed PXY, arg=idx");
+					return false;
+				}
+				if (!ctx.Write(GetRow()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed PXY, arg=row");
+					return false;
+				}
+				if (!ctx.Write(GetCol()))
+				{
+					Error("InventoryLocation::WriteToContext - cannot write to context! failed PXY, arg=col");
+					return false;
+				}
 				break;
 			}
 			default:
 			{
 				Error("WriteToContext - really unknown location type, this should not happen, type=" + GetType());
-				break;
+				return false;
 			}
 		}
+		return true;
 	}
 };
 

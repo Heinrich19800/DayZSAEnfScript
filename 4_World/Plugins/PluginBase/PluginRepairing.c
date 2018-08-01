@@ -47,23 +47,30 @@ class PluginRepairing extends PluginBase
 		if ( cur_kit_quantity > HEALTH_UP_ONE_LVL )
 		{
 			new_quantity = kit.GetQuantity() - kit_repair_cost;
-			new_quantity_adjusted = player.GetSoftSkillManager().AddSpecialtyBonus( new_quantity, specialty_weight );
-			new_quantity_adjusted = Math.Clamp( new_quantity_adjusted, 0, 100 );
-			kit.SetHealth( "", "", new_quantity_adjusted );
-			kit.SetQuantity( new_quantity_adjusted, false );
+			//new_quantity_adjusted = player.GetSoftSkillManager().AddSpecialtyBonus( new_quantity, specialty_weight );
+			//new_quantity_adjusted = Math.Clamp( new_quantity_adjusted, 0, 100 );
+			kit.SetHealth( "", "", new_quantity );
+			kit.SetQuantity( new_quantity, false );
 			
 			item.AddHealth( "", "", HEALTH_UP_ONE_LVL );
 		}
 		else
 		{
 			new_quantity = kit.GetQuantity() - kit_repair_cost;
-			new_quantity_adjusted = player.GetSoftSkillManager().AddSpecialtyBonus( new_quantity, specialty_weight );
-			new_quantity_adjusted = Math.Clamp( new_quantity_adjusted, 0, 100 );
-			kit.SetHealth( "", "", new_quantity_adjusted );
-			kit.SetQuantity( new_quantity_adjusted, false );
+			//new_quantity_adjusted = player.GetSoftSkillManager().AddSpecialtyBonus( new_quantity, specialty_weight );
+			//new_quantity_adjusted = Math.Clamp( new_quantity_adjusted, 0, 100 );
+			kit.SetHealth( "", "", new_quantity );
+			kit.SetQuantity( new_quantity, false );
 			
 			item.AddHealth( "", "", cur_kit_quantity );
 		}
+				
+		if ( !CanRepairToPristine( player ) )
+		{
+			float item_health = item.GetHealth( "", "" );
+			float clamp_health = Math.Clamp( item_health, 0, 70 );
+			item.SetHealth( "", "", clamp_health );
+		}		
 	}
 
 	bool CanRepair( ItemBase repair_kit, ItemBase item )
@@ -77,7 +84,7 @@ class PluginRepairing extends PluginBase
 		
 		ref array<int> repairable_with_types = new array<int>;
 		item.ConfigGetIntArray( "repairableWithKits", repairable_with_types );	
-			
+					
 		for ( int i = 0; i < repairable_with_types.Count(); i++ )
 		{
 			int repairable_with_type = repairable_with_types.Get(i);

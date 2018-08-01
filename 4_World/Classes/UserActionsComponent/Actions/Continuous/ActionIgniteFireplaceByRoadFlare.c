@@ -3,7 +3,7 @@ class ActionIgniteFireplaceByRoadFlare: ActionIgniteFireplace
 	void ActionIgniteFireplaceByRoadFlare()
 	{
 		m_CallbackClass = ActionIgniteFireplaceCB;
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_STARTFIRELIGHTER;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_STARTFIRETORCH;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
 		m_MessageStartFail = "There's nothing to ignite.";
@@ -49,19 +49,20 @@ class ActionIgniteFireplaceByRoadFlare: ActionIgniteFireplace
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		Object target_object = target.GetObject();
+		Object target_object = action_data.m_Target.GetObject();
 		FireplaceBase fireplace_target = FireplaceBase.Cast( target_object );
 		
 		//remove grass
-		Object clutter_cutter = GetGame().CreateObject ( fireplace_target.OBJECT_CLUTTER_CUTTER , target_object.GetPosition(), true, false );
-		clutter_cutter.SetOrientation ( target_object.GetOrientation() );
+		Object cc_object = GetGame().CreateObject ( fireplace_target.OBJECT_CLUTTER_CUTTER , target_object.GetPosition() );
+		cc_object.SetOrientation ( target_object.GetOrientation() );
+		DestroyClutterCutterAfterTime();
 		
 		//start fire
 		fireplace_target.StartFire();
 
 		//add specialty
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }

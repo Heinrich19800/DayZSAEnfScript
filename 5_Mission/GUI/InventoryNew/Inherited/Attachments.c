@@ -25,64 +25,164 @@ class Attachments
 
 	void SetDefaultFocus()
 	{
+		m_FocusedRow = 0;
+		m_FocusedColumn = 0;
+		if( ItemManager.GetInstance().IsMicromanagmentMode() )
+		{
+			return;
+		}
 		m_Ics.Get( 0 ).GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
 	}
-
+	
+	void SetActive( bool active )
+	{
+		float alpha;
+		if( active )
+		{
+			SetDefaultFocus();
+			alpha = 1;
+		}
+		else
+		{
+			alpha = 0;
+		}
+		m_Parent.GetMainPanel().FindAnyWidget("AttachmentsWrapper").SetAlpha( alpha );
+		m_Parent.GetMainPanel().FindAnyWidget("AttachmentsWrapper").Update();
+	}
+	
+	EntityAI GetFocusedEntity()
+	{
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+		return ipw.GetItem();
+	}
+	
 	void Select()
 	{
-		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
-		EntityAI receiver_item = item_preview.GetItem();
-		EntityAI ent = ItemManager.GetInstance().GetSelectedItem();
-
-			if( !ent )
+		EntityAI prev_item = EntityAI.Cast( GetFocusedEntity() );
+		Man player = GetGame().GetPlayer();
+		
+		if( ItemManager.GetInstance().IsItemMoving() )
+		{
+			EntityAI selected_item = ItemManager.GetInstance().GetSelectedItem();
+			if( selected_item /*&& GetEntity()*/ )
 			{
-				if( receiver_item )
+				bool can_add = m_Entity.GetInventory().CanAddEntityInCargo( selected_item );
+				bool in_cargo = !player.GetInventory().HasEntityInInventory( selected_item ) || !m_Entity.GetInventory().HasEntityInCargo( selected_item );
+				if( can_add && in_cargo )
 				{
-					ItemManager.GetInstance().SetSelectedItem( receiver_item, m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Selected" + m_FocusedColumn ) );
-					m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Selected" + m_FocusedColumn ).Show( true );
+					player.PredictiveTakeEntityToTargetCargo(m_Entity, selected_item);
+				}
+				else
+				{
+					Icon selected_icon = ItemManager.GetInstance().GetSelectedIcon();
+					if( selected_icon )
+					{
+						selected_icon.SetActive( false );
+					}
+				}
+				
+				if( m_Parent.IsInherited( PlayerContainer ) )
+				{
+					PlayerContainer player_container_parent = PlayerContainer.Cast( m_Parent );
+					player_container_parent.UnfocusPlayerAttachmentsContainer();
+				}
+			}
+		}
+		else
+		{
+			if ( prev_item )
+			{
+					EntityAI item_in_hands = GetGame().GetPlayer().GetHumanInventory().GetEntityInHands();
+					if( item_in_hands )
+					{
+						if( GameInventory.CanSwapEntities( item_in_hands, prev_item ) )
+						{
+							player.PredictiveSwapEntities( item_in_hands, prev_item );
+						}
+						else
+						{
+							player.PredictiveSwapEntities( prev_item, item_in_hands);
+						}
+					}
+					else
+					{
+						if( player.GetHumanInventory().CanAddEntityInHands( prev_item ) )
+						{
+							player.PredictiveTakeEntityToHands( prev_item );
+						}
+					}
+			}		
+		}
+	}
+	
+	void EquipItem()
+	{
+		ItemBase entity = ItemBase.Cast( GetFocusedEntity() );
+		if( entity && !entity.IsInherited( Magazine ) )
+		{
+			if( entity.HasQuantity() )
+			{
+				entity.OnRightClick();
+			}
+			else
+			{
+				GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.ATTACHMENT, entity );
+			}
+		}
+	}
+	
+	void TransferItem()
+	{
+		EntityAI entity = GetFocusedEntity();
+		if( entity )
+		{
+			Weapon_Base wpn;
+			Magazine mag;
+			PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+			if( Class.CastTo(mag, entity) && Class.CastTo(wpn, mag.GetHierarchyParent()))
+			{
+				if (GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() == wpn)
+				{
+					InventoryLocation inv_loc_dst = new InventoryLocation;
+					m_Entity.GetInventory().FindFreeLocationFor( entity, FindInventoryLocationType.ANY, inv_loc_dst );
+					player.GetWeaponManager().DetachMagazine(inv_loc_dst);
 				}
 			}
 			else
 			{
-
-
-				EntityAI item = ent;
-				if( !item )
-				{
-					return;
-				}
-
-				Weapon_Base wpn;
-				Magazine mag;
-				PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
-				if ( Class.CastTo(wpn,  m_Entity ) && Class.CastTo(mag,  item ) )
-				{
-					if( player.GetWeaponManager().CanAttachMagazine( wpn, mag ) )
-					{
-						player.GetWeaponManager().AttachMagazine( mag );
-					}
-				}
-				else if (receiver_item)
-				{
-					if ( ( ItemBase.Cast( receiver_item ) ).CanBeCombined( ItemBase.Cast( item ) ) )
-					{
-						( ItemBase.Cast( receiver_item ) ).CombineItemsClient( ItemBase.Cast( item ) );
-					}
-					else if( GameInventory.CanSwapEntities( receiver_item, item ) )
-					{
-						GetGame().GetPlayer().PredictiveSwapEntities( item, receiver_item );
-					}
-				}
-				else if( m_Entity.GetInventory().CanAddAttachment( item ) )
-				{
-					GetGame().GetPlayer().PredictiveTakeEntityToTargetAttachment( m_Entity, item );
-				}
-				else if( ( m_Entity.GetInventory().CanAddEntityInCargo( item ) && (!player.GetInventory().HasEntityInInventory( item ) || !m_Entity.GetInventory().HasEntityInCargo( item )) ) || player.GetHumanInventory().HasEntityInHands( item ) )
-				{
-					GetGame().GetPlayer().PredictiveTakeEntityToTargetCargo( m_Entity, item );
-				}
-			ItemManager.GetInstance().SetSelectedItem( NULL, NULL );
+				GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.CARGO, entity );
 			}
+		}
+	}
+	
+	void TransferItemToVicinity()
+	{
+		EntityAI item = GetFocusedEntity();
+		Weapon_Base wpn;
+		Magazine mag;
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+		if( Class.CastTo(mag, item) && Class.CastTo(wpn, mag.GetHierarchyParent()))
+		{
+			if (GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() == wpn)
+			{
+				InventoryLocation next = new InventoryLocation;
+				vector m4[4];
+				Math3D.MatrixIdentity4(m4);
+				GameInventory.PrepareDropEntityPos(player, mag, m4);
+				next.SetGround(mag, m4);
+
+				player.GetWeaponManager().DetachMagazine(next);
+			}
+		}
+		else if( item && player.CanDropEntity( item ) )
+		{
+			player.PredictiveDropEntity( item );
+		}
+	}
+	
+	bool IsActive()
+	{
+		return m_Parent.GetMainPanel().FindAnyWidget("AttachmentsWrapper").GetAlpha() > 0;
 	}
 
 	void MoveGridCursor( int direction )
@@ -95,7 +195,15 @@ class Attachments
 			{
 				m_FocusedRow  = m_Ics.Count() - 1;
 				Container cnt = Container.Cast( m_Parent.GetParent().GetParent() );
-				cnt.SetPreviousActive();
+				if( cnt )
+					{
+						cnt.SetPreviousActive();
+					}
+					else
+					{
+						cnt = Container.Cast( m_Parent );
+						cnt.SetPreviousActive();
+					}
 				return;
 				
 			}
@@ -114,7 +222,15 @@ class Attachments
 			{
 				m_FocusedRow = 0 ;
 				cnt = Container.Cast( m_Parent.GetParent().GetParent() );
-				cnt.SetNextActive();
+				if( cnt )
+				{
+					cnt.SetNextActive();
+				}
+				else
+				{
+					cnt = Container.Cast( m_Parent );
+					cnt.SetNextActive();
+				}
 				return;
 			}
 
@@ -200,7 +316,7 @@ class Attachments
 
 			ItemPreviewWidget item_preview2 = ItemPreviewWidget.Cast( m_Parent.Get( ( i / 7 ) + 1 ).GetMainPanel().FindAnyWidget( "Icon" + i % 7 ).FindAnyWidget( "Render" + i % 7 ) );
 			ImageWidget image_widget2 = ImageWidget.Cast( item_preview2.GetParent().GetParent().FindAnyWidget( "GhostSlot" + i % 7 ) );
-			if( m_Entity.GetInventory().FindAttachment( slot_id ) == NULL )
+			if( image_widget2 && m_Entity.GetInventory().FindAttachment( slot_id ) == NULL )
 			{
 				image_widget2.Show( true );
 			}
@@ -238,7 +354,8 @@ class Attachments
 					item_w.FindAnyWidget( "Mounted" + i % 7 ).Show( true );
 				}
 
-				int has_quantity = QuantityConversions.HasItemQuantity( item );
+				int has_quantity	= QuantityConversions.HasItemQuantity( item );
+				int stack_max		= InventorySlots.GetStackMaxForSlotId( slot_id );
 				Widget quantity_panel = item_w.FindAnyWidget( "QuantityPanel" + i % 7 );
 				TextWidget item_quantity = TextWidget.Cast( item_w.FindAnyWidget( "Quantity" + i % 7 ) );
 				ProgressBarWidget quantity_progress = ProgressBarWidget.Cast( item_w.FindAnyWidget( "QuantityBar" + i % 7 ) );
@@ -250,7 +367,7 @@ class Attachments
 				else
 				{
 					quantity_panel.Show( true );
-					if ( has_quantity == QUANTITY_COUNT )
+					if ( has_quantity == QUANTITY_COUNT || stack_max > 1 )
 					{
 						item_quantity.SetText( QuantityConversions.GetItemQuantityText( item ) );
 						quantity_stack.Show( true );
@@ -295,6 +412,7 @@ class Attachments
 		}
 	}
 
+	ref AttachmentsWrapper container;
 	void InitAttachmentGrid( )
 	{
 		ref array<string> attachments_slots = GetItemSlots( m_Entity );
@@ -307,9 +425,12 @@ class Attachments
 		{
 			number_of_rows--;
 		}
+		container = new AttachmentsWrapper( m_Parent );
 		for ( int i = 0; i < number_of_rows + 1; i++ )
 		{
-			IconsContainer ic = new IconsContainer( m_Parent );
+			container.UpdateSpacer();
+			IconsContainer ic = new IconsContainer( container );
+			container.Insert( ic );
 
 			if( i == number_of_rows && count % 7 != 0 )
 			{

@@ -150,43 +150,64 @@ class GesturesMenu extends UIScriptedMenu
 		//All categories
 		if ( category == GestureCategories.CATEGORIES )
 		{
-			gesture_items.Insert( new GestureMenuItem( GestureCategories.CATEGORY_1, "Category 1", GestureCategories.CATEGORIES ) );
-			gesture_items.Insert( new GestureMenuItem( GestureCategories.CATEGORY_2, "Category 2", GestureCategories.CATEGORIES ) );
-			gesture_items.Insert( new GestureMenuItem( GestureCategories.CATEGORY_3, "Category 3", GestureCategories.CATEGORIES ) );
-			gesture_items.Insert( new GestureMenuItem( GestureCategories.CATEGORY_4, "Category 4", GestureCategories.CATEGORIES ) );
+			gesture_items.Insert( new GestureMenuItem( GestureCategories.CATEGORY_1, "Comms", 	GestureCategories.CATEGORIES ) );
+			gesture_items.Insert( new GestureMenuItem( GestureCategories.CATEGORY_2, "Taunts", 	GestureCategories.CATEGORIES ) );
+			gesture_items.Insert( new GestureMenuItem( GestureCategories.CATEGORY_3, "Misc.", 	GestureCategories.CATEGORIES ) );
+			gesture_items.Insert( new GestureMenuItem( GestureCategories.CATEGORY_4, "Regards", GestureCategories.CATEGORIES ) );
+			//gesture_items.Insert( new GestureMenuItem( GestureCategories.CATEGORY_5, "Tactical?", 	GestureCategories.CATEGORIES ) );
 		}
-		//Category 1
+		//Category 1 - comms
 		else if ( category == GestureCategories.CATEGORY_1 )
 		{
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_LYINGDOWN, 	"Lay down", GestureCategories.CATEGORY_1 ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_DABBING, 	"Dabbing", 	GestureCategories.CATEGORY_1 ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_THUMB, 		"Thumb", 	GestureCategories.CATEGORY_1 ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNT, 		"Taunt", 	GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TIMEOUT,	"Timeout", 		GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_POINTSELF, 	"Point at Self",GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_WATCHING, 	"Watching", 	GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_HOLD, 		"Stop", 		GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_LISTENING, 	"Listen", 		GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SILENT, 	"Silent", 		GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_POINT, 		"Point", 		GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_MOVE, 		"Move", 		GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_DOWN, 		"Down", 		GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_COME, 		"Come", 		GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_NOD, 		"Nod Head", 	GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SHAKE, 		"Shake Head", 	GestureCategories.CATEGORY_1 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SHRUG, 		"Shrug", 		GestureCategories.CATEGORY_1 ) );
 		}
-		//Category 2
+		//Category 2 - taunt
 		else if ( category == GestureCategories.CATEGORY_2 )
 		{
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TIMEOUT,	"Timeout", 	GestureCategories.CATEGORY_2 ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_HEART, 		"Heart", 	GestureCategories.CATEGORY_2 ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_FACEPALM, 	"Facepalm", GestureCategories.CATEGORY_2 ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_CLAP, 		"Clap", 	GestureCategories.CATEGORY_2 ) );			
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SILENT, 	"Silent", 	GestureCategories.CATEGORY_2 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_LOOKATME, 	"Look at Me", 	GestureCategories.CATEGORY_2 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNT, 		"Frig off", 	GestureCategories.CATEGORY_2 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNTELBOW, "Taunt elbow", 	GestureCategories.CATEGORY_2 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_THROAT, 	"Die", 			GestureCategories.CATEGORY_2 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNTTHINK, "Think!", 		GestureCategories.CATEGORY_2 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_FACEPALM, 	"Facepalm", 	GestureCategories.CATEGORY_2 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_THUMBDOWN, 	"Thumb Down", 	GestureCategories.CATEGORY_2 ) );
 		}
-		//Category 3
+		//Category 3 - misc
 		else if ( category == GestureCategories.CATEGORY_3 )
 		{
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_GREETING, 	"Greeting", GestureCategories.CATEGORY_3 ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SALUTE, 	"Salute", 	GestureCategories.CATEGORY_3 ) );
-			//gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SOS, 		"SOS", 		GestureCategories.CATEGORY_3 ) );			
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_DANCE, 		"Dance", 		GestureCategories.CATEGORY_3 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_LYINGDOWN, 	"Lay down", 	GestureCategories.CATEGORY_3 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SOS, 		"Wave", 		GestureCategories.CATEGORY_3 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_RPS, 		"RPS", 			GestureCategories.CATEGORY_3 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SITA, 		"SIT_A", 		GestureCategories.CATEGORY_3 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SITB, 		"SIT_B", 		GestureCategories.CATEGORY_3 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SUICIDE, 	"Suicide", 		GestureCategories.CATEGORY_3 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_CAMPFIRE, 	"Camp?", 		GestureCategories.CATEGORY_3 ) );
+			//gesture_items.Insert( new GestureMenuItem( ID_EMOTE_RPS_R, 	"RPS-Rock", 	GestureCategories.CATEGORY_3 ) );
+			//gesture_items.Insert( new GestureMenuItem( ID_EMOTE_RPS_P, 	"RPS-Paper", 	GestureCategories.CATEGORY_3 ) );
+			//gesture_items.Insert( new GestureMenuItem( ID_EMOTE_RPS_S, 	"RPS-Scisors", 	GestureCategories.CATEGORY_3 ) );
 		}
-		//Category 4
+		//Category 4 - regards
 		else if ( category == GestureCategories.CATEGORY_4 )
 		{
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_DANCE, 	"Dance", 	GestureCategories.CATEGORY_4 ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_RPS, 	"RPS", 		GestureCategories.CATEGORY_4 ) );
-		}
-		else
-		{
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_GREETING, 	"Hello", 		GestureCategories.CATEGORY_4 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_THUMB, 		"Thumbs up", 	GestureCategories.CATEGORY_4 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_HEART, 		"Heart", 		GestureCategories.CATEGORY_4 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_CLAP, 		"Clap", 		GestureCategories.CATEGORY_4 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNTKISS, 	"Magnifique", 	GestureCategories.CATEGORY_4 ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SALUTE, 	"Salute", 		GestureCategories.CATEGORY_4 ) );
 		}
 		
 		//CONSOLE PLATFORM ONLY
@@ -334,11 +355,35 @@ class GesturesMenu extends UIScriptedMenu
 				{
 					if( player.GetEmoteManager() ) 
 					{
-						player.GetEmoteManager().SetGesture( gesture_item.GetID() );
-						player.GetEmoteManager().PlayEmote( gesture_item.GetID() );
+						player.GetEmoteManager().CreateEmoteCBFromMenu( gesture_item.GetID() );
 					}
 				}
 			}
 		}
 	}
+	
+	/*override bool OnClick(Widget w, int x, int y, int button)
+	{
+		if (button == MouseState.LEFT && instance.m_SelectedItem)
+		{
+			if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )
+			{
+				PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+				
+				GestureMenuItem gesture_item;
+				instance.m_SelectedItem.GetUserData( gesture_item );
+			
+				if ( gesture_item ) 
+				{
+					if( player.GetEmoteManager() ) 
+					{
+						player.GetEmoteManager().SetGesture( gesture_item.GetID() );
+						player.GetEmoteManager().PlayEmote( gesture_item.GetID() );
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}*/
 }

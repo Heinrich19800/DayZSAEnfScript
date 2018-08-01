@@ -14,7 +14,7 @@ class BleedingCheck: ModifierBase
 	{
 		float blood = player.GetHealth("","Blood");
 		
-		if( blood < ModifierConstants.BLOOD_THRESHOLD_FATAL )
+		if( blood < PlayerConstants.BLOOD_THRESHOLD_FATAL )
 		{
 			return true;
 		}

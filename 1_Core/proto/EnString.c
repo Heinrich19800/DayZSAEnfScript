@@ -84,6 +84,21 @@ class string
 		@endcode
 	*/
 	proto string Substring(int start, int len);
+	
+	/**
+	\brief Substring of 'str' from 'startChar' position 'len' number of characters for UTF8 strings with multibyte chars
+		\param startChar Position in \p str.
+		\param len Count of characters
+		\return \p string - Substring of \p str with \p startChar character and \p len characters
+		@code
+			string str = "こんにちは世界";
+			string strSub = str.SubstringUtf8(2, 4);
+			Print(strSub);
+
+			>> strSub = にちは世
+		@endcode
+	*/
+	proto string SubstringUtf8(int startChar, int len);
 
 	/**
 	\brief Replace all occurrances of 'sample' in 'str' by 'replace'
@@ -146,6 +161,19 @@ class string
 		@endcode
 	*/
 	proto native int Length();
+	
+	/**
+	\brief Returns number of characters in UTF8 string
+		\return \p int - Number of characters in UTF8 string
+		@code
+			string str = "こんにちは世界";
+			int i = str.LengthUtf8();
+			Print(i);
+
+			>> i = 7
+		@endcode
+	*/
+	proto native int LengthUtf8();
 
 	/**
 	\brief Returns hash of string

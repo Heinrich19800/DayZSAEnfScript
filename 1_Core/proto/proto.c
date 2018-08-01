@@ -18,9 +18,6 @@ out - modifier for function parameters. It tells that variable will
  be changed by function call (used mainly by internal functions)
 inout - modifier for function parameters. It tells that variable will
  be used and then changed by function call (used mainly by internal functions)
-local - modifier for local variables and function parameters. These
- variables will be saved on stack when calling another function. Neccesary
- for recursive functions and threads.
 
 const - constants. May not be modified.
 reference - hint for tools (Material editor), that the variable may be used

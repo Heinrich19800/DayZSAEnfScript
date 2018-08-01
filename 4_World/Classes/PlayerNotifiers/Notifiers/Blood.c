@@ -22,7 +22,7 @@ class Blood: NotifierBase
 		//PrintString(delta.ToString());
 		GetDisplayStatus().SetStatus(eDisplayElements.DELM_TDCY_BLOOD,tendency);
 		
-		DSLevels level = DetermineLevel( GetObservedValue(), ModifierConstants.THRESHOLD_BLOOD_WARNING,  ModifierConstants.THRESHOLD_BLOOD_CRITICAL, ModifierConstants.THRESHOLD_ENERGY_EMPTY );
+		DSLevels level = DetermineLevel( GetObservedValue(), PlayerConstants.THRESHOLD_BLOOD_WARNING,  PlayerConstants.THRESHOLD_BLOOD_CRITICAL, PlayerConstants.THRESHOLD_BLOOD_EMPTY );
 		GetDisplayStatus().SetLevel(eDisplayElements.DELM_TDCY_BLOOD, level);
 		
 	}

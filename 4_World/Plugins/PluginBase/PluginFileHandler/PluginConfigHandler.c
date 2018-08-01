@@ -45,7 +45,7 @@ class PluginConfigHandler extends PluginFileHandler
 		SaveFile();
 	}
 	
-	CfgParam GetParamByName(local string name, local int cfg_type)
+	CfgParam GetParamByName(string name, int cfg_type)
 	{
 		CfgParam param;
 		
@@ -103,9 +103,9 @@ class PluginConfigHandler extends PluginFileHandler
 		}
 	}
 	
-	bool ParamExist(local string name)
+	bool ParamExist(string name)
 	{
-		local CfgParam param;
+		CfgParam param;
 		
 		for ( int i = 0; i < m_CfgParams.Count(); ++i )
 		{
@@ -120,9 +120,9 @@ class PluginConfigHandler extends PluginFileHandler
 		return false;
 	}
 	
-	string ParseParam(local CfgParam param)
+	string ParseParam(CfgParam param)
 	{
-		local string text = STRING_EMPTY;
+		string text = STRING_EMPTY;
 		
 		if ( param.GetName() != STRING_EMPTY )
 		{
@@ -138,7 +138,7 @@ class PluginConfigHandler extends PluginFileHandler
 				
 				text += "{";
 				
-				for ( local int i = 0; i < params.Count(); ++i )
+				for ( int i = 0; i < params.Count(); ++i )
 				{
 					if ( i > 0 )
 					{
@@ -154,22 +154,22 @@ class PluginConfigHandler extends PluginFileHandler
 			}
 			case CFG_TYPE_STRING:
 			{
-				local CfgParamString param_string = CfgParamString.Cast( param );
+				CfgParamString param_string = CfgParamString.Cast( param );
 				text += "\""+param_string.GetValue()+"\"";
 				
 				break;
 			}
 			case CFG_TYPE_INT:
 			{
-				local CfgParamInt param_int = CfgParamInt.Cast( param );
+				CfgParamInt param_int = CfgParamInt.Cast( param );
 				text += param_int.GetValue().ToString();
 				
 				break;
 			}
 			case CFG_TYPE_FLOAT:
 			{
-				local CfgParamFloat param_float = CfgParamFloat.Cast( param );
-				local string s = param_float.GetValue().ToString();
+				CfgParamFloat param_float = CfgParamFloat.Cast( param );
+				string s = param_float.GetValue().ToString();
 				
 				if ( s.IndexOf(".") == -1 )
 				{
@@ -182,7 +182,7 @@ class PluginConfigHandler extends PluginFileHandler
 			}
 			case CFG_TYPE_BOOL:
 			{
-				local CfgParamBool param_bool = CfgParamBool.Cast( param );
+				CfgParamBool param_bool = CfgParamBool.Cast( param );
 				
 				if ( param_bool.GetValue() )
 				{
@@ -200,7 +200,7 @@ class PluginConfigHandler extends PluginFileHandler
 		return text;
 	}
 
-	CfgParam ParseText(local string text)
+	CfgParam ParseText(string text)
 	{
 		string param_name = STRING_EMPTY;
 		string param_value = text.Trim();;
@@ -210,12 +210,12 @@ class PluginConfigHandler extends PluginFileHandler
 		
 		if ( text_type == CFG_TYPE_PARAM )
 		{
-			local int pos = param_value.IndexOf("=");
+			int pos = param_value.IndexOf("=");
 			
 			if ( pos > 0 )
 			{
 				param_name = param_value.Substring(0, pos).Trim();
-				local int pos_end = param_value.Length() - pos;
+				int pos_end = param_value.Length() - pos;
 				param_value = param_value.Substring(pos + 1, pos_end - 1).Trim();
 				
 				//Log("ParseText -> param -> "+param_name+" = "+param_value);
@@ -267,7 +267,7 @@ class PluginConfigHandler extends PluginFileHandler
 		{
 			//Log("ParseText -> bool -> "+param_name+" = "+param_value);
 			
-			local CfgParamBool param_bool = new CfgParamBool(param_name);
+			CfgParamBool param_bool = new CfgParamBool(param_name);
 			param_bool.SetValue( ParseToValueBool(param_value) );
 			
 			return param_bool;
@@ -278,7 +278,7 @@ class PluginConfigHandler extends PluginFileHandler
 		return NULL;
 	}
 
-	protected int GetTextType(local string text)
+	protected int GetTextType(string text)
 	{	
 		int lenght = text.Length();
 			
@@ -393,22 +393,22 @@ class PluginConfigHandler extends PluginFileHandler
 		return false;
 	}
 	
-	protected string ParseToValueString(local string param_value)
+	protected string ParseToValueString(string param_value)
 	{	
 		return param_value.Substring(1, param_value.Length() - 2);
 	}
 
-	protected float ParseToValueFloat(local string param_value)
+	protected float ParseToValueFloat(string param_value)
 	{
 		return param_value.ToFloat();
 	}
 
-	protected int ParseToValueInt(local string param_value)
+	protected int ParseToValueInt(string param_value)
 	{
 		return param_value.ToInt();
 	}
 
-	protected bool ParseToValueBool(local string param_value)
+	protected bool ParseToValueBool(string param_value)
 	{
 		if ( param_value.Contains("true") )
 		{
@@ -418,7 +418,7 @@ class PluginConfigHandler extends PluginFileHandler
 		return false;
 	}
 
-	protected array<ref CfgParam> ParseToValueArray(local string param_value)
+	protected array<ref CfgParam> ParseToValueArray(string param_value)
 	{
 		array<ref CfgParam> param_parent = new array<ref CfgParam>;
 		
@@ -518,13 +518,13 @@ class PluginConfigHandler extends PluginFileHandler
 			param_value_content.Split(",", strings);
 		}
 		
-		for ( local int i = 0; i < strings.Count(); ++i )
+		for ( int i = 0; i < strings.Count(); ++i )
 		{
 			string str = strings.Get(i);
 			
 			//Log("To Parse => "+str);
 			
-			local CfgParam param = ParseText(str);
+			CfgParam param = ParseText(str);
 			
 			param_parent.Insert(param);		
 		}

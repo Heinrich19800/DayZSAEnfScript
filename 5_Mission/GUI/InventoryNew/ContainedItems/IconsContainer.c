@@ -4,7 +4,7 @@ class IconsContainer: ContainerBase
 	void IconsContainer( ContainerBase parent ) 
 	{
 		//TODO: create layout for IconsContainer and set ARGB there
-		m_ParentWidget.SetColor( ARGB( 175, 155, 155, 155 ) );
+		//m_ParentWidget.SetColor( ARGB( 175, 155, 155, 155 ) );
 	}
 
 	void SetColumnCount( int column_count )

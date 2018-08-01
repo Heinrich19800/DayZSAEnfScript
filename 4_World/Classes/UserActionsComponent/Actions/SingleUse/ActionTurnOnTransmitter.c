@@ -2,7 +2,7 @@ class ActionTurnOnTransmitterCB : ActionSingleUseBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CASingleUseTurnOnPlugged;
+		m_ActionData.m_ActionComponent = new CASingleUseTurnOnPlugged;
 	}
 }
 
@@ -48,8 +48,8 @@ class ActionTurnOnTransmitter: ActionTurnOnWhileInHands
 		return false;
 	}
 		
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		item.GetCompEM().SwitchOn();
+		action_data.m_MainItem.GetCompEM().SwitchOn();
 	}
 }

@@ -9,10 +9,10 @@ class CAContinuousFertilizeGardenSlot : CAContinuousQuantity
 		m_TimeToComplete = 0;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		GardenBase target_GB;		
-		if ( Class.CastTo(target_GB,  target.GetObject() ) )
+		if ( Class.CastTo(target_GB,  action_data.m_Target.GetObject() ) )
 		{
 			m_SpentQuantity = 0;
 			
@@ -25,16 +25,16 @@ class CAContinuousFertilizeGardenSlot : CAContinuousQuantity
 				m_SpentUnits.param1 = 0;
 			}
 			
-			if ( item ) 
-				m_ItemQuantity = item.GetQuantity();
+			if ( action_data.m_MainItem ) 
+				m_ItemQuantity = action_data.m_MainItem.GetQuantity();
 			
 			if ( target_GB ) 
 			{
-				string selection = target_GB.GetActionComponentName(target.GetComponentIndex());
+				string selection = target_GB.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 				Slot slot = target_GB.GetSlotBySelection( selection );
 				
 				
-				string item_type = item.GetType();
+				string item_type = action_data.m_MainItem.GetType();
 				float consumed_quantity = GetGame().ConfigGetFloat( "cfgVehicles " + item_type + " Horticulture ConsumedQuantity" ) / 2;
 				
 				float max = slot.GetFertilizerQuantityMax();
@@ -48,9 +48,9 @@ class CAContinuousFertilizeGardenSlot : CAContinuousQuantity
 	}
 	
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item  )
+	override int Execute( ActionData action_data  )
 	{		
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
@@ -63,23 +63,23 @@ class CAContinuousFertilizeGardenSlot : CAContinuousQuantity
 		{
 			if ( m_SpentQuantity < m_ItemQuantity  &&  m_SpentQuantity < m_SlotFertilizerNeed )
 			{
-				m_SpentQuantity += m_QuantityUsedPerSecond * player.GetDeltaT();
-				float val = player.GetSoftSkillManager().AddSpecialtyBonus( m_SpentQuantity, m_Action.GetSpecialtyWeight(), true );
+				m_SpentQuantity += m_QuantityUsedPerSecond * action_data.m_Player.GetDeltaT();
+				float val = action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( m_SpentQuantity, m_Action.GetSpecialtyWeight(), true );
 				GardenBase garden_base;
-				Class.CastTo(garden_base,  target.GetObject() );
-				string selection = garden_base.GetActionComponentName(target.GetComponentIndex());
+				Class.CastTo(garden_base,  action_data.m_Target.GetObject() );
+				string selection = garden_base.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 				
 				if (GetGame().IsServer())
 				{
-					item.AddQuantity( -m_SpentQuantity );
-					m_Action.SendMessageToClient(player, garden_base.Fertilize( player, item, val, selection ));
+					action_data.m_MainItem.AddQuantity( -m_SpentQuantity );
+					m_Action.SendMessageToClient(action_data.m_Player, garden_base.Fertilize( action_data.m_Player, action_data.m_MainItem, val, selection ));
 				}
 
 				return UA_PROCESSING;
 			}
 			else
 			{
-				CalcAndSetQuantity(player, target, item);
+				CalcAndSetQuantity( action_data );
 				return UA_FINISHED;
 			}
 		}

@@ -1,10 +1,10 @@
 class ActionCPRCB : ActionContinuousBaseCB
 {
-	private const float REPEAT_AFTER_SEC = 4;
+	private const float REPEAT_AFTER_SEC = 1;
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousRepeat(REPEAT_AFTER_SEC);
+		m_ActionData.m_ActionComponent = new CAContinuousRepeat(REPEAT_AFTER_SEC);
 	}
 };
 
@@ -43,16 +43,25 @@ class ActionCPR: ActionContinuousBase
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{	
-		return true;
+		PlayerBase other_player = PlayerBase.Cast(target.GetObject());
+		return other_player.IsUnconscious();
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
-		if (ntarget.GetBleedingManager() ) 
-		{
-			ntarget.GetBleedingManager().RemoveSingleBleedingSource();
-		}
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+
 	}
+	
+	override void OnRepeatServer(ActionData action_data)
+	{
+		PlayerBase other_player = PlayerBase.Cast(action_data.m_Target.GetObject());
+		other_player.GiveShock(5);
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+	}
+	
+	override void OnExecuteServer(ActionData action_data)
+	{
+
+	}
+
 };

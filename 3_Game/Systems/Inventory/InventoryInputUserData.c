@@ -21,14 +21,14 @@ class InventoryInputUserData
 		}
 	}
 
-	static void SendServerMove (int type, notnull InventoryLocation src, notnull InventoryLocation dst)
+	static void SendServerMove (Man player, int type, notnull InventoryLocation src, notnull InventoryLocation dst)
 	{
 		if (GetGame().IsServer())
 		{
 			syncDebugPrint("[syncinv] server sending cmd=" + typename.EnumToString(InventoryCommandType, type) + " src=" + src.DumpToString() + " dst=" + dst.DumpToString());
 			ScriptInputUserData ctx = new ScriptInputUserData;
 			SerializeMove(ctx, type, src, dst);
-			GameInventory.ServerLocationSyncMoveEntity(src.GetItem(), ctx);
+			GameInventory.ServerLocationSyncMoveEntity(player, src.GetItem(), ctx);
 		}
 	}
 	///@} move
@@ -121,6 +121,8 @@ class InventoryInputUserData
 	{
 		if (GetGame().IsServer())
 		{
+			if (e.IsServerSideOnly())
+				Error("[syncinv] SendServerHandEvent - called on server side event only, e=" + e);
 			syncDebugPrint("[syncinv] SendInputUserDataHandEvent e=" + e);
 			ScriptInputUserData ctx = new ScriptInputUserData;
 			SerializeHandEvent(ctx, e);

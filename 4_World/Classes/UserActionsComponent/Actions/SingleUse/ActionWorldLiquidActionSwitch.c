@@ -57,13 +57,13 @@ class ActionWorldLiquidActionSwitch: ActionSingleUseBase
 		return false;
 	}
 	
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item ) //Setup on start of action
+	override void Start( ActionData action_data ) //Setup on start of action
 	{
 		bool state;
-		state = player.GetLiquidTendencyDrain();
-		player.SetLiquidTendencyDrain(!state);
+		state = action_data.m_Player.GetLiquidTendencyDrain();
+		action_data.m_Player.SetLiquidTendencyDrain(!state);
 		
-		//Print(player.GetLiquidTendencyDrain());
+		//Print(action_data.m_Player.GetLiquidTendencyDrain());
 	}
 	
 	override bool IsLocal()

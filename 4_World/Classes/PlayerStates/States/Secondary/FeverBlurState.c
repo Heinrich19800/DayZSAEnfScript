@@ -85,6 +85,7 @@ class FeverBlurState extends StateBase
 	//!only gets called once on an active state that is being deactivated
 	override void OnGetDeactivatedClient(PlayerBase player)
 	{
+		PPEffects.SetBlurDrunk(0);
 		Debug.Log("OnGetDeactivated CoughState called", "PlayerState");
 	}
 }

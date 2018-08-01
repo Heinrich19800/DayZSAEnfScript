@@ -11,7 +11,7 @@ class CAContinuousRepeat : CAContinuousBase
 		m_DefaultTimeToComplete = time_to_complete_action;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		m_TimeElpased = 0;
 		if ( !m_SpentUnits )
@@ -23,20 +23,20 @@ class CAContinuousRepeat : CAContinuousBase
 			m_SpentUnits.param1 = 0;
 		}
 
-		m_TimeToComplete = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);		
+		m_TimeToComplete = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);		
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 
 		if ( m_TimeElpased < m_TimeToComplete )
 		{
-			m_TimeElpased += player.GetDeltaT();
-			m_TotalTimeElpased += player.GetDeltaT();
+			m_TimeElpased += action_data.m_Player.GetDeltaT();
+			m_TotalTimeElpased += action_data.m_Player.GetDeltaT();
 			return UA_PROCESSING;
 		}
 		else
@@ -48,7 +48,7 @@ class CAContinuousRepeat : CAContinuousBase
 		}
 	}
 	
-	override int Cancel( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Cancel( ActionData action_data )
 	{
 		if ( m_SpentUnits )
 		{

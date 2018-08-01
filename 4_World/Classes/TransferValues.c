@@ -108,7 +108,7 @@ class TransferValues extends Managed
 	{
 		float blood_current = m_Player.GetHealth("","Blood");
 		//float blood_normalized = blood_current / m_BloodMaxValue;
-		float blood_normalized = Math.InverseLerp(ModifierConstants.BLOOD_THRESHOLD_FATAL, m_BloodMaxValue, blood_current);
+		float blood_normalized = Math.InverseLerp(PlayerConstants.BLOOD_THRESHOLD_FATAL, m_BloodMaxValue, blood_current);
 		float difference_normalized = blood_normalized - m_LastBloodUpdate;
 		float diff_abs = Math.AbsFloat(difference_normalized);
 		

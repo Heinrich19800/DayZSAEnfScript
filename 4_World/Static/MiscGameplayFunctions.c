@@ -18,7 +18,7 @@ class TurnItemIntoItemLambda : ReplaceItemWithNewLambda
 		m_ExcludeQuantity = exclude_quantity;
 	}
 
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
 	{
 		super.CopyOldPropertiesToNew(old_item, new_item);
 
@@ -26,6 +26,7 @@ class TurnItemIntoItemLambda : ReplaceItemWithNewLambda
 		{
 			MiscGameplayFunctions.TransferItemProperties(old_item, new_item, m_TransferAgents, m_TransferVariables, m_TransferHealth, m_ExcludeQuantity);
 			MiscGameplayFunctions.TransferAttachments(old_item, new_item, m_Player);
+			//@TODO: Cargo? hands?
 		}
 		else
 		{
@@ -33,6 +34,48 @@ class TurnItemIntoItemLambda : ReplaceItemWithNewLambda
 		}
 	}
 };
+
+/**@class		DropEquipAndDestroyRootLambda
+ * @brief		this one is a bit special: it drops all items and destroys the ex-root of the hierarchy
+ **/
+class DropEquipAndDestroyRootLambda : ReplaceItemWithNewLambdaBase
+{
+	PlayerBase m_Player;
+
+	void DropEquipAndDestroyRootLambda (EntityAI old_item, string new_item_type, PlayerBase player)
+	{
+		m_Player = player;
+	}
+	
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
+	{
+		super.CopyOldPropertiesToNew(old_item, new_item);
+		
+		InventoryLocation understash_src = m_NewLocation; // m_NewLocation is a backup of original old_item's src before the operation started
+		
+		array<EntityAI> children = new array<EntityAI>;
+		old_item.GetInventory().EnumerateInventory(InventoryTraversalType.LEVELORDER, children);
+		int count = children.Count();
+		for (int i = 0; i < count; i++)
+		{
+			EntityAI child = children.Get(i);
+			if (child)
+			{
+				InventoryLocation child_src = new InventoryLocation;
+				child.GetInventory().GetCurrentInventoryLocation(child_src);
+				
+				InventoryLocation child_dst = new InventoryLocation;
+				child_dst.Copy(child_src);
+				child_dst.CopyLocationFrom(understash_src);
+				//@TODO: modify _dst with place on gnd?
+				
+				m_Player.LocalTakeToDst(child_src, child_dst);
+				
+				GetGame().RemoteObjectTreeCreate(child); // this forces server to send CreateVehicle Message to client. This is needed for preserving the appearance of network operations on client (so that DeleteObject(old) arrives before CreateVehicle(new)). @NOTE: this does not delete the object on server, only it's network representation.
+			}
+		}
+	}
+}
 
 class MiscGameplayFunctions
 {	
@@ -116,7 +159,7 @@ class MiscGameplayFunctions
 		
 	static void TurnItemIntoItemEx (notnull PlayerBase player, ReplaceItemWithNewLambdaBase lambda)
 	{
-		player.LocalReplaceItemWithNew(lambda);
+		player.ServerReplaceItemWithNew(lambda);
 	}
 
 	static array<ItemBase> CreateItemBasePiles(string item_name, vector ground_position, float quantity,  float health )
@@ -275,17 +318,17 @@ class MiscGameplayFunctions
 		{
 			case 1:
 			{
-				speed = ModifierConstants.METABOLIC_SPEED_ENERGY_WALK;
+				speed = PlayerConstants.METABOLIC_SPEED_ENERGY_WALK;
 				break;
 			}
 			case 2:
 			{
-				speed = ModifierConstants.METABOLIC_SPEED_ENERGY_JOG;
+				speed = PlayerConstants.METABOLIC_SPEED_ENERGY_JOG;
 				break;
 			}
 			case 3:
 			{
-				speed = ModifierConstants.METABOLIC_SPEED_ENERGY_SPRINT;
+				speed = PlayerConstants.METABOLIC_SPEED_ENERGY_SPRINT;
 				break;
 			}
 			default:
@@ -294,7 +337,7 @@ class MiscGameplayFunctions
 				break;
 			}
 		}
-		speed += ModifierConstants.METABOLIC_SPEED_ENERGY_BASAL;
+		speed += PlayerConstants.METABOLIC_SPEED_ENERGY_BASAL;
 		return speed;
 	}
 	
@@ -305,17 +348,17 @@ class MiscGameplayFunctions
 		{
 			case 1:
 			{
-				speed = ModifierConstants.METABOLIC_SPEED_WATER_WALK;
+				speed = PlayerConstants.METABOLIC_SPEED_WATER_WALK;
 				break;
 			}
 			case 2:
 			{
-				speed = ModifierConstants.METABOLIC_SPEED_WATER_JOG;
+				speed = PlayerConstants.METABOLIC_SPEED_WATER_JOG;
 				break;
 			}
 			case 3:
 			{
-				speed = ModifierConstants.METABOLIC_SPEED_WATER_SPRINT;
+				speed = PlayerConstants.METABOLIC_SPEED_WATER_SPRINT;
 				break;
 			}
 			default:
@@ -324,7 +367,7 @@ class MiscGameplayFunctions
 				break;
 			}
 		}
-		speed += ModifierConstants.METABOLIC_SPEED_WATER_BASAL;
+		speed += PlayerConstants.METABOLIC_SPEED_WATER_BASAL;
 		return speed;
 	}
 	

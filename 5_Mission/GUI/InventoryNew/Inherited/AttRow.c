@@ -49,10 +49,11 @@ class AttRow: ClosableContainer
 			{
 				stack_max = InventorySlots.GetStackMaxForSlotId( receiver_item.GetInventory().GetSlotId() );
 				quantity = receiver_item.GetQuantity();
-				if ( quantity < stack_max && ( ( ItemBase ) receiver_item ).CanBeCombined( item ) )
+				bool combinable = ( quantity < stack_max ) && receiver_item.CanBeCombined( ItemBase.Cast( iw.GetItem() ) );
+				if ( combinable || stack_max > 1 )
 				{
 					int remaining_quantity = stack_max - quantity;
-					( ( ItemBase )receiver_item ).CombineItemsClient( item, true );
+					receiver_item.CombineItemsClient( item, true );
 				}
 				else if( stack_max == 0 && GameInventory.CanSwapEntities( receiver_item, item ) )
 				{
@@ -126,7 +127,8 @@ class AttRow: ClosableContainer
 		{
 			int stack_max = InventorySlots.GetStackMaxForSlotId( receiver_item.GetInventory().GetSlotId() );
 			int quantity = receiver_item.GetQuantity();
-			if ( quantity < stack_max && ( ItemBase.Cast( receiver_item ) ).CanBeCombined( ItemBase.Cast( iw.GetItem() ) ) )
+			bool combinable = ( quantity < stack_max ) && ( ItemBase.Cast( receiver_item ).CanBeCombined( ItemBase.Cast( iw.GetItem() ) ) );
+			if ( combinable || stack_max > 1 )
 			{
 				ItemManager.GetInstance().HideDropzones();
 				ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "LeftPanel" ).FindAnyWidget( "DropzoneX" ).Show( true );
@@ -381,6 +383,7 @@ class AttRow: ClosableContainer
 				}
 				
 				int has_quantity = QuantityConversions.HasItemQuantity( item );
+				int stack_max	= InventorySlots.GetStackMaxForSlotId( slot_id );
 				Widget quantity_panel = item_w.FindAnyWidget("QuantityPanel"+j%7);
 				TextWidget item_quantity = TextWidget.Cast( item_w.FindAnyWidget("Quantity"+j%7) );
 				ProgressBarWidget quantity_progress = ProgressBarWidget.Cast( item_w.FindAnyWidget("QuantityBar"+j%7) );
@@ -392,7 +395,7 @@ class AttRow: ClosableContainer
 				else
 				{
 					quantity_panel.Show( true );
-					if ( has_quantity == QUANTITY_COUNT )
+					if ( has_quantity == QUANTITY_COUNT || stack_max > 1 )
 					{
 						item_quantity.SetText( QuantityConversions.GetItemQuantityText( item ) );
 						quantity_stack.Show( true );

@@ -10,7 +10,9 @@ class ActionIgniteFireplaceByAir: ActionIgniteFireplace
 		m_MessageSuccess = "I have started fire by blowing air into fireplace.";
 		m_MessageFail = "I have failed to start fire by blowing air into fireplace.";
 		m_MessageCancel = "I have stopped blowing air into fireplace.";
-		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;		
+		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;	
+		
+		m_SkipKindlingCheck = true;
 	}
 
 	override void CreateConditionComponents()  
@@ -48,9 +50,9 @@ class ActionIgniteFireplaceByAir: ActionIgniteFireplace
 		return false;
 	}
 		
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		FireplaceBase fireplace_target = FireplaceBase.Cast( target.GetObject() );
+		FireplaceBase fireplace_target = FireplaceBase.Cast( action_data.m_Target.GetObject() );
 
 		//start fire
 		fireplace_target.StartFire();

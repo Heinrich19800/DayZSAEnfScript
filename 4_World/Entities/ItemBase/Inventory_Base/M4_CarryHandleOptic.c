@@ -1,4 +1,4 @@
-class M4_CarryHandleOptic extends Inventory_Base
+class M4_CarryHandleOptic extends ItemOptics
 {
 	override bool CanPutAsAttachment( EntityAI parent )
 	{

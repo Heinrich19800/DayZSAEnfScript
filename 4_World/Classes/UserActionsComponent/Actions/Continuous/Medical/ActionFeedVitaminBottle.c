@@ -4,7 +4,7 @@ class ActionFeedVitaminBottleCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousQuantityEdible(QUANTITY_USED_PER_SEC,UATimeSpent.DEFAULT);
+		m_ActionData.m_ActionComponent = new CAContinuousQuantityEdible(QUANTITY_USED_PER_SEC,UATimeSpent.DEFAULT);
 	}
 };
 

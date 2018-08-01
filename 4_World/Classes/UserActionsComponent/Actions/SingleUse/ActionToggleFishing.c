@@ -33,7 +33,7 @@ class ActionToggleFishing: ActionSingleUseBase
 	{
 		vector pos_cursor = target.GetCursorHitPos();
 		float distance = Math.AbsInt(vector.Distance(pos_cursor,player.GetPosition()));
-		if ( distance <= 2 /*//m_MaximalActionDistance*/ && g_Game.SurfaceIsPond(pos_cursor[0], pos_cursor[2]) /*player.IsWaterContact()*/ )
+		if ( distance <= 2 /*//m_MaximalActionDistance*/ && g_Game.SurfaceIsPond(pos_cursor[0], pos_cursor[2]) /*action_data.m_Player.IsWaterContact()*/ )
 		{
 			return true;
 		}
@@ -43,20 +43,20 @@ class ActionToggleFishing: ActionSingleUseBase
 		}
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		FishingRod_Base nitem = FishingRod_Base.Cast( item );
+		FishingRod_Base nitem = FishingRod_Base.Cast( action_data.m_MainItem );
 		if( nitem.IsFishingActive() )
 		{
 			nitem.DeactivateFishing();
-			item.SetAnimationPhase("CloseRod",1);
-			item.SetAnimationPhase("OpenRod",0);
+			action_data.m_MainItem.SetAnimationPhase("CloseRod",1);
+			action_data.m_MainItem.SetAnimationPhase("OpenRod",0);
 		}
 		else
 		{
 			nitem.ActivateFishing();
-			item.SetAnimationPhase("CloseRod",0);
-			item.SetAnimationPhase("OpenRod",1);
+			action_data.m_MainItem.SetAnimationPhase("CloseRod",0);
+			action_data.m_MainItem.SetAnimationPhase("OpenRod",1);
 		}
 	}
 };

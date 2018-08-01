@@ -111,7 +111,7 @@ class Defibrillator extends ItemBase
 		else
 		{
 			victim.m_ModifiersManager.ActivateModifier ( eModifiers.MDF_HEART_ATTACK );
-			victim.GetStatShock().Add(500);
+			//OlD_SHOCK//victim.GetStatShock().Add(500);
 		}
 		
 		GetCompEM().SwitchOff();

@@ -2,7 +2,7 @@ class ActionBuryBodyCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.BURY_BODY);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.BURY_BODY);
 	}
 };
 
@@ -61,11 +61,11 @@ class ActionBuryBody: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		g_Game.ObjectDelete(targetObject);
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight ); 
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight ); 
 	}
 };

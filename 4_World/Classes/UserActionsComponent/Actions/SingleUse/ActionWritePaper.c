@@ -2,7 +2,7 @@ class ActionWritePaperCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT);
 	}
 };
 
@@ -48,19 +48,19 @@ class ActionWritePaper: ActionContinuousBase
 		return "#write_note";
 	}
 
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
 		//which is pen and which paper
-		if (target.GetObject().ConfigIsExisting("writingColor"))
+		if (action_data.m_Target.GetObject().ConfigIsExisting("writingColor"))
 		{
-			player.m_writingImplement = EntityAI.Cast(target.GetObject());
-			player.m_paper = item;
+			action_data.m_Player.m_writingImplement = EntityAI.Cast(action_data.m_Target.GetObject());
+			action_data.m_Player.m_paper = action_data.m_MainItem;
 		}
 		else
 		{
-			player.m_writingImplement = item;
-			player.m_paper = EntityAI.Cast(target.GetObject());
+			action_data.m_Player.m_writingImplement = action_data.m_MainItem;
+			action_data.m_Player.m_paper = EntityAI.Cast(action_data.m_Target.GetObject());
 		}
-		player.enterNoteMenuWrite = true;
+		action_data.m_Player.enterNoteMenuWrite = true;
 	}
 };

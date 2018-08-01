@@ -9,7 +9,7 @@ class CAContinuousQuantityExtinguish : CAContinuousQuantityRepeat
 		m_WetnessGainMultiplier = wetness_gain_multiplier;
 	}
 		
-	override void CalcAndSetQuantity( PlayerBase player, ActionTarget target, ItemBase item )
+	override void CalcAndSetQuantity( ActionData action_data )
 	{	
 		if ( GetGame().IsServer() ) 
 		{
@@ -19,19 +19,18 @@ class CAContinuousQuantityExtinguish : CAContinuousQuantityRepeat
 				SetACData( m_SpentUnits );
 			}
 			
-			Object targetObject = target.GetObject();
+			Object targetObject = action_data.m_Target.GetObject();
 			if ( targetObject )
 			{
 				FireplaceBase fireplace_target = FireplaceBase.Cast( targetObject );
 				
 				//add wetness to fireplace targets
 				float wetness = fireplace_target.GetWet() + ( m_SpentQuantity / 1000 * m_WetnessGainMultiplier );
-
 				wetness = Math.Clamp( wetness , 0, 1 );
 				fireplace_target.SetWet( wetness );
 				
 				//subtract quantity from water source
-				item.AddQuantity( -m_SpentQuantity );
+				action_data.m_MainItem.AddQuantity( -m_SpentQuantity );
 			}
 		}
 	}

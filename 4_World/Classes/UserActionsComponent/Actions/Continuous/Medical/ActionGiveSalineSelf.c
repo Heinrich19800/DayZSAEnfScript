@@ -2,7 +2,7 @@ class ActionGiveSalineSelfCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.SALINE);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.SALINE);
 	}
 };
 
@@ -45,16 +45,16 @@ class ActionGiveSalineSelf: ActionContinuousBase
 		return "Give saline";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{		
-		item.TransferModifiers(player);
-		Param1<float> nacdata = Param1<float>.Cast( acdata );		
+		action_data.m_MainItem.TransferModifiers(action_data.m_Player);
+		Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );		
 		float delta = nacdata.param1;
-		//player.SetHealth("GlobalHealth", "Blood", player.GetHealth("GlobalHealth", "Blood") + delta );
-		//player.AddHealth("", "Blood", delta);
-		player.GetModifiersManager().ActivateModifier(eModifiers.MDF_SALINE);
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-
-		item.Delete();
+		//action_data.m_Player.SetHealth("GlobalHealth", "Blood", action_data.m_Player.GetHealth("GlobalHealth", "Blood") + delta );
+		//action_data.m_Player.AddHealth("", "Blood", delta);
+		action_data.m_Player.GetModifiersManager().ActivateModifier(eModifiers.MDF_SALINE);
+			action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_MainItem.Delete();
 	}
 };

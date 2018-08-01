@@ -4,7 +4,7 @@ class ActionTuneFrequencyCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousRepeat(REPEAT_AFTER_SEC);
+		m_ActionData.m_ActionComponent = new CAContinuousRepeat(REPEAT_AFTER_SEC);
 	}
 }
 
@@ -65,9 +65,9 @@ class ActionTuneFrequency: ActionContinuousBase
 		return false;
 	}
 
-	override void OnRepeatServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnRepeatServer( ActionData action_data )
 	{	
-		TransmitterBase transmitter =  TransmitterBase.Cast( item );
-		transmitter.SetNextFrequency( player );
+		TransmitterBase transmitter =  TransmitterBase.Cast( action_data.m_MainItem );
+		transmitter.SetNextFrequency( action_data.m_Player );
 	}
 }

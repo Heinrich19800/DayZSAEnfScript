@@ -26,26 +26,52 @@ class ActionGetOutTransport: ActionInteractBase
 
 	override string GetText()
 	{
-		return "Get out";
+		return "Leave vehicle";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
-		
-		if ( player.GetCommand_Vehicle() )
-			return true;
-		
+ 		m_transport = null;
+
+		HumanCommandVehicle vehCommand = player.GetCommand_Vehicle();
+		if ( vehCommand )
+		{
+			m_transport = vehCommand.GetTransport();
+			if ( m_transport )
+			{
+				m_crewIdx = m_transport.CrewMemberIndex( player );
+				if ( m_crewIdx >= 0 && m_transport.CrewCanGetThrough( m_crewIdx ) )
+				return true;
+			}
+		}
+
 		return false;
 	}
 
-	override void Start( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Start( ActionData action_data )
 	{
-		Print("Vypadni z auta!");
-	}
-	
-	override bool IsLocal()
-	{
-		return true;
+		HumanCommandVehicle vehCommand = action_data.m_Player.GetCommand_Vehicle();
+		if( vehCommand )
+		{
+			Transport trans = vehCommand.GetTransport();
+			
+			if ( trans )
+			{
+				Car car;
+				if ( Class.CastTo(car, trans) )
+				{
+					float speed = car.GetSpeedometer();
+					if ( speed <= 5 )
+					{
+						vehCommand.GetOutVehicle();
+					}
+					else
+					{
+						vehCommand.JumpOutVehicle();
+					}
+				}
+			}
+		}
 	}
 	
 	override bool IsInstant()

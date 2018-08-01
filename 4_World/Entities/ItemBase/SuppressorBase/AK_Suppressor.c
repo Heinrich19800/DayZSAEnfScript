@@ -1,4 +1,4 @@
-class AK_Suppressor extends Inventory_Base
+class AK_Suppressor extends ItemSuppressor
 {
 	override bool CanPutAsAttachment( EntityAI parent )
 	{

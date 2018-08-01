@@ -81,6 +81,7 @@ class PluginManager
 		RegisterPluginDebug( "PluginDrawCheckerboard",			true,	false );
 		RegisterPluginDebug( "PluginPresenceNotifier",			true,	false );
 		//RegisterPluginDebug( "PluginSoundDebug",				true,	false );
+		RegisterPluginDebug( "PluginCameraTools",					true, 	true );
 		
 		GetGame().GetUpdateQueue(CALL_CATEGORY_GAMEPLAY).Insert(this.MainOnUpdate);
 	}
@@ -312,7 +313,7 @@ PluginBase GetPlugin(typename plugin_type)
 	return plugin;
 }
 
-bool IsModuleExist(local typename plugin_type)
+bool IsModuleExist(typename plugin_type)
 {
 	if ( IsPluginManagerExists() )
 	{

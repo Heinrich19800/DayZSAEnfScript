@@ -115,6 +115,7 @@ class SwapOldAndNewMagazine extends WeaponStateBase
 
 		if (m_oldMagazine && m_oldDst)
 		{
+			m_weapon.SelectionMagazineShow();
 			InventoryLocation lhand_old = new InventoryLocation;
 			lhand_old.SetAttachment(e.m_player, m_oldMagazine, InventorySlots.LEFTHAND);
 			InventoryLocation lhand_new = new InventoryLocation;
@@ -131,7 +132,6 @@ class SwapOldAndNewMagazine extends WeaponStateBase
 				if (GameInventory.LocationSwap(src1, src2, dst1, dst2))
 				{
 					wpnDebugPrint("[wpnfsm] SwapOldAndNewMagazine, ok - old swapped with one in inventory (LH<->inv)");
-					m_weapon.SelectionMagazineShow();
 					return;
 				}
 				else

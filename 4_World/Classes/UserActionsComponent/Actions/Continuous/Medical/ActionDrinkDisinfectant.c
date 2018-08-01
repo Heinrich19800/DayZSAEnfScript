@@ -5,8 +5,8 @@ class ActionDrinkDisinfectant: ActionDrink
 		return AT_DRINK_DISINFECTANT;
 	}
 		
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
-		player.m_ModifiersManager.ActivateModifier(eModifiers.MDF_POISONING);
+		action_data.m_Player.m_ModifiersManager.ActivateModifier(eModifiers.MDF_POISONING);
 	}
 };

@@ -2,7 +2,7 @@ class ActionDismantleOvenCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime( UATimeSpent.DEFAULT_DECONSTRUCT );
+		m_ActionData.m_ActionComponent = new CAContinuousTime( UATimeSpent.DEFAULT_DECONSTRUCT );
 	}
 }
 
@@ -55,9 +55,9 @@ class ActionDismantleOven: ActionContinuousBase
 		return false;
 	}
 		
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		Object target_object = target.GetObject();
+		Object target_object = action_data.m_Target.GetObject();
 		FireplaceBase fireplace_target = FireplaceBase.Cast( target_object );
 		
 		if ( fireplace_target.CanDismantleOven() )
@@ -70,11 +70,11 @@ class ActionDismantleOven: ActionContinuousBase
 			fireplace_target.SetOvenState( false );
 			
 			//add specialty to soft skills
-			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+			action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 		}
 		else
 		{
-			SendMessageToClient( player, fireplace_target.MESSAGE_CANNOT_DISMANTLE_OVEN );
+			SendMessageToClient( action_data.m_Player, fireplace_target.MESSAGE_CANNOT_DISMANTLE_OVEN );
 		}
 	}
 }

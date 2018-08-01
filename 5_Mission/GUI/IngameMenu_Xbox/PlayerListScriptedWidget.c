@@ -122,6 +122,24 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 		}
 	}
 	
+	void ReloadLocal( map<string, bool> player_list )
+	{
+		if( player_list )
+		{
+			for( int i = 0; i < player_list.Count(); i++ )
+			{
+				string uid = player_list.GetKey( i );
+				bool muted = player_list.Get( uid );
+				PlayerListEntryScriptedWidget player_widget;
+				m_Entries.Find( uid, player_widget );
+				if( player_widget )
+				{
+					player_widget.MutePlayer( muted );
+				}
+			}
+		}
+	}
+	
 	string FindPlayerByWidget( Widget button )
 	{
 		if( button && m_Entries )
@@ -153,6 +171,24 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 		{
 			m_Entries.Remove( UID );
 			m_TotalEntries--;
+			m_Content.Update();
+		}
+	}
+	
+	bool IsGloballyMuted( string UID )
+	{
+		if( m_Entries && m_Entries.Get( UID ) )
+		{
+			return m_Entries.Get( UID ).IsGloballyMuted();
+		}
+		return false;
+	}
+	
+	void MutePlayer( string UID, bool mute )
+	{
+		if( m_Entries )
+		{
+			m_Entries.Get( UID ).MutePlayer( mute );
 		}
 	}
 	

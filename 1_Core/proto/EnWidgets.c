@@ -41,9 +41,11 @@
 	BaseListboxWidgetTypeID,
 	TextListboxWidgetTypeID,
 	GenericListboxWidgetTypeID,
-	EditBoxWidgetWidgetTypeID,
-	WorkspaceWidgetWidgetTypeID,
-	CanvasWidgetWidgetTypeID,
+	EditBoxWidgetTypeID,
+	WorkspaceWidgetTypeID,
+	GridSpacerWidgetTypeID,
+	WrapSpacerWidgetTypeID,
+	ScrollWidgetTypeID,	
 ///@}
 #else
 	typedef TypeID WidgetType;
@@ -172,6 +174,11 @@ class TextWidget extends Widget
 	//! Returns text size in pixels
 	proto void GetTextSize(out int sx, out int sy);
 	proto void SetTextFormat(string text, void param1 = NULL, void param2 = NULL, void param3 = NULL, void param4 = NULL, void param5 = NULL, void param6 = NULL, void param7 = NULL, void param8 = NULL, void param9 = NULL);
+	
+	//! Get text proportion - ratio between button height and button text height in interval <0,1>
+	proto native float GetTextProportion();
+	//! Set text proportion - ratio between button height and button text height in interval <0,1>
+	proto native void SetTextProportion(float val);
 };
 
 class MultilineTextWidget extends TextWidget
@@ -366,6 +373,28 @@ class TextListboxWidget extends SimpleListboxWidget
 	proto void GetItemData(int row, int column, out Class data);
 	
 	proto native void SetItemColor(int row, int column, int color );
+};
+
+class ScrollWidget extends UIWidget
+{
+	proto native float GetScrollbarWidth();
+
+	proto native float GetContentWidth();
+	proto native float GetContentHeight();
+	
+	proto native float GetHScrollPos();
+	proto native float GetHScrollPos01();
+	proto native bool HScrollStep(int steps);
+	proto native void HScrollToPos(float pos);
+	proto native void HScrollToPos01(float pos01);
+	proto native void HScrollToWidget(Widget child);
+
+	proto native float GetVScrollPos();
+	proto native float GetVScrollPos01();
+	proto native bool VScrollStep(int steps);
+	proto native void VScrollToPos(float pos);
+	proto native void VScrollToPos01(float pos01);
+	proto native void VScrollToWidget(Widget child);
 };
 
 //VideoWidget

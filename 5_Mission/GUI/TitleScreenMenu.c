@@ -29,55 +29,30 @@ class TitleScreenMenu extends UIScriptedMenu
 		
 #ifdef PLATFORM_PS4
 		text_widget.SetText("Press <image set=\"playstation_buttons\" name=\"cross\" /> to start the game");
-#endif		
+#endif
 		}
-		
 		return layoutRoot;
+	}
+	
+	override void OnShow()
+	{
+		if( g_Game.GetGameState() != DayZGameState.CONNECTING )
+			g_Game.SelectUser();
+	}
+	
+	override void OnHide()
+	{
+		
 	}
 	
 	override void Update(float timeslice)
 	{
-		// temporary for testing ui on PC
-#ifdef PLATFORM_WINDOWS
-#ifdef PLATFORM_XBOX
-		if ( GetGame().GetInput().GetActionDown(UAUISelect, false) )
-		{
-			EnterScriptedMenu(MENU_MAIN);
-		}
-#endif
-#endif
+		#ifdef PLATFORM_WINDOWS
+			if( GetGame().GetInput().GetActionDown( UAUISelect, false ) )
+			{
+				EnterScriptedMenu(MENU_MAIN);
+			}
+		#endif
 	}
 	
-	override bool OnXboxEvent(int xboxEvent)
-	{
-	#ifdef PREVIEW_BUILD
-		if (xboxEvent == ACTIVE_GAMEPAD_SET)
-		{
-			EnterScriptedMenu(MENU_MAIN);
-			return true;
-		}
-	#else
-		if (xboxEvent == ACTIVE_GAMEPAD_SET)
-		{
-			bool isUser = GetGame().IsUserByGamepad();
-			if (!isUser)
-			{
-				GetGame().ShowAccountPicker();
-			}
-			return true;
-		}
-		else if (xboxEvent == ACTIVE_USER_CHANGED)
-		{
-			m_scene.ChangeCharacter(-1);
-			EnterScriptedMenu(MENU_MAIN);
-			return true;
-		}
-		else if (xboxEvent == CLOSED_USER_PICKER)
-		{
-			GetGame().GetInput().ResetActiveGamepad();
-			return true;
-		}
-	#endif
-		return false;
-	}
 }

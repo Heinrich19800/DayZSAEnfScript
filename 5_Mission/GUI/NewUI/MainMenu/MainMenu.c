@@ -1,6 +1,6 @@
-class MainMenuNew extends UIScriptedMenu
+class MainMenu extends UIScriptedMenu
 {
-	protected ref MainMenuNewsfeed	m_Newsfeed;
+	protected ref MainMenusfeed	m_Newsfeed;
 	protected ref MainMenuStats		m_Stats;
 	
 	protected MissionMainMenu		m_Mission;
@@ -13,7 +13,8 @@ class MainMenuNew extends UIScriptedMenu
 	
 	protected Widget				m_Play;
 	protected ButtonWidget			m_ChooseServer;
-	protected Widget				m_CustomizeCharacter;
+	protected ButtonWidget			m_CustomizeCharacter;
+	protected ButtonWidget			m_PlayVideo;
 	protected Widget				m_StatButton;
 	protected Widget				m_MessageButton;
 	protected Widget				m_SettingsButton;
@@ -27,6 +28,10 @@ class MainMenuNew extends UIScriptedMenu
 	protected Widget				m_NewsSec2;
 	protected Widget				m_PrevCharacter;
 	protected Widget				m_NextCharacter;
+	
+	protected VideoWidget			m_Video;
+	protected ref Timer				m_VideoPlayTimer;
+	protected ref WidgetFadeTimer	m_VideoFadeTimer;
 
 	override Widget Init()
 	{
@@ -34,7 +39,8 @@ class MainMenuNew extends UIScriptedMenu
 		
 		m_Play						= layoutRoot.FindAnyWidget( "play" );
 		m_ChooseServer				= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "choose_server" ) );
-		m_CustomizeCharacter		= layoutRoot.FindAnyWidget( "customize_character" );
+		m_CustomizeCharacter		= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "customize_character" ) );
+		m_PlayVideo					= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "play_video" ) );
 		m_StatButton				= layoutRoot.FindAnyWidget( "stat_button" );
 		m_MessageButton				= layoutRoot.FindAnyWidget( "message_button" );
 		m_SettingsButton			= layoutRoot.FindAnyWidget( "settings_button" );
@@ -46,10 +52,12 @@ class MainMenuNew extends UIScriptedMenu
 		m_PrevCharacter				= layoutRoot.FindAnyWidget( "prev_character" );
 		m_NextCharacter				= layoutRoot.FindAnyWidget( "next_character" );
 		
+		m_Video						= VideoWidget.Cast( layoutRoot.FindAnyWidget( "video" ) );
+
 		m_Version					= TextWidget.Cast( layoutRoot.FindAnyWidget( "version" ) );
 		m_CharacterRotationFrame	= layoutRoot.FindAnyWidget( "character_rotation_frame" );
 			
-		m_Newsfeed					= new MainMenuNewsfeed( layoutRoot.FindAnyWidget( "news_feed_root" ) );
+		m_Newsfeed					= new MainMenusfeed( layoutRoot.FindAnyWidget( "news_feed_root" ) );
 		m_Stats						= new MainMenuStats( layoutRoot.FindAnyWidget( "character_stats_root" ) );
 		
 		m_Mission					= MissionMainMenu.Cast( GetGame().GetMission() );
@@ -61,14 +69,23 @@ class MainMenuNew extends UIScriptedMenu
 			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater( m_Scene.SceneCharacterSetPos, 250 );
 		}
 		
-		m_PlayerName			= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_text") );
-		m_PlayerName.SetText( g_Game.GetPlayerGameName() );
+		m_PlayerName				= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_text") );
 		
 		#ifdef PLATFORM_XBOX
-			m_NextCharacter.Show( false );
-			m_PrevCharacter.Show( false );
+			m_PlayerName			= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_xbox") );
+			//m_VideoPlayTimer		= new Timer();
+			//m_VideoFadeTimer		= new WidgetFadeTimer();
+			layoutRoot.FindAnyWidget( "character_name_xbox_background" ).Show( true );
+			layoutRoot.FindAnyWidget( "settings_panel_root" ).Show( false );
+			layoutRoot.FindAnyWidget( "ConsoleToolbar" ).Show( true );
+			layoutRoot.FindAnyWidget( "character" ).Show( false );
+			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
+			//m_PlayVideo.Show( true );
+			m_CustomizeCharacter.SetText( "OPTIONS" );
 			m_ChooseServer.SetText( "CONTROLS" );
 		#endif
+		
+		Refresh();
 		
 		string version;
 		GetGame().GetVersion( version );
@@ -77,14 +94,18 @@ class MainMenuNew extends UIScriptedMenu
 		else
 			m_Version.Show( false );
 		
-		SetFocus( m_Play );
-		
 		GetGame().GetUIManager().ScreenFadeOut(0);
+
+		#ifdef PLATFORM_XBOX
+			ColorRed( m_Play );
+		#else
+			SetFocus( layoutRoot );
+		#endif
 		
 		return layoutRoot;
 	}
 	
-	void ~MainMenuNew()
+	void ~MainMenu()
 	{
 	}
 	
@@ -108,70 +129,82 @@ class MainMenuNew extends UIScriptedMenu
 	
 	override bool OnClick( Widget w, int x, int y, int button )
 	{
-		if( w == m_Play )
+		if( button == MouseState.LEFT )
 		{
-			Play();
-			return true;
-		}
-		else if ( w == m_ChooseServer )
-		{
-			ChooseServer();
-			return true;
-		}
-		else if ( w == m_CustomizeCharacter )
-		{
-			CustomizeCharacter();
-			return true;
-		}
-		else if ( w == m_StatButton )
-		{
-			OpenStats();
-			return true;
-		}
-		else if ( w == m_MessageButton )
-		{
-			OpenMessages();
-			return true;
-		}
-		else if ( w == m_SettingsButton )
-		{
-			OpenSettings();
-			return true;
-		}
-		else if ( w == m_Exit )
-		{
-			Exit();
-			return true;
-		}
-		else if ( w == m_PrevCharacter )
-		{
-			PreviousCharacter();
-			return true;
-		}
-		else if ( w == m_NextCharacter )
-		{
-			NextCharacter();
-			return true;
-		}
-		else if ( w == m_NewsFeedOpen )
-		{
-			ShowNewsfeed();
-			return true;
-		}
-		else if ( w == m_NewsFeedClose )
-		{
-			HideNewsfeed();
-			return true;
-		}
-		else if ( w == m_CharacterStatsOpen )
-		{
-			ShowStats();
-			return true;
-		}
-		else if ( w == m_CharacterStatsClose )
-		{
-			HideStats();
-			return true;
+			if( w == m_Play )
+			{
+				Play();
+				return true;
+			}
+			else if ( w == m_ChooseServer )
+			{
+				ChooseServer();
+				return true;
+			}
+			else if ( w == m_CustomizeCharacter )
+			{
+				#ifdef PLATFORM_XBOX
+					OpenSettings();
+				#else
+					CustomizeCharacter();
+				#endif
+				return true;
+			}
+			else if ( w == m_StatButton )
+			{
+				OpenStats();
+				return true;
+			}
+			else if ( w == m_MessageButton )
+			{
+				OpenMessages();
+				return true;
+			}
+			else if ( w == m_SettingsButton )
+			{
+				OpenSettings();
+				return true;
+			}
+			else if ( w == m_Exit )
+			{
+				Exit();
+				return true;
+			}
+			else if ( w == m_PrevCharacter )
+			{
+				PreviousCharacter();
+				return true;
+			}
+			else if ( w == m_NextCharacter )
+			{
+				NextCharacter();
+				return true;
+			}
+			else if ( w == m_NewsFeedOpen )
+			{
+				ShowNewsfeed();
+				return true;
+			}
+			else if ( w == m_NewsFeedClose )
+			{
+				HideNewsfeed();
+				return true;
+			}
+			else if ( w == m_CharacterStatsOpen )
+			{
+				ShowStats();
+				return true;
+			}
+			else if ( w == m_CharacterStatsClose )
+			{
+				HideStats();
+				return true;
+			}
+			else if ( w == m_PlayVideo )
+			{
+				PlayVideo();
+				return true;
+			}
 		}
 		return false;
 	}
@@ -218,15 +251,45 @@ class MainMenuNew extends UIScriptedMenu
 	
 	bool IsFocusable( Widget w )
 	{
-		bool focus1 = ( w == m_Play || w == m_ChooseServer || w == m_CustomizeCharacter || w == m_StatButton || w == m_MessageButton || w == m_SettingsButton );
-		bool focus2 = ( w == m_Exit || w == m_NewsFeedOpen || w == m_NewsFeedClose );
-		bool focus3 = ( w == m_CharacterStatsOpen || w == m_CharacterStatsClose || w == m_NewsMain || w == m_NewsSec1 || w == m_NewsSec2 || w == m_PrevCharacter || w == m_NextCharacter );
-		return ( focus1 || focus2 || focus3 );
+		if( w == m_Play || w == m_ChooseServer || w == m_CustomizeCharacter || w == m_StatButton || w == m_MessageButton || w == m_SettingsButton );
+			return true;
+		if( w == m_Exit || w == m_NewsFeedOpen || w == m_NewsFeedClose || m_PlayVideo );
+			return true;
+		if( w == m_CharacterStatsOpen || w == m_CharacterStatsClose || w == m_NewsMain || w == m_NewsSec1 || w == m_NewsSec2 || w == m_PrevCharacter || w == m_NextCharacter );
+			return true;
+		return false;
+	}
+	
+	override void Refresh()
+	{
+		string name;
+		
+		#ifdef PLATFORM_XBOX
+			if( GetGame().GetUserManager() && GetGame().GetUserManager().GetSelectedUser() )
+			{
+				name = GetGame().GetUserManager().GetSelectedUser().GetName();
+				if( name.LengthUtf8() > 18 )
+				{
+					name = name.SubstringUtf8(0, 18);
+					name += "...";
+				}
+			}
+		#else
+			g_Game.GetPlayerNameShort( 14, name );
+		#endif
+		
+		m_PlayerName.SetText( name );
 	}
 	
 	override void OnShow()
 	{
-		SetFocus( m_Play );
+		#ifdef PLATFORM_XBOX
+			ColorRed( m_Play );
+		#else
+			SetFocus( layoutRoot );
+		#endif
+		Refresh();
+		
 		if( m_Scene && m_Scene.m_Camera )
 		{
 			m_Scene.m_Camera.LookAt(Vector(m_Scene.m_DemoPos[0],m_Scene.m_DemoPos[1] + 1,m_Scene.m_DemoPos[2]));
@@ -237,6 +300,17 @@ class MainMenuNew extends UIScriptedMenu
 	{
 		//super.OnHide();
 	}
+
+#ifdef PLATFORM_XBOX
+	override void Update(float timeslice)
+	{
+			if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
+			{
+				g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
+				GetGame().GetInput().ResetActiveGamepad();
+			}
+	}
+#endif
 	
 	void Play()
 	{
@@ -247,12 +321,11 @@ class MainMenuNew extends UIScriptedMenu
 				m_Scene.SetCharacterInfo();
 			
 			m_Scene.SaveCharName();
-			
-			if (!g_Game.IsNewCharacter())
-				GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectLastSession");
-			else
-				GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectBestServer");
 		}
+		if (!g_Game.IsNewCharacter())
+			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectLastSession");
+		else
+			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectBestServer");
 	}
 
 	void ChooseServer()
@@ -279,18 +352,6 @@ class MainMenuNew extends UIScriptedMenu
 	void CustomizeCharacter()
 	{
 		EnterScriptedMenu(MENU_CHARACTER);
-	}
-	
-	void CharacterEnter()
-	{
-		m_PrevCharacter.Show( true );
-		m_NextCharacter.Show( true );
-	}
-	
-	void CharacterLeave()
-	{
-		m_PrevCharacter.Show( false );
-		m_NextCharacter.Show( false );
 	}
 	
 	void NextCharacter()
@@ -350,6 +411,37 @@ class MainMenuNew extends UIScriptedMenu
 		EnterScriptedMenu(MENU_OPTIONS);
 	}
 	
+	void PlayVideo()
+	{
+		//m_Video.LoadVideo( "", 0 ); //TODO get video id
+		//m_Video.Play( VideoCommand.REWIND );
+		//m_Video.Play( VideoCommand.PLAY );
+		time_tt = 0;
+		m_Video.Show( true );
+		m_VideoFadeTimer.FadeIn( m_Video, 1.5 );
+		m_VideoPlayTimer.Run( 0.1, this, "PlayVideoLoop", null, true );
+		Print( "Starting" );
+	}
+	
+	float time_tt;
+	void PlayVideoLoop()
+	{/*
+		if( !m_Video.Play( VideoCommand.ISPLAYING ) )
+		{
+			m_VideoPlayTimer.Stop();
+			m_VideoFadeTimer.FadeOut( m_Video, 1.5 );
+		}*/
+		time_tt += 0.1;
+		Print( "Time " + time_tt );
+		if( time_tt >= 5 )
+		{
+			m_Video.Show( false );
+			Print( "Stopping" );
+			m_VideoPlayTimer.Stop();
+			m_VideoFadeTimer.FadeOut( m_Video, 1.5 );
+		}
+	}
+	
 	void Exit()
 	{
 		GetGame().GetUIManager().ShowDialog("EXIT", "Are you sure you want to exit?", IDC_MAIN_QUIT, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
@@ -358,13 +450,21 @@ class MainMenuNew extends UIScriptedMenu
 	void ConnectLastSession()
 	{
 		//TODO fix code-side
-		if ( !g_Game.ConnectLastSession(this, m_Scene.CurrentCharacterID()) )
+		if ( m_Scene /*&& !g_Game.ConnectLastSession(this, m_Scene.CurrentCharacterID())*/ )
 		{
 			#ifdef NEW_UI
 				EnterScriptedMenu(MENU_SERVER_BROWSER);
 			#else
-				g_Game.GetUIManager().EnterServerBrowser(this);
+				#ifdef PLATFORM_XBOX
+					EnterScriptedMenu(MENU_SERVER_BROWSER);
+				#else
+					g_Game.GetUIManager().EnterServerBrowser(this);
+				#endif
 			#endif
+		}
+		else
+		{
+			EnterScriptedMenu(MENU_SERVER_BROWSER);
 		}
 	}
 	

@@ -517,7 +517,7 @@ class SceneEditorMenu extends UIScriptedMenu
 	override bool OnClick(Widget w, int x, int y, int button)
 	{	
 		super.OnClick(w, x, y, button);
-
+		
 		int row_index;
 		
 		if ( w == m_WgtBtnSceneManager )
@@ -813,6 +813,7 @@ class SceneEditorMenu extends UIScriptedMenu
 	//============================================
 	override bool OnItemSelected(Widget w, int x, int y, int row, int column, int oldRow, int oldColumn)
 	{	
+		
 		super.OnItemSelected(w, x, y, row, column, oldRow, oldColumn);
 
 		if ( w == m_ClWgtLbxClassesList )
@@ -829,7 +830,7 @@ class SceneEditorMenu extends UIScriptedMenu
 		{
 			int row_index = m_SlWgtLbxObjectsList.GetSelectedRow();
 			
-			if ( m_SlObjectsList.Count() > 0 && m_SlObjectsList.Count() > row_index )
+			if ( m_SlObjectsList && row_index > -1 && m_SlObjectsList.Count() > 0 && m_SlObjectsList.Count() > row_index )
 			{
 				m_ModuleSceneManager.SelectObject(m_SlObjectsList.GetElement(row_index));
 			}

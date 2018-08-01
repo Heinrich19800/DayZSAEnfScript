@@ -12,10 +12,9 @@ class ActionInjectEpinephrineTarget: ActionInjectTarget
 		return AT_INJECT_EPINEPHRINE_T;
 	}
 		
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
-		ntarget.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_HEART_ATTACK);
-		ntarget.GetStatShock().Set(0);
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
+		ntarget.GiveShock(100);
 	}
 };

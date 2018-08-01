@@ -3,7 +3,7 @@ class ActionFillFuelCB : ActionContinuousBaseCB
 	override void CreateActionComponent()
 	{
 		//should it really use CAContinuousQuantityEdible?
-		m_ActionComponent = new CAContinuousQuantityEdible(UAQuantityConsumed.FUEL,UATimeSpent.DEFAULT);
+		m_ActionData.m_ActionComponent = new CAContinuousQuantityEdible(UAQuantityConsumed.FUEL,UATimeSpent.DEFAULT);
 	}
 };
 
@@ -56,19 +56,19 @@ class ActionFillFuel: ActionContinuousBase
 		return false;
 	}	
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		Print("Refill Complete");
-		Car car = Car.Cast(target.GetObject());
+		Car car = Car.Cast(action_data.m_Target.GetObject());
 
-		if( car.IsActionComponentPartOfSelection(target.GetComponentIndex(), "refill") )
+		if( car.IsActionComponentPartOfSelection(action_data.m_Target.GetComponentIndex(), "refill") )
 		{
-			Param1<float> nacdata = Param1<float>.Cast( acdata );
+			Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );
 			
 			//float consumed_fuel = car.Fill( CarFluid.FUEL, nacdata.param1 );
 			//int consumed_fuel = car.AddFuel( nacdata.param1 );
 			
-			item.AddQuantity( -0.1 );
+			action_data.m_MainItem.AddQuantity( -0.1 );
 		}
 	}
 };

@@ -19,7 +19,7 @@ class Cooking
 	typename COOKING_EQUIPMENT_POT	 					= Pot;
 	typename COOKING_INGREDIENT_LARD 					= Lard;
 	//
-	static const float LIQUID_BOILING_POINT 			= 100;	//boiling point for liquids
+	static const float LIQUID_BOILING_POINT 			= 150;	//boiling point for liquids
 	static const float LIQUID_VAPOR_QUANTITY 			= 2;	//vapor quantity
 	
 	//COOKING PROCESS
@@ -28,6 +28,9 @@ class Cooking
 	int CookWithEquipment( ItemBase cooking_equipment, float cooking_time_coef = 1 )
 	{
 		int cooking_state_update = 0;
+		bool is_done;
+		bool is_empty;
+		bool is_burned;
 		
 		//check cooking conditions
 		if ( cooking_equipment == NULL )
@@ -36,8 +39,13 @@ class Cooking
 		}
 		
 		//manage items in cooking equipment
-		Cargo cargo = cooking_equipment.GetInventory().GetCargo();
-		
+		CookingMethodType cooking_method = GetCookingMethod( cooking_equipment );
+		CargoBase cargo = cooking_equipment.GetInventory().GetCargo();
+		if ( cargo.GetItemCount() == 0 )
+		{
+			is_empty = true;
+		}
+		//process items
 		for ( int i = 0; i < cargo.GetItemCount(); i++ )
 		{
 			ItemBase item = ItemBase.Cast( cargo.GetItem( i ) );
@@ -46,46 +54,60 @@ class Cooking
 			if ( item_to_cook && item_to_cook.CanBeCooked() )
 			{
 				//update food
-				CookingMethodType cooking_method = GetCookingMethod( cooking_equipment );
 				cooking_state_update = UpdateCookingState( item_to_cook, cooking_method, cooking_equipment, cooking_time_coef );
+				
+				//check for done state
+				if ( item_to_cook.IsFoodBaked() || item_to_cook.IsFoodBoiled() || item_to_cook.IsFoodDried() )
+				{
+					is_done = true;
+				}
+				//check for burned state
+				else if ( item_to_cook.IsFoodBurned() )
+				{
+					is_burned = true;
+				}
 			}
 			else   
 			{
 				//damage item
 				item.DecreaseHealth( "", "", PARAM_BURN_DAMAGE_COEF * 100 );
 				
-				//TODO - non edible items have varTemperatureMax set to 0, so their temperature cannot be set properly
-				//add temperature
-				//AddTemperatureToItem( item, NULL, 0 );
+				//add temperature to item
+				AddTemperatureToItem( item, NULL, 0 );
 			}
 		}
 		
-		//boil liquid
+		//manage cooking equipment
 		Bottle_Base bottle_base = Bottle_Base.Cast( cooking_equipment );
 		if ( bottle_base )
 		{
 			float cooking_equipment_temp = cooking_equipment.GetTemperature();
+			bool is_water_boiling;
 			
-			if ( cooking_equipment_temp >= LIQUID_BOILING_POINT )
+			//handle water boiling
+			if ( cooking_equipment_temp >= LIQUID_BOILING_POINT && cooking_equipment.GetQuantity() > 0 )
 			{
+				is_water_boiling = true;
+				
 				//remove agents
 				//cooking_equipment.RemoveAllAgents();
 				
 				//vaporize liquid
-				if ( cooking_equipment.GetQuantity() > 0 )
+				cooking_equipment.AddQuantity( -LIQUID_VAPOR_QUANTITY );
+			}
+			
+			//handle audio visuals
+			if ( is_empty )
+			{
+				if ( is_water_boiling )
 				{
-					//LIQUID_VAPOR_QUANTITY	
-					cooking_equipment.AddQuantity( -LIQUID_VAPOR_QUANTITY );
-					
-					//start steam particle
-					bottle_base.SteamStart();
-				}
+					bottle_base.RefreshAudioVisuals( cooking_method, is_done, is_empty, is_burned );		//if empty, refresh audio and visuals only on boiling point
+				}				
 			}
 			else
 			{
-				//stop steam particle
-				bottle_base.SteamStop();
-			}			
+				bottle_base.RefreshAudioVisuals( cooking_method, is_done, is_empty, is_burned );			//if not empty, refresh audio and visuals
+			}
 		}
 		
 		return cooking_state_update;
@@ -130,7 +152,7 @@ class Cooking
 			if ( next_stage_cooking_properties.Count() > 2)
 			{
 				food_max_temp = next_stage_cooking_properties.Get ( 2 );
-			}	
+			}
 		}
 		
 		//add temperature
@@ -158,7 +180,7 @@ class Cooking
 				item_to_cook.ChangeFoodStage( new_stage_type );
 				//Temp
 				//Remove all modifiers
-				item_to_cook.RemoveAllAgents();
+				item_to_cook.RemoveAllAgentsExcept(AGT_BRAIN + AGT_SALMONELLA);
 				
 				//remove lard when baking with cooking equipment
 				if ( cooking_equipment && cooking_method == CookingMethodType.BAKING )
@@ -240,7 +262,7 @@ class Cooking
 				item_to_cook.ChangeFoodStage( new_stage_type );
 				//Temp
 				//Remove all modifiers
-				item_to_cook.RemoveAllAgents();
+				item_to_cook.RemoveAllAgentsExcept(AGT_BRAIN + AGT_SALMONELLA);
 
 				//reset cooking time
 				item_to_cook.SetCookingTime( 0 );
@@ -256,7 +278,7 @@ class Cooking
 	//
 	protected ItemBase GetItemTypeFromCargo( typename item_type, ItemBase cooking_equipment )
 	{
-		Cargo cargo = cooking_equipment.GetInventory().GetCargo();
+		CargoBase cargo = cooking_equipment.GetInventory().GetCargo();
 		
 		for ( int i = 0; i < cargo.GetItemCount(); i++ )
 		{

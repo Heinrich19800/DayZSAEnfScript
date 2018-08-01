@@ -205,7 +205,7 @@ class RecipeBase
 			}
 			else if ( m_ResultToInventory[i] == -2 )
 			{
-				object = player.SpawnEntityOnGroundOnCursorDir(item_to_spawn, 0.5);
+				object = player.GetInventory().CreateEntityInCargo(item_to_spawn);
 			}
 			if( !object )
 			{
@@ -221,12 +221,12 @@ class RecipeBase
 	//applies final modifications to results
 	void ApplyModificationsResults(ItemBase sorted[], array<ItemBase> results, ItemBase result, PlayerBase player)
 	{
-		float all_ingredinets_health = 0;//this is used later in results
+		float all_ingredients_health = 0;//this is used later in results
 		int value_delta;
 		for(int i = 0; i < MAX_NUMBER_OF_INGREDIENTS; i++)
 		{
 			ItemBase ingrd = ItemBase.Cast(sorted[i]);
-			all_ingredinets_health += ingrd.GetHealth("", "");//accumulate health of all ingredients, used in results	
+			all_ingredients_health += ingrd.GetHealth("", "");//accumulate health of all ingredients, used in results	
 		}
 		//------------------- results ----------------------
 		for(i = 0; i < m_NumberOfResults; i++)
@@ -295,7 +295,7 @@ class RecipeBase
 				}
 				else if( m_ResultInheritsHealth[i] == -2 )
 				{
-					float average_health = all_ingredinets_health / MAX_NUMBER_OF_INGREDIENTS;
+					float average_health = all_ingredients_health / MAX_NUMBER_OF_INGREDIENTS;
 					res.SetHealth("", "", average_health);
 				}
 			}

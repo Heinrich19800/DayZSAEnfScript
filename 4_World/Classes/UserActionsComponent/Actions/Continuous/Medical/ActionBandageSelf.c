@@ -2,7 +2,7 @@ class ActionBandageSelfCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.BANDAGE);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.BANDAGE);
 	}
 };
 
@@ -44,18 +44,18 @@ class ActionBandageSelf: ActionContinuousBase
 		return "Bandage";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		if (player.GetBleedingManager() )
+		if (action_data.m_Player.GetBleedingManager() )
 		{
-			player.GetBleedingManager().RemoveSingleBleedingSource();	
+			action_data.m_Player.GetBleedingManager().RemoveSingleBleedingSource();	
 		}
 		
-		if (item.GetQuantity() > 0)
+		if (action_data.m_MainItem.GetQuantity() > 0)
 		{
-			item.AddQuantity(-1,true);
+			action_data.m_MainItem.AddQuantity(-1,true);
 		}
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

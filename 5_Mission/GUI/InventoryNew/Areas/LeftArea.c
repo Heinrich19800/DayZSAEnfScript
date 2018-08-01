@@ -33,6 +33,12 @@ class LeftArea: Container
 		//m_VicinityContainer.MoveGridCursor( direction );
 	}
 	
+	override void SelectItem()
+	{
+		Container active_container = Container.Cast( m_Body.Get( m_ActiveIndex ) );
+		active_container.SelectItem();
+	}
+		
 	override void Select()
 	{
 		Container active_container = Container.Cast( m_Body.Get( m_ActiveIndex ) );
@@ -94,7 +100,7 @@ class LeftArea: Container
 			if( active_container.IsInherited( CollapsibleContainer ) )
 			{
 				CollapsibleContainer.Cast( active_container ).SetFirstActive();
-			}
+			}	
 		}
 		ScrollBarContainer scroll_bar_container;
 		GetMainPanel().GetParent().GetScript( scroll_bar_container );

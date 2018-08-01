@@ -66,8 +66,6 @@ class DisinfectItem extends RecipeBase
 	{
 		ItemBase ingredient2;
 		Class.CastTo(ingredient2, ingredients[1]);
-		PluginTransmissionAgents mta;
-		Class.CastTo(mta, GetPlugin(PluginTransmissionAgents));
-		mta.RemoveAllAgents(ingredient2);
+		ingredient2.RemoveAllAgentsExcept(AGT_BRAIN + AGT_SALMONELLA);
 	}
 };

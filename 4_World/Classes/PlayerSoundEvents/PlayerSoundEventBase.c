@@ -29,7 +29,7 @@ class PlayerSoundEventBase
 		}
 	}
 	
-	bool HasPriority(EPlayerSoundEventID other_state_id)
+	bool ThisHasPriority(EPlayerSoundEventID other_state_id)
 	{
 		return true;
 	}
@@ -80,7 +80,7 @@ class PlayerSoundEventBase
 			}
 			
 			soundset_name = m_SoundSetNameRoot + "_" + gender + "_Char_SoundSet";
-			m_SoundSetCallback = m_Player.SaySound(soundset_name, m_Player.GetPosition());
+			m_SoundSetCallback = m_Player.SaySoundSet(soundset_name);
 		}
 	}
 	

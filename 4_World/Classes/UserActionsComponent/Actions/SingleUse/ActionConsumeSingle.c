@@ -2,7 +2,7 @@ class ActionConsumeSingleCB : ActionSingleUseBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CASingleUseQuantityEdible(UAQuantityConsumed.DEFAULT);
+		m_ActionData.m_ActionComponent = new CASingleUseQuantityEdible(UAQuantityConsumed.DEFAULT);
 	}
 };
 
@@ -44,11 +44,11 @@ class ActionConsumeSingle: ActionSingleUseBase
 		return "#take_one";
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		if ( item && item.GetQuantity() <= 0 )
+		if ( action_data.m_MainItem && action_data.m_MainItem.GetQuantity() <= 0 )
 		{
-			item.SetQuantity(0);
+			action_data.m_MainItem.SetQuantity(0);
 		}
 	}
 };

@@ -35,12 +35,31 @@ class CGame
 	void OnEvent(EventType eventTypeId, Param params)
 	{
 	}
+	
+	//PLM Type: 0 == RESUMED, 1 == SUSPENDED
+	void OnProcessLifetimeChanged(int plmtype)
+	{
 
+	}
+
+	void OnLicenseChanged()
+	{
+
+	}
+	
 	/**
 	\brief Called after creating of CGame instance
 	*/
 	void OnAfterCreate()
 	{
+	}
+	
+	/**
+	\brief Called once before game update loop starts, ret value indicates if init was done in scripts, otherwise it is done in the engine
+	*/
+	bool OnInitialize()
+	{
+		return false;
 	}
 	
 	/**
@@ -115,13 +134,18 @@ class CGame
 	proto native void		RequestRestart(int code);
 
 	/**
+  \brief Gets the server address. (from client)
+	*/
+	proto bool				GetHostAddress( out string address, out int port );
+	
+	/**
   \brief Connects to IsServer
 	@param IpAddress of the server
 	@param port of the server set to 0 for default port
 	@param password of the server
 	\return true on success, false is not success(server does not exist)
 	*/
-	proto native int		Connect( UIScriptedMenu parent , string IpAddress, int port, string password );	
+	proto native int		Connect( UIScriptedMenu parent , string IpAddress, int port, string password, string serverID );	
 	/**
   \brief Connects to last success network session
 	\return true on success, false if there is no previous session
@@ -131,6 +155,11 @@ class CGame
   \brief Disconnects from current multiplayer session
 	*/
 	proto native void		DisconnectSession();
+	
+	/**
+  \brief Forces disconnect from current multiplayer session even if not yet in the game
+	*/
+	proto native void 		DisconnectSessionForce();
 
 	// profile functions
 	/**
@@ -185,12 +214,6 @@ class CGame
 	*/
 	proto void					GetPlayerNameShort(int maxLength, out string name);
 	
-	/**
-   \brief Gets current player uid. Only on xbox.
-	@param activeUserUID output value of player UID.
-	*/
-	proto void					GetUID(out string activeUserUID);
-
 	/**
   \brief Sets current player name
 	@param name
@@ -447,7 +470,10 @@ class CGame
 	proto native Object CreateObject( string type, vector pos, bool create_local = false, bool init_ai = false, bool create_physics = true );
 	proto native SoundOnVehicle CreateSoundOnObject(Object source, string sound_name, float distance, bool looped, bool create_local = false);
 	proto native void   ObjectDelete( Object obj );
-	proto native void   RemoteObjectDelete( Object obj ); /// RemoteObjectDelete - deletes only remote object. do not use if not sure what you do
+    proto native void   RemoteObjectDelete( Object obj ); /// RemoteObjectDelete - deletes only remote object (unregisters from network). do not use if not sure what you do
+	proto native void   RemoteObjectTreeDelete( Object obj ); /// RemoteObjectDelete - deletes only remote object tree (unregisters from network). do not use if not sure what you do
+    proto native void   RemoteObjectCreate( Object obj ); /// RemoteObjectCreate - postponed registration of network object (and creation of remote object). do not use if not sure what you do
+	proto native void   RemoteObjectTreeCreate( Object obj ); /// RemoteObjectTreeCreate - postponed registration of network object tree (and creation of remote objects). do not use if not sure what you do
 	proto native int    ObjectRelease( Object obj );
 	proto void          ObjectGetType( Object obj, out string type );
 	proto void          ObjectGetDisplayName( Object obj, out string name );
@@ -510,12 +536,19 @@ class CGame
 
 	proto void					GetInventoryItemSize(InventoryItem item, out int width, out int height);
 	/**
-  \brief Returns list of all objects in radius "radius" around position "pos"
+  \brief Returns list of all objects in circle "radius" around position "pos"
 	@param pos
 	@param radius
 	@param objects output array
 	*/
-	proto native void		GetObjectsAtPosition(vector pos, float radius, out array<Object> objects, out array<Cargo> proxyCargos);
+	proto native void		GetObjectsAtPosition(vector pos, float radius, out array<Object> objects, out array<CargoBase> proxyCargos);
+	/**
+  \brief Returns list of all objects in sphere "radius" around position "pos"
+	@param pos
+	@param radius
+	@param objects output array
+	*/
+	proto native void		GetObjectsAtPosition3D(vector pos, float radius, out array<Object> objects, out array<CargoBase> proxyCargos);
 	proto native World	GetWorld();
 	proto void					GetWorldName( out string world_name );
 	proto void					FormatString( string format, string params[], out string output);
@@ -618,6 +651,9 @@ class CGame
 	proto native Mission 	GetMission();
 	proto native void		SetMission(Mission mission);
 	
+	
+	//! Starts intro
+	proto native void		StartRandomCutscene(string world);
 	//! Starts mission (equivalent for SQF playMission). You MUST use double slash \\ 
 	proto native void		PlayMission(string path);
 	
@@ -673,7 +709,7 @@ class CGame
 	proto native float		SurfaceRoadY(float x, float z);
 	proto void				SurfaceGetType(float x, float z, out string type);
 	proto void				SurfaceGetType3D(float x, float y, float z, out string type);
-	proto void				SurfaceGetTypeUnderObject(Object object, out string type);
+	proto void				SurfaceUnderObject(Object object, out string type, out int liquidType);
 	proto native float		SurfaceGetNoiseMultiplier(float x, float z);
 	proto native vector		SurfaceGetNormal(float x, float z);
 	proto native float		SurfaceGetSeaLevel();
@@ -711,8 +747,19 @@ class CGame
 	{
 		vector normal = GetGame().SurfaceGetNormal(x, z);
 		vector angles = normal.VectorToAngles();
-		angles[1] = angles[1]+270; // This fixes rotation of item
+		angles[1] = angles[1]+270; // This fixes rotation of item so it stands vertically. Feel free to change, but fix existing use cases.
 		return angles;
+	}
+	
+	//! Checks if this surface is softt (it can be dig into with shovel or similar items)
+	bool IsSurfaceSoft(string surface)
+	{
+		if ( surface == "cp_dirt"  ||  surface == "cp_broadleaf_dense1"  ||  surface == "cp_broadleaf_dense2"  ||  surface == "cp_broadleaf_sparse1"  ||  surface == "cp_broadleaf_sparse2"  ||  surface == "cp_conifer_common1"  ||  surface == "cp_grass"  ||  surface == "cp_grass_tall"  ||  surface == "grass_dry_ext" )
+		{
+			return true;
+		}
+		
+		return false;
 	}
 	
 	void UpdatePathgraphRegionByObject(Object object)
@@ -745,7 +792,7 @@ class CGame
 			
 			if(GetGame().IsBoxColliding( pos, orientation, size, excluded_objects, nearby_objects))
 			{
-				for (local int i = 0, c = nearby_objects.Count(); i < c; ++i)
+				for (int i = 0, c = nearby_objects.Count(); i < c; ++i)
 				{
 					PrintString("object " + i.ToString());
 				}
@@ -759,7 +806,14 @@ class CGame
 
 	//! Sets custom camera camera EV.
 	proto native void	SetEVUser(float value);
+
+	proto native void 	OverrideDOF(bool enable, float focusDistance, float focusLength, float focusLengthNear, float blur, float focusDepthOffset);
 	
+	proto native void	AddPPMask(float ndcX, float ndcY, float ndcRadius, float ndcBlur);
+
+	proto native void 	ResetPPMask();
+
+
 	proto native void OpenURL(string url);
 	
 	//! Initialization of damage effects
@@ -940,20 +994,6 @@ class CGame
 	{
 	}
 
-	//! Creates client services for a local user,
-	/*
-		Expected errors:
-			NOT_FOUND - the user with the uid was not found. Must be signed in on the local machine.
-			BAD_SCRIPT - script linking error. Ask programmers for assistance.
+	proto native BiosUserManager GetUserManager();
 	
-		@param services on success, contains a BiosClientServices object for the user identified by uid.
-		@return EBiosError indicating result;
-	*/
-	proto EBiosError CreateClientServices(out ref BiosClientServices services, string uid);
-	
-	//! Show account picker on xbox for select active user
-	proto native void ShowAccountPicker();
-	
-	//! @return true if user is known by gamepad on xbox
-	proto native bool IsUserByGamepad();
 };

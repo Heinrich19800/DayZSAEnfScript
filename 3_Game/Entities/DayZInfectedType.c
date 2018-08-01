@@ -25,27 +25,24 @@ class DayZInfectedType extends DayZCreatureAIType
 	{
 		//! chase group
 		m_ChaseAttacksGroup = new array<ref DayZInfectedAttackType>;
-		
+
+		//! Group Type, Distance, Pitch, Type, Subtype, AmmoType, Cooldown, Probability
 		RegisterAttack(DayZInfectedAttackGroupType.CHASE, 1.0,  0, 4, 1, "MeleeZombieMale", 1.0, 1.0); // Attack short center
-		RegisterAttack(DayZInfectedAttackGroupType.CHASE, 1.0,  0, 1, 1, "MeleeZombieMale", 1.0, 0.3); // Attack short combo center
-		RegisterAttack(DayZInfectedAttackGroupType.CHASE, 3.0, 0, 0, 1, "MeleeZombieMale_Heavy", 3.0, 0.2); // Attack long
+		RegisterAttack(DayZInfectedAttackGroupType.CHASE, 1.0,  0, 3, 1, "MeleeZombieMale", 1.0, 0.6); // Attack short medium center
+		RegisterAttack(DayZInfectedAttackGroupType.CHASE, 3.0, 0, 2, 1, "MeleeZombieMale_Heavy", 3.0, 0.2); // Attack long
 		
 		//! fight group
 		m_FightAttacksGroup = new array<ref DayZInfectedAttackType>;
-		
+
 		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 1.0,  1, 4, 0, "MeleeZombieMale", 1.0, 1.0); // Attack short up
 		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 1.0,  0, 4, 1, "MeleeZombieMale", 1.0, 1.0); // Attack short center
 		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 1.0, -1, 4, 2, "MeleeZombieMale", 1.0, 1.0); // Attack short down
 		
-		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 1.0,  1, 1, 0, "MeleeZombieMale", 1.0, 0.3); // Attack short combo up
-		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 1.0,  0, 1, 1, "MeleeZombieMale", 1.0, 0.3); // Attack short combo center
-		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 1.0, -1, 1, 2, "MeleeZombieMale", 1.0, 0.3); // Attack short combo down
-		
-		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 2.0,  0, 3, 1, "MeleeZombieMale", 2.0, 1.0); // Attack medium center
-		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 2.0, -1, 3, 2, "MeleeZombieMale", 2.0, 1.0); // Attack medium down
+		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 2.0,  0, 3, 1, "MeleeZombieMale", 2.0, 0.5); // Attack medium center
+		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 2.0, -1, 3, 2, "MeleeZombieMale", 2.0, 0.4); // Attack medium down
 		
 		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 3.0, 0, 2, 1, "MeleeZombieMale_Heavy", 3.0, 0.2); // Attack long
-		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 3.0, 0, 0, 1, "MeleeZombieMale_Heavy", 3.0, 0.2); // Attack long combo
+		RegisterAttack(DayZInfectedAttackGroupType.FIGHT, 3.0, 0, 3, 1, "MeleeZombieMale_Heavy", 3.0, 0.3); // Attack medium center
 	}
 	
 	DayZInfectedAttackType ChooseAttack(DayZInfectedAttackGroupType pAttackGroupType, float pDistance, int pPitch)

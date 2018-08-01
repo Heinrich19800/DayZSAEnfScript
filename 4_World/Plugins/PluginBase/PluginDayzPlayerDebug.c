@@ -570,7 +570,7 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("L EAT PILLS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_EATPILLS, false), 0);
 			m_ActionsSelector.AddItem("L EAT TABLETS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_EATTABLETS, false), 0);
 			m_ActionsSelector.AddItem("L EMPTY BOTTLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_EMPTYBOTTLE, false), 0);
-			m_ActionsSelector.AddItem("L OPEN COMPASS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_OPENCOMPASS, false), 0);
+			m_ActionsSelector.AddItem("L VIEW COMPASS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_VIEWCOMPASS, false), 0);
 			m_ActionsSelector.AddItem("L DRINK CAN", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_DRINKCAN, false), 0);
 			m_ActionsSelector.AddItem("L WALKIETALKIE TUNE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_WALKIETALKIETUNE, false), 0);
 			m_ActionsSelector.AddItem("L GIVE L ITEM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_GIVEL, false), 0);
@@ -582,14 +582,25 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("L EMPTY POT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_EMPTYPOT, false), 0);
 			m_ActionsSelector.AddItem("L EAT FRUIT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_EATFRUIT, false), 0);
 			m_ActionsSelector.AddItem("L TAKE TEMP SELF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_TAKETEMPSELF, false), 0);
-			m_ActionsSelector.AddItem("L CLEAN HANDS BOTTLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_CLEANHANDSBOTTLE, false), 0);
+			m_ActionsSelector.AddItem("L VIEW MAP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_VIEWMAP, false), 0);
+			m_ActionsSelector.AddItem("L RAISE MEGAPHONE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_RAISEMEGAPHONE, false), 0);
+			m_ActionsSelector.AddItem("L SEARCH INVENTORY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_SEARCHINVENTORY, false), 0);
+			m_ActionsSelector.AddItem("L CRAFTING UPPDERBODY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_CRAFTING, false), 0);
+			m_ActionsSelector.AddItem("L LOOK OPTICS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_LOOKOPTICS, false), 0);
+			m_ActionsSelector.AddItem("L ENGINE START", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_STARTENGINE, false), 0);
+			m_ActionsSelector.AddItem("L ENGINE STOP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_STOPENGINE, false), 0);			
+			m_ActionsSelector.AddItem("L DRIVER OPEN DOOR", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_DRIVER_DOOR_OPEN, false), 0);
+			m_ActionsSelector.AddItem("L DRIVER CLOSE DOOR", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_DRIVER_DOOR_CLOSE, false), 0);
+			m_ActionsSelector.AddItem("L CODRIVER OPEN DOOR", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_CODRIVER_DOOROPEN, false), 0);
+			m_ActionsSelector.AddItem("L CODRIVER CLOSE DOOR", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_CODRIVER_DOORCLOSE, false), 0);
 		}
 
         //! one time
 		if (pType == 1)
 		{
+			m_ActionsSelector.AddItem("O PICK UP HANDS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS, false), 0);
+			m_ActionsSelector.AddItem("O PICK UP INVENTORY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_INVENTORY, false), 0);
 			m_ActionsSelector.AddItem("O LICK BATTERY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_LICKBATTERY, false), 0);
-			m_ActionsSelector.AddItem("O PICK UP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_PICKUP, false), 0);
 			m_ActionsSelector.AddItem("O LIGHT FLARE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_LIGHTFLARE, false), 0);
 			m_ActionsSelector.AddItem("O LITCHEM LIGHT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_LITCHEMLIGHT, false), 0);
 			m_ActionsSelector.AddItem("O UNPIN GRENAGE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_UNPINGRENAGE, false), 0);
@@ -603,8 +614,10 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("O UNLOCK HANDCUFF TARGET", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_UNLOCKHANDCUFFTARGET, false), 0);
 			m_ActionsSelector.AddItem("O FISHINGROD EXTEND", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_FISHINGRODEXTEND, false), 0);
 			m_ActionsSelector.AddItem("O FISHINGROD RETRACT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_FISHINGRODRETRACT, false), 0);
-			m_ActionsSelector.AddItem("O TAKE ITEM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_TAKEITEM, false), 0);
-			m_ActionsSelector.AddItem("O HIDE ITEM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_HIDEITEM, false), 0);
+			m_ActionsSelector.AddItem("O CLEAN HANDS BOTTLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_CLEANHANDSBOTTLE, false), 0);
+			m_ActionsSelector.AddItem("O OPEN FOOD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_OPENFOOD, false), 0);
+			m_ActionsSelector.AddItem("O ATTACH SCOPE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_ATTACHSCOPE, false), 0);
+			m_ActionsSelector.AddItem("O ATTACH BARREL", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_ATTACHBARREL, false), 0);
 		}
 
 		//! fullbody looping
@@ -627,14 +640,13 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("FB L FIRE ESTINGUISHER", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_FIREESTINGUISHER, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L WRING CLOTH", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_WRING, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L BERRIES", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_BERRIES, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			m_ActionsSelector.AddItem("FB L CHOP TREE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_CHOPTREE, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L DIG SHOVEL", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_DIGSHOVEL, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L DIG HOE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_DIGHOE, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L FISHING", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_FISHING, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L CPR", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_CPR, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L BANDAGE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_BANDAGE, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L CRAFTING", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_CRAFTING, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
-			m_ActionsSelector.AddItem("FB L INTERRACT PLAYER", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_INTERRACTPLAYER, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
+			m_ActionsSelector.AddItem("FB L INTERRACT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_INTERACT, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L DRINK CANNISTER", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_DRINKCANISTER, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L FORCE FEED TARGET", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_FORCEFEED, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L BANDAGE TARGET", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_BANDAGETARGET, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
@@ -658,7 +670,6 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("FB L START FIRE WITH LIGHTER", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_STARTFIRELIGHTER, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L COLLECT BLOOD SELF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_COLLECTBLOODSELF, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L POUR BOTTLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_POURBOTTLE, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			m_ActionsSelector.AddItem("FB L INTERACT ITEM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_INTERACTITEM, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L POUR CAN", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_POURCAN, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L EAT FRUIT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_EATFRUIT, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB L HACK BUSH", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_HACKBUSH, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
@@ -670,42 +681,42 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("FB L DEPLOY 1HD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_DEPLOY_1HD, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L DEPLOY 2HD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_DEPLOY_2HD, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L BLOW FIREPLACE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_BLOWFIREPLACE, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
-			m_ActionsSelector.AddItem("FB L CLEAN HANDS BOTTLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_CLEANHANDSBOTTLE, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
-			
-			
-			
-			//m_ActionsSelector.AddItem("FUNNY STUFF VIKTOR", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_VIKTOR, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF VIKTOR LOOP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_VIKTOR_LOOP, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF MAREK", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_MAREK, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF MAREK LOOP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_MAREK_LOOP, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF KAKEE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_KAKEE, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF KAKEE LOOP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_KAKEE_LOOP, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF JONNY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_JONNY, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF JONNY LOOP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_JONNY_LOOP, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF MARTIN", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_MARTIN, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF MARTIN LOOP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_MARTIN_LOOP, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF ADAM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_ADAM, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
-			//m_ActionsSelector.AddItem("FUNNY STUFF ADAM LOOP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_FUNNYSTUFF_ADAM_LOOP, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("FB L VIEW MAP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_VIEWMAP, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB L VIEW COMPASS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_VIEWCOMPASS, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB L FILL BOTTLE POND", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_FILLBOTTLEPOND, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("FB L PLACING HEAVY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_PLACING_HEAVY, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("FB L PLACING 1HD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_PLACING_1HD, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
+			m_ActionsSelector.AddItem("FB L PLACING 2HD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_PLACING_2HD, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
+			m_ActionsSelector.AddItem("FB L CUT BARK", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_CUTBARK, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("FB L VIEW NOTE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_VIEWNOTE, true, DayZPlayerConstants.STANCEMASK_PRONE | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("FB L SEARCH INVENTORY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_SEARCHINVENTORY, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB L LOOK OPTICS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_LOOKOPTICS, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB L MINE ROCK", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_MINEROCK, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
+		
 		}
 		
 		
         //! one time
 		if (pType == 3)
 		{
+			m_ActionsSelector.AddItem("FB O PICK UP HANDS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_PICKUP_HANDS, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB O PICK UP INVENTORY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_PICKUP_INVENTORY, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB O LICK BATTERY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_LICKBATTERY, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
-			m_ActionsSelector.AddItem("FB O PICK UP ITEM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_PICKUP, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB O LIGHT FLARE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_LIGHTFLARE, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB O LITCHEM LIGHT", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_LITCHEMLIGHT, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB O UNPIN GRENAGE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_UNPINGRENAGE, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB O WALKIETALKIE ON", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_WALKIETALKIEON, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB O WALKIETALKIE OFF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_WALKIETALKIEOFF, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
-			m_ActionsSelector.AddItem("FB O TAKE ITEM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_TAKEITEM, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
-			m_ActionsSelector.AddItem("FB O HIDE ITEM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_HIDEITEM, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB O HANDCUFF TARGET", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_HANDCUFFTARGET, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB O MORPHINE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_MORPHINE, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB O INJECTION", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_INJECTION, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB O INJECTION TARGET", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_INJECTIONTARGET, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB O DRINK SIP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_DRINKSIP, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
+			m_ActionsSelector.AddItem("FB O CLEAN HANDS BOTTLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_CLEANHANDSBOTTLE, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB O OPEN FOOD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_OPENFOOD, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB O POKE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_POKE, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
+			m_ActionsSelector.AddItem("FB O ATTACH SCOPE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_ATTACHSCOPE, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB O ATTACH BARREL", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_ATTACHBARREL, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 		}
         
         
@@ -729,6 +740,7 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("L LISTENING", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_LISTENING, false), 0);
 			m_ActionsSelector.AddItem("L POINT AT SELF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_POINTSELF, false), 0);
 			m_ActionsSelector.AddItem("L LOOK AT ME", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_LOOKATME, false), 0);
+			m_ActionsSelector.AddItem("L OKAY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_OKAY, false), 0);
 
 			m_ActionsSelector.AddItem("L RPS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_RPS, false), 0);
 		}
@@ -745,6 +757,9 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("O TAUNT KISS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_TAUNTKISS, false), 0);
 			m_ActionsSelector.AddItem("O TAUNT ELBOW", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_TAUNTELBOW, false), 0);
 			m_ActionsSelector.AddItem("O TAUNT THINK", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_TAUNTTHINK, false), 0);
+			m_ActionsSelector.AddItem("O NOD HEAD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_NODHEAD, false), 0);
+			m_ActionsSelector.AddItem("O SHAKE HEAD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_SHAKEHEAD, false), 0);
+			m_ActionsSelector.AddItem("O SHRUG", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREMOD_SHRUG, false), 0);
 		}
 
 
@@ -764,6 +779,7 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("FB L LISTENING", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_LISTENING, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB L POINTSELF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_POINTSELF, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB L LOOKATME", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_LOOKATME, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB L OKAY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_OKAY, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB L SALUTE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_SALUTE, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L CAMPFIRE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_CAMPFIRE, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L LYINGDOWN", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_LYINGDOWN, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
@@ -771,6 +787,12 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("FB L SITA", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_SITA, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L SITB", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_SITB, true, DayZPlayerConstants.STANCEMASK_CROUCH), 0);
 			m_ActionsSelector.AddItem("FB L DABBING", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_DABBING, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			
+			m_ActionsSelector.AddItem("TRAILER WAKE UP", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_TRAILER_WAKE_UP, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("TRAILER DEAD BODY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_TRAILER_DEAD_BODY, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("TRAILER WALKIE TALKIE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_TRAILER_WALKIE_TALKIE, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("TRAILER WOUNDED", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_TRAILER_WOUNDED, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("TRAILER WALK AWAY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_TRAILER_WALK_AWAY, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
 		}
         
 		//! fullbody one time
@@ -783,6 +805,9 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("FB O TAUNT KISS", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_TAUNTKISS, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB O TAUNT THINK", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_TAUNTTHINK, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB O DANCE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_DANCE, true, DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("FB O NOD HEAD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_NODHEAD, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB O SHAKE HEAD", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_SHAKEHEAD, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
+			m_ActionsSelector.AddItem("FB O SHRUG", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_GESTUREFB_SHRUG, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 		}
         
         

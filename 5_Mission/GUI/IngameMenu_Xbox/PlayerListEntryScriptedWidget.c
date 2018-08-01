@@ -2,6 +2,8 @@ class PlayerListEntryScriptedWidget extends ScriptedWidgetEventHandler
 {
 	protected string		m_Name;
 	protected string		m_UID;
+	protected bool			m_Mute;
+	protected bool			m_GlobalMute;
 	
 	protected Widget		m_Root;
 	protected TextWidget	m_PlayerName;
@@ -22,7 +24,7 @@ class PlayerListEntryScriptedWidget extends ScriptedWidgetEventHandler
 		m_MuteIcon			= ImageWidget.Cast( m_Root.FindAnyWidget( "Muted" ) );
 		m_PlayerButton		= ButtonWidget.Cast( m_Root.FindAnyWidget( "Button" ) );
 		
-		//m_MicrophoneIcon.Show( show_permissions );
+		m_MicrophoneIcon.Show( show_permissions );
 		
 		m_PlayerName.SetText( name );
 		m_Root.SetHandler( this );
@@ -44,8 +46,35 @@ class PlayerListEntryScriptedWidget extends ScriptedWidgetEventHandler
 		{
 			if( result.m_Permission == EBiosPrivacyPermission.COMMUNICATE_VOICE )
 			{
-				m_MuteIcon.Show( !result.m_IsAllowed );
+				m_GlobalMute = !result.m_IsAllowed;
+				if( result.m_IsAllowed && !m_Mute )
+				{
+					m_MuteIcon.Show( false );
+				}
+				else if( !result.m_IsAllowed || m_Mute )
+				{
+					m_MuteIcon.Show( true );
+				}
 			}
 		}
+	}
+	
+	bool IsMuted()
+	{
+		return m_Mute;
+	}
+	
+	bool IsGloballyMuted()
+	{
+		return m_GlobalMute;
+	}
+	
+	void MutePlayer( bool mute )
+	{
+		m_Mute = mute;
+		if( !m_GlobalMute )
+			m_MuteIcon.Show( m_Mute );
+		else
+			m_MuteIcon.Show( true );
 	}
 }

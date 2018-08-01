@@ -14,9 +14,10 @@ class AreaDamageTrigger extends Trigger
 	private vector			m_ExtentMin;
 	private vector			m_ExtentMax;
 
-	ref TStringArray 	m_HitZones;
-	ref TStringArray 	m_RaycastSources;
+	ref TStringArray 		m_HitZones;
+	ref TStringArray 		m_RaycastSources;
 	string					m_AmmoName;
+	int						m_DamageType			//!< DT_CUSTOM (Damage Type)
 	
 	protected ref Timer		m_LoopTimer;
 	protected ref Timer		m_DeferTimer;
@@ -36,6 +37,7 @@ class AreaDamageTrigger extends Trigger
 		m_RaycastSources 	= {"0.0 0.1 0.0", "0.2 0.1 0.2", "-.2 0.1 0.2", "0.2 0.1 -.2", "-.2 0.1 -.2"};
 
 		m_AmmoName 			= "MeleeDamage";
+		m_DamageType		= 3;
 	}
 
 	void ~AreaDamageTrigger() {}
@@ -77,6 +79,11 @@ class AreaDamageTrigger extends Trigger
 	void SetAmmoName(string ammo_name)
 	{
 		m_AmmoName = ammo_name;
+	}
+	
+	void SetDamageType(int pDamageType)
+	{
+		m_DamageType = pDamageType;
 	}
 	
 	protected void PreDamageActions()
@@ -177,7 +184,7 @@ class AreaDamageTrigger extends Trigger
 			
 			for ( int j = 0; j < victims.Count(); ++j )
 			{
-				local Object contact_obj = victims.Get(j);
+				Object contact_obj = victims.Get(j);
 				
 				if ( contact_obj.IsInherited(Man) )
 				{
@@ -226,7 +233,7 @@ class AreaDamageTrigger extends Trigger
 		
 		if ( victim_MB.IsInherited(Man) )
 		{
-			victim_MB.ProcessDirectDamage(DT_CUSTOM, this, hitzone, "MeleeDamage", "0 0 0", 1);
+			victim_MB.ProcessDirectDamage(m_DamageType, this, hitzone, m_AmmoName, "0 0 0", 1);
 			PostDamageActions();
 		}
 	}

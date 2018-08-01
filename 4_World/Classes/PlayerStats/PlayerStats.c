@@ -6,8 +6,6 @@ enum EPSstatsFlags
 
 enum EPlayerStats
 {
-	SHOCK,
-	UNCONSCIOUS,
 	TEMPERATURE,
 	HEATCOMFORT,
 	HEATISOLATION,
@@ -21,7 +19,7 @@ enum EPlayerStats
 	DIET,
 	STAMINA,
 	SPECIALTY,
-	BLOODTYPE	
+	BLOODTYPE,
 };
 
 
@@ -54,8 +52,8 @@ class PlayerStats
 		"totalWeight"
 	*/
 		//																	min						max						initial					name				flag
-		RegisterStat(EPlayerStats.SHOCK,	  		new PlayerStat<float>	(0,						5000, 					0, 						"Shock",			EPSstatsFlags.EMPTY) );
-		RegisterStat(EPlayerStats.UNCONSCIOUS,  	new PlayerStat<float>	(0,						1,						0,						"Unconscious",		EPSstatsFlags.EMPTY) );
+		//RegisterStat(EPlayerStats.SHOCK,	  		new PlayerStat<float>	(0,						5000, 					0, 						"Shock",			EPSstatsFlags.EMPTY) );
+		//RegisterStat(EPlayerStats.UNCONSCIOUS,  	new PlayerStat<float>	(0,						1,						0,						"Unconscious",		EPSstatsFlags.EMPTY) );
 		RegisterStat(EPlayerStats.TEMPERATURE,  	new PlayerStat<float>	(30,					45,						36.3,					"Temperature",		EPSstatsFlags.EMPTY) );
 		RegisterStat(EPlayerStats.HEATCOMFORT,  	new PlayerStat<float>	(-100,					300,					-20,					"HeatComfort",		EPSstatsFlags.EMPTY) );
 		RegisterStat(EPlayerStats.HEATISOLATION,  	new PlayerStat<float>	(0,						5000,					0,						"HeatIsolation",	EPSstatsFlags.EMPTY) );

@@ -2,7 +2,7 @@ class ActionConstructCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_CONSTRUCT);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFAULT_CONSTRUCT);
 	}
 };
 
@@ -53,7 +53,7 @@ class ActionConstruct: ActionContinuousBase
 			if ( construction.CanConstructPart( slot_name ) )
 			{
 				//debug
-				//player.MessageAction( slot_name );
+				//action_data.m_Player.MessageAction( slot_name );
 				
 				return true;
 			}
@@ -62,27 +62,27 @@ class ActionConstruct: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnStartServer( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		
 		//Get actual construcion slot
-		string slot_name = targetObject.GetActionComponentName(target.GetComponentIndex());
+		string slot_name = targetObject.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 		SetSlotName( slot_name );
 	}
 	
-	override void OnStartClient( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartClient( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		
 		//Get actual construcion slot
-		string slot_name = targetObject.GetActionComponentName(target.GetComponentIndex());
+		string slot_name = targetObject.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 		SetSlotName( slot_name );
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		BaseBuildingBase base_building = BaseBuildingBase.Cast( target.GetObject() );
+		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
 		Construction construction = base_building.GetConstruction();
 		string part_name = construction.GetConstructionPartName( GetSlotName() );
 		
@@ -92,14 +92,14 @@ class ActionConstruct: ActionContinuousBase
 			construction.ConstructPart( GetSlotName(), part_name );
 			
 			//add damage to tool
-			item.DecreaseHealth ( "", "", m_DamageAmount, true );
+			action_data.m_MainItem.DecreaseHealth ( "", "", m_DamageAmount, true );
 		}
 		else
 		{
-			SendMessageToClient( player, base_building.MESSAGE_NOT_ENOUGH_MATERIALS );
+			SendMessageToClient( action_data.m_Player, base_building.MESSAGE_NOT_ENOUGH_MATERIALS );
 		}
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 	
 	protected void SetSlotName( string slot_name )

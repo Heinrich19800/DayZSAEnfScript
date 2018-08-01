@@ -4,7 +4,7 @@ class ActionCookOnStickCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTimeCooking( COOKING_ON_STICK_UPDATE_TIME );
+		m_ActionData.m_ActionComponent = new CAContinuousTimeCooking( COOKING_ON_STICK_UPDATE_TIME );
 	}
 };
 

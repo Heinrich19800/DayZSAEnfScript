@@ -27,7 +27,7 @@ class InventoryView: InventoryViewBase
 		m_view_attachments_grids = new map<EntityAI, ref InventoryViewBase>;
 		m_attachment_slots = new map<int, Widget>;
 
-		m_cargos = new array<Cargo>;
+		m_cargos = new array<CargoBase>;
 		m_items = new TItemsMap;
 		m_update_lock_timer = new Timer();
 		m_properties = properties;
@@ -207,7 +207,7 @@ class InventoryView: InventoryViewBase
 		if (m_header) m_header.SetText(text);
 	}
 	
-	override void AddProxyCargo(Cargo proxyCargo)
+	override void AddProxyCargo(CargoBase proxyCargo)
 	{
 		if (m_cargos.Find(proxyCargo) == INDEX_NOT_FOUND)
 		{
@@ -458,7 +458,7 @@ class InventoryView: InventoryViewBase
 		}
 	}
 	
-	override void InitCargoGrid(Cargo cargo, int panel_type)
+	override void InitCargoGrid(CargoBase cargo, int panel_type)
 	{
 		if ( !HasProperty(InventoryViewProperties.CARGOS) ) return;
 		
@@ -789,9 +789,9 @@ class InventoryView: InventoryViewBase
 		
 		if (cargo_index < m_cargos.Count())
 		{
-			int c, i, index, x, y, w, h;
+			int c, i, index, item_col, item_row, w, h;
 			InventoryItemBase item;
-			Cargo cargo = m_cargos.Get(cargo_index);
+			CargoBase cargo = m_cargos.Get(cargo_index);
 		
 			InventoryGrid cargo_grid = m_cargo_grids.Get(cargo_index);
 			if (cargo && cargo_grid)
@@ -802,9 +802,9 @@ class InventoryView: InventoryViewBase
 				for (i = 0; i < c; i++)
 				{
 					item = InventoryItemBase.Cast( cargo.GetItem(i) );
-					cargo.GetItemPos(i, x, y);
+					cargo.GetItemRowCol(i, item_row, item_col);
 					cargo.GetItemSize(i, w, h);
-					index = x + (y * cargo.GetWidth());
+					index = item_col + (item_row * cargo.GetWidth());
 					m_items.Set(item, Vector(index, w, h));
 				}
 				
@@ -899,7 +899,7 @@ class InventoryView: InventoryViewBase
 				if (testOnly) manager.SetItemColor(InventoryGrid.ITEM_COLOR_WRONG);
 				return false;
 			}
-			else if (flags == InventoryCombinationFlags.ADD_AS_ATTACHMENT || flags == InventoryCombinationFlags.ADD_AS_CARGO || flags == InventoryCombinationFlags.LOAD_CHAMBER || flags == InventoryCombinationFlags.ATTACH_MAGAZINE )
+			else if (flags == InventoryCombinationFlags.ADD_AS_ATTACHMENT || flags == InventoryCombinationFlags.ADD_AS_CARGO || flags == InventoryCombinationFlags.PERFORM_ACTION )
 			{
 				if (testOnly) manager.SetItemColor(InventoryGrid.ITEM_COLOR_GOOD);
 				else
@@ -1015,10 +1015,10 @@ class InventoryView: InventoryViewBase
 			
 			if (cargo_index != INDEX_NOT_FOUND)	
 			{
-				Cargo cargo = m_cargos.Get(cargo_index);
+				CargoBase cargo = m_cargos.Get(cargo_index);
 				
 				// use cargo index here
-				if (cargo.GetParent().GetInventory().CanAddEntityInCargoEx(dragged_item, cargo_idx, row, col))			
+				if (cargo.GetCargoOwner().GetInventory().CanAddEntityInCargoEx(dragged_item, cargo_idx, row, col))			
 				{
 					if (testOnly)
 					{
@@ -1053,7 +1053,7 @@ class InventoryView: InventoryViewBase
 							player.GetWeaponManager().DetachMagazine(next);
 						}
 						else
-							player.PredictiveTakeEntityToTargetCargoEx(cargo.GetParent(), dragged_item, cargo_idx, row, col);
+							player.PredictiveTakeEntityToTargetCargoEx(cargo.GetCargoOwner(), dragged_item, cargo_idx, row, col);
 					}
 					return true;
 				}

@@ -2,6 +2,9 @@ class ActionReadPaper: ActionSingleUseBase
 {
 	void ActionReadPaper()
 	{
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_VIEWNOTE;
+		m_FullBody = true;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_PRONE;
 		m_MessageSuccess = "I broke chemlight.";
 		m_MessageFail = "It's out of energy";
 		//m_Animation = "break";
@@ -28,17 +31,17 @@ class ActionReadPaper: ActionSingleUseBase
 		return "#read";
 	}
 
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{
 		//display note
-		//player.enterNoteMenuRead = true;
+		//action_data.m_Player.enterNoteMenuRead = true;
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Paper paper_item = Paper.Cast(item);
+		Paper paper_item = Paper.Cast(action_data.m_MainItem);
 		PaperParams params = new PaperParams(paper_item.m_AdvancedText);
-		//WritePaperParams params = new WritePaperParams("", player.m_penColor,player.m_handwriting);
+		//WritePaperParams params = new WritePaperParams("", action_data.m_Player.m_penColor,action_data.m_Player.m_handwriting);
 		paper_item.RPCSingleParam(ERPCs.RPC_READ_NOTE, params, true);
 	}
 };

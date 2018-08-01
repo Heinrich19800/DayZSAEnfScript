@@ -1,6 +1,6 @@
 class ActionIgniteFireplaceByMatch: ActionIgniteFireplace
 {
-		
+	
 	void ActionIgniteFireplaceByMatch()
 	{
 		m_CallbackClass = ActionIgniteFireplaceCB;
@@ -31,22 +31,23 @@ class ActionIgniteFireplaceByMatch: ActionIgniteFireplace
 		return "Ignite by match";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		Object target_object = target.GetObject();
+		Object target_object = action_data.m_Target.GetObject();
 		FireplaceBase fireplace_target = FireplaceBase.Cast( target_object );
 		
 		//remove match
-		item.AddQuantity ( -m_MatchSpentPerUse );
+		action_data.m_MainItem.AddQuantity ( -m_MatchSpentPerUse );
 		
 		//remove grass
-		Object clutter_cutter = GetGame().CreateObject ( fireplace_target.OBJECT_CLUTTER_CUTTER , target_object.GetPosition(), true, false );
+		clutter_cutter = GetGame().CreateObject ( fireplace_target.OBJECT_CLUTTER_CUTTER , target_object.GetPosition() );
 		clutter_cutter.SetOrientation ( target_object.GetOrientation() );
+		DestroyClutterCutterAfterTime();
 		
 		//start fire
 		fireplace_target.StartFire();
 
 		//add specialty
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }

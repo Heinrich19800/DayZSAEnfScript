@@ -15,8 +15,6 @@ Every EntityAI object which uses this API gains these functions:
 	-It will have an ON/OFF switch
 */
 
-// TO DO: Doxygen komentar ^
-
 class ComponentEnergyManager : Component
 {
 	protected static bool 			m_DebugPlugs = true; // Use this to toggle visualisation of plug connections
@@ -196,7 +194,7 @@ class ComponentEnergyManager : Component
 			for (int i_selection = 0; i_selection < animation_sources_count; i_selection++)
 			{
 				// TO DO: This could be optimized so not all selections on item are considered as plug/socket selections.
-				local string selection;
+				string selection;
 				GetGame().ConfigGetChildName(cfg_animation_sources, i_selection, selection);
 				m_DeviceByPlugSelection.Set(selection, NULL);
 			}
@@ -264,43 +262,59 @@ class ComponentEnergyManager : Component
 	//! Energy manager: Switches ON the device so it starts doing its work if it has enough energy.
 	void SwitchOn()
 	{
-		if ( CanSwitchOn() )
+		if ( GetGame().IsServer() )
 		{
-			m_IsSwichedOn = true;
-			Synch();
-			
-			DeviceUpdate(); // 'Wake up' this device now
-			StartUpdates();
-			
-			// 'Wakes up' all connected devices
-			WakeUpWholeBranch( m_ThisEntityAI );
-			
-			// Call event
+			if ( CanSwitchOn() )
+			{
+				m_IsSwichedOn = true;
+				Synch();
+				
+				DeviceUpdate(); // 'Wake up' this device now
+				StartUpdates();
+				
+				// 'Wakes up' all connected devices
+				WakeUpWholeBranch( m_ThisEntityAI );
+				
+				// Call event
+				GetGame().GameScript.CallFunction(m_ThisEntityAI, "OnSwitchOn", NULL, 0);
+				UpdateCanWork();
+			}
+		}
+		
+		if ( !GetGame().IsServer()  &&  GetGame().IsMultiplayer() )
+		{
 			GetGame().GameScript.CallFunction(m_ThisEntityAI, "OnSwitchOn", NULL, 0);
-			UpdateCanWork();
 		}
 	}
 
 	//! Energy manager: Switches OFF the device.
 	void SwitchOff()
 	{
-		if ( CanSwitchOff() )
+		if ( GetGame().IsServer() )
 		{
-			m_IsSwichedOn = false;
-			Synch();
-			
-			if ( IsWorking() )
+			if ( CanSwitchOff() )
 			{
-				StopUpdates();
-				DeviceUpdate();
+				m_IsSwichedOn = false;
+				Synch();
+				
+				if ( IsWorking() )
+				{
+					StopUpdates();
+					DeviceUpdate();
+				}
+				
+				// 'Wakes up' all connected devices
+				WakeUpWholeBranch( m_ThisEntityAI );
+				
+				// Call event
+				GetGame().GameScript.CallFunction(m_ThisEntityAI, "OnSwitchOff", NULL, 0);
+				UpdateCanWork();
 			}
-			
-			// 'Wakes up' all connected devices
-			WakeUpWholeBranch( m_ThisEntityAI );
-			
-			// Call event
+		}
+		
+		if ( !GetGame().IsServer()  &&  GetGame().IsMultiplayer() )
+		{
 			GetGame().GameScript.CallFunction(m_ThisEntityAI, "OnSwitchOff", NULL, 0);
-			UpdateCanWork();
 		}
 	}
 
@@ -403,9 +417,9 @@ class ComponentEnergyManager : Component
 		// Lets update sockets, if there are any
 		int slots_c = GetSocketsCount();
 		
-		for ( local int i = 0; i < slots_c; ++i )
+		for ( int i = 0; i < slots_c; ++i )
 		{
-			local EntityAI plug_owner = GetDeviceBySocketID(i);
+			EntityAI plug_owner = GetDeviceBySocketID(i);
 			
 			if ( plug_owner )
 			{
@@ -413,7 +427,7 @@ class ComponentEnergyManager : Component
 				string available_selection = SOCKET_ + (i+1).ToString() + _AVAILABLE;
 				m_ThisEntityAI.ShowSelection ( plugged_selection );
 				m_ThisEntityAI.HideSelection ( available_selection );
-				local string texture_path = plug_owner.GetCompEM().GetCordTextureFile();
+				string texture_path = plug_owner.GetCompEM().GetCordTextureFile();
 				int selection_index = m_ThisEntityAI.GetHiddenSelectionIndex( plugged_selection );
 				m_ThisEntityAI.SetObjectTexture(selection_index, texture_path );
 			}
@@ -546,7 +560,7 @@ class ComponentEnergyManager : Component
 		m_HasElectricityIcon = make_visible;
 	}
 	
-	// Checks whenever this device can work or not and updates this information on all clients.
+	// Checks whenever this device can work or not and updates this information on all clients. Can be called many times per frame because synchronization happens only once if a change has occured.
 	void UpdateCanWork()
 	{
 		if ( GetGame().IsServer() )
@@ -697,7 +711,7 @@ class ComponentEnergyManager : Component
 	
 	
 	//! Energy manager: Consumes the given amount of energy. If there is not enough of stored energy in this device, then it tries to take it from its power source, if any exists. Returns true if the requested amount of energy was consumed. Otherwise it returns false.
-	bool ConsumeEnergy(local float amount)
+	bool ConsumeEnergy(float amount)
 	{
 		return FindAndConsumeEnergy(amount, true);
 	}
@@ -759,9 +773,9 @@ class ComponentEnergyManager : Component
 		
 		if ( m_CompatiblePlugTypes )
 		{
-			for ( local int i = 0; i < m_CompatiblePlugTypes.Count(); i++ )
+			for ( int i = 0; i < m_CompatiblePlugTypes.Count(); i++ )
 			{
-				local int plug_ID_to_Check = m_CompatiblePlugTypes.Get(i);
+				int plug_ID_to_Check = m_CompatiblePlugTypes.Get(i);
 				
 				if ( plug_ID_to_Check == plug_ID )
 				{
@@ -926,9 +940,26 @@ class ComponentEnergyManager : Component
 		return 0;
 	}
 	
+	//! Energy manager: Returns % of stored energy this device has as float (from 0.0 to 1.0)
+	float GetEnergy0To1()
+	{
+		if ( m_EnergyStorageMax > 0 )
+		{
+			return m_Energy / m_EnergyStorageMax;
+		}
+		
+		return 0;
+	}
+	
 
 
-
+	
+	//! Returns wetness exposure value defined in config
+	float GetWetnessExposure()
+	{
+		return m_WetnessExposure;
+	}
+	
 	//! Energy manager: Returns the number of energy this device needs to run itself (See its config >> energyUsagePerSecond)
 	float GetEnergyUsage()
 	{
@@ -1040,9 +1071,9 @@ class ComponentEnergyManager : Component
 	{
 		array<EntityAI> return_array = new array<EntityAI>;
 		int plugged_devices_c = GetPluggedDevicesCount();
-		for ( local int i = 0; i < plugged_devices_c; ++i )
+		for ( int i = 0; i < plugged_devices_c; ++i )
 		{
-			local EntityAI device = GetPluggedDevices().Get(i);
+			EntityAI device = GetPluggedDevices().Get(i);
 			if ( IsSwitchedOn() )
 			{
 				return_array.Insert(device);
@@ -1170,12 +1201,12 @@ class ComponentEnergyManager : Component
 	{
 		if ( GetSocketsCount() > 0 )
 		{
-			local array<EntityAI> plugged_devices = GetPluggedDevices();
-			local int plugged_devices_c = plugged_devices.Count();
+			array<EntityAI> plugged_devices = GetPluggedDevices();
+			int plugged_devices_c = plugged_devices.Count();
 			
-			for ( local int i = 0; i < plugged_devices_c; ++i )
+			for ( int i = 0; i < plugged_devices_c; ++i )
 			{
-				local EntityAI device = plugged_devices.Get(i);
+				EntityAI device = plugged_devices.Get(i);
 				if ( device != original_caller ) // original_caller check here prevents infinite loops
 				{
 					device.GetCompEM().UpdateCanWork();
@@ -1206,7 +1237,7 @@ class ComponentEnergyManager : Component
 		
 		for ( int i = 0; i < slots_c; ++i )
 		{
-			local EntityAI plug_owner = GetDeviceBySocketID(i);
+			EntityAI plug_owner = GetDeviceBySocketID(i);
 			
 			if ( !plug_owner ) // Check if this socket is available
 			{
@@ -1221,13 +1252,13 @@ class ComponentEnergyManager : Component
 	{
 		SetDeviceBySocketID(socket_id, device_to_plug);
 		
-		local string plugged_selection = SOCKET_ + (socket_id+1).ToString() + _PLUGGED;
+		string plugged_selection = SOCKET_ + (socket_id+1).ToString() + _PLUGGED;
 		SetPlugOwner( plugged_selection, device_to_plug );
 		m_ThisEntityAI.ShowSelection ( plugged_selection );
 		
-		local string unplugged_selection = SOCKET_ + (socket_id+1).ToString() + _AVAILABLE;
+		string unplugged_selection = SOCKET_ + (socket_id+1).ToString() + _AVAILABLE;
 		m_ThisEntityAI.HideSelection ( unplugged_selection );
-		local string texture_path = device_to_plug.GetCompEM().GetCordTextureFile();
+		string texture_path = device_to_plug.GetCompEM().GetCordTextureFile();
 		int selection_index = m_ThisEntityAI.GetHiddenSelectionIndex( plugged_selection );
 		m_ThisEntityAI.SetObjectTexture( selection_index, texture_path );
 		device_to_plug.GetCompEM().SetMySocketID(socket_id);
@@ -1315,10 +1346,10 @@ class ComponentEnergyManager : Component
 		if ( plug_owner )
 		{
 			SetDeviceBySocketID(socket_to_unplug_ID, NULL);
-			local string unplugged_selection = SOCKET_ + (socket_to_unplug_ID+1).ToString() + _AVAILABLE;
+			string unplugged_selection = SOCKET_ + (socket_to_unplug_ID+1).ToString() + _AVAILABLE;
 			m_ThisEntityAI.ShowSelection ( unplugged_selection );
 			
-			local string plugged_selection = SOCKET_ + (socket_to_unplug_ID+1).ToString() + _PLUGGED;
+			string plugged_selection = SOCKET_ + (socket_to_unplug_ID+1).ToString() + _PLUGGED;
 			m_ThisEntityAI.HideSelection ( plugged_selection );
 			SetPlugOwner( plugged_selection, NULL );
 			plug_owner.GetCompEM().SetMySocketID(-1);
@@ -1332,13 +1363,13 @@ class ComponentEnergyManager : Component
 	}
 	
 	// Tries to consume the given amount of energy. If there is none in this device, then it tries to take it from some power source.
-	protected bool FindAndConsumeEnergy(local float amount, local bool ignore_switch_state = false)
+	protected bool FindAndConsumeEnergy(float amount, bool ignore_switch_state = false)
 	{
 		if ( (ignore_switch_state  ||  IsSwitchedOn())  &&  !m_ThisEntityAI.IsRuined() )
 		{
-			local float available_energy = AddEnergy(-amount);
+			float available_energy = AddEnergy(-amount);
 			
-			if ( available_energy < 0  &&  GetEnergySource() )
+			if ( available_energy < 0  &&  IsPlugged() )
 			{
 				// This devices does not has enough of stored energy, therefore it will take it from its power source (which can be a chain of cable reels)
 				return GetEnergySource().GetCompEM().FindAndConsumeEnergy( -available_energy );
@@ -1396,7 +1427,11 @@ class ComponentEnergyManager : Component
 				{
 					m_LastUpdateTime = GetGame().GetTime();
 					float consume_energy = GetEnergyUsage() * consumed_energy_coef;
-					bool has_consumed_enough = ConsumeEnergy( consume_energy );
+					bool has_consumed_enough = true;
+					
+					if (GetGame().IsServer()  &&  GetGame().IsMultiplayer()) // is server side multiplayer or singleplayer
+						has_consumed_enough = ConsumeEnergy( consume_energy );
+					
 					SetPowered( has_consumed_enough );
 					
 					if ( has_consumed_enough )
@@ -1442,6 +1477,11 @@ class ComponentEnergyManager : Component
 					m_CanStopWork = false;
 					GetGame().GameScript.CallFunction(m_ThisEntityAI, "OnWorkStop", NULL, 0); // This event is called only once when the device STOPS being powered
 					UpdateCanWork();
+					
+					if (m_AutoSwitchOff)
+					{
+						SwitchOff(); 
+					}
 				}
 			}
 		}

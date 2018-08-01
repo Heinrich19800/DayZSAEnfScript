@@ -2,7 +2,7 @@ class ActionDrinkPondContinuousCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousRepeat(UATimeSpent.DRINK_POND);
+		m_ActionData.m_ActionComponent = new CAContinuousRepeat(UATimeSpent.DRINK_POND);
 	}
 };
 
@@ -57,15 +57,15 @@ class ActionDrinkPondContinuous: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnRepeatServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnRepeatServer( ActionData action_data )
 	{
-		Param1<float> nacdata = Param1<float>.Cast( acdata );
+		Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );
 		float amount = nacdata.param1 * WATER_DRANK_PER_SEC;
-		player.Consume(NULL,amount, EConsumeType.ENVIRO_POND);
+		action_data.m_Player.Consume(NULL,amount, EConsumeType.ENVIRO_POND);
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		OnRepeatServer(player,target,item, acdata);
+		OnRepeatServer(action_data);
 	}
 };

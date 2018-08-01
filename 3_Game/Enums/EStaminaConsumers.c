@@ -4,4 +4,5 @@ enum EStaminaConsumers
 	MELEE_HEAVY,
 	MELEE_EVADE,
 	SPRINT,
+	JUMP,
 }

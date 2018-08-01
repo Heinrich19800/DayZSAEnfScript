@@ -1,10 +1,10 @@
 class BrainDisease: ModifierBase
 {
-	static const int BRAIN_AGENT_THRESHOLD_ACTIVATE = 100;
+	static const int BRAIN_AGENT_THRESHOLD_ACTIVATE = 2000;
 	static const int BRAIN_AGENT_THRESHOLD_DEACTIVATE = 0;
 	override void Init()
 	{
-		m_TrackActivatedTime			= false;
+		m_TrackActivatedTime	= false;
 		m_ID 					= eModifiers.MDF_BRAIN;
 		m_TickIntervalInactive 	= DEFAULT_TICK_TIME_INACTIVE;
 		m_TickIntervalActive 	= DEFAULT_TICK_TIME_ACTIVE;
@@ -44,9 +44,9 @@ class BrainDisease: ModifierBase
 
 	override private void OnTick(PlayerBase player, float deltaT)
 	{
-		float chance_of_laughter = player.GetSingleAgentCountNormalized(AGT_BRAIN);
+		float chance_of_laughter = player.GetSingleAgentCountNormalized(AGT_BRAIN) / Math.RandomInt(1,10);
 		
-		if( Math.RandomFloat01() < chance_of_laughter / Math.RandomInt(1,10) )
+		if( Math.RandomFloat01() < chance_of_laughter )
 		{
 			StateBase state = player.GetStateManager().QueueUpPrimaryState(StateIDs.STATE_LAUGHTER);
 		}

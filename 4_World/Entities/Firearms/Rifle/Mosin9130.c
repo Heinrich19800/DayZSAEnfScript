@@ -91,13 +91,13 @@ class Mosin9130_Base extends Weapon_Base
 		WeaponStateBase		Mech_C1 = new WeaponCharging(this, NULL, WeaponActions.MECHANISM, WeaponActionMechanismTypes.MECHANISM_CLOSED);
 		WeaponStateBase		Mech_D1 = new WeaponCharging(this, NULL, WeaponActions.MECHANISM, WeaponActionMechanismTypes.MECHANISM_CLOSED);
 
-		LoopedChambering 	SChamber_C0 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_OPENED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE,false);
-		LoopedChambering 	SChamber_C1 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_CLOSED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE,false);
-		LoopedChambering 	SChamber_D1 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_OPENED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE,false);
+		//LoopedChamberingLoadSingleBullet 	SChamber_C0 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_OPENED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE);
+		//LoopedChamberingLoadSingleBullet 	SChamber_C1 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_CLOSED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE);
+		//LoopedChamberingLoadSingleBullet 	SChamber_D1 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_OPENED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE);
 		
-		LoopedChambering 	LChamber_C0 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_OPENED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE,true);
-		LoopedChambering 	LChamber_C1 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_CLOSED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE,true);
-		LoopedChambering 	LChamber_D1 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_OPENED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE,true);
+		LoopedChambering 	Chamber_C0 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_OPENED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE);
+		LoopedChambering 	Chamber_C1 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_CLOSED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE);
+		LoopedChambering 	Chamber_D1 = new LoopedChambering(this, NULL, WeaponActions.CHAMBERING, WeaponActionChamberingTypes.CHAMBERING_STARTLOOPABLE_OPENED, WeaponActionChamberingTypes.CHAMBERING_ENDLOOPABLE);
 		
 		WeaponStateBase		Unjam_J1 = new WeaponUnjamming(this, NULL, WeaponActions.UNJAMMING, WeaponActionUnjammingTypes.UNJAMMING_START);
 		
@@ -151,7 +151,7 @@ class Mosin9130_Base extends Weapon_Base
 				
 //----------------------------------------		
 		
-		m_fsm.AddTransition(new WeaponTransition( C0,			__L__,  SChamber_C0));
+/*		m_fsm.AddTransition(new WeaponTransition( C0,			__L__,  SChamber_C0));
 		m_fsm.AddTransition(new WeaponTransition( SChamber_C0,	_fin_,  C1));
 		m_fsm.AddTransition(new WeaponTransition( SChamber_C0,	_abt_,  C0, NULL, new WeaponGuardChamberEmpty(this)));
 		m_fsm.AddTransition(new WeaponTransition( SChamber_C0,	_abt_,  C1));
@@ -163,23 +163,23 @@ class Mosin9130_Base extends Weapon_Base
 		m_fsm.AddTransition(new WeaponTransition( D1,			__L__,  SChamber_D1));
 		m_fsm.AddTransition(new WeaponTransition( SChamber_D1,	_fin_,  C1));
 		m_fsm.AddTransition(new WeaponTransition( SChamber_D1,	_abt_,  D1, NULL, new WeaponGuardChamberFiredOut(this)));
-		m_fsm.AddTransition(new WeaponTransition( SChamber_D1,	_abt_,  C1));
+		m_fsm.AddTransition(new WeaponTransition( SChamber_D1,	_abt_,  C1));*/
 		
 //----------------------------------------		
 		
-/*		m_fsm.AddTransition(new WeaponTransition( C0,			__lS_,  LChamber_C0));
-		m_fsm.AddTransition(new WeaponTransition( LChamber_C0,	_fin_,  C1));
-		m_fsm.AddTransition(new WeaponTransition( LChamber_C0,	_abt_,  C0, NULL, new WeaponGuardChamberEmpty(this)));
-		m_fsm.AddTransition(new WeaponTransition( LChamber_C0,	_abt_,  C1));
+		m_fsm.AddTransition(new WeaponTransition( C0,			__L__,  Chamber_C0));
+		m_fsm.AddTransition(new WeaponTransition( Chamber_C0,	_fin_,  C1));
+		m_fsm.AddTransition(new WeaponTransition( Chamber_C0,	_abt_,  C0, NULL, new WeaponGuardChamberEmpty(this)));
+		m_fsm.AddTransition(new WeaponTransition( Chamber_C0,	_abt_,  C1));
 		
-		m_fsm.AddTransition(new WeaponTransition( C1,			__lS_,  LChamber_C1, NULL, new GuardNot(new WeaponGuardChamberFull(this))));
-		m_fsm.AddTransition(new WeaponTransition( LChamber_C1,	_fin_,  C1));
-		m_fsm.AddTransition(new WeaponTransition( LChamber_C1,	_abt_,  C1));
+		m_fsm.AddTransition(new WeaponTransition( C1,			__L__,  Chamber_C1, NULL, new GuardNot(new WeaponGuardChamberFull(this))));
+		m_fsm.AddTransition(new WeaponTransition( Chamber_C1,	_fin_,  C1));
+		m_fsm.AddTransition(new WeaponTransition( Chamber_C1,	_abt_,  C1));
 		
-		m_fsm.AddTransition(new WeaponTransition( D1,			__lS_,  LChamber_D1));
-		m_fsm.AddTransition(new WeaponTransition( LChamber_D1,	_fin_,  C1));
-		m_fsm.AddTransition(new WeaponTransition( LChamber_D1,	_abt_,  D1, NULL, new WeaponGuardChamberFiredOut(this)));
-		m_fsm.AddTransition(new WeaponTransition( LChamber_D1,	_abt_,  C1));*/
+		m_fsm.AddTransition(new WeaponTransition( D1,			__L__,  Chamber_D1));
+		m_fsm.AddTransition(new WeaponTransition( Chamber_D1,	_fin_,  C1));
+		m_fsm.AddTransition(new WeaponTransition( Chamber_D1,	_abt_,  D1, NULL, new WeaponGuardChamberFiredOut(this)));
+		m_fsm.AddTransition(new WeaponTransition( Chamber_D1,	_abt_,  C1));
 		
 //------------------------------------------
 		
@@ -259,4 +259,13 @@ class Mosin9130_Base extends Weapon_Base
 
 class Mosin9130 extends Mosin9130_Base
 {
+	override void GetContinuousActions( out TIntArray actions )
+	{
+		actions.Insert(AT_LOAD_MULTI_BULLET_TO_WEAPON);
+	}
+	
+	override RecoilBase SpawnRecoilObject()
+	{
+		return new MosinRecoil(this);
+	}
 };

@@ -44,16 +44,16 @@ class ActionPlugIntoFence: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		ItemBase target_IB = ItemBase.Cast( targetObject );
 		BarbedWire bw = BarbedWire.Cast( target_IB.GetAttachmentByType(BarbedWire) );
-		item.GetCompEM().PlugThisInto(bw);
+		action_data.m_MainItem.GetCompEM().PlugThisInto(bw);
 		
-		if ( !player.IsPlacingServer() )
+		if ( !action_data.m_Player.IsPlacingServer() )
 		{
-			//player.TogglePlacing( target, item );
+			//action_data.m_Player.TogglePlacing( action_data.m_Target, action_data.m_MainItem );
 		}
 	}
 };

@@ -1,10 +1,10 @@
 class ActionDrainLiquidCB : ActionContinuousBaseCB
 {
-	private const float TIME_TO_REPEAT = 1;
+	private const float TIME_TO_REPEAT = 0.25;
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousQuantityLiquidTransfer(UAQuantityConsumed.DRAIN_LIQUID, TIME_TO_REPEAT);
+		m_ActionData.m_ActionComponent = new CAContinuousQuantityLiquidTransfer(UAQuantityConsumed.DRAIN_LIQUID, TIME_TO_REPEAT);
 	}
 };
 
@@ -68,9 +68,9 @@ class ActionDrainLiquid: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnStartServer( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartServer( ActionData action_data )
 	{
-		player.SetLiquidTendencyDrain(true);
+		action_data.m_Player.SetLiquidTendencyDrain(true);
 	}
 	
 };

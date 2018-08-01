@@ -2,18 +2,25 @@ class CAContinuousFill : CAContinuousBase
 {
 	protected float 				m_TargetUnits;
 	protected float 				m_SpentQuantity;
+	protected float 				m_SpentQuantity_total;
 	protected float 				m_ItemQuantity;
 	protected float 				m_AdjustedQuantityFilledPerSecond;
 	protected float 				m_QuantityFilledPerSecond;
 	protected ref Param1<float>		m_SpentUnits;
+	protected float 				m_TimeElpased;
+	protected float 				m_DefaultTimeStep = 0.25;
+	protected int 					m_liquid_type;
 	
-	void CAContinuousFill( float quantity_filled_per_second )
+	void CAContinuousFill( float quantity_filled_per_second , int liquid_type )
 	{
 		m_QuantityFilledPerSecond = quantity_filled_per_second;
+		m_liquid_type = liquid_type;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
+		m_TimeElpased = 0;
+		
 		if ( !m_SpentUnits )
 		{ 
 			m_SpentUnits = new Param1<float>(0);
@@ -23,58 +30,65 @@ class CAContinuousFill : CAContinuousBase
 			m_SpentUnits.param1 = 0;
 		}
 		
-		m_ItemQuantity = item.GetQuantity();
-		m_TargetUnits = item.GetQuantityMax() - item.GetQuantity();	
-		m_AdjustedQuantityFilledPerSecond = player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityFilledPerSecond, m_Action.GetSpecialtyWeight(), true );
+		m_ItemQuantity = action_data.m_MainItem.GetQuantity();
+		m_TargetUnits = action_data.m_MainItem.GetQuantityMax() - action_data.m_MainItem.GetQuantity();	
+		m_AdjustedQuantityFilledPerSecond = action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityFilledPerSecond, m_Action.GetSpecialtyWeight(), true );
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		
-		if ( item.GetQuantity() >= item.GetQuantityMax() )
+		if ( action_data.m_MainItem.GetQuantity() >= action_data.m_MainItem.GetQuantityMax() )
 		{
 			return UA_SETEND_2;
 		}
 		else
 		{
-			if ( m_SpentQuantity < m_TargetUnits )
+			if ( m_SpentQuantity_total < m_TargetUnits )
 			{
-				m_SpentQuantity += m_AdjustedQuantityFilledPerSecond * player.GetDeltaT();
-
+				m_SpentQuantity += m_AdjustedQuantityFilledPerSecond * action_data.m_Player.GetDeltaT();
+				m_TimeElpased += action_data.m_Player.GetDeltaT();
+				
+				if ( m_TimeElpased >= m_DefaultTimeStep )
+				{
+					CalcAndSetQuantity( action_data );
+					m_TimeElpased = 0;
+					//Setup(action_data);	//reset data after repeat
+				}
 				return UA_PROCESSING;
 			}
 			else
 			{
-				CalcAndSetQuantity(player,target,item);
+				CalcAndSetQuantity( action_data );
 				return UA_FINISHED;
 			}
 		}
 	}
 	
-	override int Cancel( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Cancel( ActionData action_data )
 	{
-		if ( !player || !item )
+		if ( !action_data.m_Player || !action_data.m_MainItem )
 		{
 			return UA_ERROR;
 		}
 		
-		CalcAndSetQuantity(player, target, item);
+		CalcAndSetQuantity( action_data );
 		return UA_CANCEL;
 	}
 	
 	override float GetProgress()
 	{	
-		//float progress = m_SpentQuantity/m_TargetUnits;
-		return m_SpentQuantity/m_TargetUnits;
+		return m_SpentQuantity_total/m_TargetUnits;
 	}
 	//---------------------------------------------------------------------------
 	
-	void CalcAndSetQuantity( PlayerBase player, ActionTarget target, ItemBase item )
+	void CalcAndSetQuantity( ActionData action_data )
 	{
+		m_SpentQuantity_total += m_SpentQuantity;
 		if ( GetGame().IsServer() )
 		{
 			if ( m_SpentUnits )
@@ -82,6 +96,9 @@ class CAContinuousFill : CAContinuousBase
 				m_SpentUnits.param1 = m_SpentQuantity;
 				SetACData(m_SpentUnits);
 			}
+			
+			Liquid.FillContainerEnviro(action_data.m_MainItem, m_liquid_type, m_SpentQuantity);
 		}
+		m_SpentQuantity = 0;
 	}
 };

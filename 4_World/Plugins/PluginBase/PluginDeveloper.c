@@ -113,14 +113,20 @@ class PluginDeveloper extends PluginBase
 	// Server Log Synch: Server Side
 	void SendServerLogToClient(string msg)
 	{
-		ref array<Man> players = new array<Man>;
-		GetGame().GetPlayers( players );
-			
-		for ( int i = 0; i < players.Count(); ++i )
+		if ( GetGame() )
 		{
-			ref Param1<string> param = new Param1<string>( msg );
-			Man player = players.Get(i);
-			players.Get(i).RPCSingleParam(ERPCs.DEV_RPC_SEND_SERVER_LOG, param, true, player.GetIdentity());
+			ref array<Man> players = new array<Man>;
+			GetGame().GetPlayers( players );
+				
+			for ( int i = 0; i < players.Count(); ++i )
+			{
+				ref Param1<string> param = new Param1<string>( msg );
+				Man player = players.Get(i);
+				if( player )
+				{
+					player.RPCSingleParam(ERPCs.DEV_RPC_SEND_SERVER_LOG, param, true, player.GetIdentity());
+				}
+			}
 		}
 	}
 	
@@ -473,13 +479,16 @@ class PluginDeveloper extends PluginBase
 
 	void ToggleScriptConsole()
 	{
-		if ( g_Game.GetUIManager().GetMenu() == NULL )
+		if ( GetGame() != null && GetGame().GetPlayer() != null )
 		{
-			g_Game.GetUIManager().EnterScriptedMenu(MENU_SCRIPTCONSOLE, NULL);
-		}
-		else if ( g_Game.GetUIManager().IsMenuOpen(MENU_SCRIPTCONSOLE) )
-		{
-			g_Game.GetUIManager().Back();
+			if ( g_Game.GetUIManager().GetMenu() == NULL )
+			{
+				g_Game.GetUIManager().EnterScriptedMenu(MENU_SCRIPTCONSOLE, NULL);
+			}
+			else if ( g_Game.GetUIManager().IsMenuOpen(MENU_SCRIPTCONSOLE) )
+			{
+				g_Game.GetUIManager().Back();
+			}
 		}
 	}
 	

@@ -13,7 +13,7 @@ class CAContinuousTransferQuantity : CAContinuousBase
 		m_QuantityFilledPerSecond = quantity_filled_per_second;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{		
 		m_SpentQuantity = 0;
 		if ( !m_SpentUnits )
@@ -24,25 +24,25 @@ class CAContinuousTransferQuantity : CAContinuousBase
 		{	
 			m_SpentUnits.param1 = 0;
 		}
-		m_ItemQuantity = item.GetQuantity();
+		m_ItemQuantity = action_data.m_MainItem.GetQuantity();
 		ItemBase trg;
-		if ( Class.CastTo(trg, target.GetObject()) )
+		if ( Class.CastTo(trg, action_data.m_Target.GetObject()) )
 		{
 			m_SourceQuantity = trg.GetQuantity();
 		}
-		m_TargetUnits = item.GetQuantityMax();	
+		m_TargetUnits = action_data.m_MainItem.GetQuantityMax();	
 		m_TimeToComplete= (Math.Min((m_TargetUnits-m_ItemQuantity),m_SourceQuantity))/m_QuantityFilledPerSecond;
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{		
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		ItemBase trg;
-		Class.CastTo(trg, target.GetObject());
-		if ( item.GetQuantity() >= item.GetQuantityMax() || trg.GetQuantity() == 0 )
+		Class.CastTo(trg, action_data.m_Target.GetObject());
+		if ( action_data.m_MainItem.GetQuantity() >= action_data.m_MainItem.GetQuantityMax() || trg.GetQuantity() == 0 )
 		{
 			return UA_SETEND_2;
 		}
@@ -50,27 +50,27 @@ class CAContinuousTransferQuantity : CAContinuousBase
 		{
 		if ( m_SpentQuantity < m_TargetUnits && m_SpentQuantity < m_SourceQuantity )
 		{
-			m_SpentQuantity += m_QuantityFilledPerSecond * player.GetDeltaT();
+			m_SpentQuantity += m_QuantityFilledPerSecond * action_data.m_Player.GetDeltaT();
 			float val = m_ItemQuantity-m_SpentQuantity;
-			if ( m_Action ) m_Action.SendMessageToClient(player, val.ToString());
+			if ( m_Action ) m_Action.SendMessageToClient(action_data.m_Player, val.ToString());
 			return UA_PROCESSING;
 		}
 		else
 		{
-			CalcAndSetQuantity(player,target,item);
+			CalcAndSetQuantity( action_data );
 			return UA_FINISHED;
 		}
 	}
 	}
 	
-	override override int Cancel( PlayerBase player, ActionTarget target, ItemBase item )
+	override override int Cancel( ActionData action_data )
 	{		
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		
-		CalcAndSetQuantity(player, target, item);
+		CalcAndSetQuantity( action_data );
 		return UA_CANCEL;
 	}
 		
@@ -81,7 +81,7 @@ class CAContinuousTransferQuantity : CAContinuousBase
 	}
 	//---------------------------------------------------------------------------
 	
-	void CalcAndSetQuantity( PlayerBase player, ActionTarget target, ItemBase item )
+	void CalcAndSetQuantity( ActionData action_data )
 	{
 		if ( GetGame().IsServer() )
 		{			
@@ -90,9 +90,9 @@ class CAContinuousTransferQuantity : CAContinuousBase
 				m_SpentUnits.param1 = m_SpentQuantity;
 				SetACData(m_SpentUnits);
 			}
-			item.AddQuantity(m_SpentQuantity);
+			action_data.m_MainItem.AddQuantity(m_SpentQuantity);
 			ItemBase trg;
-			if ( Class.CastTo(trg, target.GetObject()) )
+			if ( Class.CastTo(trg, action_data.m_Target.GetObject()) )
 			{
 				trg.AddQuantity(-m_SpentQuantity,false,false);
 			}

@@ -13,7 +13,7 @@ class VicinityObjects
 	{
 		// Do not store hologram items
 		ItemBase ib = ItemBase.Cast(object);
-		if(ib && ib.IsHologram())
+		if(ib && !ib.IsTaketable()) 
 			return;
 
 		if ( !m_VicinityObjects.Contains(object) )
@@ -206,7 +206,7 @@ class ActionTargets
 			{
 				int targetComponent = -1;
 				targetComponent = hitComponentIndex;
-			
+
 				ActionTarget at = new ActionTarget(object, parent, targetComponent, m_HitPos, utility);
 				StoreTarget(at);
 			}

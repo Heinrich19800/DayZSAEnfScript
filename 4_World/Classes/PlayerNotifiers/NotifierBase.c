@@ -28,6 +28,7 @@ class NotifierBase
 	int					m_TendencyBufferWriteIterator;
 	float 				m_LastTendency;
 	float				m_LastMA;
+	bool				m_FirstPass = true;
 	//int					m_TendencyID;
 	
 	PluginPlayerStatus 	m_ModulePlayerStatus;
@@ -140,6 +141,12 @@ class NotifierBase
 		}
 		
 		float sma = values_sum / m_TendencyBufferSize;
+		if( m_FirstPass ) 
+		{
+			m_LastMA = sma;
+			m_FirstPass = false;
+		}
+		
 		float tnd = sma - m_LastMA;
 		m_LastMA = sma;
 		

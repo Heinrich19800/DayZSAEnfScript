@@ -1,4 +1,4 @@
-class MainMenuNewsfeed extends ScriptedWidgetEventHandler
+class MainMenusfeed extends ScriptedWidgetEventHandler
 {
 	protected Widget		m_Root;
 	
@@ -20,7 +20,7 @@ class MainMenuNewsfeed extends ScriptedWidgetEventHandler
 	protected TextWidget	m_SecText1;
 	protected TextWidget	m_SecText2;
 	
-	void MainMenuNewsfeed( Widget root )
+	void MainMenusfeed( Widget root )
 	{
 		m_Root			= root;
 		
@@ -113,40 +113,43 @@ class MainMenuNewsfeed extends ScriptedWidgetEventHandler
 	
 	override bool OnClick( Widget w, int x, int y, int button )
 	{
-		if( w == m_NewsMain )
+		if( button == MouseState.LEFT )
 		{
-			OpenNewsMain();
-			return true;
-		}
-		else if ( w == m_NewsSec1 )
-		{
-			OpenNewsSec1();
-			return true;
-		}
-		else if ( w == m_NewsSec2 )
-		{
-			OpenNewsSec2();
-			return true;
-		}
-		else if ( w == m_Feedback )
-		{
-			OpenFeedback();
-			return true;
-		}
-		else if ( w == m_DayZForum )
-		{
-			OpenForums();
-			return true;
-		}
-		else if ( w == m_Twitter )
-		{
-			OpenTwitter();
-			return true;
-		}
-		else if ( w == m_Youtube )
-		{
-			OpenYoutube();
-			return true;
+			if( w == m_NewsMain )
+			{
+				OpenNewsMain();
+				return true;
+			}
+			else if ( w == m_NewsSec1 )
+			{
+				OpenNewsSec1();
+				return true;
+			}
+			else if ( w == m_NewsSec2 )
+			{
+				OpenNewsSec2();
+				return true;
+			}
+			else if ( w == m_Feedback )
+			{
+				OpenFeedback();
+				return true;
+			}
+			else if ( w == m_DayZForum )
+			{
+				OpenForums();
+				return true;
+			}
+			else if ( w == m_Twitter )
+			{
+				OpenTwitter();
+				return true;
+			}
+			else if ( w == m_Youtube )
+			{
+				OpenYoutube();
+				return true;
+			}
 		}
 		return false;
 	}

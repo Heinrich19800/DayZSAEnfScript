@@ -32,7 +32,7 @@ class Hungry: NotifierBase
 		int tendency = CalculateTendency(delta, INC_TRESHOLD_LOW, INC_TRESHOLD_MED, INC_TRESHOLD_HIGH, DEC_TRESHOLD_LOW, DEC_TRESHOLD_MED, DEC_TRESHOLD_HIGH);
 		GetDisplayStatus().SetStatus(eDisplayElements.DELM_TDCY_ENERGY,tendency);
 		
-		DSLevels level = DetermineLevel( GetObservedValue(), ModifierConstants.THRESHOLD_ENERGY_WARNING, ModifierConstants.THRESHOLD_ENERGY_CRITICAL, ModifierConstants.THRESHOLD_ENERGY_EMPTY);
+		DSLevels level = DetermineLevel( GetObservedValue(), PlayerConstants.THRESHOLD_ENERGY_WARNING, PlayerConstants.THRESHOLD_ENERGY_CRITICAL, PlayerConstants.THRESHOLD_ENERGY_EMPTY);
 		GetDisplayStatus().SetLevel(eDisplayElements.DELM_TDCY_ENERGY, level);
 	}
 

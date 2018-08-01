@@ -39,9 +39,9 @@ class ActionUnplugThisByCord: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		ItemBase target_IB = ItemBase.Cast( target.GetObject() ); // cast to ItemBase
+		ItemBase target_IB = ItemBase.Cast( action_data.m_Target.GetObject() ); // cast to ItemBase
 		target_IB.GetCompEM().UnplugThis();
 		
 		if ( target_IB.IsInherited(Spotlight) )

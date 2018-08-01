@@ -32,19 +32,19 @@ class ActionTurnOffWhileOnGround: ActionInteractBase
 		}
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		EntityAI target_entity = EntityAI.Cast( target.GetObject() );
+		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
 		
 		if ( target_entity.GetCompEM().CanSwitchOff() )
 		{
 			target_entity.GetCompEM().SwitchOff();
 			
-			InformPlayers( player, target, UA_FINISHED );	//Success
+			InformPlayers( action_data.m_Player, action_data.m_Target, UA_FINISHED );	//Success
 		}
 		else
 		{
-			InformPlayers( player, target, UA_FAILED );		//Already turned off
+			InformPlayers( action_data.m_Player, action_data.m_Target, UA_FAILED );		//Already turned off
 		}	
 	}
 }

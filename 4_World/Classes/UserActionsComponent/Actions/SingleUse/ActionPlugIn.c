@@ -53,9 +53,9 @@ class ActionPlugIn: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		ItemBase target_IB = ItemBase.Cast( targetObject );
 		
 		if ( target_IB.HasEnergyManager() )
@@ -67,32 +67,32 @@ class ActionPlugIn: ActionSingleUseBase
 				target_IB = attached_device;
 			}
 			
-			item.GetCompEM().PlugThisInto(target_IB);
+			action_data.m_MainItem.GetCompEM().PlugThisInto(target_IB);
 		
-			if ( !player.IsPlacingServer() )
+			if ( !action_data.m_Player.IsPlacingServer() )
 			{
-				Process(player, target, item, acdata);
+				Process(action_data);
 			}
 		}
 	}
 	
-	void Process( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	void Process( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		ItemBase target_IB = ItemBase.Cast( targetObject );
 
-		target_IB.GetInventory().TakeEntityAsAttachment( InventoryMode.LOCAL, item );
+		target_IB.GetInventory().TakeEntityAsAttachment( InventoryMode.LOCAL, action_data.m_MainItem );
 	}
 	
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteClient( ActionData action_data )
 	{	
-		if ( !player.IsPlacingLocal() )
+		if ( !action_data.m_Player.IsPlacingLocal() )
 		{
-			player.TogglePlacingLocal();
+			action_data.m_Player.TogglePlacingLocal();
 		}
 		else
 		{
-			Process(player, target, item, acdata);
+			Process(action_data);
 		}
 	}
 	

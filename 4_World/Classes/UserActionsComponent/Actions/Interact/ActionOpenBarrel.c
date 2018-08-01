@@ -36,9 +36,9 @@ class ActionOpenBarrel: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object target_object = target.GetObject();
+		Object target_object = action_data.m_Target.GetObject();
 		Barrel_ColorBase ntarget = Barrel_ColorBase.Cast( target_object );
 		if( ntarget )
 		{

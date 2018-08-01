@@ -1,38 +1,10 @@
-class ActionReceived
-{
-	void ActionReceived()
-	{
-		ActionID = -1;
-		Target = null;
-		Parent = null;
-		baseItem = null;
-		ComponentIndex = -1;
-		AcknowledgmentID = -1;
-		
-	}
-	
-	int ActionID;
-	//Standart Action
-	ItemBase baseItem; //normaly set item in hands (exeption for some potencial crafting recipes and etc. )
-	Object Target;
-	Object Parent;
-	int ComponentIndex;
-	int AcknowledgmentID;
-	
-	
-	
-	//Craft
-	int 		recipeID;
-	
 	//Advanced placement
-	vector entity_position;
-	vector entity_orientation;
-};
+	//vector entity_position;
+	//vector entity_orientation;
+
 
 class ActionManagerServer: ActionManagerBase
-{	
-	private ref ActionReceived m_ActionReceived;
-	
+{		
 	void ActionManagerServer(PlayerBase player)
 	{
 		//ActionManagerBase(player);
@@ -44,62 +16,42 @@ class ActionManagerServer: ActionManagerBase
 	// Continuous---------------------------------------------
 	override void OnContinuousStart()
 	{
-			StartDeliveredAction();
+//			StartDeliveredAction();
 	}
 	
 	override void OnContinuousCancel()
-	{	
-		if( m_PendingAction )
+	{
+		if( !m_CurrentActionData || m_CurrentActionData.m_Action.GetActionCategory() != AC_CONTINUOUS )
+			return;
+			
+		if( m_CurrentActionData.m_State == UA_AM_PENDING || m_CurrentActionData.m_State == UA_AM_ACCEPTED || m_CurrentActionData.m_State == UA_AM_REJECTED )
 		{
-			EntityAI targetObject;
-			if( m_PendingAction )
-			{
-				OnActionEnd( m_PendingAction, m_PendingActionTarget, m_Player.GetItemInHands() );
-			}
-			m_PendingAction = NULL;
-			m_PendingActionTarget = NULL;
+			OnActionEnd();
 			m_PendingActionAcknowledgmentID = -1;
-			m_PendingActionState = UA_NONE;
 		}
 		else
 		{
-			ActionContinuousBaseCB callback;
-			if ( !Class.CastTo(callback, m_Player.GetCommandModifier_Action()))
-			{
-				if ( !Class.CastTo(callback, m_Player.GetCommand_Action()) )
-				{ 
-					return;
-				}
-				if ( callback.GetState() == callback.STATE_LOOP_END || callback.GetState() == callback.STATE_LOOP_END2 ) 
-				{
-					return;
-				}
-			}
-			if ( !callback.IsUserActionCallback() ) 
-			{
-				return;
-			}
-			callback.UserEndsAction();
+			m_CurrentActionData.m_Action.OnContinuousCancel(m_CurrentActionData);
 		}
 	}
 	
 	// Single----------------------------------------------------
 	override void OnSingleUse()
 	{
-			StartDeliveredAction();
+//			StartDeliveredAction();
 	}
 	
 	// Interact----------------------------------------------------
 	override void OnInteractAction() //Interact
 	{
-		if ( m_SelectedActionIndex == 0 ) // tertiary action is always on index 0 now
-		{
-				StartDeliveredAction();
-		}
-		else
-		{
+//		if ( m_SelectedActionIndex == 0 ) // tertiary action is always on index 0 now
+//		{
+//				StartDeliveredAction();
+//		}
+//		else
+//		{
 		//	rozbal debug akci
-		}
+//		}
 
 	}
 
@@ -109,24 +61,20 @@ class ActionManagerServer: ActionManagerBase
 		{
 			case INPUT_UDT_STANDARD_ACTION:
 			{
-				//Advanced placement
-				vector entity_position;
-				vector entity_orientation;
+				bool success = true;
 				
 				int actionID = 0;
 				if (!ctx.Read(actionID) )
 					return false;
-
-				m_ActionReceived = new ActionReceived();
-				m_ActionReceived.ActionID = actionID;
 				
 				ActionBase recvAction = GetAction(actionID);
 				
-				m_ActionReceived.baseItem = m_Player.GetItemInHands();
-
+				if (!recvAction)
+					return false;
+				
 				switch (actionID)
 				{
-					case AT_DEBUG:
+					/*case AT_DEBUG:
 					{
 						ItemBase targetItem = null;
 						if ( !ctx.Read(targetItem) ) //jtomasik - proc ho nenacte?
@@ -138,41 +86,64 @@ class ActionManagerServer: ActionManagerBase
 						
 						targetItem.OnAction(debugActionID, m_Player, NULL);
 						break;
-					}
+					}*/
 					
 					default:
-						if (!recvAction.ReadFromContext(ctx, m_ActionReceived))
-							return false;
-
+						ref ActionTarget target = new ActionTarget(NULL, NULL, -1, vector.Zero, 0);
+						if (!recvAction.SetupAction(m_Player,target,m_Player.GetItemInHands(),m_CurrentActionData))
+						{
+							success = false;
+						}
+						if (!recvAction.ReadFromContext(ctx, m_CurrentActionData))
+						{
+							success = false;
+						}
 				}
 					
 				if (recvAction.UseAcknowledgment())
 				{
 					int AckID;
 					if (!ctx.Read(AckID))
-						return false;
+						success = false;
 						
-					m_ActionReceived.AcknowledgmentID = AckID;
+					m_PendingActionAcknowledgmentID = AckID;
 				}
 					
-					
-				return true;
+				m_CurrentActionData.m_State = UA_AM_PENDING;
+				break;
 			}
-			default :
+			default:
 				return false;
 		}
 		
+		if (!success)
+		{
+			if (recvAction.UseAcknowledgment())
+			{
+				DayZPlayerSyncJunctures.SendActionAcknowledgment(m_Player, m_PendingActionAcknowledgmentID, false);
+			}
+			else
+			{
+				Interrupt();
+			}
+			m_CurrentActionData = NULL;
+			return false;
+		}
+		StartDeliveredAction();
 		return true;
+		
 	}
 	
 	override void StartDeliveredAction()
 	{
-		if( !m_ActionReceived )
+		if( !m_CurrentActionData )
 		{
 			//! error - expected action data
 			//Interrupt();
 			return;
 		}
+		
+		m_Player.SetActionEndInput();
 		
 		ActionBase picked_action;
 		bool accepted = false;
@@ -180,36 +151,25 @@ class ActionManagerServer: ActionManagerBase
 		ref ActionTarget target;
 		ItemBase item;
 		
-		if (m_ActionReceived.ActionID == AT_WORLD_CRAFT) //TODO - change to set in action onStart() 
-		{
-			m_Player.SetCraftingRecipeID(m_ActionReceived.recipeID);
-
-		}
-		else if (m_ActionReceived.ActionID == AT_PLACE_OBJECT)
-		{		
-			m_Player.SetLocalProjectionPosition( m_ActionReceived.entity_position );
-			m_Player.SetLocalProjectionOrientation( m_ActionReceived.entity_orientation );
-		}
-		else if (m_ActionReceived.ActionID == AT_DIG_GARDEN_PLOT)
-		{		
-			m_Player.SetLocalProjectionPosition( m_ActionReceived.entity_position );
-			m_Player.SetLocalProjectionOrientation( m_ActionReceived.entity_orientation );
-		}
-		
-		picked_action = GetAction(m_ActionReceived.ActionID);
-		target = new ActionTarget(m_ActionReceived.Target, m_ActionReceived.Parent, m_ActionReceived.ComponentIndex, vector.Zero, 0);
-		item = m_ActionReceived.baseItem;
+		picked_action = m_CurrentActionData.m_Action;
+		target = m_CurrentActionData.m_Target;
+		item = m_CurrentActionData.m_MainItem;
 
 		if( is_target_free && !m_Player.GetCommandModifier_Action() && !m_Player.GetCommand_Action() && !m_Player.IsSprinting() && picked_action && picked_action.Can(m_Player,target,item)) 
 		{
 			accepted = true;
 			if( picked_action.HasTarget())
 			{
-				
 				EntityAI targetEntity;
 				if ( EntityAI.CastTo(targetEntity,target.GetObject()) )
 				{
-					if( !Building.Cast(targetEntity))
+					//Man target_owner;
+					//target_owner = targetEntity.GetHierarchyRootPlayer();
+					//if( target_owner && target_owner != m_Player && target_owner.IsAlive() )
+					//{
+					//	accepted = false;
+					//}
+					/*else*/ if( !Building.Cast(targetEntity))
 					{
 						//Lock target
 						if( !GetGame().AddActionJuncture(m_Player,targetEntity,10000) )
@@ -225,33 +185,17 @@ class ActionManagerServer: ActionManagerBase
 		{
 			if(picked_action.UseAcknowledgment())
 			{
-				if(m_PendingActionTarget && m_PendingActionTarget.GetObject() != target.GetObject())
-				{
-					InventoryItem oldTrgetItem;
-					if( InventoryItem.CastTo(oldTrgetItem,m_PendingActionTarget.GetObject()))
-					{
 						//Unlock target
-						GetGame().ClearJuncture(m_Player, oldTrgetItem);
-						m_PendingActionTarget = NULL;
-					}
-				}
-				
-				m_RunningAction = picked_action;
-
-				m_PendingAction = picked_action;
-				m_PendingActionTarget = target;
-				m_PendingActionAcknowledgmentID = m_ActionReceived.AcknowledgmentID;
-				m_PendingActionState = UA_AM_PENDING;
-				DayZPlayerSyncJunctures.SendActionAcknowledgment(m_Player, m_ActionReceived.AcknowledgmentID, true);
+						//GetGame().ClearJuncture(m_Player, oldTrgetItem);
+				m_CurrentActionData.m_State = UA_AM_PENDING;
+				DayZPlayerSyncJunctures.SendActionAcknowledgment(m_Player, m_PendingActionAcknowledgmentID, true);
 			}
 			else
 			{
-				m_RunningAction = picked_action;
-				picked_action.Start(m_Player,target,item);
+				picked_action.Start(m_CurrentActionData);
 				if( picked_action.IsInstant() )
 				{
-					OnActionEnd( picked_action, target, item );
-					m_RunningAction = NULL;
+					OnActionEnd();
 				}
 			}
 		}
@@ -259,28 +203,32 @@ class ActionManagerServer: ActionManagerBase
 		{
 			if (picked_action.UseAcknowledgment())
 			{
-				DayZPlayerSyncJunctures.SendActionAcknowledgment(m_Player, m_ActionReceived.AcknowledgmentID, false);
+				DayZPlayerSyncJunctures.SendActionAcknowledgment(m_Player, m_PendingActionAcknowledgmentID, false);
 			}
 			else
 			{
 				Interrupt();
 			}
+			m_CurrentActionData = NULL;
 		}
-			
-		//! discard received action
-		m_ActionReceived = NULL;
 	}
 	
-	override void OnActionEnd( ActionBase action, ActionTarget target, ItemBase item )
+	override void OnActionEnd()
 	{
-		super.OnActionEnd( action, target, item );
-		if( target )
+		if(m_CurrentActionData)
 		{
-			ItemBase targetItem;
-			if( targetItem.CastTo(targetItem,target.GetObject()))
+			if( m_CurrentActionData.m_Target )
 			{
-				GetGame().ClearJuncture(m_Player, targetItem);
+				EntityAI targetEntity;
+				if( targetEntity.CastTo(targetEntity,m_CurrentActionData.m_Target.GetObject()))
+				{
+					if( !Building.Cast(targetEntity))
+					{
+						GetGame().ClearJuncture(m_CurrentActionData.m_Player, targetEntity);
+					}
+				}
 			}
+			super.OnActionEnd();
 		}
 	}
 	
@@ -302,23 +250,16 @@ class ActionManagerServer: ActionManagerBase
 
 				if( ActionPossibilityCheck(movementStateID) && movementStateID != DayZPlayerConstants.COMMANDID_SWIM && movementStateID != DayZPlayerConstants.COMMANDID_LADDER )
 				{
-					m_PendingAction.Start(m_Player,m_PendingActionTarget,m_Player.GetItemInHands());
-					if( m_PendingAction.IsInstant() )
-						OnActionEnd( m_PendingAction, m_PendingActionTarget, m_Player.GetItemInHands());
+					m_CurrentActionData.m_Action.Start(m_CurrentActionData);
+					if( m_CurrentActionData.m_Action.IsInstant() )
+						OnActionEnd();
 				}
-				
-				m_PendingAction = NULL;
-				m_PendingActionTarget = NULL;
 				m_PendingActionAcknowledgmentID = -1;
-				m_PendingActionState = UA_NONE;
 			}
 				
 			if(pJunctureID == DayZPlayerSyncJunctures.SJ_ACTION_ACK_REJECT)
 			{
-				m_PendingAction = NULL;
-				m_PendingActionTarget = NULL;
 				m_PendingActionAcknowledgmentID = -1;
-				m_PendingActionState = UA_NONE;
 			}
 		}
 	

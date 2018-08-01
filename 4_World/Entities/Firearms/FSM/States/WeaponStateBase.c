@@ -1,7 +1,7 @@
 /**@class	WeaponStateBase
  * @brief	represent weapon state base
  *
- * Class comes with entry/update/exit hooks that can be overriden in custom states
+ * Class comes with entry/update/abort/exit hooks that can be overriden in custom states
  *
  * Class is ready for hierarchic composition, i.e. this state having a sub-machine running
  * under hood. If no m_fsm member is configured, class acts as ordinary plain

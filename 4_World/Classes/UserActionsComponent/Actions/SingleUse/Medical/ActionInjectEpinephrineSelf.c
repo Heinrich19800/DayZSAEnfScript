@@ -10,9 +10,9 @@ class ActionInjectEpinephrineSelf: ActionInjectSelf
 		return AT_INJECT_EPINEPHRINE_S;
 	}
 		
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
-		player.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_HEART_ATTACK);
-		player.GetStatShock().Set(0);
+		action_data.m_Player.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_HEART_ATTACK);
+		action_data.m_Player.GiveShock(100);
 	}
 };

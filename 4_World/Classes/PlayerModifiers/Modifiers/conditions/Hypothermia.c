@@ -16,8 +16,6 @@ class Hypothermia: ModifierBase
 
 	override bool ActivateCondition(PlayerBase player)
 	{
-		return false;
-		/*
 		if ( player.GetStatTemperature().Get() <= HYPOTHERMIC_TEMPERATURE_TRESHOLD )
 		{
 			return true;
@@ -26,7 +24,6 @@ class Hypothermia: ModifierBase
 		{
 			return false;
 		}
-		*/
 	}
 
 	override void OnActivate(PlayerBase player)

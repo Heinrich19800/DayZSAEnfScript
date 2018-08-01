@@ -57,7 +57,7 @@ class Healthy: NotifierBase
 		//PrintString("tendency:" + tendency);
 		GetDisplayStatus().SetStatus(eDisplayElements.DELM_TDCY_HEALTH,tendency);
 		
-		DSLevels level = DetermineLevel( GetObservedValue(), ModifierConstants.THRESHOLD_HEALTH_WARNING, ModifierConstants.THRESHOLD_HEALTH_CRITICAL, ModifierConstants.THRESHOLD_HEALTH_EMPTY);
+		DSLevels level = DetermineLevel( GetObservedValue(), PlayerConstants.THRESHOLD_HEALTH_WARNING, PlayerConstants.THRESHOLD_HEALTH_CRITICAL, PlayerConstants.THRESHOLD_HEALTH_EMPTY);
 		GetDisplayStatus().SetLevel(eDisplayElements.DELM_TDCY_HEALTH, level);
 	}
 

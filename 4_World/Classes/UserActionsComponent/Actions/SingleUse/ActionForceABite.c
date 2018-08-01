@@ -2,7 +2,7 @@ class ActionForceABiteCB : ActionSingleUseBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CASingleUseQuantityEdible(UAQuantityConsumed.EAT_NORMAL);
+		m_ActionData.m_ActionComponent = new CASingleUseQuantityEdible(UAQuantityConsumed.EAT_NORMAL);
 	}
 };
 
@@ -33,11 +33,11 @@ class ActionForceABite: ActionForceConsumeSingle
 		return "#feed_a_bite";
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		if ( item.GetQuantity() <= 0 )
+		if ( action_data.m_MainItem.GetQuantity() <= 0 )
 		{
-			item.SetQuantity(0);
+			action_data.m_MainItem.SetQuantity(0);
 		}
 	}
 };

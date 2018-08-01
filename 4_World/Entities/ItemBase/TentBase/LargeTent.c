@@ -39,4 +39,14 @@ class LargeTent extends TentBase
 		
 		Init();
 	}
+	
+	override bool IsHeavyBehaviour()
+	{
+		return true;
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}
 };

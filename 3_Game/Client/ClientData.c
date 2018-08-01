@@ -16,8 +16,10 @@ class ClientData
 		
 		m_PlayerList = player_list;
 		
-		#ifdef PLATFORM_XBOX
-			OnlineServices.LoadPermissions( GetSimplePlayerList() );
+		#ifdef PLATFORM_CONSOLE
+			#ifndef PLATFORM_WINDOWS // if app is not on Windows with -XBOX parameter
+				OnlineServices.LoadPermissions( GetSimplePlayerList() );
+			#endif
 		#endif
 		SyncEvent_OnPlayerListUpdate.Invoke( player_list );
 	}

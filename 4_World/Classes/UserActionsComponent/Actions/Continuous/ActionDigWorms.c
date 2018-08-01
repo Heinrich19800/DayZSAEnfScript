@@ -2,7 +2,7 @@ class ActionDigWormsCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DIG_WORMS);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DIG_WORMS);
 	}
 };
 
@@ -63,11 +63,11 @@ class ActionDigWorms: ActionContinuousBase
 		return "Dig up worms";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
 		ItemBase worms;
-		Class.CastTo(worms,  GetGame().CreateObject("Worm", player.GetPosition()) );
+		Class.CastTo(worms,  GetGame().CreateObject("Worm", action_data.m_Player.GetPosition()) );
 		worms.SetQuantity(10,false);
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

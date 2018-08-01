@@ -2,7 +2,7 @@ class ActionBurnSewTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.SEW_WOUNDS);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.SEW_WOUNDS);
 	}
 };
 
@@ -48,13 +48,13 @@ class ActionBurnSewTarget: ActionContinuousBase
 		return "Close wounds";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		ntarget.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_BLEEDING);
-		ntarget.GetStatShock().Add(1000);
-		item.DecreaseHealth ( "", "", 5 );
+		//OlD_SHOCK//ntarget.GetStatShock().Add(1000);
+		action_data.m_MainItem.DecreaseHealth ( "", "", 5 );
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

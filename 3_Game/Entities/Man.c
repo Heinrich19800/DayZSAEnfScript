@@ -86,7 +86,6 @@ class Man extends EntityAI
 
 	override bool CanDropEntity (notnull EntityAI item) { return true; }
 
-	void PostHandEvent (HandEventBase e) { }
 	void OnItemInHandsChanged () { }
 
 	bool NeedInventoryJunctureFromServer (notnull EntityAI item, EntityAI currParent, EntityAI newParent) { return false; }
@@ -148,21 +147,65 @@ class Man extends EntityAI
 		UpdateInventoryMenu();
 	}
 
+	///@{ !hand replace
+	protected bool ReplaceItemWithNewImpl (InventoryMode mode, ReplaceItemWithNewLambdaBase lambda)
+	{
+		syncDebugPrint("[inv] (Man) Replace !HND lambda=" + lambda.DumpToString());
+		bool code = GetHumanInventory().ReplaceItemWithNew(mode, lambda);
+		UpdateInventoryMenu();
+		return code;
+	}
+
 	bool LocalReplaceItemWithNew (ReplaceItemWithNewLambdaBase lambda)
 	{
-		syncDebugPrint("[inv] (Man) Replace lambda=" + lambda.DumpToString());
-		bool code = GetHumanInventory().LocalReplaceItemWithNew(lambda);
+		return ReplaceItemWithNewImpl(InventoryMode.LOCAL, lambda);
+	}
+
+	bool ServerReplaceItemWithNew (ReplaceItemWithNewLambdaBase lambda)
+	{
+		return ReplaceItemWithNewImpl(InventoryMode.SERVER, lambda);
+	}
+	///@} !hand replace
+
+	///@{ hand replace
+	protected bool ReplaceItemInHandsWithNewImpl (InventoryMode mode, ReplaceItemWithNewLambdaBase lambda)
+	{
+		syncDebugPrint("[inv] (Man) Replace HND->HND lambda=" + lambda.DumpToString());
+		bool code = GetHumanInventory().ReplaceItemInHandsWithNew(mode, lambda);
 		UpdateInventoryMenu();
 		return code;
 	}
 
 	bool LocalReplaceItemInHandsWithNew (ReplaceItemWithNewLambdaBase lambda)
 	{
-		syncDebugPrint("[inv] (Man) Replace HND lambda=" + lambda.DumpToString());
-		bool code = GetHumanInventory().LocalReplaceItemInHandsWithNew(lambda);
+		return ReplaceItemInHandsWithNewImpl(InventoryMode.LOCAL, lambda);
+	}
+
+	bool ServerReplaceItemInHandsWithNew (ReplaceItemWithNewLambdaBase lambda)
+	{
+		return ReplaceItemInHandsWithNewImpl(InventoryMode.SERVER, lambda);
+	}
+	///@} hand replace
+	
+	///@{ hand replace2
+	protected bool ReplaceItemInHandsWithNewElsewhereImpl (InventoryMode mode, ReplaceItemWithNewLambdaBase lambda)
+	{
+		syncDebugPrint("[inv] (Man) Replace HND->elsewhere lambda=" + lambda.DumpToString());
+		bool code = GetHumanInventory().ReplaceItemInHandsWithNewElsewhere(mode, lambda);
 		UpdateInventoryMenu();
 		return code;
 	}
+	
+	bool LocalReplaceItemInHandsWithNewElsewhere (ReplaceItemWithNewLambdaBase lambda)
+	{
+		return ReplaceItemInHandsWithNewElsewhereImpl(InventoryMode.LOCAL, lambda);
+	}
+	
+	bool ServerReplaceItemInHandsWithNewElsewhere (ReplaceItemWithNewLambdaBase lambda)
+	{
+		return ReplaceItemInHandsWithNewElsewhereImpl(InventoryMode.SERVER, lambda);
+	}
+	///@} hand replace2
 
 	///@{ to inv juncture
 	bool JunctureTakeEntityToInventory (FindInventoryLocationType flags, notnull EntityAI item)
@@ -187,6 +230,11 @@ class Man extends EntityAI
 	override bool LocalTakeEntityToInventory (FindInventoryLocationType flags, notnull EntityAI item)
 	{
 		return TakeEntityToInventoryImpl(InventoryMode.LOCAL, flags, item);
+	}
+
+	override bool ServerTakeEntityToInventory (FindInventoryLocationType flags, notnull EntityAI item)
+	{
+		return TakeEntityToInventoryImpl(InventoryMode.SERVER, flags, item);
 	}
 
 	protected bool TakeEntityToInventoryImpl (InventoryMode mode, FindInventoryLocationType flags, notnull EntityAI item)
@@ -223,6 +271,11 @@ class Man extends EntityAI
 		return TakeEntityToCargoImpl(InventoryMode.LOCAL, item);
 	}
 
+	override bool ServerTakeEntityToCargo (notnull EntityAI item)
+	{
+		return TakeEntityToCargoImpl(InventoryMode.SERVER, item);
+	}
+
 	protected bool TakeEntityToCargoImpl (InventoryMode mode, notnull EntityAI item)
 	{
 		syncDebugPrint("[inv] Man::Take2Cgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
@@ -255,6 +308,11 @@ class Man extends EntityAI
 	override bool LocalTakeEntityAsAttachment (notnull EntityAI item)
 	{
 		return TakeEntityAsAttachmentImpl(InventoryMode.LOCAL, item);
+	}
+
+	override bool ServerTakeEntityAsAttachment (notnull EntityAI item)
+	{
+		return TakeEntityAsAttachmentImpl(InventoryMode.SERVER, item);
 	}
 
 	protected bool TakeEntityAsAttachmentImpl (InventoryMode mode, notnull EntityAI item)
@@ -291,6 +349,11 @@ class Man extends EntityAI
 		return TakeEntityAsAttachmentExImpl(InventoryMode.LOCAL, item, slot);
 	}
 
+	override bool ServerTakeEntityAsAttachmentEx (notnull EntityAI item, int slot)
+	{
+		return TakeEntityAsAttachmentExImpl(InventoryMode.SERVER, item, slot);
+	}
+
 	protected bool TakeEntityAsAttachmentExImpl (InventoryMode mode, notnull EntityAI item, int slot)
 	{
 		syncDebugPrint("[inv] Man::Take2AttEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
@@ -305,6 +368,8 @@ class Man extends EntityAI
 	{
 		return SwapEntitiesImpl(InventoryMode.JUNCTURE, item1, item2);
 	}
+	
+	bool IsUnconscious();
 
 	bool PredictiveSwapEntities (notnull EntityAI item1, notnull EntityAI item2)
 	{
@@ -325,6 +390,11 @@ class Man extends EntityAI
 	bool LocalSwapEntities (notnull EntityAI item1, notnull EntityAI item2)
 	{
 		return SwapEntitiesImpl(InventoryMode.LOCAL, item1, item2);
+	}
+
+	bool ServerSwapEntities (notnull EntityAI item1, notnull EntityAI item2)
+	{
+		return SwapEntitiesImpl(InventoryMode.SERVER, item1, item2);
 	}
 
 	protected bool SwapEntitiesImpl (InventoryMode mode, notnull EntityAI item1, notnull EntityAI item2)
@@ -373,7 +443,7 @@ class Man extends EntityAI
 	protected bool TakeEntityToTargetInventoryImpl (InventoryMode mode, notnull EntityAI target, FindInventoryLocationType flags, notnull EntityAI item)
 	{
 		syncDebugPrint("[inv] Man::Take2TargetInv(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
-		bool code = target.GetInventory().TakeEntityToInventory(mode, flags, item);
+		bool code = GetInventory().TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.ANY, item);
 		UpdateInventoryMenu();
 		return code;
 	}
@@ -412,7 +482,7 @@ class Man extends EntityAI
 	protected bool TakeEntityToTargetCargoExImpl (InventoryMode mode, notnull EntityAI target, notnull EntityAI item, int idx, int row, int col)
 	{
 		syncDebugPrint("[inv] Man::Take2TargetCgoEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
-		bool code = target.GetInventory().TakeEntityToTargetCargoEx(mode, target, item, idx, row, col);
+		bool code = GetInventory().TakeEntityToTargetCargoEx(mode, target, item, idx, row, col);
 		UpdateInventoryMenu();
 		return code;
 	}
@@ -445,14 +515,18 @@ class Man extends EntityAI
 	
 	override bool ServerTakeEntityToTargetCargo (notnull EntityAI target, notnull EntityAI item)
 	{
-		return TakeEntityToTargetCargoImpl(InventoryMode.SERVER, target, item);
+		if (IsAlive())
+			return TakeEntityToTargetCargoImpl(InventoryMode.SERVER, target, item);
+		else
+			return TakeEntityToTargetCargoImpl(InventoryMode.SERVER, target, item);
 	}
 
 	protected bool TakeEntityToTargetCargoImpl (InventoryMode mode, notnull EntityAI target, notnull EntityAI item)
 	{
 		syncDebugPrint("[inv] Man::Take2TargetCgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
-		bool code = target.GetInventory().TakeEntityToTargetCargo(mode, target, item);
-		UpdateInventoryMenu();
+
+		bool code = GetInventory().TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.CARGO, item);
+  		UpdateInventoryMenu();
 		return code;
 	}
 	///@} to target cgo juncture
@@ -490,7 +564,7 @@ class Man extends EntityAI
 	protected bool TakeEntityToTargetAttachmentExImpl (InventoryMode mode, notnull EntityAI target, notnull EntityAI item, int slot)
 	{
 		syncDebugPrint("[inv] Man::Take2TargetAtt(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
-		bool code = target.GetInventory().TakeEntityAsAttachmentEx(mode, item, slot);
+		bool code = GetInventory().TakeEntityAsTargetAttachmentEx(mode, target, item, slot);
 		UpdateInventoryMenu();
 		return code;
 	}
@@ -529,7 +603,7 @@ class Man extends EntityAI
 	protected bool TakeEntityToTargetAttachmentImpl (InventoryMode mode, notnull EntityAI target, notnull EntityAI item)
 	{
 		syncDebugPrint("[inv] Man::Take2TargetAtt(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
-		bool code = target.GetInventory().TakeEntityAsAttachment(mode, item);
+		bool code = GetInventory().TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.ATTACHMENT, item);
 		UpdateInventoryMenu();
 		return code;
 	}
@@ -558,6 +632,11 @@ class Man extends EntityAI
 	override bool LocalTakeToDst (notnull InventoryLocation src, notnull InventoryLocation dst)
 	{
 		return TakeToDstImpl(InventoryMode.LOCAL, src, dst);
+	}
+
+	override bool ServerTakeToDst (notnull InventoryLocation src, notnull InventoryLocation dst)
+	{
+		return TakeToDstImpl(InventoryMode.SERVER, src, dst);
 	}
 
 	protected bool TakeToDstImpl (InventoryMode mode, notnull InventoryLocation src, notnull InventoryLocation dst)
@@ -643,4 +722,9 @@ class Man extends EntityAI
 	*/
 	proto native void StatSyncToClient();
 	///@} Stats
+	
+	bool IsInventorySoftLocked()
+	{
+		return false;
+	};
 };

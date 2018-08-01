@@ -22,7 +22,7 @@ class ActionSkinningCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime( UATimeSpent.SKIN );
+		m_ActionData.m_ActionComponent = new CAContinuousTime( UATimeSpent.SKIN );
 	}
 };
 
@@ -84,9 +84,9 @@ class ActionSkinning: ActionContinuousBase
 	}
 
 	// Spawns the loot according to the Skinning class in the dead agent's config
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		
 		// Prepare to read config variables
 		string item_to_spawn;
@@ -129,21 +129,21 @@ class ActionSkinning: ActionContinuousBase
 			
 			if ( item_to_spawn != "" ) // Makes sure to ignore incompatible parameters in the Skinning class of the agent
 			{
-				// Spawning items in player's inventory
+				// Spawning items in action_data.m_Player's inventory
 				int item_count = g_Game.ConfigGetInt( cfg_skinning_organ_class + "count" );
 				
 				for ( int i2 = 0; i2 < item_count; i2++ )
 				{
-					ItemBase spawn_result = CreateOrgan( player, body_pos, item_to_spawn, cfg_skinning_organ_class, item );
-					item.DecreaseHealth(0.1); // wear out
+					ItemBase spawn_result = CreateOrgan( action_data.m_Player, body_pos, item_to_spawn, cfg_skinning_organ_class, action_data.m_MainItem );
+					action_data.m_MainItem.DecreaseHealth(0.1); // wear out
 				}
 			}
 		}	
 		
 		PluginLifespan module_lifespan = PluginLifespan.Cast( GetPlugin( PluginLifespan ) );
-		module_lifespan.UpdateBloodyHandsVisibility( player, true );
+		module_lifespan.UpdateBloodyHandsVisibility( action_data.m_Player, true );
 		
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 
 	// Spawns an organ defined in the given config

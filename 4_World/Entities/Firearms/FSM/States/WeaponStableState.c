@@ -30,14 +30,14 @@ class WeaponStableState extends WeaponStateBase
 				{
 					hcw.SetInitState(m_animState);
 					m_weapon.SetWeaponAnimState(m_animState);
-					fsmDebugSpam("[wpnfsm] synchronized anim state: " + typename.EnumToString(PistolAnimState, curr) + " --> " + typename.EnumToString(PistolAnimState, m_animState));
+					fsmDebugSpam("[wpnfsm] state=" + m_weapon.GetCurrentState().Type() + " synchronized anim state: " + typename.EnumToString(PistolAnimState, curr) + " --> " + typename.EnumToString(PistolAnimState, m_animState));
 				}
 				else
 				{
 					Human wpnOwner = Human.Cast(m_weapon.GetHierarchyRootPlayer());
 					HumanCommandWeapons.StaticSetInitState(wpnOwner, m_animState);
 					m_weapon.SetWeaponAnimState(m_animState);
-					fsmDebugSpam("[wpnfsm] synchronized remote anim state: " + typename.EnumToString(PistolAnimState, curr) + " --> " + typename.EnumToString(PistolAnimState, m_animState));
+					fsmDebugSpam("[wpnfsm] state=" + m_weapon.GetCurrentState().Type() + " synchronized remote anim state: " + typename.EnumToString(PistolAnimState, curr) + " --> " + typename.EnumToString(PistolAnimState, m_animState));
 				}
 			}		
 		}

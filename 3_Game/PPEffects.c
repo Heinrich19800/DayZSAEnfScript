@@ -6,7 +6,8 @@ class PPEffects
 	static int 		m_BlurInventory;
 	static int 		m_BlurDrunk;
 	static int		m_BlurFever;
-	static int 		m_BlurMenu;	
+	static int 		m_BlurMenu;
+	static int 		m_BlurOptics;
 	
 	static int	 	m_HitColor;
 	static int	 	m_BurlapBlindness;
@@ -16,6 +17,9 @@ class PPEffects
 	static ref array<float> m_BlurValues;
 	static ref map<int, ref array<float>> m_ColorValues;
 	static ref array<float> m_ColorEffect;
+	
+	static float m_UnconsciousVignetteColor[4];
+	static float m_UnconsciousVignetteIntesity;
 	
 	static void Init()
 	{
@@ -31,6 +35,7 @@ class PPEffects
 		m_BlurDrunk			= RegisterBlurEffect();
 		m_BlurFever			= RegisterBlurEffect();
 		m_BlurMenu			= RegisterBlurEffect();
+		m_BlurOptics 		= RegisterBlurEffect();
 		
 		if ( m_ColorEffect )
 		{
@@ -131,12 +136,20 @@ class PPEffects
 	}
 	
 	//-------------------------------------------------------
+	//! Set optics and ironsights blur to a specified 'value' between 0..1
+	static void SetBlurOptics(float value)
+	{
+		SetBlurValue(m_BlurOptics, value);
+		UpdateBlur();
+	}
+	
+	//-------------------------------------------------------
 	// BLUR END
 	//-------------------------------------------------------
 	/*
 	static void SetOverlayColor(float r, float g, float b, float a)
 	{
-		Material matColors = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/colors");
+		Material matColors = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/glow");
 		
 		m_Color[0] = r;
 		m_Color[1] = g;
@@ -152,8 +165,11 @@ class PPEffects
 	{	
 		if( m_ColorEffect )
 		{
-			m_ColorEffect.Clear();
-		}	
+			for ( int i = 0; i < m_ColorEffect.Count(); ++i )
+			{
+				m_ColorEffect[i] = 0;
+			}
+		}
 	}
 	
 	static void SetColorValue(int index, float r, float g, float b, float a, float overlay)
@@ -180,7 +196,7 @@ class PPEffects
 		float color_value_total[4];
 		float color_overlay;
 	
-		Material matColors = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/colors");
+		Material matColors = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/glow");
 
 		for ( int i = 0; i < m_ColorValues.Count(); ++i )
 		{
@@ -197,7 +213,65 @@ class PPEffects
 		matColors.SetParam("OverlayColor", color_value_total);
 		matColors.SetParam("OverlayFactor", color_overlay);	
 	}
-	
+
+	/*!
+	set lens effect 
+	\param lens	<-5, 5>, 0 = disable (performance plus), > 0 = outside effect, < 0 inside effect
+	\param chromAbb	<0, 1>, chromaticity, 1 = max, 0 disable (performance plus)
+	\param centerX	<-1, 1>, center of effect, 0 = screen center in X
+	\param centerY	<-1, 1>, center of effect, 0 = screen center in Y
+	*/
+	static void SetLensEffect(float lens, float chromAbb, float centerX, float centerY)
+	{
+		Material matHDR = GetGame().GetWorld().GetMaterial("Graphics/Materials/postprocess/glow");
+                matHDR.SetParam("LensDistort", lens);
+                matHDR.SetParam("MaxChromAbberation", chromAbb);
+                matHDR.SetParam("LensCenterX", centerX);
+                matHDR.SetParam("LensCenterY", centerY);
+	}
+
+	/*!
+	set vignette
+	\param intensity <0, 1>, intensity of effect, 0 = disable
+	\param R	
+	\param G	
+	\param B	
+	*/
+	static void SetVignette(float intensity, float R, float G, float B)
+	{
+		Material matHDR = GetGame().GetWorld().GetMaterial("Graphics/Materials/postprocess/glow");
+
+		float color[4];
+		color[0] = R;
+		color[1] = G;
+		color[2] = B;
+		color[3] = 0;
+
+                matHDR.SetParam("Vignette", intensity);
+                matHDR.SetParam("VignetteColor", color);
+	}
+
+
+	static void ResetVignette()
+	{
+		SetVignette(0,0,0,0);
+	}
+
+	static void OverrideDOF(bool enable, float focusDistance, float focusLength, float focusLengthNear, float blur, float focusDepthOffset)
+	{
+		GetGame().OverrideDOF(enable, focusDistance, focusLength, focusLengthNear, blur, focusDepthOffset);
+	}
+
+	static void AddPPMask(float ndcX, float ndcY, float ndcRadius, float ndcBlur)
+	{
+		GetGame().AddPPMask(ndcX, ndcY, ndcRadius, ndcBlur);
+	}
+
+	static void ResetPPMask()
+	{
+		GetGame().ResetPPMask();
+	}
+
 	static void HitEffect(float overlay)
 	{
 		SetColorValue(m_HitColor, 1, 0, 0, 1, overlay);
@@ -208,18 +282,35 @@ class PPEffects
 	{
 		SetColorValue(m_BurlapBlindness, 0, 0, 0, 1, 1.0);
 		UpdateColor();
+		GetGame().SetEVUser(-5);
 	}
 
 	static void DisableBurlapSackBlindness()
 	{		
 		SetColorValue(m_BurlapBlindness, 0, 0, 0, 0, 0.0);
 		UpdateColor();
+		GetGame().SetEVUser(0);
 	}
 
 	static void UpdateSaturation()
 	{
-		Material matColors = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/colors");
+		Material matColors = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/glow");
 		matColors.SetParam("Saturation", m_BloodSaturation/*+add_additional_modifiers_here*/);
+	}
+	
+	static void UpdateVignette()
+	{
+		float color[4];
+		float intesity;
+		
+		color[0] = m_UnconsciousVignetteColor[0]/*+add_additional_modifiers_here*/;
+		color[1] = m_UnconsciousVignetteColor[1]/*+add_additional_modifiers_here*/;
+		color[2] = m_UnconsciousVignetteColor[2]/*+add_additional_modifiers_here*/;
+		
+		intesity = m_UnconsciousVignetteIntesity/*+add_additional_modifiers_here*/;
+		
+		SetVignette( intesity, color[0], color[1], color[2] );
+		
 	}
 
 	static void SetBloodSaturation(float value)
@@ -228,11 +319,23 @@ class PPEffects
 		UpdateSaturation();
 	}
 	
+	static void SetUnconsciousnessVignette(float value)
+	{
+		m_UnconsciousVignetteIntesity = value;
+		UpdateVignette();
+	}
+	
+	static void RemoveUnconsciousnessVignette()
+	{
+		m_UnconsciousVignetteIntesity = 0;
+		UpdateVignette();
+	}
+	
 	static void ResetAll()
 	{		
 		ResetBlurEffects();
 		ResetColorEffects();
-		
+		ResetVignette();
 		SetBloodSaturation(1);
 	}	
 };

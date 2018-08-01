@@ -8,10 +8,10 @@ class CAContinuousWaterPlant : CAContinuousQuantity
 		m_QuantityUsedPerSecond = quantity_used_per_second;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		PlantBase target_PB;
-		if (Class.CastTo(target_PB, target.GetObject()))
+		if (Class.CastTo(target_PB, action_data.m_Target.GetObject()))
 		{
 			m_SpentQuantity = 0;
 			if ( !m_SpentUnits )
@@ -22,9 +22,9 @@ class CAContinuousWaterPlant : CAContinuousQuantity
 			{	
 				m_SpentUnits.param1 = 0;
 			}
-			if ( item )
+			if ( action_data.m_MainItem )
 			{
-				m_ItemQuantity = item.GetQuantity();
+				m_ItemQuantity = action_data.m_MainItem.GetQuantity();
 			}
 			if ( target_PB ) 
 			{
@@ -35,9 +35,9 @@ class CAContinuousWaterPlant : CAContinuousQuantity
 		}
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item  )
+	override int Execute( ActionData action_data  )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
@@ -50,22 +50,21 @@ class CAContinuousWaterPlant : CAContinuousQuantity
 		{
 			if ( m_SpentQuantity < m_ItemQuantity  &&  m_SpentQuantity < m_PlantThirstyness )
 			{
-				m_AdjustedQuantityUsedPerSecond = player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);		
-				m_SpentQuantity += m_QuantityUsedPerSecond * player.GetDeltaT();
+				m_AdjustedQuantityUsedPerSecond = action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityUsedPerSecond, m_Action.GetSpecialtyWeight(), true);		
+				m_SpentQuantity += m_QuantityUsedPerSecond * action_data.m_Player.GetDeltaT();
 				
 				if ( m_Action ) 
 				{
 					PlantBase plant;
-					Class.CastTo(plant,  target.GetObject() );
+					Class.CastTo(plant,  action_data.m_Target.GetObject() );
 					Slot slot = plant.GetSlot();
-
-					m_Action.SendMessageToClient(player, slot.GiveWater( item, m_SpentQuantity ));
+					m_Action.SendMessageToClient(action_data.m_Player, slot.GiveWater( action_data.m_MainItem, m_SpentQuantity ));
 				}
 				return UA_PROCESSING;
 			}
 			else
 			{
-				CalcAndSetQuantity(player, target, item);
+				CalcAndSetQuantity( action_data );
 				return UA_FINISHED;
 			}
 		}

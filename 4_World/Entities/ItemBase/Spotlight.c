@@ -27,6 +27,16 @@ class Spotlight extends ItemBase
 		Fold();
 		UpdateAllSelections();
 	}
+	
+	override bool IsTwoHandedBehaviour()
+	{
+		return true;
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}
 
 	override void OnWorkStart()
 	{
@@ -39,9 +49,9 @@ class Spotlight extends ItemBase
 	}
 	
 	// Called when this device is picked up
-	override void EEItemLocationChanged( EntityAI old_owner, EntityAI new_owner ) 
+	override void OnItemLocationChanged( EntityAI old_owner, EntityAI new_owner ) 
 	{
-		super.EEItemLocationChanged(old_owner, new_owner);
+		super.OnItemLocationChanged(old_owner, new_owner);
 		
 		// When the item is picked up by a player
 		if (new_owner)

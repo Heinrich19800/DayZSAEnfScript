@@ -528,14 +528,14 @@ class InventoryManager
 			Class.CastTo(amc, m_player.GetActionManager());
 			if( entity1 == m_player.GetHumanInventory().GetEntityInHands() )
 			{
-				if( amc.GetContinuousActionForTargetItem( ItemBase.Cast( entity2 ) ) > -1 )
+				if( amc.CanSetActionFromInventory( ItemBase.Cast( entity1 ), ItemBase.Cast( entity2 ) ) )
 				{
 					flags = flags | InventoryCombinationFlags.SET_ACTION;					
 				}
 			}
 			else
 			{
-				if( amc.GetContinuousActionForTargetItem( ItemBase.Cast( entity1 ) ) > -1 )
+				if( amc.CanSetActionFromInventory( ItemBase.Cast( entity2 ), ItemBase.Cast( entity1 ) ) )
 				{
 					flags = flags | InventoryCombinationFlags.SET_ACTION;					
 				}				

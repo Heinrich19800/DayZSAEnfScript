@@ -38,12 +38,12 @@ class ActionHarvestCrops: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		PlantBase plant = PlantBase.Cast( targetObject );
-		m_MessageSuccess = plant.Harvest( player );
+		m_MessageSuccess = plant.Harvest( action_data.m_Player );
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

@@ -11,6 +11,7 @@ class AreaDamageBase
 	ref TStringArray 		m_HitZones;
 	ref TStringArray		m_RaycastSources;
 	string					m_AmmoName;
+	int 					m_DamageType;
 	vector					m_ExtentMin;
 	vector 					m_ExtentMax;
 	
@@ -32,6 +33,7 @@ class AreaDamageBase
 		m_RaycastSources.Insert("0.0 0.1 0.0");
 
 		m_AmmoName			= "MeleeDamage";
+		m_DamageType 		= 3;
 
 		LoadConfigParams();
 	}
@@ -57,6 +59,8 @@ class AreaDamageBase
 		{ m_RaycastSources = raycast_sources; }
 	void SetAmmoName( string ammo_name )
 		{ m_AmmoName = ammo_name; }
+	void SetDamageType( int pDamageType )
+		{ m_DamageType = pDamageType; }
 	void SetLoopInterval( float time )
 		{ m_LoopInterval = time; }
 	void SetDeferInterval( float time )
@@ -74,6 +78,7 @@ class AreaDamageBase
 			m_AreaDamageTrigger.SetHitZones( m_HitZones );
 			m_AreaDamageTrigger.SetRaycastSources( m_RaycastSources );
 			m_AreaDamageTrigger.SetAmmoName( m_AmmoName );
+			m_AreaDamageTrigger.SetDamageType( m_DamageType );
 			m_AreaDamageTrigger.SetLoopTime( m_LoopInterval );
 			m_AreaDamageTrigger.SetDeferTime( m_DeferredInterval );
 			m_AreaDamageTrigger.SetParentObject( m_ParentObject );
@@ -108,6 +113,8 @@ class AreaDamageBase
 			{ GetGame().ConfigGetTextArray(areadamage_subcfg + "raycastSources", m_RaycastSources); }
 		if ( ConfigParamExists(areadamage_subcfg, "ammoName") )
 			{ GetGame().ConfigGetText(areadamage_subcfg + "ammoName", m_AmmoName); }
+		if ( ConfigParamExists(areadamage_subcfg, "damageType") )
+			{ m_DamageType = GetGame().ConfigGetInt(areadamage_subcfg + "damageType"); }
 	}
 	
 	protected bool ConfigParamExists(string path, string option)

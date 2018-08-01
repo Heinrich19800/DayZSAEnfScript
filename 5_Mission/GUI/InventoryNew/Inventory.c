@@ -51,8 +51,39 @@ class Inventory: ContainerBase
 		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "HandsPanel" ),  this, "DraggingOverHandsPanel" );
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "InventoryWindow" ),  this, "OnLeftPanelDropReceived" );
 		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "InventoryWindow" ),  this, "DraggingOverLeftPanel" );
+		
+		#ifdef PLATFORM_XBOX
+		
+				PluginDiagMenu plugin_diag_menu = PluginDiagMenu.Cast( GetPlugin(PluginDiagMenu) );
+				GetGame().GetUIManager().ShowUICursor( false );
+				ResetFocusedContainers();
+				GetMainPanel().FindAnyWidget( "CursorCharacter" ).Show( false );
+		
+				//console inventory toolbar
+				m_ConsoleToolbar = GetMainPanel().FindAnyWidget( "ConsoleToolbar" );
+				if ( !m_ConsoleToolbar ) 
+				{
+					m_ConsoleToolbar = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/inventory_new/console_inventory_toolbar.layout", GetMainPanel() );
+					m_ConsoleToolbar.SetPos( 0, 0 );
+				}
+				UpdateConsoleToolbar();
+		#endif
+		
+		#ifdef PLATFORM_PS4
+				GetGame().GetUIManager().ShowUICursor( false );
+				ResetFocusedContainers();
+				GetMainPanel().FindAnyWidget( "CursorCharacter" ).Show( false );
+		
+				//console inventory toolbar
+				m_ConsoleToolbar = GetMainPanel().FindAnyWidget( "ConsoleToolbar" );
+				if ( !m_ConsoleToolbar ) 
+				{
+					m_ConsoleToolbar = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/inventory_new/console_inventory_toolbar.layout", GetMainPanel() );
+					m_ConsoleToolbar.SetPos( 0, 0 );
+				}
+				UpdateConsoleToolbar();
+		#endif
 
-		WidgetEventHandler.GetInstance().RegisterOnController( GetMainPanel(),  this, "Controller" );
 	}
 
 	protected int GetProperControllerStickAngle( int angle )
@@ -128,53 +159,45 @@ class Inventory: ContainerBase
 		{
 			m_RightArea.MoveGridCursor(Direction.RIGHT);
 			m_LeftArea.MoveGridCursor(Direction.RIGHT);
-			//m_HandsArea.MoveGridCursor(Direction.RIGHT);
+			m_HandsArea.MoveGridCursor(Direction.RIGHT);
 		}
 		else if ( control == ControlID.CID_LEFT && value == 1 )
 		{
 			m_RightArea.MoveGridCursor(Direction.LEFT);
 			m_LeftArea.MoveGridCursor(Direction.LEFT);
-			//m_HandsArea.MoveGridCursor(Direction.LEFT);
+			m_HandsArea.MoveGridCursor(Direction.LEFT);
 		}
 		else if ( control == ControlID.CID_UP && value == 1 )
 		{
 			m_RightArea.MoveGridCursor(Direction.UP);
 			m_LeftArea.MoveGridCursor(Direction.UP);
-			//m_HandsArea.MoveGridCursor(Direction.UP);
+			m_HandsArea.MoveGridCursor(Direction.UP);
 		}
 		else if ( control == ControlID.CID_DOWN && value == 1 )
 		{
 			m_RightArea.MoveGridCursor(Direction.DOWN);
 			m_LeftArea.MoveGridCursor(Direction.DOWN);
-			//m_HandsArea.MoveGridCursor(Direction.DOWN);
+			m_HandsArea.MoveGridCursor(Direction.DOWN);
 		}
 		
 		
 		once++;
 		if( control == ControlID.CID_SELECT && value != 0 )
 		{
-				if( m_RightArea.IsActive() )
-				{
-					m_RightArea.Select();
-				}
-				if( m_LeftArea.IsActive() )
-				{
-					m_LeftArea.Select();
-				}
-				if( m_HandsArea.IsActive() )
-				{
-					m_HandsArea.Select();
-				}
-				if( m_HandsArea.IsCombineActive() )
-				{
-					m_HandsArea.SelectCombine();
-				}
-				if( m_HandsArea.IsSwapActive() )
-				{
-					m_HandsArea.SelectSwap();
-					m_HandsArea.SetSwapActive( false );
-					m_HandsArea.SetActive( true );
-				}
+			if( m_RightArea.IsActive() )
+			{
+				m_RightArea.Select();
+			}
+			if( m_LeftArea.IsActive() )
+			{
+				m_LeftArea.Select();
+			}
+			if( m_HandsArea.IsActive() )
+			{
+				m_HandsArea.Select();
+			}
+			ItemManager.GetInstance().SetItemMicromanagmentMode( false );
+			ItemManager.GetInstance().SetItemMoving( false );
 			return true;
 		}
 
@@ -194,7 +217,6 @@ class Inventory: ContainerBase
 					m_LeftArea.UnfocusGrid();
 				}
 			}
-			//ItemManager.GetInstance().SetSelectedItem(NULL,NULL);
 			return true;
 		}
 
@@ -499,6 +521,24 @@ class Inventory: ContainerBase
 			}
 		}
 		
+		if( GetGame().GetInput().GetActionDown( UAUISelectItem , false ) )
+		{
+			ItemManager.GetInstance().SetItemMicromanagmentMode( true );
+			
+			if( m_RightArea.IsActive() )
+			{
+				m_RightArea.SelectItem();
+			}
+			if( m_LeftArea.IsActive() )
+			{
+				m_LeftArea.SelectItem();
+			}
+			if( m_HandsArea.IsActive() )
+			{
+				//m_HandsArea.SelectItem();
+			}
+		}
+		
 		if( GetGame().GetInput().GetActionDown( UAUIFastTransferToVicinity, false ) )
 		{
 			if( m_HandsArea.IsActive() )
@@ -513,6 +553,10 @@ class Inventory: ContainerBase
 		
 		if( GetGame().GetInput().GetActionDown( UAUIFastTransferItem, false ) )
 		{
+			if( ItemManager.GetInstance().IsMicromanagmentMode() )
+			{
+				return;
+			}
 			if( m_RightArea.IsActive() )
 			{
 				m_RightArea.TransferItem();
@@ -528,9 +572,13 @@ class Inventory: ContainerBase
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUINextUp, false ) )
-		{		
-			m_RightArea.UnfocusGrid();
-			m_LeftArea.UnfocusGrid();
+		{
+			if( !ItemManager.GetInstance().IsMicromanagmentMode() )
+			{
+				m_RightArea.UnfocusGrid();
+				m_LeftArea.UnfocusGrid();
+				m_HandsArea.UnfocusGrid();
+			}
 			if( m_LeftArea.IsActive() )
 			{
 				m_LeftArea.SetPreviousActive( );
@@ -538,6 +586,10 @@ class Inventory: ContainerBase
 			if( m_RightArea.IsActive() )
 			{
 				m_RightArea.SetPreviousActive( );
+			}
+			if( m_HandsArea.IsActive() )
+			{
+				m_HandsArea.SetPreviousActive();
 			}
 			
 #ifdef PLATFORM_XBOX
@@ -557,8 +609,12 @@ class Inventory: ContainerBase
 
 		if( GetGame().GetInput().GetActionDown( UAUINextDown, false ) )
 		{
-			m_RightArea.UnfocusGrid();
-			m_LeftArea.UnfocusGrid();
+			if( !ItemManager.GetInstance().IsMicromanagmentMode() )
+			{
+				m_RightArea.UnfocusGrid();
+				m_LeftArea.UnfocusGrid();
+				m_HandsArea.UnfocusGrid();
+			}
 			if( m_LeftArea.IsActive() )
 			{
 				m_LeftArea.SetNextActive();
@@ -567,7 +623,10 @@ class Inventory: ContainerBase
 			{
 				m_RightArea.SetNextActive();
 			}
-			
+			if( m_HandsArea.IsActive() )
+			{
+				m_HandsArea.SetNextActive();
+			}
 #ifdef PLATFORM_XBOX
 			if ( m_RightArea.IsActive() )
 			{
@@ -587,7 +646,10 @@ class Inventory: ContainerBase
 		{
 			if( m_LeftArea.IsActive() )
 			{
-				m_LeftArea.UnfocusGrid();
+				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
+				{
+					m_LeftArea.UnfocusGrid();
+				}
 				m_LeftArea.SetActive( false );
 				m_RightArea.SetActive( true );
 				
@@ -601,19 +663,14 @@ class Inventory: ContainerBase
 			}
 			else if( m_RightArea.IsActive() )
 			{
-				m_RightArea.UnfocusGrid();
+				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
+				{
+					m_RightArea.UnfocusGrid();
+				}
 				m_RightArea.SetActive( false );
 				player = PlayerBase.Cast( GetGame().GetPlayer() );
 				EntityAI item_in_hands = player.GetItemInHands();
-				EntityAI selected_item = ItemManager.GetInstance().GetSelectedItem();
-				if( item_in_hands && selected_item && item_in_hands != selected_item )
-				{
-					m_HandsArea.SetSwapActive( true );
-				}
-				else
-				{
-					m_HandsArea.SetActive( true );
-				}
+				m_HandsArea.SetActive( true );
 
 #ifdef PLATFORM_XBOX
 			UpdateConsoleToolbar();
@@ -623,19 +680,9 @@ class Inventory: ContainerBase
 			UpdateConsoleToolbar();
 #endif			
 			}
-			else if( m_HandsArea.IsSwapActive() )
-			{
-				m_HandsArea.SetSwapActive( false );
-				m_HandsArea.SetCombineActive( true );
-			}
-			else if( m_HandsArea.IsCombineActive() )
-			{
-				m_HandsArea.SetCombineActive( false );
-				m_HandsArea.SetActive( false );
-				m_LeftArea.SetActive( true );
-			}
 			else if( m_HandsArea.IsActive() )
 			{
+				m_HandsArea.UnfocusGrid();
 				m_HandsArea.SetActive( false );
 				m_LeftArea.SetActive( true );
 				
@@ -653,19 +700,14 @@ class Inventory: ContainerBase
 		{
 			if( m_LeftArea.IsActive() )
 			{
-				m_LeftArea.UnfocusGrid();
+				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
+				{
+					m_LeftArea.UnfocusGrid();
+				}
 				m_LeftArea.SetActive( false );
 				player = PlayerBase.Cast( GetGame().GetPlayer() );
 				item_in_hands = player.GetItemInHands();
-				selected_item = ItemManager.GetInstance().GetSelectedItem();
-				if( item_in_hands && selected_item && item_in_hands != selected_item )
-				{
-					m_HandsArea.SetCombineActive( true );
-				}
-				else
-				{
-					m_HandsArea.SetActive( true );
-				}
+				m_HandsArea.SetActive( true );
 				
 #ifdef PLATFORM_XBOX
 				UpdateConsoleToolbar();
@@ -675,19 +717,12 @@ class Inventory: ContainerBase
 				UpdateConsoleToolbar();
 #endif				
 			}
-			else if( m_HandsArea.IsCombineActive() )
-			{
-				m_HandsArea.SetCombineActive( false );
-				m_HandsArea.SetSwapActive( true );
-			}
-			else if( m_HandsArea.IsSwapActive() )
-			{
-				m_HandsArea.SetSwapActive( false );
-				m_RightArea.SetActive( true );
-			}
 			else if( m_RightArea.IsActive() )
 			{
-				m_RightArea.UnfocusGrid();
+				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
+				{
+					m_RightArea.UnfocusGrid();
+				}
 				m_RightArea.SetActive( false );
 				m_LeftArea.SetActive( true );
 				
@@ -701,6 +736,7 @@ class Inventory: ContainerBase
 			}
 			else if( m_HandsArea.IsActive() )
 			{
+				m_HandsArea.UnfocusGrid();
 				m_HandsArea.SetActive( false );
 				m_RightArea.SetActive( true );
 				
@@ -738,8 +774,7 @@ class Inventory: ContainerBase
 				//open radial quickbar menu
 				if ( !GetGame().GetUIManager().IsMenuOpen( MENU_RADIAL_QUICKBAR ) )
 				{
-					InventoryMenuNew inventory_menu = InventoryMenuNew.Cast( GetGame().GetUIManager().FindMenu( MENU_INVENTORY ) );
-					RadialQuickbarMenu.OpenMenu( inventory_menu );
+					RadialQuickbarMenu.OpenMenu( GetGame().GetUIManager().FindMenu( MENU_INVENTORY ) );
 				}				
 			}
 		}
@@ -759,7 +794,7 @@ class Inventory: ContainerBase
 			}
 			else if ( m_RightArea.IsActive() )
 			{
-				item_to_assign = ItemManager.GetInstance().GetSelectedItem();
+				item_to_assign = m_RightArea.GetFocusedItem();
 			}
 			
 			if ( item_to_assign )
@@ -769,13 +804,21 @@ class Inventory: ContainerBase
 				//open radial quickbar menu
 				if ( !GetGame().GetUIManager().IsMenuOpen( MENU_RADIAL_QUICKBAR ) )
 				{
-					InventoryMenuNew inventory_menu = InventoryMenuNew.Cast( GetGame().GetUIManager().FindMenu( MENU_INVENTORY ) );
-					RadialQuickbarMenu.OpenMenu( inventory_menu );
+					RadialQuickbarMenu.OpenMenu( GetGame().GetUIManager().FindMenu( MENU_INVENTORY ) );
 				}
 			}
 		}
 #endif	
-	
+
+		//Open InGame menu
+		if( GetGame().GetInput().GetActionDown( UAUIMenu, false ) )
+		{
+			if ( !GetGame().GetUIManager().IsMenuOpen( MENU_INGAME ) )
+			{
+				GetGame().GetMission().Pause();
+			}
+		}
+		
 		m_LeftArea.UpdateInterval();
 		m_RightArea.UpdateInterval();
 		m_HandsArea.UpdateInterval();
@@ -799,15 +842,13 @@ class Inventory: ContainerBase
 	{
 		m_RightArea.UnfocusGrid();
 		m_LeftArea.UnfocusGrid();
+		m_HandsArea.UnfocusGrid();
 		m_LeftArea.SetActive( false );
 		m_HandsArea.SetActive( false );
 		m_RightArea.SetActive( false );
 		m_RightArea.ResetFocusedContainer();
 		m_LeftArea.ResetFocusedContainer();
-		
-		m_LeftArea.SetActive( true );
-		m_HandsArea.SetCombineActive( false );
-		m_HandsArea.SetSwapActive( false );
+		m_RightArea.SetActive( true );
 	}
 
 	override void OnShow()
@@ -815,9 +856,7 @@ class Inventory: ContainerBase
 		//start update
 		SetFocus( GetMainPanel() );
 		Deserialize();
-		m_MainPanel.Show(true);
-		m_MainPanel.Update();
-
+		//m_MainPanel.Update(); 
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 		if ( player && player.IsPlacingLocal() )
 		{
@@ -835,39 +874,14 @@ class Inventory: ContainerBase
 				hud.ToggleHud( true, true );
 			}
 		}
-
-#ifdef PLATFORM_XBOX
-		GetGame().GetUIManager().ShowUICursor( false );
-		ResetFocusedContainers();
-		GetMainPanel().FindAnyWidget( "CursorCharacter" ).Show( false );
-
-		//console inventory toolbar
-		m_ConsoleToolbar = GetMainPanel().FindAnyWidget( "ConsoleToolbar" );
-		if ( !m_ConsoleToolbar ) 
-		{
-			m_ConsoleToolbar = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/inventory_new/console_inventory_toolbar.layout", GetMainPanel() );
-			m_ConsoleToolbar.SetPos( 0, 0 );
-		}
-		UpdateConsoleToolbar();
-#endif
-
-#ifdef PLATFORM_PS4
-		GetGame().GetUIManager().ShowUICursor( false );
-		ResetFocusedContainers();
-		GetMainPanel().FindAnyWidget( "CursorCharacter" ).Show( false );
-
-		//console inventory toolbar
-		m_ConsoleToolbar = GetMainPanel().FindAnyWidget( "ConsoleToolbar" );
-		if ( !m_ConsoleToolbar ) 
-		{
-			m_ConsoleToolbar = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/inventory_new/console_inventory_toolbar.layout", GetMainPanel() );
-			m_ConsoleToolbar.SetPos( 0, 0 );
-		}
-		UpdateConsoleToolbar();
-#endif
-
-		RefreshQuickbar();
+		#ifdef PLATFORM_XBOX
+				ResetFocusedContainers();
+		#endif
 		
+		#ifdef PLATFORM_PS4
+				ResetFocusedContainers();
+		#endif		
+		RefreshQuickbar();
 		UpdateInterval();
 		GetGame().GetUpdateQueue(CALL_CATEGORY_SYSTEM).Insert(this.UpdateInterval);
 	}
@@ -878,7 +892,6 @@ class Inventory: ContainerBase
 		GetGame().GetUpdateQueue(CALL_CATEGORY_SYSTEM).Remove(this.UpdateInterval);
 		
 		Serialize();
-		m_MainPanel.Show( false );
 		ItemManager.GetInstance().HideTooltip();
 		Mission mission = GetGame().GetMission();
 		if ( mission )
@@ -941,50 +954,50 @@ class Inventory: ContainerBase
 		string context_text;
 		
 #ifdef PLATFORM_XBOX
-		general_text = "Switch column <image set=\"xbox_buttons\" name=\"LB\" />/<image set=\"xbox_buttons\" name=\"RB\" />        Switch cargo container <image set=\"xbox_buttons\" name=\"LT\" />/<image set=\"xbox_buttons\" name=\"RT\"/>";
+		general_text = "<image set=\"xbox_buttons\" name=\"LB\" />/<image set=\"xbox_buttons\" name=\"RB\" /> Switch column        <image set=\"xbox_buttons\" name=\"LT\" />/<image set=\"xbox_buttons\" name=\"RT\"/> Switch cargo container";
 		
 		if ( m_LeftArea.IsActive() )
 		{
-			context_text = "Open/Close container <image set=\"xbox_buttons\" name=\"RS\" />    To hands/swap <image set=\"xbox_buttons\" name=\"A\" />    Combine <image set=\"xbox_buttons\" name=\"B\" />    Equip <image set=\"xbox_buttons\" name=\"X\" />    To inventory <image set=\"xbox_buttons\" name=\"Y\" />";
+			context_text = "<image set=\"xbox_buttons\" name=\"RS\" /> Open/Close container    <image set=\"xbox_buttons\" name=\"A\" /> To hands/swap    <image set=\"xbox_buttons\" name=\"B\" /> Combine    <image set=\"xbox_buttons\" name=\"X\" /> Equip    <image set=\"xbox_buttons\" name=\"Y\" /> To inventory";
 		}
 		else if ( m_RightArea.IsActive() )
 		{
 			if ( m_RightArea.IsPlayerEquipmentActive() )
 			{
-				context_text = "Open/Close container <image set=\"xbox_buttons\" name=\"RS\" />    To hands/swap <image set=\"xbox_buttons\" name=\"A\" />    Combine <image set=\"xbox_buttons\" name=\"B\" />    To inventory <image set=\"xbox_buttons\" name=\"Y\" />    Drop <image set=\"xbox_buttons\" name=\"Y\" />(hold)";
+				context_text = "<image set=\"xbox_buttons\" name=\"RS\" /> Open/Close container    <image set=\"xbox_buttons\" name=\"A\" /> To hands/swap    <image set=\"xbox_buttons\" name=\"B\" /> Combine    <image set=\"xbox_buttons\" name=\"Y\" /> To inventory    <image set=\"xbox_buttons\" name=\"Y\" />(hold) Drop";
 			}
 			else
 			{
-				context_text = "Open/Close container <image set=\"xbox_buttons\" name=\"RS\" />    To hands/swap <image set=\"xbox_buttons\" name=\"A\" />    Combine <image set=\"xbox_buttons\" name=\"B\" />    Equip <image set=\"xbox_buttons\" name=\"X\" />    Drop <image set=\"xbox_buttons\" name=\"Y\" />(hold)";
+				context_text = "<image set=\"xbox_buttons\" name=\"RS\" /> Open/Close container    <image set=\"xbox_buttons\" name=\"A\" /> To hands/swap    <image set=\"xbox_buttons\" name=\"B\" /> Combine    <image set=\"xbox_buttons\" name=\"X\" /> Equip    <image set=\"xbox_buttons\" name=\"Y\" />(hold) Drop";
 			}
 		}
 		else if ( m_HandsArea.IsActive() )
 		{
-			context_text = "Equip <image set=\"xbox_buttons\" name=\"X\" />    To inventory <image set=\"xbox_buttons\" name=\"Y\" />    Drop <image set=\"xbox_buttons\" name=\"Y\" />(hold)";
+			context_text = "<image set=\"xbox_buttons\" name=\"X\" /> Equip    <image set=\"xbox_buttons\" name=\"Y\" /> To inventory    <image set=\"xbox_buttons\" name=\"Y\" />(hold) Drop";
 		}		
 #endif
 
 #ifdef PLATFORM_PS4
-		general_text = "Switch column <image set=\"playstation_buttons\" name=\"L1\" />/<image set=\"playstation_buttons\" name=\"R1\" />        Switch cargo container <image set=\"playstation_buttons\" name=\"L2\" />/<image set=\"playstation_buttons\" name=\"R2\"/>";
+		general_text = "<image set=\"playstation_buttons\" name=\"L1\" />/<image set=\"playstation_buttons\" name=\"R1\" /> Switch column        <image set=\"playstation_buttons\" name=\"L2\" />/<image set=\"playstation_buttons\" name=\"R2\"/> Switch cargo container";
 		
 		if ( m_LeftArea.IsActive() )
 		{
-			context_text = "Open/Close container <image set=\"playstation_buttons\" name=\"R3\" />    To hands/swap <image set=\"playstation_buttons\" name=\"cross\" />    Combine <image set=\"playstation_buttons\" name=\"circle\" />    Equip <image set=\"playstation_buttons\" name=\"square\" />    To inventory <image set=\"playstation_buttons\" name=\"triangle\" />";
+			context_text = "<image set=\"playstation_buttons\" name=\"R3\" /> Open/Close container    <image set=\"playstation_buttons\" name=\"cross\" /> To hands/swap    <image set=\"playstation_buttons\" name=\"circle\" /> Combine    <image set=\"playstation_buttons\" name=\"square\" /> Equip    <image set=\"playstation_buttons\" name=\"triangle\" /> To inventory";
 		}
 		else if ( m_RightArea.IsActive() )
 		{
 			if ( m_RightArea.IsPlayerEquipmentActive() )
 			{
-				context_text = "Open/Close container <image set=\"playstation_buttons\" name=\"R3\" />    To hands/swap <image set=\"playstation_buttons\" name=\"cross\" />    Combine <image set=\"playstation_buttons\" name=\"circle\" />    To inventory <image set=\"playstation_buttons\" name=\"triangle\" />    Drop <image set=\"playstation_buttons\" name=\"triangle\" />(hold)";
+				context_text = "<image set=\"playstation_buttons\" name=\"R3\" /> Open/Close container    <image set=\"playstation_buttons\" name=\"cross\" /> To hands/swap    <image set=\"playstation_buttons\" name=\"circle\" /> Combine    <image set=\"playstation_buttons\" name=\"triangle\" /> To inventory    <image set=\"playstation_buttons\" name=\"triangle\" />(hold) Drop";
 			}
 			else
 			{
-				context_text = "Open/Close container <image set=\"playstation_buttons\" name=\"R3\" />    To hands/swap <image set=\"playstation_buttons\" name=\"cross\" />    Combine <image set=\"playstation_buttons\" name=\"circle\" />    Equip <image set=\"playstation_buttons\" name=\"square\" />    Drop <image set=\"playstation_buttons\" name=\"triangle\" />(hold)";
+				context_text = "<image set=\"playstation_buttons\" name=\"R3\" /> Open/Close container    <image set=\"playstation_buttons\" name=\"cross\" /> To hands/swap    <image set=\"playstation_buttons\" name=\"circle\" /> Combine    <image set=\"playstation_buttons\" name=\"square\" /> Equip    <image set=\"playstation_buttons\" name=\"triangle\" />(hold) Drop";
 			}
 		}
 		else if ( m_HandsArea.IsActive() )
 		{
-			context_text = "Equip <image set=\"playstation_buttons\" name=\"square\" />    To inventory <image set=\"playstation_buttons\" name=\"triangle\" />    Drop <image set=\"playstation_buttons\" name=\"triangle\" />(hold)";
+			context_text = "<image set=\"playstation_buttons\" name=\"square\" /> Equip    <image set=\"playstation_buttons\" name=\"triangle\" /> To inventory    <image set=\"playstation_buttons\" name=\"triangle\" />(hold) Drop";
 		}
 #endif
 		

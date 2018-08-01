@@ -2,7 +2,7 @@ class ActionWashHandsWellOneCB : ActionInteractLoopBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAInteractLoop(UATimeSpent.WASH_HANDS);
+		m_ActionData.m_ActionComponent = new CAInteractLoop(UATimeSpent.WASH_HANDS);
 	}
 };
 
@@ -32,7 +32,7 @@ class ActionWashHandsWellOne extends ActionInteractLoopBase
 		m_ConditionTarget = new CCTObject(UAMaxDistances.DEFAULT);
 	}
 
-	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
+	override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		if ( player.HasBloodyHands() && !player.GetItemInHands() )
 		{
@@ -45,9 +45,9 @@ class ActionWashHandsWellOne extends ActionInteractLoopBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		PluginLifespan module_lifespan = PluginLifespan.Cast( GetPlugin( PluginLifespan ) );
-		module_lifespan.UpdateBloodyHandsVisibility( player, false );
+		module_lifespan.UpdateBloodyHandsVisibility( action_data.m_Player, false );
 	}	
 };

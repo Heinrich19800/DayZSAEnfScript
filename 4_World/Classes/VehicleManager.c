@@ -1,4 +1,4 @@
-class VehicleManager
+/*class VehicleManager
 {		
 	PlayerBase 						m_Player;
 	HumanInputController 			m_HIC;
@@ -62,7 +62,7 @@ class VehicleManager
 				PerformAction( AT_VEH_SWITCH_LIGHTS );
 			}
 			*/
-			switch ( m_HIC.IsGestureSlot() )
+/*			switch ( m_HIC.IsGestureSlot() )
 			{
 				case 1 :
 					PerformAction( AT_VEH_SWITCH_LIGHTS );
@@ -92,7 +92,7 @@ class VehicleManager
 					PerformAction( m_Player.m_ConfigEmotesProfile.GetEmoteSlot7() );
 				break;
 				*/
-			}
+/*			}
 		}
 	}
-};
+};*/

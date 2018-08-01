@@ -217,9 +217,9 @@ class BarbedWire extends ItemBase
 	
 	
 	// TODO: proper handling can be done once the ticket DAYZ-26145 is resolved
-	override void EEItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
+	override void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
 	{
-		super.EEItemLocationChanged(old_owner, new_owner);
+		super.OnItemLocationChanged(old_owner, new_owner);
 
 		if (m_TriggerActive)
 		{

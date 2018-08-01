@@ -58,7 +58,7 @@ class Object extends IEntity
 		
 		if ( GetGame().IsServer() )
 		{
-			DamageSystem.ExplosionDamage(this, NULL, ammoType, GetPosition());
+			DamageSystem.ExplosionDamage(Class.Cast(this), NULL, ammoType, GetPosition());
 		}
 		
 		if ( !GetGame().IsMultiplayer()  ||  GetGame().IsServer() )
@@ -187,7 +187,12 @@ class Object extends IEntity
 	string GetSurfaceType()
 	{
 		string surface_type;
-		GetGame().SurfaceGetTypeUnderObject(this, surface_type);
+		int liquid_type;
+		
+		GetGame().SurfaceUnderObject(this, surface_type,liquid_type);
+//		Print(surface_type);
+//		Print(liquid_type);
+		
 		return surface_type;
 	}
 
@@ -197,7 +202,7 @@ class Object extends IEntity
 		TStringArray selections = new TStringArray;
 		GetSelectionList( selections );
 		
-		for ( local int i = 0; i < selections.Count(); ++i )
+		for ( int i = 0; i < selections.Count(); ++i )
 		{
 			if ( selections.Get( i ) == selection )
 			{
@@ -718,6 +723,10 @@ class Object extends IEntity
 	SoundOnVehicle PlaySoundLoop(string sound_name, float range, bool create_local = true)
 	{
 		return GetGame().CreateSoundOnObject(this, sound_name, range, true, create_local);
+	}
+	
+	void PlayFallingPlantSound()
+	{
 	}
 	
 	void PostAreaDamageActions() {}

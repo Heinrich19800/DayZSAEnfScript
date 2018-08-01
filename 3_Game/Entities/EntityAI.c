@@ -21,8 +21,7 @@ class EntityAI extends Entity
 	
 	void ~EntityAI()
 	{
-		if ( HasEnergyManager() )
-			GetCompEM().OnDeviceDestroyed();
+		
 	}
 
 	private ref ComponentsBank m_ComponentsBank;
@@ -81,10 +80,7 @@ class EntityAI extends Entity
 	///@{ Skinning
 	bool IsSkinned()
 	{
-		if (GetCompBS())
-			return GetCompBS().IsSkinned();
-		
-		return false;
+		return GetCompBS() && GetCompBS().IsSkinned();
 	}
 
 	void SetAsSkinned()
@@ -98,7 +94,6 @@ class EntityAI extends Entity
 		if ( !IsSkinned()  &&  tool )
 			if ( !IsAlive()  &&  tool.ConfigGetBool("canSkinBodies") )
 				return true;
-
 		return false;
 	}
 	///@} Skinning
@@ -120,10 +115,7 @@ class EntityAI extends Entity
 		}
 	}
 	
-	bool CanBePlaced( Man player, vector position )
-	{
-		return true;
-	}
+	bool CanBePlaced( Man player, vector position ) { return true; }
 
 	//! Method which returns message why object can't be placed at given position
 	string CanBePlacedFailMessage( Man player, vector position )
@@ -140,7 +132,7 @@ class EntityAI extends Entity
 	//! is this container empty or not, checks only cargo
 	bool HasAnyCargo()
 	{
-		Cargo cargo = GetInventory().GetCargo();
+		CargoBase cargo = GetInventory().GetCargo();
 		
 		if(!cargo) return false;//this is not a cargo container
 		
@@ -164,6 +156,7 @@ class EntityAI extends Entity
 	int GetAgents() { return 0; }
 	void RemoveAgent(int agent_id);
 	void RemoveAllAgents();
+	void RemoveAllAgentsExcept(int agent_to_keep);
 	void InsertAgent(int agent, int count);
 
 	override bool IsEntityAI() { return true; }
@@ -204,6 +197,9 @@ class EntityAI extends Entity
 	void EEDelete(EntityAI parent)
 	{
 		GetInventory().EEDelete(parent);
+		
+		if ( HasEnergyManager() )
+			GetCompEM().OnDeviceDestroyed();
 	}
 
 	void EEAnimHook(int userType, string param) { }
@@ -217,7 +213,30 @@ class EntityAI extends Entity
 		}
 	}
 
-	void EEItemLocationChanged(EntityAI old_owner, EntityAI new_owner) { }
+	void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner) { }
+	
+	void EEItemLocationChanged (notnull InventoryLocation oldLoc, notnull InventoryLocation newLoc)
+	{
+		EntityAI old_owner = oldLoc.GetParent();
+		EntityAI new_owner = newLoc.GetParent();
+		OnItemLocationChanged(old_owner, new_owner);
+		
+		if (oldLoc.GetType() == InventoryLocationType.ATTACHMENT)
+		{
+			if (old_owner)
+				OnWasDetached(old_owner, oldLoc.GetSlot());
+			else
+				Error("EntityAI::EEItemLocationChanged - detached, but old_owner is null");
+		}
+		
+		if (newLoc.GetType() == InventoryLocationType.ATTACHMENT)
+		{
+			if (new_owner)
+				OnWasAttached(newLoc.GetParent(), newLoc.GetSlot());
+			else
+				Error("EntityAI::EEItemLocationChanged - attached, but new_owner is null");
+		}
+	}
 
 	void EEAnimStateChanged(string moveName) { }
 
@@ -273,8 +292,6 @@ class EntityAI extends Entity
 		}				
 		
 		//SwitchItemSelectionTexture(item, slot_name);
-
-		item.OnWasAttached(this, slot_name);
 	}
 	
 	// !switches materials and/or textures of cloting items on player
@@ -306,8 +323,6 @@ class EntityAI extends Entity
 		}
 		
 		//SwitchItemSelectionTexture(item, slot_name);
-		
-		item.OnWasDetached(this, slot_name);
 	}
 
 	void EECargoIn(EntityAI item)
@@ -489,6 +504,9 @@ class EntityAI extends Entity
 	 **/
 	bool CanReceiveItemIntoCargo (EntityAI cargo)
 	{
+		if (GetInventory() && GetInventory().GetCargo())
+			return GetInventory().GetCargo().CanReceiveItemIntoCargo(cargo));
+		
 		return true;
 	}
 	/**@fn		CanPutInCargo
@@ -592,10 +610,10 @@ class EntityAI extends Entity
 
 
 	// !Called on CHILD when it's attached to parent.
-	void OnWasAttached( EntityAI parent, string slot_name ) { }
+	void OnWasAttached( EntityAI parent, int slot_id ) { }
 		
 	// !Called on CHILD when it's detached from parent.
-	void OnWasDetached( EntityAI parent, string slot_name ) { }
+	void OnWasDetached( EntityAI parent, int slot_id ) { }
 	
 	proto native GameInventory GetInventory ();
 	proto native void CreateAndInitInventory ();
@@ -603,7 +621,10 @@ class EntityAI extends Entity
 		
 	int GetSlotsCountCorrect()
 	{
-		return GetInventory().GetSlotsCount();
+		if( GetInventory() )
+			return GetInventory().GetSlotsCount();
+		else
+			return -1;
 	}
 
 	EntityAI FindAttachmentBySlotName(string slot_name)
@@ -627,13 +648,21 @@ class EntityAI extends Entity
 	{
 		return GetInventory().TakeEntityToInventory(InventoryMode.LOCAL, flags, item);
 	}
+	bool ServerTakeEntityToInventory (FindInventoryLocationType flags, notnull EntityAI item)
+	{
+		return GetInventory().TakeEntityToInventory(InventoryMode.SERVER, flags, item);
+	}
 	bool PredictiveTakeEntityToTargetInventory (notnull EntityAI target, FindInventoryLocationType flags, notnull EntityAI item)
 	{
-		return target.GetInventory().TakeEntityToInventory(InventoryMode.PREDICTIVE, flags, item);
+		return GetInventory().TakeEntityToTargetInventory(InventoryMode.PREDICTIVE, target, flags, item);
 	}
 	bool LocalTakeEntityToTargetInventory (notnull EntityAI target, FindInventoryLocationType flags, notnull EntityAI item)
 	{
-		return target.GetInventory().TakeEntityToInventory(InventoryMode.LOCAL, flags, item);
+		return GetInventory().TakeEntityToTargetInventory(InventoryMode.LOCAL, target, flags, item);
+	}
+	bool ServerTakeEntityToTargetInventory (notnull EntityAI target, FindInventoryLocationType flags, notnull EntityAI item)
+	{
+		return GetInventory().TakeEntityToTargetInventory(InventoryMode.SERVER, target, flags, item);
 	}
 	/**
 	\brief Put item into into cargo
@@ -646,17 +675,22 @@ class EntityAI extends Entity
 	{
 		return GetInventory().TakeEntityToCargo(InventoryMode.LOCAL, item);
 	}
+	bool ServerTakeEntityToCargo (notnull EntityAI item)
+	{
+		return GetInventory().TakeEntityToCargo(InventoryMode.SERVER, item);
+	}
+
 	bool PredictiveTakeEntityToTargetCargo (notnull EntityAI target, notnull EntityAI item)
 	{
-		return target.GetInventory().TakeEntityToCargo(InventoryMode.PREDICTIVE, item);
+		return GetInventory().TakeEntityToTargetCargo(InventoryMode.PREDICTIVE, target, item);
 	}
 	bool LocalTakeEntityToTargetCargo (notnull EntityAI target, notnull EntityAI item)
 	{
-		return target.GetInventory().TakeEntityToCargo(InventoryMode.LOCAL, item);
+		return GetInventory().TakeEntityToTargetCargo(InventoryMode.LOCAL, target, item);
 	}
 	bool ServerTakeEntityToTargetCargo (notnull EntityAI target, notnull EntityAI item)
 	{
-		return target.GetInventory().TakeEntityToCargo(InventoryMode.SERVER, item);
+		return GetInventory().TakeEntityToTargetCargo(InventoryMode.SERVER, target, item);
 	}
 	/**
 	\brief Put item into into cargo on specific cargo location
@@ -669,17 +703,18 @@ class EntityAI extends Entity
 	{
 		return GetInventory().TakeEntityToCargoEx(InventoryMode.LOCAL, item, idx, row, col);
 	}
+
 	bool PredictiveTakeEntityToTargetCargoEx (notnull EntityAI target, notnull EntityAI item, int idx, int row, int col)
 	{
 		return GetInventory().TakeEntityToTargetCargoEx(InventoryMode.PREDICTIVE, target, item, idx, row, col);
 	}
-	bool ServerTakeEntityToTargetCargoEx (notnull EntityAI target, notnull EntityAI item, int idx, int row, int col)
-	{
-		return GetInventory().TakeEntityToTargetCargoEx(InventoryMode.SERVER, target, item, idx, row, col);
-	}
 	bool LocalTakeEntityToTargetCargoEx (notnull EntityAI target, notnull EntityAI item, int idx, int row, int col)
 	{
 		return GetInventory().TakeEntityToTargetCargoEx(InventoryMode.LOCAL, target, item, idx, row, col);
+	}
+	bool ServerTakeEntityToTargetCargoEx (notnull EntityAI target, notnull EntityAI item, int idx, int row, int col)
+	{
+		return GetInventory().TakeEntityToTargetCargoEx(InventoryMode.SERVER, target, item, idx, row, col);
 	}
 	/**
 	\brief Returns if item can be added as attachment on specific slot. Note that slot index IS NOT slot ID! Slot ID is defined in DZ/data/config.cpp
@@ -692,29 +727,35 @@ class EntityAI extends Entity
 	{
 		return GetInventory().TakeEntityAsAttachmentEx(InventoryMode.LOCAL, item, slot);
 	}
+	bool ServerTakeEntityAsAttachmentEx (notnull EntityAI item, int slot)
+	{
+		return GetInventory().TakeEntityAsAttachmentEx(InventoryMode.SERVER, item, slot);
+	}
+
 	bool PredictiveTakeEntityToTargetAttachmentEx (notnull EntityAI target, notnull EntityAI item, int slot)
 	{
-		return target.GetInventory().TakeEntityAsAttachmentEx(InventoryMode.PREDICTIVE, item, slot);
+		return GetInventory().TakeEntityAsTargetAttachmentEx(InventoryMode.PREDICTIVE, target, item, slot);
 	}
 	bool LocalTakeEntityToTargetAttachmentEx (notnull EntityAI target, notnull EntityAI item, int slot)
 	{
-		return target.GetInventory().TakeEntityAsAttachmentEx(InventoryMode.LOCAL, item, slot);
+		return GetInventory().TakeEntityAsTargetAttachmentEx(InventoryMode.LOCAL, target, item, slot);
 	}
 	bool ServerTakeEntityToTargetAttachmentEx (notnull EntityAI target, notnull EntityAI item, int slot)
 	{
-		return target.GetInventory().TakeEntityAsAttachmentEx(InventoryMode.SERVER, item, slot);
+		return GetInventory().TakeEntityAsTargetAttachmentEx(InventoryMode.SERVER, target, item, slot);
 	}
+
 	bool PredictiveTakeEntityToTargetAttachment (notnull EntityAI target, notnull EntityAI item)
 	{
-		return target.GetInventory().TakeEntityAsAttachment(InventoryMode.PREDICTIVE, item);
+		return GetInventory().TakeEntityAsTargetAttachment(InventoryMode.PREDICTIVE, target, item);
 	}
 	bool LocalTakeEntityToTargetAttachment (notnull EntityAI target, notnull EntityAI item)
 	{
-		return target.GetInventory().TakeEntityAsAttachment(InventoryMode.LOCAL, item);
+		return GetInventory().TakeEntityAsTargetAttachment(InventoryMode.LOCAL, target, item);
 	}
 	bool ServerTakeEntityToTargetAttachment (notnull EntityAI target, notnull EntityAI item)
 	{
-		return target.GetInventory().TakeEntityAsAttachment(InventoryMode.SERVER, item);
+		return GetInventory().TakeEntityAsTargetAttachment(InventoryMode.SERVER, target, item);
 	}
 
 	bool PredictiveTakeToDst (notnull InventoryLocation src, notnull InventoryLocation dst)
@@ -724,6 +765,10 @@ class EntityAI extends Entity
 	bool LocalTakeToDst (notnull InventoryLocation src, notnull InventoryLocation dst)
 	{
 		return GetInventory().TakeToDst(InventoryMode.LOCAL, src, dst);
+	}
+	bool ServerTakeToDst (notnull InventoryLocation src, notnull InventoryLocation dst)
+	{
+		return GetInventory().TakeToDst(InventoryMode.SERVER, src, dst);
 	}
 
 	/**
@@ -736,6 +781,10 @@ class EntityAI extends Entity
 	bool LocalTakeEntityAsAttachment (notnull EntityAI item)
 	{
 		return GetInventory().TakeEntityAsAttachment(InventoryMode.LOCAL, item);
+	}
+	bool ServerTakeEntityAsAttachment (notnull EntityAI item)
+	{
+		return GetInventory().TakeEntityAsAttachment(InventoryMode.SERVER, item);
 	}
 
 	bool PredictiveDropEntity (notnull EntityAI item) { return false; }
@@ -845,7 +894,7 @@ class EntityAI extends Entity
 	 * @param[in]	maxValue		\p		maximal value used for quantization (when minValue == maxValue, no quatization is done)
 	 * @param[in]	precision		\p		precision in number of digits after decimal point
 	 **/	
-	proto native void RegisterNetSyncVariableFloat(string variableName, float minValue = 0, float maxValue = 0, int precision = 0);
+	proto native void RegisterNetSyncVariableFloat(string variableName, float minValue = 0, float maxValue = 0, int precision = 1);
 
 	proto native void SwitchLight(bool isOn);
 	
@@ -1012,6 +1061,14 @@ class EntityAI extends Entity
 	{
 		if ( HasEnergyManager() )
 		{
+			bool is_on = GetCompEM().IsSwitchedOn();
+			
+			
+			if (is_on)
+				GetCompEM().SwitchOn();
+			else
+				GetCompEM().SwitchOff();
+			
 			GetCompEM().DeviceUpdate();
 			GetCompEM().StartUpdates();
 		}
@@ -1066,13 +1123,19 @@ class EntityAI extends Entity
 	//! Hides selection of the given name. Must be configed in config.hpp and models.cfg
 	void HideSelection( string selection_name )
 	{
-		SetAnimationPhase ( selection_name, 1 ); // 1 = hide, 0 = unhide!
+		if ( !ToDelete() )
+		{
+			SetAnimationPhase ( selection_name, 1 ); // 1 = hide, 0 = unhide!
+		}
 	}
 
 	//! Shows selection of the given name. Must be configed in config.hpp and models.cfg
 	void ShowSelection( string selection_name )
 	{
-		SetAnimationPhase ( selection_name, 0 ); // 1 = hide, 0 = unhide!
+		if ( !ToDelete() )
+		{
+			SetAnimationPhase ( selection_name, 0 ); // 1 = hide, 0 = unhide!
+		}
 	}
 
 	//! Returns low and high bits of persistence id of this entity.

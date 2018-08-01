@@ -8,11 +8,11 @@ class CAContinuousWaterSlot : CAContinuousQuantity
 		m_QuantityUsedPerSecond = quantity_used_per_second;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		GardenBase target_GB;
 			
-		if ( Class.CastTo(target_GB, target.GetObject()) )
+		if ( Class.CastTo(target_GB, action_data.m_Target.GetObject()) )
 		{
 			m_SpentQuantity = 0;
 			
@@ -25,12 +25,12 @@ class CAContinuousWaterSlot : CAContinuousQuantity
 				m_SpentUnits.param1 = 0;
 			}
 			
-			if ( item )
-				m_ItemQuantity = item.GetQuantity();
+			if ( action_data.m_MainItem )
+				m_ItemQuantity = action_data.m_MainItem.GetQuantity();
 			
 			if ( target_GB ) 
 			{
-				string selection = target_GB.GetActionComponentName(target.GetComponentIndex());
+				string selection = target_GB.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 			
 				Slot slot = target_GB.GetSlotBySelection( selection );
 			
@@ -46,12 +46,12 @@ class CAContinuousWaterSlot : CAContinuousQuantity
 		}
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item  )
+	override int Execute( ActionData action_data  )
 	{
 		GardenBase target_GB;
-		Class.CastTo(target_GB,  target.GetObject() );
+		Class.CastTo(target_GB,  action_data.m_Target.GetObject() );
 		
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
@@ -62,18 +62,18 @@ class CAContinuousWaterSlot : CAContinuousQuantity
 		}
 		else
 		{
-			string selection = target_GB.GetActionComponentName(target.GetComponentIndex());
+			string selection = target_GB.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 			Slot slot = target_GB.GetSlotBySelection( selection );
 			
 			if ( slot  &&  m_SpentQuantity < m_ItemQuantity )
 			{
-				m_SpentQuantity += m_QuantityUsedPerSecond * player.GetDeltaT();
+				m_SpentQuantity += m_QuantityUsedPerSecond * action_data.m_Player.GetDeltaT();
 				
 				if ( GetGame().IsServer() )
 				{
-					float water = player.GetSoftSkillManager().AddSpecialtyBonus( m_SpentQuantity, m_Action.GetSpecialtyWeight(), true );
-					m_Action.SendMessageToClient(player, slot.GiveWater( item, water ));
-					item.AddQuantity(- m_SpentQuantity);
+					float water = action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( m_SpentQuantity, m_Action.GetSpecialtyWeight(), true );
+					m_Action.SendMessageToClient(action_data.m_Player, slot.GiveWater( action_data.m_MainItem, water ));
+					action_data.m_MainItem.AddQuantity(- m_SpentQuantity);
 				}
 				
 				m_SpentQuantity = 0;
@@ -81,7 +81,7 @@ class CAContinuousWaterSlot : CAContinuousQuantity
 			}
 			else
 			{
-				//CalcAndSetQuantity(player, target, item);
+				//CalcAndSetQuantity( action_data );
 				return UA_FINISHED;
 			}
 		}

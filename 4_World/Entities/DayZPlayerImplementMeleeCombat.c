@@ -15,11 +15,14 @@ class DayZPlayerImplementMeleeCombat
 	private const float				TARGETING_ANGLE_SPRINT	= 15.0;
 	private const float				TARGETING_MIN_HEIGHT	= -2.0;
 	private const float				TARGETING_MAX_HEIGHT	= 2.0;
-	private const float				TARGETING_RAY_RADIUS	= 0.15;
+	private const float				TARGETING_RAY_RADIUS	= 0.22;
 	private const float				TARGETING_RAY_DIST		= 5.0;
 
 	private const float 			RANGE_EXTENDER_NORMAL	= 0.65;
 	private const float 			RANGE_EXTENDER_SPRINT	= 1.35;
+
+	private const string 			DUMMY_LIGHT_AMMO		= "Dummy_Light";
+	private const string			DUMMY_HEAVY_AMMO		= "Dummy_Heavy";
 	
 	// members
 	private DayZPlayerImplement		m_DZPlayer;
@@ -130,7 +133,7 @@ class DayZPlayerImplementMeleeCombat
 		if( m_TargetObject )
 		{
 			bool noDamage = false;
-			string ammo = "Dummy_Light";
+			string ammo = DUMMY_LIGHT_AMMO;
 			vector hitPosWS = m_HitPositionWS;
 			vector modelPos = m_TargetObject.WorldToModel(m_HitPositionWS);
 			PlayerBase targetedPlayer = NULL;
@@ -141,7 +144,12 @@ class DayZPlayerImplementMeleeCombat
 				hitPosWS = m_TargetObject.GetPosition();
 			}
 
-			if(m_HitZoneIdx == -1) noDamage = true;
+			//! close miss, use light attack and set fallback component in that case
+			if(m_HitZoneIdx == -1)
+			{
+				//! TODO: dirty-hack, will be reworked ASAP (ComponentID name to ID and back translation needed)
+				m_HitZoneIdx = 25;  //! do not use Global, use default for the entity
+			}
 
 			//! Melee Hit/Impact modifiers
 			if( m_TargetObject.IsInherited(DayZPlayer) )
@@ -158,11 +166,11 @@ class DayZPlayerImplementMeleeCombat
 					}
 				}
 			}
-			
+
 			//! in case of kick (on back or push from erc) change the ammo type to dummy 
 			if((m_HitMask & MeleeCombatHit.KICK) == MeleeCombatHit.KICK)
 			{
-				ammo = "Dummy_Heavy";
+				ammo = DUMMY_HEAVY_AMMO;
 				noDamage = true;
 			}
 
@@ -315,71 +323,19 @@ class DayZPlayerImplementMeleeCombat
 		bool draw_range = DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DRAW_RANGE);
 
 		if( show_targets || draw_targets || draw_range )
-			Update(weapon, hitMask);
+		{
+			//Update(weapon, hitMask);
+			if( !GetGame().IsMultiplayer() || !GetGame().IsServer() )
+			{
+				TargetSelection();
+				HitZoneSelection();
+			}
+		}
 
 		ShowDebugMeleeTarget(show_targets);
 		DrawDebugTargets(show_targets);
 		DrawDebugMeleeHitPosition(draw_targets);
 		DrawDebugMeleeCone(draw_range);
-	}
-
-	void SetBlockingStance(bool enabled)
-	{
-		HumanInputController hic = m_DZPlayer.GetInputController();
-		HumanCommandMove hcm = m_DZPlayer.GetCommand_Move();
-		if(enabled)
-		{
-			if(hic)
-			{
-				hic.OverrideMovementSpeed(true, 2);
-				hic.OverrideMovementAngle(true, 180);
-			}
-			if(hcm)
-			{
-				hcm.ForceStance(DayZPlayerConstants.STANCEIDX_RAISEDERECT);
-				hcm.SetMeleeBlock(true);
-			}
-		}
-		else
-		{
-			if(hcm)
-			{
-				hcm.SetMeleeBlock(false);
-				hcm.ForceStance(DayZPlayerConstants.STANCEIDX_ERECT);
-				hcm.ForceStance(-1);
-			}
-			if(hic)
-			{
-				hic.OverrideMovementSpeed(false, 0);
-				hic.OverrideMovementAngle(false, 0);
-			}
-		}
-	}
-
-	void SetMeleeFight(bool enabled)
-	{
-		HumanInputController hic = m_DZPlayer.GetInputController();
-		HumanCommandMove hcm = m_DZPlayer.GetCommand_Move();
-		HumanCommandMelee hcme = m_DZPlayer.GetCommand_Melee();
-
-		if(enabled)
-		{
-			if(hic)
-			{
-				if(hcm)
-					hcm.ForceStance(DayZPlayerConstants.STANCEIDX_RAISEDERECT);
-				hic.OverrideRaise(true, true);
-			}
-		}
-		else
-		{
-			if(hic)
-			{
-				hic.OverrideMovementSpeed(false, 0);
-				hic.OverrideMovementAngle(false, 0);
-				hic.OverrideRaise(true, false);
-			}
-		}
 	}
 
 	//! shows target in DbgUI 'window'
@@ -388,19 +344,19 @@ class DayZPlayerImplementMeleeCombat
 		int windowPosX = 0;
 		int windowPosY = 500;
 
-		DbgUI.BeginCleanupScope();
+		//DbgUI.BeginCleanupScope();
 		DbgUI.Begin("Melee Target", windowPosX, windowPosY);
 		if (enabled )
 		{
 			if ( m_TargetObject && m_TargetObject.IsMan() )
 			{
 				DbgUI.Text("Character: " + m_TargetObject.GetDisplayName());
-				DbgUI.Text("HitZone: " + m_HitZoneName);
+				DbgUI.Text("HitZone: " + m_HitZoneName + "(" + m_HitZoneIdx + ")");
 				DbgUI.Text("HitPosWS:" + m_HitPositionWS);
 			}
 		}
 		DbgUI.End();
-		DbgUI.EndCleanupScope();
+		//DbgUI.EndCleanupScope();
 	}
 
 	//! shows debug sphere above the target

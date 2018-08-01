@@ -21,7 +21,7 @@ class ATCCachedObject
 	}
 
 	//! invalidate cached objec
-	void Invalidate(bool cached)
+	void Invalidate()
 	{
 		if ( m_CachedObject )
 		{
@@ -53,7 +53,6 @@ class ActionTargetsCursor extends ObjectFollower
 	protected ActionManagerClient 			m_AM;
 
 	protected int							m_InteractActionsNum;
-	protected bool 							m_IsCached;
 	protected bool 							m_HealthEnabled;
 	protected bool							m_QuantityEnabled;	
 	protected bool							m_FixedOnPosition;
@@ -76,7 +75,6 @@ class ActionTargetsCursor extends ObjectFollower
 		m_AM = null;
 		
 		m_CachedObject = new ATCCachedObject;
-		m_IsCached = false;
 		
 		m_ActionIndices = new TIntArray;
 		m_Keys = new TIntArray;
@@ -230,44 +228,72 @@ class ActionTargetsCursor extends ObjectFollower
 		GetTarget();
 		GetActions();
 
-		if(m_Target && m_AM.GetRunningAction() == null && !GetGame().IsInventoryOpen())
+		if(m_Target && (m_Interact || m_Single || m_Continuous) && m_AM.GetRunningAction() == null && !GetGame().IsInventoryOpen())
 		{
-			//! cursor with fixed position
-			if ( m_FixedOnPosition || m_Target.GetObject() == null )
+			//! cursor with fixed position (environment interaction mainly)
+			if ( m_Target.GetObject() == null && m_Interact)
 			{
 				//Print(">> fixed widget");
-				m_CachedObject.Invalidate(true);
+				m_CachedObject.Invalidate();
 				BuildFixedCursor();
 				m_Root.Show(true);
 				m_FixedOnPosition = false;
 				return;
 			}
-			else
+			else if (m_Target.GetObject() != null)
 			{
 				//! build cursor for new target
 				if ( m_Target.GetObject() != m_CachedObject.Get() )
 				{
-					//Print(">> non-cached widget");
-					m_CachedObject.Invalidate(true);
-					BuildFloatingCursor(true);
-					m_Root.Show(true);
-					return;
+					if (!m_FixedOnPosition)
+					{
+						//Print(">> non-cached widget");
+						m_CachedObject.Invalidate();
+						BuildFloatingCursor(true);
+						m_Root.Show(true);
+						return;
+					}
+					else
+					{
+						//Print(">> non-cached widget (fixed)");
+						m_CachedObject.Invalidate();
+						BuildFixedCursor();
+						m_Root.Show(true);
+						m_FixedOnPosition = false;
+						return;
+					}
 				}
 				//! use cached version for known target - recalculate onscreen pos only
-				else
+				else if (m_Target.GetObject() == m_CachedObject.Get())
 				{
-					//Print(">> cached widget");
-					BuildFloatingCursor(false);
-					m_Root.Show(true);
-					return;
+					if (!m_FixedOnPosition)
+					{
+						//Print(">> cached widget");
+						BuildFloatingCursor(false);
+						m_Root.Show(true);
+						return;
+					}
+					else
+					{
+						//Print(">> cached widget (fixed)");
+						m_CachedObject.Invalidate();
+						BuildFixedCursor();
+						m_Root.Show(true);
+						m_FixedOnPosition = false;
+						return;					
+					}
 				}
+			}
+			else
+			{
+				m_CachedObject.Invalidate();
+				m_Root.Show(false);
 			}
 		}
 		else
 		{
-			m_CachedObject.Invalidate(true);
+			m_CachedObject.Invalidate();
 			m_Root.Show(false);
-			m_IsCached = false;
 			m_FixedOnPosition = false;
 		}
 	}
@@ -353,7 +379,6 @@ class ActionTargetsCursor extends ObjectFollower
 
 						//! cache current object and the widget world pos
 						m_CachedObject.Store(object, worldPos);
-						m_IsCached = true;	
 					}
 					//! doors/handles
 					else if( !compName.Contains("ladder") && IsComponentInSelection( memSelections, compName ) )
@@ -403,7 +428,6 @@ class ActionTargetsCursor extends ObjectFollower
 						
 						//! cache current object and the widget world pos
 						m_CachedObject.Store(object, worldPos);
-						m_IsCached = true;	
 					}
 					//! ladders handling
 					else if( compName.Contains("ladder") && IsComponentInSelection( memSelections, compName))
@@ -448,7 +472,6 @@ class ActionTargetsCursor extends ObjectFollower
 
 						//! cache current object and the widget world pos
 						m_CachedObject.Store(object, worldPos);
-						m_IsCached = true;					
 					}
 					else
 					{
@@ -617,7 +640,7 @@ class ActionTargetsCursor extends ObjectFollower
 		{
 			if(entity.GetInventory())
 			{
-				Cargo cargo = entity.GetInventory().GetCargo();
+				CargoBase cargo = entity.GetInventory().GetCargo();
 				if (cargo)
 				{
 					cargoCount = cargo.GetItemCount();
@@ -774,7 +797,7 @@ class ActionTargetsCursor extends ObjectFollower
 		
 		if(action)
 		{
-			if(action.HasTarget() && action.GetActionState() < 1) // targeted & action not performing
+			if(action.HasTarget() && m_AM.GetActionState() < 1) // targeted & action not performing
 			{
 				TextWidget actionName;
 				Class.CastTo(actionName, widget.FindAnyWidget(descWidget));

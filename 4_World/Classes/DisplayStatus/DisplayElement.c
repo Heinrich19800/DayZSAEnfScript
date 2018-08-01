@@ -68,6 +68,25 @@ class DisplayElement extends MessageReceiverBase
 		return m_NumOfBits;
 	}
 
+	void UpdateTendencyHUD()
+	{
+		int value_mask = 7;
+		int color = m_Value >> 3;
+		color = color << 3;
+		int value = value_mask & m_Value;
+		int i;
+		if(value > 3) 
+		{
+			i = 0 - (value - 3);
+		}
+		else
+		{
+			i = value;
+		}
+		m_ModulePlayerStatus.DisplayTendency(m_Key, i, TranslateLevelToStatus(color));
+	}
+	
+	
 	void SetValue(int value, int range = 0)
 	{
 		m_Value = value;

@@ -11,7 +11,7 @@ class CAContinuousTime : CAContinuousBase
 		m_DefaultTimeToComplete = time_to_complete_action;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		m_TimeElpased = 0;
 		if ( !m_SpentUnits )
@@ -23,19 +23,24 @@ class CAContinuousTime : CAContinuousBase
 			m_SpentUnits.param1 = 0;
 		}
 		
-		m_AdjustedTimeToComplete = player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
+		m_AdjustedTimeToComplete = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( m_DefaultTimeToComplete, m_Action.GetSpecialtyWeight(), true);
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !player )
+		if ( m_DefaultTimeToComplete < 0 ) //for infinite actions
+		{
+			return UA_PROCESSING;
+		}
+		
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		
 		if ( m_TimeElpased < m_AdjustedTimeToComplete )
 		{
-			m_TimeElpased += player.GetDeltaT();
+			m_TimeElpased += action_data.m_Player.GetDeltaT();
 			return UA_PROCESSING;
 		}
 		else
@@ -49,13 +54,18 @@ class CAContinuousTime : CAContinuousBase
 		}
 	}
 	
-	override int Cancel(PlayerBase player, ActionTarget target, ItemBase item )
+	override int Cancel(ActionData action_data )
 	{
 		if ( m_SpentUnits )
 		{
 			m_SpentUnits.param1 = m_TimeElpased;
 			SetACData(m_SpentUnits);
 		}
+		if ( m_DefaultTimeToComplete < 0 ) //for infinite actions
+		{
+			return UA_FINISHED;
+		}
+		
 		return UA_CANCEL;
 	}
 

@@ -6,7 +6,7 @@ class InventoryViewGridView: InventoryViewGridBase
     m_container = container;
     m_entity = entity;
     m_cargo_grids = new array<InventoryGrid>;
-    m_cargos = new array<Cargo>;
+    m_cargos = new array<CargoBase>;
     m_items = new TItemsMap;
     m_update_lock_timer = new Timer();
     m_properties = properties;

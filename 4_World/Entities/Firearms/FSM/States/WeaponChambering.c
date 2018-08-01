@@ -61,7 +61,6 @@ class WeaponChambering_Cartridge extends WeaponStateBase
 			wpnDebugPrint("[wpnfsm] WeaponChambering_Cartridge, error - cannot load chamber chamber!");
 
 		m_type = string.Empty;
-		m_srcMagazine = NULL;
 
 		super.OnExit(e);
 	}

@@ -36,8 +36,8 @@ class ActionClose: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		item.Close();
+		action_data.m_MainItem.Close();
 	}
 };

@@ -9,25 +9,20 @@ class MissionMainMenu extends MissionBase
 		return m_intro_scene;
 	}
 
-	void MissionMainMenu()
-	{
-	}
-
 	override void OnInit()
 	{
 		if (!m_NoCutscene)
 		{
 			CreateIntroScene();
 		}
-
+		
 		if (!m_mainmenu)
 		{
-#ifdef PLATFORM_XBOX
-			m_mainmenu = TitleScreenMenu.Cast( g_Game.GetUIManager().EnterScriptedMenu(MENU_TITLE_SCREEN, NULL) );
-			GetGame().GetInput().ResetActiveGamepad();
-#else
-			m_mainmenu = UIScriptedMenu.Cast( g_Game.GetUIManager().EnterScriptedMenu(MENU_MAIN, NULL) );
-#endif
+			#ifdef PLATFORM_XBOX
+				m_mainmenu = UIScriptedMenu.Cast( g_Game.GetUIManager().EnterScriptedMenu( MENU_TITLE_SCREEN, null ) );
+			#else
+				m_mainmenu = UIScriptedMenu.Cast( g_Game.GetUIManager().EnterScriptedMenu( MENU_MAIN, null ) );
+			#endif
 		}
 	}
 
@@ -49,7 +44,8 @@ class MissionMainMenu extends MissionBase
 	
 	override void OnMissionFinish()
 	{
-		m_mainmenu.Cleanup();
+		if( m_mainmenu )
+			m_mainmenu.Cleanup();
 		GetGame().GetUIManager().CloseAll();
 		m_mainmenu = NULL;
 		
@@ -76,15 +72,6 @@ class MissionMainMenu extends MissionBase
 			if (GetGame().GetUIManager().GetMenu() != m_mainmenu)
 			{
 				GetGame().GetUIManager().Back();
-			}
-		}
-		
-		if (GetGame().GetUIManager().GetMenu() == m_mainmenu)
-		{
-			if ((!g_Game.GetUIManager().GetLoginQueueDialog()) && (g_Game.GetUIManager().GetLoginQueuePosition() > 0))
-			{
-				g_Game.GetUIManager().SetLoginQueueDialog(true);
-				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(g_Game.GetUIManager().EnterLoginQueueScript, m_mainmenu);
 			}
 		}
 	}

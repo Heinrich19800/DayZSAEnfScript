@@ -2,7 +2,7 @@ class ActionCoverHeadTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.COVER_HEAD);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.COVER_HEAD);
 	}
 };
 
@@ -49,17 +49,17 @@ class ActionCoverHeadTarget: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
 		//setaperture will be called from here, or from statemachine
 		PlayerBase ntarget;
-		Class.CastTo(ntarget, target.GetObject());
+		Class.CastTo(ntarget, action_data.m_Target.GetObject());
 		ntarget.GetInventory().CreateInInventory("BurlapSackCover");
 		//ntarget.CreateInInventory("BurlapSackCover","cargo_headgear");
-		item.TransferModifiers(ntarget);
-		item.Delete();
+		action_data.m_MainItem.TransferModifiers(ntarget);
+		action_data.m_MainItem.Delete();
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 
 	bool IsWearingHeadgear( PlayerBase player)

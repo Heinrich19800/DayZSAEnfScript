@@ -32,6 +32,16 @@ class Trap_FishNet extends TrapSpawnBase
 		m_CatchesGroundAnimal = new multiMap<string, float>;
 	}
 	
+	override bool IsOneHandedBehaviour()
+	{
+		return true;
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
 	// ITEM CANNOT BE TAKEN WHEN CONTAINS CARGO
 	/*override*/ bool CanPutInInventory ( EntityAI  player ) 
 	{

@@ -115,33 +115,36 @@ class WeaponParticlesBase // This class represents every particle effect you see
 			// Handle effect's parameters
 			if ( PrtTest.m_GunParticlesState ) // Check if particles are enambled by debug
 			{
-				if ( !suppressor  ||  !(m_IgnoreIfSuppressed) ) // ignoreIfSuppressed
+				if (weapon == muzzle_owner) // TO DO: 19.VI.2018 THIS DISABLES PARTICLES ON SUPPRESSORS BECAUSE THEY ARE POSITIONED AND ROTATED INCORRECTLY DUE TO OLD HIERARCHY! When new hierarchy is introduced then this filter will be removed.
 				{
-					if ( CheckHealthCondition( muzzle_owner.GetHealthLabel() ) ) // onlyWithinHealthLabel
+					if ( !suppressor  ||  !(m_IgnoreIfSuppressed) ) // ignoreIfSuppressed
 					{
-						if ( m_OnlyIfBulletIs == ""  ||  m_OnlyIfBulletIs == ammoType ) // onlyIfBulletIs
+						if ( CheckHealthCondition( muzzle_owner.GetHealthLabel() ) ) // onlyWithinHealthLabel
 						{
-							if ( m_OnlyIfWeaponIs == ""  ||  m_OnlyIfWeaponIs == weapon.GetType() ) // onlyIfWeaponIs
+							if ( m_OnlyIfBulletIs == ""  ||  m_OnlyIfBulletIs == ammoType ) // onlyIfBulletIs
 							{
-								// Get particle ID
-								int particle_id = CheckParticleOverride(ammoType);
-								
-								// Get position of the particle
-								vector local_pos = muzzle_owner.GetSelectionPosition(m_OverridePoint);
-								local_pos += m_PositionOffset;
-								
-								// Set orientation of the particle
-								vector particle_ori = CheckOrientationOverride(local_pos, muzzle_owner);
-								
-								Particle p = Particle.Play( particle_id, muzzle_owner, local_pos, particle_ori );
-								
-								OnParticleCreated(muzzle_owner, p);
-								
-								// HACK: This temporarily fixes DAYZ-30268 until New Hierarchy is implemented + propper Lights API is developed
-								if (m_IlluminateWorld)
+								if ( m_OnlyIfWeaponIs == ""  ||  m_OnlyIfWeaponIs == weapon.GetType() ) // onlyIfWeaponIs
 								{
-									vector global_pos = muzzle_owner.ModelToWorld(local_pos + Vector(-0.2, 0, 0));
-									Object light = GetGame().CreateObject( "Light", global_pos, true );
+									// Get particle ID
+									int particle_id = CheckParticleOverride(ammoType);
+									
+									// Get position of the particle
+									vector local_pos = muzzle_owner.GetSelectionPosition(m_OverridePoint);
+									local_pos += m_PositionOffset;
+									
+									// Set orientation of the particle
+									vector particle_ori = CheckOrientationOverride(local_pos, muzzle_owner);
+									
+									Particle p = Particle.Play( particle_id, muzzle_owner, local_pos, particle_ori );
+									
+									OnParticleCreated(muzzle_owner, p);
+									
+									// HACK: This temporarily fixes DAYZ-30268 until New Hierarchy is implemented + propper Lights API is developed
+									if (m_IlluminateWorld)
+									{
+										vector global_pos = muzzle_owner.ModelToWorld(local_pos + Vector(-0.2, 0, 0));
+										Object light = GetGame().CreateObject( "Light", global_pos, true );
+									}
 								}
 							}
 						}

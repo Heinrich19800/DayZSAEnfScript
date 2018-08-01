@@ -50,7 +50,7 @@ class DeveloperFreeCamera
 	//---------------------------------------------
 	// DisableFreeCamera
 	//---------------------------------------------
-	protected static void DisableFreeCamera( PlayerBase player, bool teleport_player = false )
+	static void DisableFreeCamera( PlayerBase player, bool teleport_player = false )
 	{
 		if ( player )
 		{

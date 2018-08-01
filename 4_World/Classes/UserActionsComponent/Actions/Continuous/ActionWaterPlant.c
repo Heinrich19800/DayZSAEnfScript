@@ -4,7 +4,7 @@ class ActionWaterPlantCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousWaterPlant(QUANTITY_USED_PER_SEC);
+		m_ActionData.m_ActionComponent = new CAContinuousWaterPlant(QUANTITY_USED_PER_SEC);
 	}
 };
 
@@ -56,19 +56,19 @@ class ActionWaterPlant: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		
 		if ( targetObject != NULL && targetObject.IsInherited(PlantBase) )
 		{
 			PlantBase plant = PlantBase.Cast( targetObject );
-			Param1<float> nacdata = Param1<float>.Cast( acdata );
+			Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );
 			float water = nacdata.param1;
 			Slot slot = plant.GetSlot();
-			water = player.GetSoftSkillManager().AddSpecialtyBonus( water, this.GetSpecialtyWeight() );
-			SendMessageToClient(player, slot.GiveWater( item, water ) );
-			player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+			water = action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( water, this.GetSpecialtyWeight() );
+			SendMessageToClient(action_data.m_Player, slot.GiveWater( action_data.m_MainItem, water ) );
+			action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 		}
 	}
 };

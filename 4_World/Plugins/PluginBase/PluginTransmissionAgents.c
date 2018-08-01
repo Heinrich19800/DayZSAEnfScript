@@ -99,6 +99,13 @@ class PluginTransmissionAgents extends PluginBase
 	}
 	*/
 	
+	float GetImmunityResistance( int agent_id )
+	{
+		if( !m_AgentList.Get(agent_id) ) return 0;
+		return m_AgentList.Get(agent_id).GetImmunityResistance();
+	}
+	
+	
 	void TransmitAgents(EntityAI source, EntityAI target, int pathway, int dose_size = 1000)
 	{
 		//Debug.Log("Transmitting agents for source: " +source.ToString()+", target: " +target.ToString(),"Agents");

@@ -17,15 +17,13 @@ class DayZPlayerCamera1stPerson extends DayZPlayerCameraBase
 		{
 			Print("DayZPlayerCamera1stPerson: main bone not found");
 		}
-
-		//Print("DayZPlayerCamera1stPerson");
-		//Print(m_iBoneIndex);
 	}
 	
 
 	//
 	override void 		OnActivate (DayZPlayerCamera pPrevCamera, DayZPlayerCameraResult pPrevCameraResult)
 	{
+		super.OnActivate(pPrevCamera, pPrevCameraResult);
 		if (pPrevCamera)
 		{
 			vector 	f = pPrevCamera.GetBaseAngles();
@@ -40,6 +38,7 @@ class DayZPlayerCamera1stPerson extends DayZPlayerCameraBase
 	{
 		//! update angles from input 
 		float 	udAngle 	= UpdateUDAngle(m_fUpDownAngle, m_fUpDownAngleAdd, CONST_UD_MIN, CONST_UD_MAX, pDt);
+		m_CurrentCameraPitch = udAngle;
 		m_fLeftRightAngle 	= UpdateLRAngle(m_fLeftRightAngle, CONST_LR_MIN, CONST_LR_MAX, pDt);
 
 		
@@ -73,6 +72,9 @@ class DayZPlayerCamera1stPerson extends DayZPlayerCameraBase
 		pOutResult.m_fInsideCamera 		= 1.0;
 
 		super.OnUpdate(pDt, pOutResult);
+		
+		pOutResult.m_fNearPlane = 0.04; //0.07 default
+		//Print("1st person near plane = " + pOutResult.m_fNearPlane);
 	}
 
 	//
@@ -84,11 +86,42 @@ class DayZPlayerCamera1stPerson extends DayZPlayerCameraBase
 		a[2] = m_fUpDownAngleAdd;
 		return a;
 	}
-
-
+	
+	override string GetCameraName()
+	{
+		return "DayZPlayerCamera1stPerson";
+	}
+	
 	protected	int 	m_iBoneIndex;		//!< main bone 
 
 	protected 	float 	m_fUpDownAngle;		//!< up down angle in rad
 	protected 	float 	m_fUpDownAngleAdd;	//!< up down angle in rad
 	protected 	float 	m_fLeftRightAngle;	//!< left right angle in rad (in freelook only)
+}
+
+// *************************************************************************************
+// ! DayZPlayerCamera1stPersonUnconscious - first person only unconscious
+// *************************************************************************************
+class DayZPlayerCamera1stPersonUnconscious extends DayZPlayerCamera1stPerson
+{
+	void DayZPlayerCamera1stPersonUnconscious(DayZPlayer pPlayer, HumanInputController pInput)
+	{
+		m_iBoneIndex		= pPlayer.GetBoneIndexByName ("Head");
+	}
+	
+	override void OnUpdate(float pDt, out DayZPlayerCameraResult pOutResult)
+	{
+		super.OnUpdate(pDt, pOutResult);
+
+		pOutResult.m_iDirectBone 		= m_iBoneIndex;
+		pOutResult.m_iDirectBoneMode 	= 4;
+		pOutResult.m_fUseHeading 		= 0.0;
+		
+		vector rot;
+		rot[0] = 0;
+		rot[1] = 90;
+		rot[2] = 0;
+		
+		Math3D.YawPitchRollMatrix(rot, pOutResult.m_CameraTM);
+	}
 }

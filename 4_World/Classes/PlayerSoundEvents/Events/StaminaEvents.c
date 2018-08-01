@@ -1,6 +1,6 @@
 class StaminaSoundEventBase extends PlayerSoundEventBase
 {
-	override bool HasPriority(EPlayerSoundEventID other_state_id)
+	override bool ThisHasPriority(EPlayerSoundEventID other_state_id)
 	{
 		if(PlayerSoundEventHandler.GetPlayerSoundEventType(other_state_id) == EPlayerSoundEventType.STAMINA)
 		{

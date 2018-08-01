@@ -2,17 +2,18 @@ class ActionInteractBaseCB : ActionBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAInteract;
+		m_ActionData.m_ActionComponent = new CAInteract;
 	}
 
 	override void OnAnimationEvent(int pEventID)	
-	{
+	{	
 #ifdef DEVELOPER
 		Print("ActionInteractBase.c | OnAnimationEvent | OnAnimationEvent called");
 #endif
 		if ( !m_Interrupted && pEventID == UA_ANIM_EVENT ) 
 		{
-			m_ActionData.Do(this,UA_ANIM_EVENT,m_ActionComponent,m_Player,m_Target,m_Item);
+			AnimatedActionBase action = AnimatedActionBase.Cast(m_ActionData.m_Action);
+			action.Do(m_ActionData, UA_ANIM_EVENT);
 		}	
 	}
 	
@@ -25,32 +26,32 @@ class ActionInteractBaseCB : ActionBaseCB
 		m_Canceled = false;
 
 		CreateActionComponent();
-		if ( m_ActionComponent ) 
+		if ( m_ActionData.m_ActionComponent ) 
 		{
-			m_ActionComponent.Init(m_ActionData, m_Player, m_Target, m_Item);
+			m_ActionData.m_ActionComponent.Init(m_ActionData);
 		}
-		m_State = UA_PROCESSING;
+		m_ActionData.m_State = UA_PROCESSING;
 		RegisterAnimationEvent("ActionExec", UA_ANIM_EVENT);
-		m_SoundObject = m_ActionData.PlayActionSound(m_Player);
+		m_SoundObject = m_ActionData.m_Action.PlayActionSound(m_ActionData.m_Player);
 	}	
 	
 	override void EndActionComponent()
 	{
 		SetCommand(DayZPlayerConstants.CMD_ACTIONINT_END);
-		m_State = UA_FINISHED;
+		m_ActionData.m_State = UA_FINISHED;
 	}	
 };
 
 
 
-class ActionInteractBase : ActionBase
+class ActionInteractBase : AnimatedActionBase
 {
 	string m_HUDCursorIcon;
 	
 	void ActionInteractBase() 
 	{
 		m_CallbackClass = ActionInteractBaseCB;
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS;
 		m_HUDCursorIcon = CursorIcons.Cursor;
 	}
 	

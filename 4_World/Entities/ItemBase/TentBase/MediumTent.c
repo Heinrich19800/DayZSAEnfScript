@@ -11,4 +11,9 @@ class MediumTent extends TentBase
 		
 		Init();
 	}
+	
+	override bool IsTwoHandedBehaviour()
+	{
+		return true;
+	}
 };

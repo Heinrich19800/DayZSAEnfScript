@@ -34,13 +34,13 @@ class ActionTuneFrequencyOnGround : ActionInteractBase
 		return false;
 	}
 		
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Land_Radio_PanelBig transmitter = Land_Radio_PanelBig.Cast( target.GetObject() );
+		Land_Radio_PanelBig transmitter = Land_Radio_PanelBig.Cast( action_data.m_Target.GetObject() );
 		
 		if ( transmitter.CanOperate() )
 		{
-			transmitter.SetNextFrequency( player );
+			transmitter.SetNextFrequency( action_data.m_Player );
 		}
 	}
 }

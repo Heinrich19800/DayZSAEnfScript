@@ -60,7 +60,7 @@ class FireplaceIndoor extends FireplaceBase
 	void SetBuildingOnLoad()
 	{
 		ref array<Object> nearest_objects = new array<Object>;
-		ref array<Cargo> proxy_cargos = new array<Cargo>;
+		ref array<CargoBase> proxy_cargos = new array<CargoBase>;
 		vector position = GetPosition();
 		GetGame().GetObjectsAtPosition ( position, 50, nearest_objects, proxy_cargos );
 		
@@ -315,8 +315,9 @@ class FireplaceIndoor extends FireplaceBase
 			//rotate handle
 			item_base.SetAnimationPhase( ANIMATION_COOKWARE_HANDLE, 1 );
 			
-			//stop steam particle
-			ParticleCookingEquipmentSteamStop();
+			//remove audio visuals
+			Bottle_Base cooking_pot = Bottle_Base.Cast( item );
+			cooking_pot.RemoveAudioVisuals();
 		}	
 		//TODO
 		//frying pan		

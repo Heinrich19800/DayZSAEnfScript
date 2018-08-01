@@ -15,4 +15,5 @@ class WidgetLayoutName
 	const string CollapsibleContainer = "gui/layouts/inventory_new/collapsible_container.layout";
 	const string ClosableContainer= "gui/layouts/inventory_new/closable_container.layout";
 	const string Icon = "gui/layouts/inventory_new/icon.layout";
+	const string AttachmentsWrapper = "gui/layouts/inventory_new/attachments_wrapper.layout";
 };

@@ -17,6 +17,16 @@ class HescoBox extends Inventory_Base
 		RegisterNetSyncVariableInt( "m_State", FOLDED, FILLED );
 	}
 
+	override bool IsHeavyBehaviour()
+	{
+		return true;
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
 	override bool CanPutIntoHands( EntityAI parent )
 	{
 		if( !super.CanPutIntoHands( parent ) )

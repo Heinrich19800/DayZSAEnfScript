@@ -44,7 +44,7 @@ class TabberUI extends ScriptedWidgetEventHandler
 			}
 		}
 		
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 			m_Root.FindAnyWidget( "XboxControls" ).Show( tab_count > 1 );
 		#endif
 	}
@@ -77,7 +77,7 @@ class TabberUI extends ScriptedWidgetEventHandler
 			tab_child = tab_child.GetSibling();
 		}
 		
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 			m_Root.FindAnyWidget( "XboxControls" ).Show( tab_count > 1 );
 		#endif
 	}

@@ -363,7 +363,7 @@ class Icon: ContainerBase
 		Magazine mag;
 		if ( Class.CastTo(wpn,  entity1 ) && Class.CastTo(mag,  entity2 ) )
 		{
-			int muzzleIndex = wpn.GetCurrentMuzzle();
+			/*int muzzleIndex = wpn.GetCurrentMuzzle();
 			if ( m_player.GetWeaponManager().CanLoadBullet(wpn, mag) )
 			{
 				flags = flags | InventoryCombinationFlags.LOAD_CHAMBER;
@@ -375,7 +375,7 @@ class Icon: ContainerBase
 			else if ( m_player.GetWeaponManager().CanSwapMagazine(wpn, mag))
 			{
 				flags = flags | InventoryCombinationFlags.SWAP_MAGAZINE;
-			}
+			}*/
 		}
 		else if ( entity1.GetInventory().CanAddAttachment( entity2 ) )
 		{
@@ -398,14 +398,22 @@ class Icon: ContainerBase
 			Class.CastTo(amc, m_player.GetActionManager());
 			if( entity1 == m_player.GetHumanInventory().GetEntityInHands() )
 			{
-				if( amc.GetContinuousActionForTargetItem( ItemBase.Cast( entity2 ) ) > -1 )
+				if( amc.CanPerformActionFromInventory( ItemBase.Cast( entity1 ), ItemBase.Cast( entity2 ) ) )
+				{
+					flags = flags | InventoryCombinationFlags.PERFORM_ACTION;
+				}
+				else if( amc.CanSetActionFromInventory( ItemBase.Cast( entity1 ), ItemBase.Cast( entity2 ) ) )
 				{
 					flags = flags | InventoryCombinationFlags.SET_ACTION;
 				}
 			}
 			else
 			{
-				if( amc.GetContinuousActionForTargetItem( ItemBase.Cast( entity1 ) ) > -1 )
+				if( amc.CanPerformActionFromInventory( ItemBase.Cast( entity2 ), ItemBase.Cast( entity1 ) ) )
+				{
+					flags = flags | InventoryCombinationFlags.PERFORM_ACTION;
+				}
+				else if( amc.CanSetActionFromInventory( ItemBase.Cast( entity2 ), ItemBase.Cast( entity1 ) ) )
 				{
 					flags = flags | InventoryCombinationFlags.SET_ACTION;
 				}
@@ -476,7 +484,7 @@ class Icon: ContainerBase
 			}
 		}
 
-		if (combinationFlags & InventoryCombinationFlags.ATTACH_MAGAZINE)
+/*		if (combinationFlags & InventoryCombinationFlags.ATTACH_MAGAZINE)
 		{
 			if ( Class.CastTo(wpn,  m_am_entity1 ) && Class.CastTo(mag,  m_am_entity2 ) )
 			{
@@ -486,7 +494,7 @@ class Icon: ContainerBase
 				}
 			}
 			return;
-		}
+		}*/
 		if (combinationFlags & InventoryCombinationFlags.SWAP_MAGAZINE)
 		{
 			if ( Class.CastTo(wpn,  m_am_entity1 ) && Class.CastTo(mag,  m_am_entity2 ) )
@@ -530,22 +538,34 @@ class Icon: ContainerBase
 				entity1ItemBase.QuantityCombine(m_am_entity2);
 			}
 		}*/
-		if ( combinationFlags & InventoryCombinationFlags.SET_ACTION )
+		if ( combinationFlags & InventoryCombinationFlags.PERFORM_ACTION )
 		{
 
 			ActionManagerClient amc;
 			Class.CastTo(amc, m_player.GetActionManager());
-			int ActionID;
 
 			if( m_am_entity1 == m_player.GetHumanInventory().GetEntityInHands() )
 			{
-				ActionID = amc.GetContinuousActionForTargetItem( ItemBase.Cast( m_am_entity2 ) );
-				m_player.GetInventoryActionHandler().SetAction(InventoryActionHandler.IAH_CONTINUOUS,ActionID,ItemBase.Cast( m_am_entity2 ) );
+				amc.PerformActionFromInventory(ItemBase.Cast( m_am_entity1 ),ItemBase.Cast( m_am_entity2 ));
 			}
 			else
 			{
-				ActionID = amc.GetContinuousActionForTargetItem( ItemBase.Cast( m_am_entity1 ) );
-				m_player.GetInventoryActionHandler().SetAction(InventoryActionHandler.IAH_CONTINUOUS,ActionID,ItemBase.Cast( m_am_entity1 ) );
+				amc.PerformActionFromInventory(ItemBase.Cast( m_am_entity2 ),ItemBase.Cast( m_am_entity1 ));
+			}
+		}
+		if ( combinationFlags & InventoryCombinationFlags.SET_ACTION )
+		{
+
+			ActionManagerClient amc2;
+			Class.CastTo(amc2, m_player.GetActionManager());
+
+			if( m_am_entity1 == m_player.GetHumanInventory().GetEntityInHands() )
+			{
+				amc2.SetActionFromInventory(ItemBase.Cast( m_am_entity1 ),ItemBase.Cast( m_am_entity2 ));
+			}
+			else
+			{
+				amc2.SetActionFromInventory(ItemBase.Cast( m_am_entity2 ),ItemBase.Cast( m_am_entity1 ));
 			}
 		}
 	}
@@ -688,6 +708,12 @@ class Icon: ContainerBase
 			current_flag = InventoryCombinationFlags.SET_ACTION;
 			cmenu.Add("#inv_context_attach_magazine", this, "OnPerformCombination", new Param1<int>( current_flag ) );
 		}
+		
+		if (combinationFlags & InventoryCombinationFlags.PERFORM_ACTION)
+		{
+			current_flag = InventoryCombinationFlags.PERFORM_ACTION;
+			cmenu.Add("Perform action", this, "OnPerformCombination", new Param1<int>( current_flag ) );
+		}
 
 		int m_am_pos_x,  m_am_pos_y;
 		GetMousePos( m_am_pos_x, m_am_pos_y );
@@ -735,24 +761,6 @@ class Icon: ContainerBase
 		Debug.Log("OnPerformRecipe called for id:"+id.ToString(),"recipes");
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 		player.GetCraftingManager().SetInventoryCraft( id, ItemBase.Cast( m_am_entity1 ), ItemBase.Cast( m_am_entity2 ) );
-	}
-
-	void SelectCombine()
-	{
-		Combine( ItemManager.GetInstance().GetSelectedWidget().GetParent(), 0, 0, GetMainPanel().FindAnyWidget( "Combine" ) );
-	}
-
-	void SelectSwap()
-	{
-		Widget w = ItemManager.GetInstance().GetSelectedWidget().GetParent();
-		string name = w.GetName();
-		if( name != "Icon" )
-		{
-			name.Replace( "Icon", "PanelWidget" );
-			w = w.FindAnyWidget( name );
-		}
-		Swap( w, 0, 0, GetMainPanel().FindAnyWidget( "Swap" ) );
-		ItemManager.GetInstance().SetSelectedItem( NULL, NULL );
 	}
 
 	void Combine( Widget w, int x, int y, Widget receiver )
@@ -853,6 +861,12 @@ class Icon: ContainerBase
 			current_flag = InventoryCombinationFlags.SET_ACTION;
 			cmenu.Add("#inv_context_attach_magazine", this, "OnPerformCombination", new Param1<int>( current_flag ) );
 		}
+		
+		if (combinationFlags & InventoryCombinationFlags.PERFORM_ACTION)
+		{
+			current_flag = InventoryCombinationFlags.PERFORM_ACTION;
+			cmenu.Add("Perform Action2", this, "OnPerformCombination", new Param1<int>( current_flag ) );
+		}
 
 		int m_am_pos_x,  m_am_pos_y;
 		GetMousePos( m_am_pos_x, m_am_pos_y );
@@ -863,7 +877,8 @@ class Icon: ContainerBase
 		{
 				OnPerformRecipe( id );
 		}
-		else if( cmenu.Count() == 1 )
+		else 
+		if( cmenu.Count() == 1 )
 		{
 				OnPerformCombination( current_flag );
 		}

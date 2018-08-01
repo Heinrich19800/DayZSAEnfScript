@@ -10,6 +10,11 @@ class Barrel_ColorBase : Container_Base
 		m_BarrelOpener = new Timer();	
 	}
 	
+	override bool IsHeavyBehaviour()
+	{
+		return true;
+	}
+	
 	bool IsLocked()
 	{
 		return m_IsLocked;
@@ -160,8 +165,8 @@ class Barrel_ColorBase : Container_Base
 				if ( pelt_count <= lime_amount )
 				{
 					TanLeatherLambda lambda = new TanLeatherLambda(item, "TannedLeather", player, pelt_count);
-					lambda.SetTransferParams(true, false, true);
-					player.LocalReplaceItemWithNew(lambda);
+					lambda.SetTransferParams(true, true, true);
+					player.ServerReplaceItemWithNew(lambda);
 										
 					lime_amount -= pelt_count;
 					if ( lime_amount <= 0 )
@@ -221,8 +226,8 @@ class Barrel_ColorBase : Container_Base
 				if ( item_name != "" )
 				{
 					TurnItemIntoItemLambda lambda = new TurnItemIntoItemLambda(item, item_name, player);
-					lambda.SetTransferParams(true, false, true);
-					player.LocalReplaceItemWithNew(lambda);
+					lambda.SetTransferParams(true, true, true);
+					player.ServerReplaceItemWithNew(lambda);
 				}				
 			}	
 		}	
@@ -283,8 +288,8 @@ class Barrel_ColorBase : Container_Base
 					if ( item_name != "" )
 					{
 						TurnItemIntoItemLambda lambda = new TurnItemIntoItemLambda(item, item_name, player);
-						lambda.SetTransferParams(true, false, true);
-						player.LocalReplaceItemWithNew(lambda);
+						lambda.SetTransferParams(true, true, true);
+						player.ServerReplaceItemWithNew(lambda);
 						bleach_amount -= BAREL_BLEACH_PER_CLOTH;
 					}
 				}
@@ -341,7 +346,7 @@ class Barrel_ColorBase : Container_Base
 					string itemtype = itemIB.GetType().Substring( 0, index + 1 );
 					
 					ColourClothesLambda clambda = new ColourClothesLambda(itemIB, itemtype + "Dyed", player, r, g, b, a);
-					clambda.SetTransferParams(true, false, true);
+					clambda.SetTransferParams(true, true, true);
 					MiscGameplayFunctions.TurnItemIntoItemEx(player, clambda);
 					was_colored = true;
 				}
@@ -416,7 +421,7 @@ class ColourClothesLambda : TurnItemIntoItemLambda
 	int r, g, b, a;
 	void ColourClothesLambda (EntityAI old_item, string new_item_type, PlayerBase player, int rr, int gg, int bb, int aa) { r = rr; g = gg; b = bb; a = aa; }
 
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
 	{
 		super.CopyOldPropertiesToNew(old_item, new_item);
 
@@ -446,7 +451,7 @@ class TanLeatherLambda : TurnItemIntoItemLambda
 
 	void TanLeatherLambda (EntityAI old_item, string new_item_type, PlayerBase player, int pelt_count) { m_PeltCount = pelt_count; }
 
-	override void CopyOldPropertiesToNew (notnull EntityAI old_item, notnull EntityAI new_item)
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
 	{
 		super.CopyOldPropertiesToNew(old_item, new_item);
 

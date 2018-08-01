@@ -12,7 +12,7 @@ class CAContinuousEmptyMagazine : CAContinuousBase
 		m_Time = 0;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		if ( !m_SpentUnits )
 		{ 
@@ -24,14 +24,14 @@ class CAContinuousEmptyMagazine : CAContinuousBase
 		}
 		m_SpentQuantity = 0;
 		Magazine itm;
-		Class.CastTo(itm, item);
+		Class.CastTo(itm, action_data.m_MainItem);
 		m_TargetUnits = itm.GetAmmoCount();			
 		
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
@@ -44,7 +44,7 @@ class CAContinuousEmptyMagazine : CAContinuousBase
 		{
 			if ( m_SpentQuantity < m_TargetUnits )
 			{
-				m_Time += player.GetDeltaT();
+				m_Time += action_data.m_Player.GetDeltaT();
 				if ( m_Time > m_TimeToEjectOneBullet )
 				{
 					m_Time = 0;
@@ -54,20 +54,20 @@ class CAContinuousEmptyMagazine : CAContinuousBase
 			}
 			else
 			{
-				CalcAndSetQuantity(player,target,item);
+				CalcAndSetQuantity( action_data );
 				return UA_FINISHED;
 			}
 		}
 	}
 
-	override int Cancel( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Cancel( ActionData action_data )
 	{
-		if ( !player || !item )
+		if ( !action_data.m_Player || !action_data.m_MainItem )
 		{
 			return UA_ERROR;
 		}
 		
-		CalcAndSetQuantity(player, target, item);
+		CalcAndSetQuantity( action_data );
 		return UA_CANCEL;
 	}	
 		
@@ -79,14 +79,14 @@ class CAContinuousEmptyMagazine : CAContinuousBase
 	
 	//---------------------------------------------------------------------------
 	
-	void CalcAndSetQuantity( PlayerBase player, ActionTarget target, ItemBase item )
+	void CalcAndSetQuantity( ActionData action_data )
 	{
 		if ( GetGame().IsServer() )
 		{
-			if ( item )
+			if ( action_data.m_MainItem )
 			{
 				Magazine itm;
-				Class.CastTo(itm, item);
+				Class.CastTo(itm, action_data.m_MainItem);
 				if ( m_SpentUnits )
 				{
 					m_SpentUnits.param1 = m_SpentQuantity;

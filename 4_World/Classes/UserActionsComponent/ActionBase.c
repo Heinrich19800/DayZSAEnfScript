@@ -1,128 +1,15 @@
-class ActionBaseCB : HumanCommandActionCallback
-{	
-	protected ActionBase				m_ActionData;//ref to static part
-	protected int						m_State; //action module returns here its current state
-	protected ref ActionTarget			m_Target; //target of action
-	protected ItemBase					m_Item; //item in players hands being used for action
-	protected PlayerBase				m_Player;//performer of actions
-	protected ref CABase				m_ActionComponent;//action component
-	protected SoundOnVehicle 			m_SoundObject;//object of sound playing on entity
-	protected bool 						m_Canceled;//helps prevent doubled calling of actionbase End method
-	protected bool						m_Interrupted;//force callback to wait till action syncs its interruption
-	protected int 						m_PossibleStanceMask;//in which stances is action possible
-		
-		
-	void ActionBaseCB()
-	{
-		m_State = UA_START;
-	}
-	
-	int GetPossileStanceMask()
-	{
-		return m_PossibleStanceMask;
-	}
-	
-	//Command events
-	override void OnFinish(bool pCanceled)	
-	{
-		PrintString("ActionBase.c | ActionBaseCB | OnFinish called : " + pCanceled.ToString() );	
-		if ( m_SoundObject ) 
-		{
-			GetGame().ObjectDelete(m_SoundObject);
-		}
-		if ( m_Player )
-		{
-			if ( pCanceled ) 
-			{
-				m_State = m_ActionComponent.Interrupt(m_Player, m_Target, m_Item);
-			}
-			
-			if(m_ActionData)
-				m_ActionData.End(this,m_State,m_ActionComponent,m_Player,m_Target,m_Item);
-			
-			m_Player.GetActionManager().OnActionEnd(m_ActionData, m_Target, m_Item);
-		}
-
-		
-	}
-	
-	void SetCommand( int command_uid )
-	{		
-		InternalCommand(command_uid);
-	}
-
-	//---------------------------------------------------------------
-	//Action Component handlers
-	void CreateActionComponent() 
-	{
-		m_ActionComponent = new CADummy;
-	}
-	
-	void InitActionComponent()
-	{
-	}
-	
-	void ProgressActionComponent()
-	{
-		if ( m_ActionComponent )
-		{ 
-			m_State = m_ActionComponent.Execute(m_Player, m_Target, m_Item);
-		}
-	}	
-	
-	void EndActionComponent()
-	{
-	}	
-	
-	//data
-	void Interrupt()
-	{
-		if ( GetGame().IsServer() )
-		{
-			PrintString("Interupt in actionbase called - server");
-			if( GetGame().IsMultiplayer() )
-			{
-				DayZPlayerSyncJunctures.SendActionInterrupt(m_Player);
-			}
-		}
-		m_Interrupted = true;
-	}
-	
-	void SetActionData(ActionBase actionBase, PlayerBase player, ActionTarget target, ItemBase item, int possibleStanceMask )
-	{
-		m_ActionData = actionBase;
-		m_Player = player;
-		m_Target = target;
-		m_Item = item;
-		m_PossibleStanceMask = possibleStanceMask;
-	}
-	
-	override bool IsUserActionCallback()
-	{
-		return true;
-	}
-	
-	float GetActionComponentProgress()
-	{
-		if ( m_ActionComponent )
-		{
-			return m_ActionComponent.GetProgress();
-		}
-		return 0;
-	}
-	
-	int GetActionState()
-	{
-		return m_State;
-	}
-	
-	ActionTarget GetTarget()
-	{
-		return m_Target;
-	}
-};
-
-
+class ActionData
+{
+	ActionBase							m_Action;
+	ItemBase							m_MainItem;
+	ActionBaseCB 						m_Callback;
+	ref CABase							m_ActionComponent;
+	int									m_State;
+	ref ActionTarget					m_Target;
+	PlayerBase							m_Player;
+	int 								m_PossibleStanceMask;
+	ref array<ref InventoryLocation>	m_ReservedInventoryLocations;
+}
 
 class ActionBase
 {	
@@ -141,10 +28,6 @@ class ActionBase
 	protected bool					m_LockTargetOnUse;	//this parameter sets wheter player can perform actions on target while other player is already performing action on it. defaulted as true
 	protected bool 					m_FullBody; //tells whether action is full body or additive
 	protected int					m_StanceMask;
-	protected int 					m_CommandUID;	//tells which command should be used for callback
-	protected int					m_CommandUIDProne;
-	protected typename 				m_CallbackClass; //tells which callback should be instantiated
-	protected ActionBaseCB			m_Callback;
 	protected ref TStringArray		m_Sounds;			//User action sound is picked from this array randomly
 	ref CCIBase 					m_ConditionItem;	//Condition Component
 	ref CCTBase						m_ConditionTarget; 	//Condition Component
@@ -162,7 +45,6 @@ class ActionBase
 	void ActionBase() 
 	{
 		// definable
-		m_CallbackClass = ActionBaseCB;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_PRONE;
 		m_FullBody = false;
 		m_Sound = "";
@@ -181,6 +63,31 @@ class ActionBase
 		m_MessagesParam = new Param2<int,int>(0,0);
 		m_Sounds = new TStringArray;
 	}
+	
+	bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extraData = NULL)
+	{
+		action_data = CreateActionData();
+		action_data.m_Action = this;
+		action_data.m_Player = player;
+		action_data.m_Target = target;
+		action_data.m_MainItem = item;
+		action_data.m_PossibleStanceMask = GetStanceMask(player);
+		action_data.m_ReservedInventoryLocations = new array<ref InventoryLocation>;
+		
+		if ( (!GetGame().IsMultiplayer() || GetGame().IsClient()) && !IsInstant() )
+		{
+			if (!InventoryReservation(action_data))
+				return false;
+		}
+		
+		return true;
+	}
+	
+	ActionData CreateActionData()
+	{
+		ActionData action_data = new ActionData;
+		return action_data;
+	}
 			
 	void CreateConditionComponents() //Instantiates components, called once from ActionManager on actions construction
 	{
@@ -188,7 +95,14 @@ class ActionBase
 		m_ConditionTarget = new CCTDummy;
 	}
 
+	//! For UI: true - widget will be on item/traced pos; false - will be in under Item in hands widget
 	bool HasTarget()
+	{
+		return true;
+	}
+	
+	//! For UI: hiding of progress bar
+	bool HasProgress()
 	{
 		return true;
 	}
@@ -235,64 +149,25 @@ class ActionBase
 		return "default target description";
 	}
 	
-	// Server version call on single too
-	protected void OnStartServer( PlayerBase player, ActionTarget target, ItemBase item ) //setup of action parameters, called before performing action
+	bool CanBePerformedFromQuickbar()
 	{
-	}
-	protected void OnStartClient( PlayerBase player, ActionTarget target, ItemBase item ) //setup of action parameters, called before performing action
-	{
-	}
-
-	protected void OnCancelServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  ) //method called when player stops inputing
-	{
-	}
-	protected void OnCancelClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  ) //method called when player stops inputing
-	{
+		return false;
 	}
 	
-	protected void OnInterruptServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  ) //method called when player can no longer continue action
+	bool CanBePerformedFromInventory()
 	{
-		OnCancelServer( player, target, item, acdata );
-	}
-	protected void OnInterruptClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata  ) //method called when player can no longer continue action
-	{
-		OnCancelClient( player, target, item, acdata );
+		return false;
 	}
 	
-	protected void OnAlternativeEndServer( PlayerBase player ) //method called when action has not met conditions in action component
+	bool CanBeSetFromInventory()
 	{
+		return !CanBePerformedFromInventory();
 	}
-	protected void OnAlternativeEndClient( PlayerBase player ) //method called when action has not met conditions in action component
-	{
-	}
-
-	protected void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata ) //method called on succesful finishing of action (after out animation)
-	{
-	}
-	protected void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata ) //method called on succesful finishing of action (after out animation)
-	{
-	}
+	 
 	
-	protected void OnCompleteLoopServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata ) //method called on succesful finishing of action (before out animation - continuous actions only )
+	protected bool ActionConditionContinue( ActionData action_data ) //condition for action
 	{
-	}
-	protected void OnCompleteLoopClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata ) //method called on succesful finishing of action (before out animation - continuous actions only )
-	{
-	}	
-	
-	protected void OnRepeatServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata ) //method called on succesful finishing of action
-	{
-	}
-	protected void OnRepeatClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata ) //method called on succesful finishing of action
-	{
-	}
-	
-	protected void OnExecuteServer(PlayerBase player, ActionTarget target, ItemBase item, Param acdata)
-	{
-	}
-	
-	protected void OnExecuteClient(PlayerBase player, ActionTarget target, ItemBase item, Param acdata)
-	{
+		return ActionCondition(action_data.m_Player,action_data.m_Target,action_data.m_MainItem);
 	}
 	
 	protected bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item ) //condition for action
@@ -300,55 +175,47 @@ class ActionBase
 		return true;
 	}
 	
-	protected bool ActionConditionStart( PlayerBase player, ActionTarget target, ItemBase item ) //condition for action
+	void ApplyModifiers( ActionData action_data ) // method that is planned to be called after every succesful completion of action to transfer diseases and other modifiers, now is called before oncompletes
 	{
-		return ActionCondition(player, target, item);
-	}
-	
-	void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item ) // method that is planned to be called after every succesful completion of action to transfer diseases and other modifiers, now is called before oncompletes
-	{
-		PlayerBase targetPlayer;
-		if ( Class.CastTo(targetPlayer, target.GetObject()) && item )
-		{
-			item.TransferModifiers(targetPlayer);
-		}
 	}
 
-	void WriteToContext (ParamsWriteContext ctx, ActionTarget target)
+	void WriteToContext(ParamsWriteContext ctx, ActionData action_data)
 	{
 		if( HasTarget() )
 		{
 			// callback data
-			Object targetObject = target.GetObject();
+			Object targetObject = action_data.m_Target.GetObject();
 			ctx.Write(targetObject);
-			Object targetParent = target.GetParent();
+			Object targetParent = action_data.m_Target.GetParent();
 			ctx.Write(targetParent);
-			int componentIndex = target.GetComponentIndex();
+			int componentIndex = action_data.m_Target.GetComponentIndex();
 			ctx.Write(componentIndex);
 		}
 	}
 	
-	bool ReadFromContext(ParamsReadContext ctx, out ActionReceived actionReceived)
-	{
-		Object actionTargetObject = null;
-		Object actionTargetParent = null;
-		int componentIndex = -1;
-						
+	bool ReadFromContext(ParamsReadContext ctx, ActionData action_data )
+	{				
 		if( HasTarget() )
 		{
+			Object actionTargetObject = null;
+			Object actionTargetParent = null;
+			int componentIndex = -1;
+			
 			if ( !ctx.Read(actionTargetObject) )
 				return false;
 							
 			if ( !ctx.Read(actionTargetParent))
 				return false;
-							
+
 			if ( !ctx.Read(componentIndex) )
 				return false;
-		}
+			
+			ref ActionTarget target;
+			target = new ActionTarget(actionTargetObject, actionTargetParent, componentIndex, vector.Zero, 0);
 						
-		actionReceived.Target = actionTargetObject;
-		actionReceived.Parent = actionTargetParent;
-		actionReceived.ComponentIndex = componentIndex;
+			action_data.m_Target = target;
+		}
+
 
 		return true;
 	}
@@ -381,75 +248,30 @@ class ActionBase
 		return m_FullBody;
 	}
 	
-	protected int GetActionCommand(PlayerBase player)
-	{
-		if ( HasProneException() )
-		{
-			if ( player.IsPlayerInStance(DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT))
-				return m_CommandUID;
-			else
-				return m_CommandUIDProne;
-		}
-		return m_CommandUID;
-	}
-	
-	protected typename GetCallbackClassTypename()
-	{
-		return m_CallbackClass; 
-	}
-	
 	// if it is set to true if action have special fullbody animation for prone and additive for crouch and erect
 	protected bool HasProneException()
 	{
 		return false;
 	}
 	
-	protected ActionBaseCB CreateAndSetupActionCallback( PlayerBase player, ActionTarget target, ItemBase item )
-	{
-		//Print("ActionBase.c | CreateAndSetupActionCallback | DBG ACTION CALLBACK CREATION CALLED");
-		ActionBaseCB callback;
-		if (  IsFullBody(player) )
-		{
-			Class.CastTo(callback, player.StartCommand_Action(GetActionCommand(player),GetCallbackClassTypename(),GetStanceMask(player)));	
-			//Print("ActionBase.c | CreateAndSetupActionCallback |  DBG command starter");		
-		}
-		else
-		{
-			Class.CastTo(callback, player.AddCommandModifier_Action(GetActionCommand(player),GetCallbackClassTypename()));
-			//Print("ActionBase.c | CreateAndSetupActionCallback |  DBG command modif starter: "+callback.ToString()+"   id:"+GetActionCommand().ToString());
-			
-		}
-		callback.SetActionData(this, player, target, item, GetStanceMask(player)); 
-		callback.InitActionComponent(); //jtomasik - tohle mozna patri do constructoru callbacku?
-		return callback;
-	}
-		
-		
-		
 	//	ACTION LOGIC -------------------------------------------------------------------
 	// called from actionmanager.c
-	void Start( PlayerBase player, ActionTarget target, ItemBase item ) //Setup on start of action
+	void Start( ActionData action_data ) //Setup on start of action
 	{
-		if( GetGame().IsServer() )
+/*		if( GetGame().IsServer() )
 		{
-			OnStartServer(player, target, item);
+			OnStartServer(action_data);
 		}
 		else
 		{
-			OnStartClient(player, target, item);
-		}
-		
-		InformPlayers(player,target,UA_START);	
-		if( !IsInstant() )
-		{
-		//player.GetActionManager().DisableActions();
-			m_Callback = CreateAndSetupActionCallback(player, target, item);
-		}
-		/*Debug
-		SendMessageToClient( player, "ActionBase.c : Start");
-		Print("ActionBase.c : Start");
-		*/
+			OnStartClient(action_data);
+		}	
+		*/	
+		InformPlayers(action_data.m_Player,action_data.m_Target,UA_START);	
 	}
+	
+	void OnContinuousCancel(ActionData action_data)
+	{}
 
 	bool Can( PlayerBase player, ActionTarget target, ItemBase item )
 	{
@@ -457,217 +279,30 @@ class ActionBase
 		{
 			return false;
 		}
-		if ( m_ConditionItem && m_ConditionItem.Can(player, item) && m_ConditionTarget && m_ConditionTarget.Can(player, target) && ActionConditionStart(player, target, item) ) 
+		if ( m_ConditionItem && m_ConditionItem.Can(player, item) && m_ConditionTarget && m_ConditionTarget.Can(player, target) && ActionCondition(player, target, item) ) 
 		{	
 			return true;
 		}
 		return false;
 	}
 	
-	protected bool CanContinue( PlayerBase player, ActionTarget target, ItemBase item, int possibleStanceMask )
+	protected bool CanContinue( ActionData action_data )
 	{
-		if ( player.IsPlayerInStance(possibleStanceMask) && m_ConditionItem && m_ConditionItem.CanContinue(player,item) && m_ConditionTarget && m_ConditionTarget.CanContinue(player,target) && ActionCondition(player, target, item) )
+		if ( action_data.m_Player.IsPlayerInStance(action_data.m_PossibleStanceMask) && m_ConditionItem && m_ConditionItem.CanContinue(action_data.m_Player,action_data.m_MainItem) && m_ConditionTarget && m_ConditionTarget.CanContinue(action_data.m_Player,action_data.m_Target) && ActionConditionContinue(action_data) )
 		{
 			return true;
 		}
 		return false;
 	}
-		
-	// called from ActionBaseCB.c
-	void Do( ActionBaseCB callback, int state, CABase action_component, PlayerBase player, ActionTarget target, ItemBase item )
-	{
-		if ( state == UA_ERROR || !callback || !player || !action_component ) //jtomasik - tohle mozna muze byt v CancelCondtion metodu callbacku?
-		{
-#ifdef DEVELOPER
-			Print("ActionBase.c | Do | ABRUPT CANCEL, CONDITIONS NOT MET");
-#endif
-			if ( callback && player )
-			{			
-				callback.Interrupt();
-			}
-			else
-			{
-				Print("ActionBase.c | Do | PLAYER LOST");
-			}	
-		}
-		else
-		{
-			switch ( state )
-			{				
-				//case UA_SETEND_2:
-					//OnAlternativeEnd();
-					//InformPlayers(player,target,UA_ERROR);
-					//callback.Interrupt();
-					//callback.SetCommand(DayZPlayerConstants.CMD_ACTIONINT_END2);//jtomasik - tohle pak zapoj do toho endovani az ti vse ostatni pobezi,  ted prehraje END2 (a tim to i ukonci), pozdeji by mozna piti prazdne lahve atp. mela byt samostatna akce
-					//break;
-				
-				case UA_PROCESSING:	
-					if ( CanContinue(player,target,item,callback.GetPossileStanceMask()) )
-					{	
-						callback.ProgressActionComponent();
-						InformPlayers(player,target,UA_PROCESSING);
-					}
-					else
-					{
-						callback.Interrupt();
-						InformPlayers(player,target,UA_FAILED);
-						Do(callback,UA_CANCEL,action_component,player,target,item);
-					}
-					break;
-					
-				case UA_REPEAT:
-					if ( CanContinue(player,target,item,callback.GetPossileStanceMask()) )
-					{
-						if ( GetGame().IsServer() )
-						{
-							OnRepeatServer(player,target,item,action_component.GetACData());
-							ApplyModifiers(player,target,item);
-						}
-						else
-						{
-							OnRepeatClient(player,target,item,action_component.GetACData());
-						}
-						InformPlayers(player,target,UA_REPEAT);
-						Do(callback,UA_PROCESSING,action_component,player,target,item);
-					}
-					else
-					{
-						callback.Interrupt();
-						InformPlayers(player,target,UA_FAILED);
-						Do(callback,UA_FINISHED,action_component,player,target,item);
-					}				
-					break;
-				
-				case UA_ANIM_EVENT:
-					if( CanContinue(player,target,item,callback.GetPossileStanceMask()))
-					{
-						if ( GetGame().IsServer() )
-						{
-							OnExecuteServer(player,target,item,action_component.GetACData());
-							ApplyModifiers(player,target,item);
-						}
-						else
-						{
-							OnExecuteClient(player,target,item,action_component.GetACData());
-						}
-						InformPlayers(player,target,UA_REPEAT);
-						Do(callback,UA_PROCESSING,action_component,player,target,item);
-					
-				
-					}
-					else
-					{
-						callback.Interrupt();
-						InformPlayers(player,target,UA_FAILED);
-						Do(callback,UA_CANCEL,action_component,player,target,item);
-					}
-					break;
-				case UA_FINISHED:
-					if ( GetGame().IsServer() )
-					{
-						OnCompleteLoopServer(player,target,item,action_component.GetACData());
-						ApplyModifiers(player,target,item);
-					}
-					else
-					{
-						OnCompleteLoopClient(player,target,item,action_component.GetACData());
-					}
-					InformPlayers(player,target,UA_FINISHED);
-					callback.EndActionComponent();
-					break;
-
-				case UA_CANCEL:
-					InformPlayers(player,target,UA_CANCEL);
-					callback.EndActionComponent();
-					break;								
-					
-				default:
-					PrintString("ActionBase.c | Do | ACTION COMPONENT RETURNED WRONG VALUE: "+state.ToString());
-					callback.Interrupt();
-					break;
-			}
-		}
-	}
-	
-	// called from ActionBaseCB.c 
-	void End( ActionBaseCB callback, int state, CABase action_component, PlayerBase player, ActionTarget target, ItemBase item )
-	{
-		if ( player && action_component ) 
-		{
-			switch ( state )
-			{
-				case UA_FINISHED:		
-					if ( GetGame().IsServer() )
-					{
-						OnCompleteServer(player,target,item,action_component.GetACData());
-						ApplyModifiers(player,target,item);
-					}
-					else
-					{
-						OnCompleteClient(player,target,item,action_component.GetACData());					
-					}
-					InformPlayers(player,target,UA_FINISHED);
-					break;
-					
-				case UA_CANCEL:
-					if ( GetGame().IsServer() )
-					{
-						OnCancelServer(player, target, item,action_component.GetACData());
-					}
-					else
-					{
-						OnCancelClient(player, target, item,action_component.GetACData());					
-					}
-					InformPlayers(player,target,UA_CANCEL);
-					break;
-				case UA_INTERRUPT:
-					if ( GetGame().IsServer() )
-					{
-						OnInterruptServer(player, target, item,action_component.GetACData());
-					}
-					else
-					{
-						OnInterruptClient(player, target, item,action_component.GetACData());					
-					}
-					InformPlayers(player,target,UA_INTERRUPT);
-					break;
-				case UA_PROCESSING:
-				case UA_REPEAT:
-				case UA_START:
-				case UA_STARTT:
-					if ( GetGame().IsServer() )
-					{
-						OnInterruptServer(player, target, item,action_component.GetACData());
-					}
-					else
-					{
-						OnInterruptClient(player, target, item,action_component.GetACData());					
-					}
-					InformPlayers(player,target,UA_INTERRUPT);
-					break;
-				
-					break;
-				default:
-					Print("ActionBase.c | End | ACTION COMPONENT RETURNED WRONG VALUE");
-					callback.Interrupt();
-				break;
-			}
-		}
-		else
-		{
-			Print("ActionBase.c | End | ACTION COULD NOT BE FINISHED RIGHT AT THE END");
-			callback.Interrupt();
-		}
-		//player.GetActionManager().EnableActions();
-	}
 	
 	// call only on client side for lock inventory before action
 	// return if has successfuly reserved inventory
-	bool InventoryReservation(PlayerBase player, ActionTarget target, ItemBase item, out array<ref InventoryLocation> reservedLocations)
+	bool InventoryReservation(ActionData action_data)
 	{
 		if( (IsLocal() || !UseAcknowledgment()) && IsInstant() )
 			return true;
 		
+		//action_data.m_ReservedInventoryLocations = new array<ref InventoryLocation>;
 		bool success = true;
 		InventoryLocation targetInventoryLocation = NULL;
 		InventoryLocation handInventoryLocation = NULL;
@@ -676,11 +311,11 @@ class ActionBase
 		if( HasTarget() )
 		{
 			ItemBase targetItem;
-			if ( ItemBase.CastTo(targetItem,target.GetObject()) )
+			if ( ItemBase.CastTo(targetItem,action_data.m_Target.GetObject()) )
 			{
 				targetInventoryLocation = new InventoryLocation;
 				targetItem.GetInventory().GetCurrentInventoryLocation(targetInventoryLocation);
-				if ( !player.GetInventory().AddInventoryReservation( targetItem, targetInventoryLocation, 10000) )
+				if ( !action_data.m_Player.GetInventory().AddInventoryReservation( targetItem, targetInventoryLocation, 10000) )
 				{
 					success = false;
 				}				
@@ -688,9 +323,9 @@ class ActionBase
 		}	
 		
 		handInventoryLocation = new InventoryLocation;
-		handInventoryLocation.SetHands(player,player.GetItemInHands());
+		handInventoryLocation.SetHands(action_data.m_Player,action_data.m_Player.GetItemInHands());
 
-		if ( !player.GetInventory().AddInventoryReservation( player.GetItemInHands(), handInventoryLocation, 10000) )
+		if ( !action_data.m_Player.GetInventory().AddInventoryReservation( action_data.m_Player.GetItemInHands(), handInventoryLocation, 10000) )
 		{
 			success = false;
 		}
@@ -699,10 +334,10 @@ class ActionBase
 		if ( success )
 		{
 			if( targetInventoryLocation )
-				reservedLocations.Insert(targetInventoryLocation);
+				action_data.m_ReservedInventoryLocations.Insert(targetInventoryLocation);
 			
 			if( handInventoryLocation )
-				reservedLocations.Insert(handInventoryLocation);
+				action_data.m_ReservedInventoryLocations.Insert(handInventoryLocation);
 		}
 		// lock Hands
 		// On Fail unlock targetEntity
@@ -712,15 +347,19 @@ class ActionBase
 		return success;
 	}
 
-	void ClearInventoryReservation(PlayerBase player, array<ref InventoryLocation> reservedLocations)
+	void ClearInventoryReservation(ActionData action_data)
 	{
-		InventoryLocation il;
-		for ( int i = 0; i < reservedLocations.Count(); i++)
+		if(action_data.m_ReservedInventoryLocations)
 		{
-			il = reservedLocations.Get(i);
-			player.GetInventory().ClearInventoryReservation( il.GetItem() , il );
+			InventoryLocation il;
+			for ( int i = 0; i < action_data.m_ReservedInventoryLocations.Count(); i++)
+			{
+				il = action_data.m_ReservedInventoryLocations.Get(i);
+				EntityAI entity = il.GetItem();
+				action_data.m_Player.GetInventory().ClearInventoryReservation( il.GetItem() , il );
+			}
+			action_data.m_ReservedInventoryLocations.Clear();
 		}
-		reservedLocations.Clear();
 	}
 		
 	// MESSAGES --------------------------------------------------------------------
@@ -971,6 +610,10 @@ class ActionBase
 
 		return NULL;
 	}
+	
+	void OnUpdate(ActionData action_data)
+	{
+	}
 
 	// SOFT SKILLS ------------------------------------------------
 	float GetSpecialtyWeight()
@@ -978,28 +621,20 @@ class ActionBase
 		if(m_SpecialtyWeight == 0)
 		{
 #ifdef DEVELOPER
-			Print("UserAction does not use SoftSkills");
+			//Print("UserAction does not use SoftSkills");
 #endif
 		}	
 
 		return m_SpecialtyWeight;	
 	}
 	
-	int GetActionState()
+	int GetState( ActionData action_data )
 	{
-		if ( m_Callback )
-		{
-			return m_Callback.GetActionState();
-		}
-		return UA_NONE;
+		return action_data.m_State;
 	}
 	
-	float GetActionComponentProgress()
+	float GetProgress( ActionData action_data )
 	{
-		if ( m_Callback )
-		{	 
-			return m_Callback.GetActionComponentProgress();
-		}
-		return 0;
+		return -1;
 	}
 };

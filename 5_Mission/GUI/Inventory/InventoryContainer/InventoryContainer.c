@@ -30,7 +30,7 @@ bool CanShowItemInInventory(PlayerBase player, Object obj)
 	{
 		PlayerBase obj_player = PlayerBase.Cast( obj );
 
-		if ( obj_player.GetPlayerState() == EPlayerStates.ALIVE && !obj_player.IsRestrained() )
+		if ( obj_player.GetPlayerState() == EPlayerStates.ALIVE && ( !obj_player.IsRestrained() || !obj_player.IsUnconscious() ) )
 		{
 			return false;
 		}

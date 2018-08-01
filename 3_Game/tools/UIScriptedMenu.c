@@ -15,13 +15,6 @@ class UIMenuPanel: Managed
 	proto native bool IsAnyMenuVisible();
 	proto native bool IsVisible();
 	
-	// Xbox event ids
-	const int ACTIVE_GAMEPAD_SET = 1;
-	const int ACTIVE_USER_CHANGED = 2;
-	const int ACTIVE_GAMEPAD_UNSET = 3;
-	const int CLOSED_USER_PICKER = 4;
-
-
 	//! Safe way to close window, using this function can even window safely close itself
 	proto native void Close();
 
@@ -48,7 +41,7 @@ class UIMenuPanel: Managed
 class UIScriptedMenu extends UIMenuPanel
 {
 	int m_id;
-	Widget layoutRoot
+	Widget layoutRoot;
 
 	Widget GetLayoutRoot()
 	{

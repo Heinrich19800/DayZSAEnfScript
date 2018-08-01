@@ -2,17 +2,20 @@ class CAContinuousEmpty : CAContinuousBase
 {
 	protected float 				m_TargetUnits;
 	protected float 				m_SpentQuantity;
+	protected float 				m_SpentQuantity_total;
 	protected float 				m_AdjustedQuantityEmptiedPerSecond;
 	protected float 				m_QuantityEmptiedPerSecond;
-	protected float					m_TimeToComplete;
-	protected ref Param1<float>	m_SpentUnits;
+	protected bool 					m_WringingClothes;
+	protected ref Param1<float>		m_SpentUnits;
+	protected float 				m_TimeElpased;
+	protected float 				m_DefaultTimeStep = 0.25;
 	
 	void CAContinuousEmpty( float quantity_emptied_per_second )
 	{
 		m_QuantityEmptiedPerSecond = quantity_emptied_per_second;
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		if ( !m_SpentUnits )
 		{ 
@@ -22,66 +25,92 @@ class CAContinuousEmpty : CAContinuousBase
 		{	
 			m_SpentUnits.param1 = 0;
 		}
-		m_SpentQuantity = item.GetWet();
-		m_TargetUnits = item.GetWetMax();
+
+		if ( action_data.m_MainItem.IsClothing() )
+		{
+			m_WringingClothes = true;
+			
+			m_SpentQuantity = action_data.m_MainItem.GetWetMax() - action_data.m_MainItem.GetWet();
+			m_TargetUnits = action_data.m_MainItem.GetWetMax();
+		}
+		else
+		{
+			m_WringingClothes = false;
+			
+			m_SpentQuantity = action_data.m_MainItem.GetQuantityMin();
+			m_TargetUnits = action_data.m_MainItem.GetQuantity();
+		}
 		
-		m_AdjustedQuantityEmptiedPerSecond = player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityEmptiedPerSecond, m_Action.GetSpecialtyWeight(), true );
-		m_TimeToComplete = m_SpentQuantity / m_AdjustedQuantityEmptiedPerSecond;
+		m_AdjustedQuantityEmptiedPerSecond = action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityEmptiedPerSecond, m_Action.GetSpecialtyWeight(), true );
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item  )
+	override int Execute( ActionData action_data  )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		
-		if ( item.GetWet() >= item.GetWetMax() )
+		if ( action_data.m_MainItem.GetWet() >= action_data.m_MainItem.GetWetMax() )
 		{
+			//Print("SetEND_2");
 			return UA_SETEND_2;
 		}
 		else
 		{
-		if ( m_SpentQuantity < m_TargetUnits )
-		{
-			m_SpentQuantity += m_AdjustedQuantityEmptiedPerSecond * player.GetDeltaT();
-
-			return UA_PROCESSING;
+			if ( m_SpentQuantity_total <= m_TargetUnits )
+			{
+				//Print("PROCESSING");
+				m_SpentQuantity += m_AdjustedQuantityEmptiedPerSecond * action_data.m_Player.GetDeltaT();
+				m_TimeElpased += action_data.m_Player.GetDeltaT();
+				
+				if ( m_TimeElpased >= m_DefaultTimeStep )
+				{
+					CalcAndSetQuantity( action_data );
+					m_TimeElpased = 0;
+					//Setup(action_data);	//reset data after repeat
+				}
+				return UA_PROCESSING;
+			}
+			else
+			{
+				CalcAndSetQuantity( action_data );
+				return UA_FINISHED;
+			}	
 		}
-		else
-		{
-			CalcAndSetQuantity(player,target,item);
-			return UA_FINISHED;
-		}	
-	}
 	}
 	
-	override int Cancel( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Cancel( ActionData action_data )
 	{
-		if ( !player || !item )
+		if ( !action_data.m_Player || !action_data.m_MainItem )
 		{
 			return UA_ERROR;
 		}
 		
-		CalcAndSetQuantity(player, target, item);
+		CalcAndSetQuantity( action_data );
 		return UA_CANCEL;
 	}	
 	
 	override float GetProgress()
-	{	
-		//float progress = ( m_SpentQuantity * m_AdjustedQuantityEmptiedPerSecond ) / m_TimeToComplete;
-		return ( m_SpentQuantity * m_AdjustedQuantityEmptiedPerSecond ) / m_TimeToComplete;
+	{
+		return m_SpentQuantity_total / m_TargetUnits;
 	}
 	
 	//---------------------------------------------------------------------------
 	
-	void CalcAndSetQuantity( PlayerBase player, ActionTarget target, ItemBase item )
+	void CalcAndSetQuantity( ActionData action_data )
 	{
-		if ( m_SpentUnits )
+		m_SpentQuantity_total += m_SpentQuantity;
+		if (GetGame().IsServer())
 		{
-			m_SpentUnits.param1 = m_SpentQuantity;
-
-			SetACData(m_SpentUnits);
-		}
+			if ( m_SpentUnits )
+			{
+				m_SpentUnits.param1 = m_SpentQuantity;
+				SetACData(m_SpentUnits);
+			}
+			
+			action_data.m_MainItem.AddQuantity(-m_SpentQuantity);
+		}	
+		m_SpentQuantity = 0;
 	}
 };

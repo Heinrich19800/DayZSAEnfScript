@@ -2,7 +2,7 @@ class ActionDisinfectSelfCB : ActionSingleUseBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CASingleUseQuantity(UAQuantityConsumed.DISINFECT);
+		m_ActionData.m_ActionComponent = new CASingleUseQuantity(UAQuantityConsumed.DISINFECT);
 	}
 };
 
@@ -41,14 +41,14 @@ class ActionDisinfectSelf: ActionSingleUseBase
 		return "#disinfect";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
 		//RemoveModifiers(target, item); ?
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-		if ( item && item.GetQuantity() <= 0 ) 
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		if ( action_data.m_MainItem && action_data.m_MainItem.GetQuantity() <= 0 ) 
 		{
-			item.SetQuantity(0);
+			action_data.m_MainItem.SetQuantity(0);
 		}
 	}
 };

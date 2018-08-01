@@ -9,7 +9,7 @@ class CASingleUseQuantity : CASingleUseBase
 		m_QuantityUsedPerAction = quantity_used_per_action;	
 	}
 	
-	override void Setup( PlayerBase player, ActionTarget target, ItemBase item )
+	override void Setup( ActionData action_data )
 	{
 		if ( !m_SpentUnits )
 		{ 
@@ -19,24 +19,24 @@ class CASingleUseQuantity : CASingleUseBase
 		{	
 			m_SpentUnits.param1 = 0;
 		}
-		m_ItemQuantity = item.GetQuantity();
+		m_ItemQuantity = action_data.m_MainItem.GetQuantity();
 	}
 	
-	override int Execute( PlayerBase player, ActionTarget target, ItemBase item )
+	override int Execute( ActionData action_data )
 	{
-		if ( !player )
+		if ( !action_data.m_Player )
 		{
 			return UA_ERROR;
 		}
 		
 
-		CalcAndSetQuantity(player, target, item);
+		CalcAndSetQuantity( action_data );
 		return UA_FINISHED;	
 	}
 	
 	//---------------------------------------------------------------------------
 	
-	void CalcAndSetQuantity( PlayerBase player, ActionTarget target, ItemBase item )
+	void CalcAndSetQuantity( ActionData action_data )
 	{
 		if ( GetGame().IsServer() )
 		{
@@ -46,7 +46,7 @@ class CASingleUseQuantity : CASingleUseBase
 				SetACData(m_SpentUnits);	
 			}
 
-			item.AddQuantity(- m_QuantityUsedPerAction,false,false);
+			action_data.m_MainItem.AddQuantity(- m_QuantityUsedPerAction,false,false);
 		}
 	}
 };

@@ -140,12 +140,13 @@ class Weather
 	proto native Rain GetRain();
 
 	/*!
-		\brief Sets the properties of thunderstorms.
-		\param  density  A value in <0, 1> range where 0 means no thunderstorms at all
-		                 and 1 means thunderstorm every time it gets cloudy.
-		\param  timeOut  A minimal time in seconds before next thunder can be created.
+		\brief Sets the thunderstorm properties.
+		\param  density   A value in <0, 1> range where 0 means no thunderstorms at all
+		                  and 1 means thunderstorm every time it gets cloudy.
+		\param  threshold The overcast value that must be exceeded so that lightning can appear.
+		\param  timeOut   A minimal time in seconds between lightning during thunderstorm.
 	*/
-	proto native void SetStorm( float density, float timeOut );
+	proto native void SetStorm( float density, float threshold, float timeOut );
 
 	//! Returns wind vector (direction and speed as length of the vector).
 	proto native vector GetWind();

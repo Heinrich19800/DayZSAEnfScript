@@ -2,7 +2,7 @@ class ActionLoadMagazineCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousRepeat(UATimeSpent.MAG_EMPTY);
+		m_ActionData.m_ActionComponent = new CAContinuousRepeat(UATimeSpent.MAG_EMPTY);
 	}
 };
 
@@ -65,14 +65,14 @@ class ActionLoadMagazine: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnRepeatServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnExecuteServer( ActionData action_data )
 	{
 		Param1<float> timeSpendParam;
-		if( !Class.CastTo(timeSpendParam, acdata) ) return;
+		if( !Class.CastTo(timeSpendParam, action_data.m_ActionComponent.GetACData()) ) return;
 		
 		Magazine trg;
 		Magazine itm;
-		if ( Class.CastTo(trg,  target.GetObject()) && Class.CastTo(itm, item) )
+		if ( Class.CastTo(trg,  action_data.m_Target.GetObject()) && Class.CastTo(itm, action_data.m_MainItem) )
 		{
 			float dmg;
 			string ammoType;
@@ -88,8 +88,13 @@ class ActionLoadMagazine: ActionContinuousBase
 		//itm.SetSynchDirty();
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		//OnRepeat(player,target,item, acdata);
+		//OnRepeat(action_data);
+	}
+	
+	override bool CanBePerformedFromQuickbar()
+	{
+		return true;
 	}
 };

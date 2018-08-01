@@ -170,7 +170,43 @@ class Input
 	//! return true if was deflected button.
 	proto bool				GetGamepadThumbDirection(GamepadButton thumbButton, out float angle, out float value);
 	
-	//! reset active gamepad on Xbox
+	//! clears active gamepad
 	proto native void		ResetActiveGamepad();
+	proto native void		SelectActiveGamepad(int gamepad);
+	proto native void		GetGamepadList(out array<int> gamepads);
+	proto void				GetGamepadUser(int gamepad, out string uid);
+	/**  
+	\brief the on OnGamepadIdentification callback will return the first gamepad where the button was pressed
+	@param button the button that needs to be pressed for the identification
+	*/
+	proto native void		IdentifyGamepad(GamepadButton button);
+	//! returns true if there is an active gamepad selected.
+	proto native bool		IsActiveGamepadSelected();
+	
+	//! callback that is fired when a new gamepad is connected
+	void OnGamepadConnected(int gamepad) {}
+	//! callback that is fired when gamepad is disconnected
+	void OnGamepadDisconnected(int gamepad)
+	{
+		if( !IsActiveGamepadSelected() )
+		{
+			DayZLoadState state = g_Game.GetLoadState();
+			if( state != DayZLoadState.MAIN_MENU_START && state != DayZLoadState.MAIN_MENU_USER_SELECT )
+			{
+				g_Game.CreateGamepadDisconnectMenu();
+				IdentifyGamepad( GamepadButton.A );
+			}
+		}
+	}
+	//! callback that is fired when identification was requested
+	void OnGamepadIdentification(int gamepad)
+	{
+		if( gamepad > -1 )
+		{
+			g_Game.DeleteGamepadDisconnectMenu();
+			SelectActiveGamepad( gamepad );
+			g_Game.SelectGamepad();
+		}
+	}
 };
 

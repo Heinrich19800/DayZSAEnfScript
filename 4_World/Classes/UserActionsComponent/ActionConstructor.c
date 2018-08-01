@@ -63,12 +63,14 @@ class ActionConstructor
 		actions.Insert(new ActionInjectMorphineTarget);
 		actions.Insert(new ActionHandcuffTarget);
 
-		actions.Insert(new ActionLoadMagazineToWeapon);
-		actions.Insert(new ActionLoadBulletToWeapon);
+		//actions.Insert(new ActionLoadMagazineToWeapon);
+		//actions.Insert(new ActionLoadBulletToWeapon);
 		actions.Insert(new ActionClapBearTrapWithThisItem);
 		actions.Insert(new ActionZoomIn);
 		actions.Insert(new ActionZoomOut);
 		actions.Insert(new ActionPlaceFireplaceIntoBarrel);
+		actions.Insert(new ActionStopEngine);
+		actions.Insert(new ActionUnfoldMap);
 
 		// Continuous use actions
 		//actions.Insert(new ActionCraft);
@@ -76,6 +78,7 @@ class ActionConstructor
 		actions.Insert(new ActionDigStash);
 		actions.Insert(new ActionSkinning);
 		actions.Insert(new ActionPlaceObject);
+		actions.Insert(new ActionDeployObject);
 		actions.Insert(new ActionMineTree);
 		actions.Insert(new ActionMineBush);
 		actions.Insert(new ActionMineRock);
@@ -182,7 +185,15 @@ class ActionConstructor
 		actions.Insert(new ActionFillFuel);
 		actions.Insert(new ActionPourLiquid);
 		actions.Insert(new ActionDrainLiquid);
-
+		actions.Insert(new ActionStartEngine);
+		actions.Insert(new ActionViewCompass);
+		actions.Insert(new ActionRaiseMegaphone);
+		actions.Insert(new ActionActivateTrap);
+		actions.Insert(new ActionEmptyBottleBase);
+		actions.Insert(new ActionEmptyCookingPot);
+		actions.Insert(new ActionViewOptics);
+		actions.Insert(new ActionViewBinoculars);
+		
 		//actions.Insert(new ActionAttached);
 		
 		// Interact actions
@@ -207,7 +218,6 @@ class ActionConstructor
 		actions.Insert(new ActionTuneFrequencyOnGround);
 		actions.Insert(new ActionToggleTentOpen);
 		actions.Insert(new ActionPackTent);
-		actions.Insert(new ActionActivateTrap);
 		actions.Insert(new ActionOpenBarrel);
 		actions.Insert(new ActionCloseBarrel);
 		actions.Insert(new ActionCoverPlantedSeed);
@@ -230,11 +240,12 @@ class ActionConstructor
 		actions.Insert(new ActionCloseCarDoors);
 		actions.Insert(new ActionWashHandsWellOne);
 		actions.Insert(new ActionWashHandsWaterOne);
+		actions.Insert(new ActionGetOutTransport);
+		//actions.Insert(new ActionOpenV3SPlate); <- action doesn't work well, add it later
+		//actions.Insert(new ActionCloseV3SPlate); <- action doesn't work well, add it later
 		
 		//vehicle actions
 		actions.Insert(new ActionSwitchLights);
-		actions.Insert(new ActionEngineStart);
-		actions.Insert(new ActionEngineStop);
 		
 		//Instant action - debug
 		actions.Insert(new ActionDebug);
@@ -262,5 +273,11 @@ class ActionConstructor
 		iactions.Insert(AT_CLOSE_DOORS);
 		iactions.Insert(AT_ENTER_LADDER);
 		iactions.Insert(AT_EXIT_LADDER);
+		
+		
+		//Weapon
+		actions.Insert(new FirearmActionAttachMagazine);
+		actions.Insert(new FirearmActionLoadMultiBullet);
+		actions.Insert(new FirearmActionLoadBullet);
 	}
 };

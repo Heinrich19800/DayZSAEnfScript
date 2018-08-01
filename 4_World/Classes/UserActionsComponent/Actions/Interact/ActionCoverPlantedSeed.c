@@ -44,15 +44,15 @@ class ActionCoverPlantedSeed: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
-		bool can_complete = ActionCondition( player, target, item );
+		Object targetObject = action_data.m_Target.GetObject();
+		bool can_complete = ActionConditionContinue(action_data);
 		
 		if (can_complete) // Double check status of the slot after the animation
 		{
 			GardenBase garden_base = GardenBase.Cast( targetObject );
-			string selection = targetObject.GetActionComponentName(target.GetComponentIndex());
+			string selection = targetObject.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 			Slot slot = garden_base.GetSlotBySelection( selection );
 			garden_base.CreatePlant(slot);
 		}

@@ -4,7 +4,7 @@ class ActionWringClothesCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousEmpty(QUANTITY_WRINGLED_PER_SECOND);
+		m_ActionData.m_ActionComponent = new CAContinuousEmpty(QUANTITY_WRINGLED_PER_SECOND);
 	}
 };
 
@@ -26,10 +26,10 @@ class ActionWringClothes: ActionContinuousBase
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
 	
-	override void CreateConditionComponents()  
+	override void CreateConditionComponents()
 	{
 		m_ConditionItem = new CCINonRuined;
-		m_ConditionTarget = new CCTNone;
+		m_ConditionTarget = new CCTSelf;
 	}
 
 	override int GetType()
@@ -59,13 +59,13 @@ class ActionWringClothes: ActionContinuousBase
 		}	
 	}	
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		//item.TransferModifiers(player);
-		Param1<float> nacdata = Param1<float>.Cast( acdata );		
+		//action_data.m_MainItem.TransferModifiers(action_data.m_Player);
+		Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );		
 		float delta = nacdata.param1;
-		item.AddWet( -delta );
+		action_data.m_MainItem.AddWet( -delta );
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}	
 };

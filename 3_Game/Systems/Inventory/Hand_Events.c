@@ -8,7 +8,6 @@ enum HandEventID
 	UNKNOWN,
 	TAKE,
 	MOVETO,
-	STASH,
 	DROP,
 	SWAP,
 	FORCESWAP,
@@ -16,9 +15,11 @@ enum HandEventID
 	CREATED,
 	DESTROYED,
 	REPLACE,
+	REPLACE2,
 	REPLACED,
-	LOCK,
-	UNLOCK
+	HUMANCOMMAND_ACTION_FINISHED,
+	HUMANCOMMAND_ACTION_ABORTED,
+	ANIMEVENT_CHANGE_HIDE
 };
 
 /**@class	HandEventBase
@@ -44,6 +45,7 @@ class HandEventBase
 	InventoryLocation GetDst () { return null; }
 	bool IsSwapEvent () { return false; }
 	bool CheckRequest () { return true; }
+	bool IsServerSideOnly () { return false; }
 
 	static HandEventBase HandEventFactory (HandEventID id, Man p = null, EntityAI e = NULL)
 	{
@@ -52,7 +54,6 @@ class HandEventBase
 			case HandEventID.UNKNOWN: return null;
 			case HandEventID.TAKE: return new HandEventTake(p, e);
 			case HandEventID.MOVETO: return new HandEventMoveTo(p, e);
-			case HandEventID.STASH: return new HandEventStash(p, e);
 			case HandEventID.DROP: return new HandEventDrop(p, e);
 			case HandEventID.SWAP: return new HandEventSwap(p, e);
 			case HandEventID.FORCESWAP: return new HandEventForceSwap(p, e);
@@ -60,13 +61,15 @@ class HandEventBase
 			case HandEventID.CREATED: return new HandEventCreated(p, e);
 			case HandEventID.DESTROYED: return new HandEventDestroyed(p, e);
 			case HandEventID.REPLACE: return new HandEventDestroyAndReplaceWithNew(p, e);
+			case HandEventID.REPLACE2: return new HandEventDestroyAndReplaceWithNewElsewhere(p, e);
 			case HandEventID.REPLACED: return new HandEventReplaced(p, e);
-			case HandEventID.LOCK: return new HandEventLock(p, e);
-			case HandEventID.UNLOCK: return new HandEventUnlock(p, e);
+			case HandEventID.ANIMEVENT_CHANGE_HIDE: return HandAnimEventChanged(p, e);
+			case HandEventID.HUMANCOMMAND_ACTION_FINISHED : return HandEventHumanCommandActionFinished(p, e);
 		}
+		Error("[hndfsm] HandEventFactory - unregistered hand event with id=" + id);
 		return null;
 	}
-
+	
 	static HandEventBase CreateHandEventFromContext (ParamsReadContext ctx)
 	{
 		int eventID = -1;
@@ -125,11 +128,6 @@ class HandEventMoveTo extends HandEventBase
 	}
 };
 
-class HandEventStash extends HandEventMoveTo
-{
-	void HandEventStash (Man p = null, EntityAI e = NULL, InventoryLocation dst = NULL) { m_EventID = HandEventID.STASH; }
-};
-
 class HandEventDrop extends HandEventBase
 {
 	void HandEventDrop (Man p = null, EntityAI e = NULL) { m_EventID = HandEventID.DROP; }
@@ -165,9 +163,14 @@ class HandEventSwap extends HandEventBase
 	
 	override bool CheckRequest ()
 	{
-		bool test1 = GameInventory.CheckSwapItemsRequest(m_Player, m_Entity, m_Player.GetHumanInventory().GetEntityInHands());
-		bool test2 = GameInventory.CanSwapEntities(m_Entity, m_Player.GetHumanInventory().GetEntityInHands());
-		return test1 && test2;
+		EntityAI inHands = m_Player.GetHumanInventory().GetEntityInHands();
+		if (m_Entity && inHands)
+		{
+			bool test1 = GameInventory.CheckSwapItemsRequest(m_Player, m_Entity, inHands);
+			bool test2 = GameInventory.CanSwapEntities(m_Entity, inHands);
+			return test1 && test2;
+		}
+		return false;
 	}
 };
 class HandEventForceSwap extends HandEventBase
@@ -193,15 +196,22 @@ class HandEventForceSwap extends HandEventBase
 	
 	override bool CheckRequest ()
 	{
-		bool test1 = GameInventory.CheckSwapItemsRequest(m_Player, m_Entity, m_Player.GetHumanInventory().GetEntityInHands());
-		bool test2 = GameInventory.CanForceSwapEntities(m_Entity, m_Player.GetHumanInventory().GetEntityInHands(), m_Dst);
-		return test1 && test2;
+		EntityAI inHands = m_Player.GetHumanInventory().GetEntityInHands();
+		if (m_Entity && inHands && m_Dst && m_Dst.IsValid())
+		{
+			bool test1 = GameInventory.CheckSwapItemsRequest(m_Player, m_Entity, inHands);
+			bool test2 = GameInventory.CanForceSwapEntities(m_Entity, inHands, m_Dst);
+			return test1 && test2;
+		}
+		return false;
 	}
 };
 
 class HandEventDestroy extends HandEventBase
 {
 	void HandEventDestroy (Man p = null, EntityAI e = NULL) { m_EventID = HandEventID.DESTROY; }
+	
+	override bool IsServerSideOnly () { return true; }
 };
 
 class HandEventCreated extends HandEventBase
@@ -220,7 +230,7 @@ class HandEventDestroyAndReplaceWithNew extends HandEventBase
 	ref ReplaceItemWithNewLambdaBase m_Lambda;
 
 	void HandEventDestroyAndReplaceWithNew (Man p = null, EntityAI e = NULL, ReplaceItemWithNewLambdaBase lambda = NULL) { m_EventID = HandEventID.REPLACE; m_Lambda = lambda; }
-	
+
 	override void ReadFromContext (ParamsReadContext ctx)
 	{
 		super.ReadFromContext(ctx);
@@ -234,6 +244,13 @@ class HandEventDestroyAndReplaceWithNew extends HandEventBase
 		// @TODO: lambda?
 	}
 	override bool IsSwapEvent () { return true; }
+	override bool IsServerSideOnly () { return true; }
+};
+
+class HandEventDestroyAndReplaceWithNewElsewhere extends HandEventDestroyAndReplaceWithNew
+{
+	void HandEventDestroyAndReplaceWithNewElsewhere (Man p = null, EntityAI e = NULL, ReplaceItemWithNewLambdaBase lambda = NULL) { m_EventID = HandEventID.REPLACE2; m_Lambda = lambda; }
+	override bool IsServerSideOnly () { return true; }
 };
 
 class HandEventReplaced extends HandEventBase
@@ -241,14 +258,33 @@ class HandEventReplaced extends HandEventBase
 	void HandEventReplaced (Man p = null, EntityAI e = NULL) { m_EventID = HandEventID.REPLACED; }
 };
 
-class HandEventLock extends HandEventBase
+// anim events
+
+class HandAnimEventChanged extends HandEventBase
 {
-	void HandEventLock (Man p = null, EntityAI e = NULL) { m_EventID = HandEventID.LOCK; }
+	void HandAnimEventChanged (Man p = null, EntityAI e = NULL) { m_EventID = HandEventID.ANIMEVENT_CHANGE_HIDE; }
 };
 
-class HandEventUnlock extends HandEventBase
+HandEventBase HandAnimEventFactory (WeaponEvents type, Man p = null, EntityAI e = NULL)
 {
-	void HandEventUnlock (Man p = null, EntityAI e = NULL) { m_EventID = HandEventID.UNLOCK; }
+	switch (type)
+	{
+		case WeaponEvents.CHANGE_HIDE: return new HandAnimEventChanged(p, e);
+	}
+	return NULL;
+}
+
+/**@brief		triggered when animation action finishes
+ **/
+class HandEventHumanCommandActionFinished extends HandEventBase
+{
+	void HandEventHumanCommandActionFinished (Man p = null, EntityAI e = NULL) { m_EventID = HandEventID.HUMANCOMMAND_ACTION_FINISHED; }
+};
+/**@brief		triggered when animation action aborts
+ **/
+class HandEventHumanCommandActionAborted extends HandEventBase
+{
+	void HandEventHumanCommandActionAborted (Man p = null, EntityAI e = NULL) { m_EventID = HandEventID.HUMANCOMMAND_ACTION_ABORTED; }
 };
 
 ///@} events

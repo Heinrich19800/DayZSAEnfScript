@@ -34,7 +34,7 @@ class RainProcurementManager
 		{
 			if ( m_ProcuringItem.GetQuantity() < m_ProcuringItem.GetQuantityMax() )
 			{
-				m_ProcuringItem.AddQuantity( fill_per_update );
+				Liquid.FillContainerEnviro( m_ProcuringItem, LIQUID_WATER, fill_per_update );
 
 				//Print( "Quantity of " + m_ProcuringItem + " is: " +  m_ProcuringItem.GetQuantity() );
 			}

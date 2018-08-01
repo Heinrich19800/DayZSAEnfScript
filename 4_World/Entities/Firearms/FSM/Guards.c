@@ -75,6 +75,23 @@ class WeaponGuardJammed extends WeaponGuardBase
 	}
 };
 
+class WeaponGuardIsDestroyed extends WeaponGuardBase
+{
+	protected Weapon_Base m_weapon;
+	void WeaponGuardIsDestroyed (Weapon_Base w = NULL) { m_weapon = w; }
+
+	override bool GuardCondition (WeaponEventBase e)
+	{
+		if (m_weapon.IsDamageDestroyed())
+		{
+			wpnDebugPrint("[wpnfsm] guard - weapon destroyed");
+			return true;
+		}
+		wpnDebugPrint("[wpnfsm] guard - weapon not destroyed");
+		return false;
+	}
+}
+
 class WeaponGuardHasAmmo extends WeaponGuardBase
 {
 	protected Weapon_Base m_weapon;
@@ -301,6 +318,15 @@ class WeaponGuardMagazinesHaveEqualSizes extends WeaponGuardBase
 		}
 		Error("[wpnfsm] guard - mag == NULL or mag2 == NULL, cannot perform comparison");
 		return false;
+	}
+};
+
+class WeaponGuardWeaponManagerWantContinue extends WeaponGuardBase
+{
+	override bool GuardCondition (WeaponEventBase e)
+	{
+		PlayerBase player = PlayerBase.Cast(e.m_player);
+		return player.GetWeaponManager().WantContinue();
 	}
 };
 

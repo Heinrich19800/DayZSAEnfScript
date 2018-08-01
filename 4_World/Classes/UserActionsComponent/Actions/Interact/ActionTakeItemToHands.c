@@ -5,8 +5,8 @@ class ActionTakeItemToHands: ActionInteractBase
 	void ActionTakeItemToHands()
 	{
 		m_MessageSuccess    = "";
-		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_TAKEITEM;
-		m_CommandUIDProne	= DayZPlayerConstants.CMD_ACTIONFB_TAKEITEM;
+		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS;
+		m_CommandUIDProne	= DayZPlayerConstants.CMD_ACTIONFB_PICKUP_HANDS;
 		m_HUDCursorIcon     = CursorIcons.LootCorpse;
 	}
 
@@ -33,27 +33,49 @@ class ActionTakeItemToHands: ActionInteractBase
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
-		EntityAI entity;
+		ItemBase tgt_item = ItemBase.Cast( target.GetObject() );
+		if ( tgt_item && !tgt_item.IsTaketable() ) return false;
+		if ( tgt_item && tgt_item.IsBeingPlaced() ) return false;
 
-		if ( Class.CastTo(entity, target.GetObject()) && !target.GetParent() )
+		if ( player.GetCommand_Vehicle() )
+			return false;
+		
+		EntityAI tgt_parent = EntityAI.Cast( target.GetParent() );
+		EntityAI tgt_entity = EntityAI.Cast( target.GetObject() );
+
+		if ( (tgt_entity && !tgt_entity.GetParent()) || ( tgt_parent && tgt_parent.GetInventory().CanRemoveAttachment( tgt_entity ) ) )
 		{
-			if ( entity && entity.IsItemBase() && !player.GetInventory().CanAddEntityIntoInventory(entity) && player.GetInventory().CanAddEntityIntoHands(entity) && entity.GetHierarchyRootPlayer() != player )
+			if ( tgt_entity && tgt_entity.IsItemBase() && !player.GetInventory().CanAddEntityIntoInventory(tgt_entity) && player.GetInventory().CanAddEntityIntoHands(tgt_entity) && tgt_entity.GetHierarchyRootPlayer() != player )
 			{
 				return true;
 			}
 		}
 		return false;
 	}
-
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	
+	override bool CanContinue( ActionData action_data )
 	{
-		EntityAI ntarget = EntityAI.Cast(target.GetObject());
-		player.PredictiveTakeEntityToHands(ntarget);
+		return true;
+	}
+
+	override void OnExecuteServer( ActionData action_data )
+	{
+		if (!GetGame().IsMultiplayer())
+		{
+			ActionManagerClient am = ActionManagerClient.Cast(action_data.m_Player.GetActionManager());
+			am.UnlockInventory(action_data);
+		}
+		
+		EntityAI ntarget = EntityAI.Cast(action_data.m_Target.GetObject());
+		action_data.m_Player.PredictiveTakeEntityToHands(ntarget);
 	}
 	
-	override void OnCompleteClient( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnExecuteClient( ActionData action_data )
 	{
-		EntityAI ntarget = EntityAI.Cast(target.GetObject());
-		player.PredictiveTakeEntityToHands(ntarget);
+		ActionManagerClient am = ActionManagerClient.Cast(action_data.m_Player.GetActionManager());
+		am.UnlockInventory(action_data);
+
+		EntityAI ntarget = EntityAI.Cast(action_data.m_Target.GetObject());
+		action_data.m_Player.PredictiveTakeEntityToHands(ntarget);
 	}
 };

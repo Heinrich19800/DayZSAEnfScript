@@ -24,7 +24,7 @@ class ActionTurnOnTorch: ActionTurnOnWhileInHands
 		{
 			Torch target_torch = Torch.Cast( targetObject );
 			
-			if ( target_torch.GetCompEM().CanWork()  &&  !target_torch.GetCompEM().IsWorking() ) // also checks damage
+			if ( target_torch.CanIgnite()  &&  !target_torch.GetCompEM().IsWorking() ) // This also checks damage
 			{
 				if ( item.IsKindOf( "Matchbox" ) && item.GetQuantity() > 0 )
 				{
@@ -45,34 +45,34 @@ class ActionTurnOnTorch: ActionTurnOnWhileInHands
 		return false;
 	}
 
-	override void OnStartServer( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartServer( ActionData action_data )
 	{
-		if ( item != NULL && item.IsKindOf( "Matchbox" ) )
+		if ( action_data.m_MainItem != NULL && action_data.m_MainItem.IsKindOf( "Matchbox" ) )
 		{
-			item.PlaySound("matchboxStrike", 50);
+			action_data.m_MainItem.PlaySound("matchboxStrike", 50);
 		}
 	}
 	
-	override void OnStartClient( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartClient( ActionData action_data )
 	{
-		if ( item != NULL && item.IsKindOf( "Matchbox" ) )
+		if ( action_data.m_MainItem != NULL && action_data.m_MainItem.IsKindOf( "Matchbox" ) )
 		{
-			item.PlaySound("matchboxStrike", 50);
+			action_data.m_MainItem.PlaySound("matchboxStrike", 50);
 		}
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		if ( targetObject != NULL && targetObject.IsInherited(Torch) )
 		{
-			if ( item.IsKindOf( "Matchbox" ) )
+			if ( action_data.m_MainItem.IsKindOf( "Matchbox" ) )
 			{
-				item.AddQuantity(-1,true);
+				action_data.m_MainItem.AddQuantity(-1,true);
 			}
 			
 			Torch torch = Torch.Cast( targetObject );
-			torch.GetCompEM().SwitchOn();
+			torch.Ignite();
 		}
 	}
 };

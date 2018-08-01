@@ -50,7 +50,7 @@ class ActionPlaceFireplaceIndoor: ActionSingleUseBase
 				vector fire_point_pos_world = building.ModelToWorld( fire_point_pos );				
 				float fire_point_dist = vector.Distance( fire_point_pos_world, player.GetPosition() );
 				
-				//check point availability and distance from player
+				//check point availability and distance from action_data.m_Player
 				if ( building.IsPointAvailable( action_selection ) && fire_point_dist <= FIRE_POINT_MAX_DISTANCE )
 				{
 					return true;
@@ -61,69 +61,56 @@ class ActionPlaceFireplaceIndoor: ActionSingleUseBase
 		return false;
 	}
 	
-	override void OnStartServer( PlayerBase player, ActionTarget target, ItemBase item )
+	override void OnStartServer( ActionData action_data )
 	{
 		//get actual action_selection
-		BuildingWithFireplace building = BuildingWithFireplace.Cast( target.GetObject() );
-		string action_selection = building.GetActionComponentName(target.GetComponentIndex());
+		BuildingWithFireplace building = BuildingWithFireplace.Cast( action_data.m_Target.GetObject() );
+		string action_selection = building.GetActionComponentName(action_data.m_Target.GetComponentIndex());
 		
 		//get and set FireplacePoint reference
 		m_ActualFireplacePoint = building.GetFirePointByActionSelection( action_selection );
 	}
 	
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item /* fireplace in hands */, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		FireplaceBase fireplace_in_hands = FireplaceBase.Cast( item );
+		FireplaceBase fireplace_in_hands = FireplaceBase.Cast( action_data.m_MainItem );
 		
 		//get 'fire point pos' from 'fire point' memory point
 		string fire_point = m_ActualFireplacePoint.GetFirePoint();
-		BuildingWithFireplace building = BuildingWithFireplace.Cast( target.GetObject() );
+		BuildingWithFireplace building = BuildingWithFireplace.Cast( action_data.m_Target.GetObject() );
 		//
 		//set position and direction to fireplace_pointX
 		vector fire_point_pos = building.GetSelectionPosition( fire_point );
 		vector fire_point_pos_world = building.ModelToWorld( fire_point_pos );
 
-		//create fireplace indoor
-		FireplaceIndoor fireplace_indoor = FireplaceIndoor.Cast( GetDayZGame().CreateObject( "FireplaceIndoor", fire_point_pos_world ) );
+		FireplaceToIndoorsLambda lambda = new FireplaceToIndoorsLambda(fireplace_in_hands, "FireplaceIndoor", action_data.m_Player, fire_point_pos_world);
+		lambda.SetTransferParams(true, true, true);
+		action_data.m_Player.ServerReplaceItemInHandsWithNewElsewhere(lambda);
 
-		//transfer all required parameters to this object (damage, wetness)
-		//fireplace_indoor.SetPosition( fire_point_pos_world );
-		fireplace_indoor.SetHealth( "", "", fireplace_in_hands.GetHealth("", "") );
-		fireplace_indoor.SetWet( fireplace_in_hands.GetWet() );
-		
-		//transfer all cargo items to this object, position of all items must be preserved
-		//fireplace in hands cannot have any items in it but this can be changed in the future
-		Cargo cargo = fireplace_in_hands.GetInventory().GetCargo();
-		for ( int i = 0; i < cargo.GetItemCount(); i++ )
-		{	
-			EntityAI c = cargo.GetItem(i);
-			InventoryLocation srcc = new InventoryLocation;
-			if (c.GetInventory().GetCurrentInventoryLocation(srcc))
-			{
-				InventoryLocation dstc = new InventoryLocation;
-				dstc.SetCargo(fireplace_indoor, c, srcc.GetIdx(), srcc.GetRow(), srcc.GetCol());
-				player.ServerTakeEntityToTargetCargoEx(fireplace_indoor, c, srcc.GetIdx(), srcc.GetRow(), srcc.GetCol());
-			}
-		}
-		
-		//transfer all attachments to this object
-		int item_attachments_count = fireplace_in_hands.GetInventory().AttachmentCount();
-		for ( int j = 0; j < item_attachments_count; j++ )
-		{
-			EntityAI a = fireplace_in_hands.GetInventory().GetAttachmentFromIndex( 0 );
-			InventoryLocation srca = new InventoryLocation;
-			if (a.GetInventory().GetCurrentInventoryLocation(srca))
-			{
-				InventoryLocation dsta = new InventoryLocation;
-				dsta.SetAttachment(fireplace_indoor, a, srca.GetSlot());
-				player.ServerTakeEntityToTargetAttachmentEx(fireplace_indoor, a, srca.GetSlot());
-			}
-		}
-		
-		//set building settings (m_FireplacePoints) and fireplaceindoor settings
-		m_ActualFireplacePoint.SetObject( fireplace_indoor );
-		fireplace_indoor.SetFireplacePoint( m_ActualFireplacePoint );
-
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		//add to soft skills
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }
+
+
+class FireplaceToIndoorsLambda : TurnItemIntoItemLambda
+{
+	vector m_Pos;
+
+	void FireplaceToIndoorsLambda (EntityAI old_item, string new_item_type, PlayerBase player, vector pos)
+	{
+		m_Pos = pos;
+
+		InventoryLocation gnd = new InventoryLocation;
+		vector mtx[4];
+		Math3D.MatrixIdentity4(mtx);
+		mtx[3] = pos;
+		gnd.SetGround(NULL, mtx);
+		OverrideNewLocation(gnd);
+	}
+
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
+	{
+		super.CopyOldPropertiesToNew(old_item, new_item);
+	}
+};

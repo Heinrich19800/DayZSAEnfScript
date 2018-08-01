@@ -2,7 +2,7 @@ class ActionDefibrilateTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFIBRILATE);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.DEFIBRILATE);
 	}
 };
 
@@ -51,10 +51,10 @@ class ActionDefibrilateTarget: ActionContinuousBase
 		}
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		Defibrillator defib = Defibrillator.Cast( item );
-		PlayerBase target_player = PlayerBase.Cast( target.GetObject() );
+		Defibrillator defib = Defibrillator.Cast( action_data.m_MainItem );
+		PlayerBase target_player = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		
 		if ( target_player )
 		{	
@@ -62,10 +62,10 @@ class ActionDefibrilateTarget: ActionContinuousBase
 			{
 				defib.Discharge(target_player);
 				
-				float regain_energy = player.GetSoftSkillManager().SubtractSpecialtyBonus( defib.GetEnergyNeededToCharge(), this.GetSpecialtyWeight() );
+				float regain_energy = action_data.m_Player.GetSoftSkillManager().SubtractSpecialtyBonus( defib.GetEnergyNeededToCharge(), this.GetSpecialtyWeight() );
 				regain_energy = defib.GetEnergyNeededToCharge() - regain_energy;
 				
-				ItemBase battery = ItemBase.Cast( item.GetCompEM().GetEnergySource() );
+				ItemBase battery = ItemBase.Cast( action_data.m_MainItem.GetCompEM().GetEnergySource() );
 				
 				if (battery)
 				{
@@ -78,14 +78,14 @@ class ActionDefibrilateTarget: ActionContinuousBase
 			}
 			else
 			{
-				player.MessageImportant ( m_MessageStartFail );
+				action_data.m_Player.MessageImportant ( m_MessageStartFail );
 			}
 		}
 		else
 		{
-			player.MessageImportant ( m_MessageFail );
+			action_data.m_Player.MessageImportant ( m_MessageFail );
 		}
 		
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

@@ -11,8 +11,8 @@ class ActionEatPurificationTablets: ActionConsume
 		return AT_EAT_PURIFICATION_TABLETS;
 	}
 
-	override void ApplyModifiers( PlayerBase player, ActionTarget target, ItemBase item )
+	override void ApplyModifiers( ActionData action_data )
 	{
-		//player.m_ModifiersManager.ActivateModifier(eModifiers.MDF_CHEMICALPOISON);
+		//action_data.m_Player.m_ModifiersManager.ActivateModifier(eModifiers.MDF_CHEMICALPOISON);
 	}
 };

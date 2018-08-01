@@ -2,7 +2,7 @@ class ActionSplintTargetCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionComponent = new CAContinuousTime(UATimeSpent.APPLY_SPLINT);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(UATimeSpent.APPLY_SPLINT);
 	}
 };
 
@@ -38,14 +38,14 @@ class ActionSplintTarget: ActionContinuousBase
 		return "Apply splint";
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{	
-		PlayerBase ntarget = PlayerBase.Cast( target.GetObject() );
-		item.TransferModifiers(ntarget);
+		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
+		action_data.m_MainItem.TransferModifiers(ntarget);
 		ntarget.ApplySplint();
 		ntarget.m_NotifiersManager.DetachByType(NTF_FRACTURE);
-		item.Delete();
+		action_data.m_MainItem.Delete();
 
-		player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

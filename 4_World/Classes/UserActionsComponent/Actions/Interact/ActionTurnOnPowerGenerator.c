@@ -32,9 +32,9 @@ class ActionTurnOnPowerGenerator: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( PlayerBase player, ActionTarget target, ItemBase item, Param acdata )
+	override void OnCompleteServer( ActionData action_data )
 	{
-		Object targetObject = target.GetObject();
+		Object targetObject = action_data.m_Target.GetObject();
 		if (targetObject)
 		{
 			ItemBase target_IB = ItemBase.Cast( targetObject );
