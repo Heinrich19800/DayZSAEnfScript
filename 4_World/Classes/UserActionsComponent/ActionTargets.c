@@ -105,6 +105,11 @@ class ActionTarget
 	vector GetCursorHitPos()
 		{ return m_CursorHitPos; }
 	
+	void SetCursorHitPos(vector cursor_position)
+	{
+		m_CursorHitPos = cursor_position;
+	}
+	
 	private Object m_Object;		// object itself
 	private Object m_Parent;		// null or parent of m_Object
 	private int m_ComponentIndex;	// p3d Component ID or -1
@@ -382,12 +387,12 @@ class ActionTargets
 	
 	private void FilterObstructedObjects()
 	{
-		
 #ifdef DEVELOPER
 		if(m_Debug)
 			CleanupDebugShapes(obstruction);
 #endif
-		
+
+		int numObstructed = 0;		
 		int mCount = m_VicinityObjects.Count();
 		mCount--;
 		//! check if targets are not obstructed (eg.: wall)
@@ -399,10 +404,19 @@ class ActionTargets
 			//! check for object obstruction(if the object is not a proxy - has no parent)
 			if (object && !parent)
 			{
+				//! when the number of obstructed items is higher than OBSTRUCTED_COUNT_THRESHOLD
+				//! remove do no run obstruction check and skip these items
+				if (numObstructed > OBSTRUCTED_COUNT_THRESHOLD)
+				{
+					m_VicinityObjects.Remove(object);
+					continue;
+				}
+
 				//! obstruction check
 				if (IsObstructed(object))
 				{
 					m_VicinityObjects.Remove(object);
+					numObstructed++;
 				}
 			}		
 		}
@@ -600,6 +614,7 @@ class ActionTargets
 	private const float c_UtilityMaxDistFromRaySqr = 0.8 * 0.8;
 
 	//! p3d 
-	private const string CE_CENTER 		= "ce_center";
-	private const float HEIGHT_OFFSET 	= 0.2;
+	private const string CE_CENTER 					= "ce_center";
+	private const float HEIGHT_OFFSET 				= 0.2;
+	private const int OBSTRUCTED_COUNT_THRESHOLD	= 4;
 };

@@ -10,6 +10,7 @@ class OptionSelector extends OptionSelectorBase
 	{
 		m_Options				= { "Disabled", "Show", "Hide" };
 		m_ParentClass			= parent_c;
+		m_SelectorType			= 2;
 		if( current_index < 0 || current_index >= m_Options.Count() )
 		{
 			m_SelectedOptionIndex = 0;

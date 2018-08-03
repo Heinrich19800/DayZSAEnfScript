@@ -405,7 +405,8 @@ enum VideoCommand
 	REWIND,
 	POSITION,
 	REPEAT,
-	ISPLAYING
+	ISPLAYING,
+	KILL
 };
 
 class VideoWidget extends Widget

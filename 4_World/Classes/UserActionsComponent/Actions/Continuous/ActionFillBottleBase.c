@@ -61,7 +61,9 @@ class ActionFillBottleBase: ActionContinuousBase
 			return true;
 		if ( GetLiquidType( player,target,item ) != -1 && !player.IsPlacingLocal() )
 			return true;
-		
+		/*if ( item.GetQuantity() < item.GetQuantityMax() )
+			return true;
+		*/
 		return false;
 	}
 	
@@ -94,21 +96,50 @@ class ActionFillBottleBase: ActionContinuousBase
 		return false;
 	}
 	
-	/*override void OnCompleteLoopServer( ActionData action_data )
+	override void WriteToContext(ParamsWriteContext ctx, ActionData action_data)
 	{
-		//item.TransferModifiers(player);
-		Param1<float> nacdata;
-		Class.CastTo(nacdata,  action_data.m_ActionComponent.GetACData() );
-		float delta = nacdata.param1;
-		int liquid_type = GetLiquidType( action_data.m_Player,action_data.m_Target,action_data.m_MainItem );
-		Liquid.FillContainerEnviro( action_data.m_MainItem, liquid_type, delta );
-
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-	}*/
+		super.WriteToContext(ctx, action_data);
+		
+		if( HasTarget() )
+		{
+			ctx.Write(action_data.m_Target.GetCursorHitPos()); //sends cursor pos for pond recognition
+		}
+	}
 	
-	/*override void OnCancelServer( ActionData action_data )
+	override bool ReadFromContext(ParamsReadContext ctx, ActionData action_data )
+	{		
+		super.ReadFromContext(ctx, action_data);
+		
+		if( HasTarget() )
+		{
+			vector cursor_position;
+			if ( !ctx.Read(cursor_position) )
+				return false;
+			action_data.m_Target.SetCursorHitPos(cursor_position);
+		}
+		return true;
+	}
+
+	
+	//TODO
+	/*protected void CreateAndSetupActionCallback( ActionData action_data )
 	{
-		OnCompleteLoopServer(action_data);
+		//Print("ActionBase.c | CreateAndSetupActionCallback | DBG ACTION CALLBACK CREATION CALLED");
+		ActionBaseCB callback;
+		if (  IsFullBody(action_data.m_Player) )
+		{
+			Class.CastTo(callback, action_data.m_Player.StartCommand_Action(GetActionCommand(action_data.m_Player),GetCallbackClassTypename(),GetStanceMask(action_data.m_Player)));	
+			//Print("ActionBase.c | CreateAndSetupActionCallback |  DBG command starter");		
+		}
+		else
+		{
+			Class.CastTo(callback, action_data.m_Player.AddCommandModifier_Action(GetActionCommand(action_data.m_Player),GetCallbackClassTypename()));
+			//Print("ActionBase.c | CreateAndSetupActionCallback |  DBG command modif starter: "+callback.ToString()+"   id:"+GetActionCommand().ToString());
+			
+		}
+		callback.SetActionData(action_data); 
+		callback.InitActionComponent(); //jtomasik - tohle mozna patri do constructoru callbacku?
+		action_data.m_Callback = callback;
 	}*/
 	
 	int GetLiquidType( PlayerBase player, ActionTarget target, ItemBase item )

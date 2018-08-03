@@ -753,7 +753,8 @@ class DayZPlayerImplement extends DayZPlayer
 		if (hic.IsSightChange()) // || sightChange)
 		{
 			HumanItemAccessor 	hia = GetItemAccessor();
-			if (hia.IsItemInHandsWeapon())
+			PlayerBase playerPB = PlayerBase.Cast(this);
+			if (hia.IsItemInHandsWeapon() && playerPB.GetWeaponManager() && !playerPB.GetWeaponManager().IsRunning() )
 			{
 				Weapon_Base weapon = Weapon_Base.Cast(GetHumanInventory().GetEntityInHands());
 				ItemOptics optic = weapon.GetAttachedOptics();

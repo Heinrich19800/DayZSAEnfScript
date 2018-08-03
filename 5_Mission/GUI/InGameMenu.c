@@ -13,9 +13,11 @@ class InGameMenu extends UIScriptedMenu
 			IngameHud hud = IngameHud.Cast( mission.GetHud() );
 			if ( hud )
 			{
-				hud.ToggleHud( g_Game.GetProfileOption( EDayZProfilesOptions.HUD ), true );
+				hud.ToggleHud( hud.GetHudState(), true );
+				hud.ToggleQuickBar( hud.GetQuickBarState(), true );
 			}
 		}
+		
 		UnlockControls();
 	}
 
@@ -27,7 +29,7 @@ class InGameMenu extends UIScriptedMenu
 		GetGame().GetVersion(version);
 		
 		TextWidget version_widget;
-		Class.CastTo(version_widget, layoutRoot.FindAnyWidget("VersionTextWidget"));
+		Class.CastTo(version_widget, layoutRoot.FindAnyWidget("version"));
 		version_widget.SetText("#main_menu_version " + version);
 
 		#ifdef PREVIEW_BUILD
@@ -73,6 +75,7 @@ class InGameMenu extends UIScriptedMenu
 			if ( hud )
 			{
 				hud.ToggleHud( false, true );
+				hud.ToggleQuickBar( false, true );
 			}
 		}
 		return layoutRoot;
@@ -127,7 +130,6 @@ class InGameMenu extends UIScriptedMenu
 			{
 				// skip logout screen in singleplayer
 				GetGame().GetMission().AbortMission();
-				GetGame().GetUIManager().ShowDialog("Quit", "Tralala?", 6666, DBT_OK, DBB_OK, DMT_QUESTION, null);
 			}	
 			g_Game.CancelQueueTime();
 			return true;

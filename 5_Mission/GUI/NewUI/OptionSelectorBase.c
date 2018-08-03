@@ -1,5 +1,6 @@
 class OptionSelectorBase extends ScriptedWidgetEventHandler
 {
+	protected int							m_SelectorType = 0;
 	protected Widget						m_Parent;
 	protected Widget						m_Root;
 	protected Widget						m_DisablePanel;
@@ -28,7 +29,7 @@ class OptionSelectorBase extends ScriptedWidgetEventHandler
 		{
 			Darken( w, x, y );
 			if( m_ParentClass )
-				m_ParentClass.OnFocus( m_Root.GetParent(), x, y );
+				m_ParentClass.OnFocus( m_Root.GetParent(), -1, y );
 			return true;
 		}
 		return false;
@@ -53,7 +54,7 @@ class OptionSelectorBase extends ScriptedWidgetEventHandler
 		{
 			Darken( w, x, y );
 			if( m_ParentClass )
-				m_ParentClass.OnFocus( w, x, y );
+				m_ParentClass.OnFocus( w, -1, y );
 			return true;
 		}
 		return false;
@@ -99,7 +100,11 @@ class OptionSelectorBase extends ScriptedWidgetEventHandler
 			m_Parent.SetAlpha( 1 );
 		}
 		
-		SetFocus( m_Root );
+		#ifdef PLATFORM_CONSOLE
+			SetFocus( m_Parent );
+		#else
+			SetFocus( m_Root );
+		#endif
 		m_Parent.SetAlpha( 1 );
 	}
 	

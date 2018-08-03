@@ -66,7 +66,14 @@ class ActionViewOptics : ActionContinuousBase
 		ItemOptics optic;
 		if( Class.CastTo(optic, action_data.m_MainItem) )
 		{
-			EnterOptics(optic, action_data.m_Player);
+			if (!optic.IsInOptics())
+			{
+				EnterOptics(optic, action_data.m_Player);
+			}
+			else
+			{
+				ExitOptics(optic, action_data.m_Player);
+			}
 		}
 	}
 	
@@ -75,32 +82,21 @@ class ActionViewOptics : ActionContinuousBase
 		ItemOptics optic;
 		if( Class.CastTo(optic, action_data.m_MainItem) )
 		{
-			EnterOptics(optic, action_data.m_Player);
-		}
-	}
-	
-	override void OnCancelClient( ActionData action_data )
-	{
-		ItemOptics optic;
-		if( Class.CastTo(optic, action_data.m_MainItem) /*&& optic.IsInOptics()*/ )
-		{
-			ExitOptics(optic, action_data.m_Player);
-		}
-	}
-	
-	override void OnCancelServer( ActionData action_data )
-	{
-		ItemOptics optic;
-		if( Class.CastTo(optic, action_data.m_MainItem) /*&& optic.IsInOptics()*/ )
-		{
-			ExitOptics(optic, action_data.m_Player);
+			if (!optic.IsInOptics())
+			{
+				EnterOptics(optic, action_data.m_Player);
+			}
+			else
+			{
+				ExitOptics(optic, action_data.m_Player);
+			}
 		}
 	}
 	
 	override void OnCompleteClient( ActionData action_data )
 	{
 		ItemOptics optic;
-		if( Class.CastTo(optic, action_data.m_MainItem) /*&& optic.IsInOptics()*/ )
+		if( Class.CastTo(optic, action_data.m_MainItem) )
 		{
 			ExitOptics(optic, action_data.m_Player);
 		}
@@ -109,24 +105,12 @@ class ActionViewOptics : ActionContinuousBase
 	override void OnCompleteServer( ActionData action_data )
 	{
 		ItemOptics optic;
-		if( Class.CastTo(optic, action_data.m_MainItem) /*&& optic.IsInOptics()*/ )
-		{
-			ExitOptics(optic, action_data.m_Player);
-		}
-	}
-	
-	override void OnContinuousCancel(ActionData action_data)
-	{
-		super.OnContinuousCancel(action_data);
-		
-		ItemOptics optic;
 		if( Class.CastTo(optic, action_data.m_MainItem) )
 		{
 			ExitOptics(optic, action_data.m_Player);
 		}
 	}
 	
-	// once disallowed battery-powered optics without power source, but not anymore? 
 	bool CanWork(ItemBase item)
 	{
 		//return true;

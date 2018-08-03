@@ -15,10 +15,11 @@ class OptionSelectorSlider extends OptionSelectorBase
 		#endif
 		#endif
 		
+		m_SelectorType				= 1;
 		m_ParentClass				= parent_menu;
 		m_Slider					= SliderWidget.Cast( m_Root.FindAnyWidget( "option_value" ) );
 		m_Slider.SetCurrent( value );
-		
+		//m_Parent.SetFlags( WidgetFlags.NOFOCUS );
 		m_DisablePanel				= m_Parent.GetParent().FindAnyWidget( m_Parent.GetName() + "_disable" );
 		
 		m_MinValue					= min;
@@ -100,7 +101,20 @@ class OptionSelectorSlider extends OptionSelectorBase
 		if( !m_Enabled )
 			return;
 		
-		super.Darken( w, x, y );
+		if( w.GetParent() == m_Root )
+		{
+			m_Parent.SetAlpha( 1 );
+		}
+		
+		if( GetFocus() != m_Slider )
+		{
+			SetFocus( m_Slider );
+			return;
+		}
+		
+		m_Parent.SetFlags( WidgetFlags.NOFOCUS );
+		
+		m_Parent.SetAlpha( 1 );
 		
 		TextWidget text_label;
 		if( w.GetParent().GetParent() == m_Root )
@@ -129,6 +143,8 @@ class OptionSelectorSlider extends OptionSelectorBase
 		{
 			return;
 		}
+		
+		m_Parent.ClearFlags( WidgetFlags.NOFOCUS );
 		
 		TextWidget text_label;
 		if( w.GetParent().GetParent() == m_Root )

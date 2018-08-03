@@ -72,6 +72,11 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		delete m_Root;
 	}
 	
+	Widget GetRoot()
+	{
+		return m_Root;
+	}
+	
 	override bool OnClick( Widget w, int x, int y, int button )
 	{
 		#ifdef PLATFORM_CONSOLE
@@ -143,7 +148,6 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	void Focus()
 	{
-		SetFocus( m_Root );
 		OnFocus( m_Root, 0, 0 );
 	}
 	
@@ -154,18 +158,21 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	override bool OnFocus( Widget w, int x, int y )
 	{
-		if( IsFocusable( w ) )
+		if( !m_Selected )
 		{
-			Darken( w, x, y );
-		}
-#ifdef PLATFORM_CONSOLE
-		if( w == m_Root )
-		{
-			Select();
-			ServerListFocus( true );
+			if( IsFocusable( w ) )
+			{
+				Darken( w, x, y );
+			}
+			#ifdef PLATFORM_CONSOLE
+			if( w == m_Root )
+			{
+				Select();
+				ServerListFocus( true );
+			}
+			#endif
 			return true;
 		}
-#endif
 		return false;
 	}
 	
@@ -197,7 +204,6 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		
 		SetName( server_info.m_Name );
 		SetPasswordLocked( server_info.m_IsPasswordProtected );
-		Print( server_info.m_IsPasswordProtected );
 		SetPopulation( server_info.m_CurrentNumberPlayers, server_info.m_MaxPlayers );
 		SetSlots( server_info.m_MaxPlayers );
 		SetPing( -1 );
@@ -382,11 +388,12 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		return m_IsExpanded;
 	}
 	
-	void Select()
+	void Select( bool notify = true )
 	{
-		if( !m_Selected )
+		//if( !m_Selected )
 		{
-			m_Tab.SelectServer( this );
+			if( notify )
+				m_Tab.SelectServer( this );
 			m_Selected = true;
 			#ifdef PLATFROM_XBOX
 				m_Root.SetColor( ARGBF( m_Root.GetAlpha(), 0.3, 0.3, 0.3 ) );
@@ -408,6 +415,7 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	void Darken( Widget w, int x, int y )
 	{
 		SetFocus( m_Root );
+		
 		if( m_Selected )
 			return;
 		if( w == m_Root || w == m_Favorite || w == m_Expand )

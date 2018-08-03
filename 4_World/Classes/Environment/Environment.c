@@ -223,6 +223,9 @@ class Environment
 				m_IsInWater = false;
 			break;
 		}
+
+		//! sync info about water contact to player
+		m_Player.SetInWater(m_IsInWater);
 	}
 	
 	protected void CheckInsideBuilding()

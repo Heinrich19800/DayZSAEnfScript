@@ -36,6 +36,11 @@ class PlayerStats
 	
 	void PlayerStats(Man player)
 	{
+		Init(player);
+	}
+
+	void Init(Man player)
+	{
 		m_PlayerStats 	= new array<ref PlayerStatBase>;
 		m_Player 		= player;
 		
@@ -69,7 +74,6 @@ class PlayerStats
 		RegisterStat(EPlayerStats.SPECIALTY,  		new PlayerStat<float>	(-1,					1,						0,						"Specialty",		EPSstatsFlags.EMPTY) );
 		RegisterStat(EPlayerStats.BLOODTYPE,  		new PlayerStat<int>		(0,						7,				BloodTypes.GenerateBloodType(),	"BloodType",		EPSstatsFlags.EMPTY) );
 	}
-
 
 	void ~PlayerStats()
 	{

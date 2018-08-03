@@ -58,6 +58,7 @@ class PlayerBase extends ManBase
 	protected float 				m_dT;
 	protected int 					m_RecipePick;
 	protected bool					m_IsHoldingBreath;
+	protected bool					m_IsInWater;
 	bool							m_EntitySwapped; //TODO revise whole switching system, might not use "MiscGameplayFunctions.TurnItemIntoItem" correctly
 	float							m_LastPostFrameTickTime;
 	int m_Time;
@@ -263,6 +264,7 @@ class PlayerBase extends ManBase
 		RegisterNetSyncVariableInt("m_SoundEvent",0,31);
 		RegisterNetSyncVariableInt("m_StaminaState",0,7);
 		RegisterNetSyncVariableBool("m_IsUnconscious");
+		RegisterNetSyncVariableBool("m_IsInWater");
 		RegisterNetSyncVariableInt("m_ShockSimplified",0, SIMPLIFIED_SHOCK_CAP);
 		
 		
@@ -333,7 +335,7 @@ class PlayerBase extends ManBase
 	override void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, string component, string ammo, vector modelPos)
 	{
 		super.EEHitBy(damageResult, damageType, source, component, ammo, modelPos);
-		if( damageResult.GetDamage(component, "Shock") > 0)
+		if( damageResult != null && damageResult.GetDamage(component, "Shock") > 0)
 		{
 			m_LastShockHitTime = GetGame().GetTime();
 		}
@@ -341,7 +343,7 @@ class PlayerBase extends ManBase
 		
 		//new bleeding computation
 		//---------------------------------------
-		if ( GetBleedingManager() && damageResult != null )
+		if ( damageResult != null && GetBleedingManager() )
 		{
 			float dmg = damageResult.GetDamage(component, "Blood");
 			GetBleedingManager().ProcessHit(dmg, component, ammo, modelPos);
@@ -1071,6 +1073,18 @@ class PlayerBase extends ManBase
 	}
 	*/
 
+	//! water contact (driven by Environment)
+	void SetInWater(bool pState)
+	{
+		m_IsInWater = pState;
+		SetSynchDirty();
+	}
+
+	bool IsInWater()
+	{
+		return m_IsInWater;
+	}
+
 	// -------------------------------------------------------------------------
 	void ~PlayerBase()
 	{
@@ -1375,9 +1389,10 @@ class PlayerBase extends ManBase
 		{
 			m_WeaponManager.Update(pDt);
 		}
-		if( m_EmoteManager ) 
+		if( m_EmoteManager && IsPlayerSelected() ) 
 		{
 			m_EmoteManager.Update(pDt);	
+			//Print("selected! " + IsPlayerSelected());
 		}
 /*		if( m_VehicleManager ) 
 		{
@@ -1611,6 +1626,7 @@ class PlayerBase extends ManBase
 	
 	void OnUnconsciousStart()
 	{
+		CloseInventoryMenu();
 		if( GetInventory() ) GetInventory().LockInventory(LOCK_FROM_SCRIPT);
 		
 		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT)//server
@@ -2996,9 +3012,9 @@ class PlayerBase extends ManBase
 		if( GetGame().IsClient() || !GetGame().IsMultiplayer() )
 		{
 			UIScriptedMenu menu = GetGame().GetUIManager().GetMenu();
-			if( menu && menu.GetID() == MENU_INVENTORY )
+			if( menu && ( menu.GetID() == MENU_INVENTORY || menu.GetID() == MENU_INSPECT ) )
 			{
-				GetGame().GetUIManager().Back();
+				GetGame().GetUIManager().CloseAll();
 			}
 		}
 	}

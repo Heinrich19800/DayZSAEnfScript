@@ -1,4 +1,4 @@
-class MainMenusfeed extends ScriptedWidgetEventHandler
+class MainMenuNewsfeed extends ScriptedWidgetEventHandler
 {
 	protected Widget		m_Root;
 	
@@ -20,7 +20,7 @@ class MainMenusfeed extends ScriptedWidgetEventHandler
 	protected TextWidget	m_SecText1;
 	protected TextWidget	m_SecText2;
 	
-	void MainMenusfeed( Widget root )
+	void MainMenuNewsfeed( Widget root )
 	{
 		m_Root			= root;
 		

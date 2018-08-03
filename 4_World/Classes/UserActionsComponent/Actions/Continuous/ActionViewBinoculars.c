@@ -17,18 +17,22 @@ class ActionViewBinoculars : ActionViewOptics
 		return "Use binoculars";
 	}
 	
-	// TODO: Rangefinder does not measure ATM
 	override void EnterOptics(ItemOptics optic, PlayerBase player)
 	{
 		optic.EnterOptics();
 		optic.HideSelection("hide");
 		if ( optic.HasEnergyManager() )
 		{
-			optic.GetCompEM().SwitchOn();
-			/*if ( GetGame().IsClient() )
-			{*/
-				Rangefinder.Cast(optic).StartPeriodicMeasurement(player);
-			//}
+			if ( GetGame().IsServer() )
+			{
+				Rangefinder rf = Rangefinder.Cast(optic);				
+				rf.GetCompEM().SwitchOn();
+			}
+			else
+			{
+				Rangefinder rf_client = Rangefinder.Cast(optic);		
+				rf_client.SetPlayer(player);
+			}
 		}
 	}
 	
@@ -38,11 +42,16 @@ class ActionViewBinoculars : ActionViewOptics
 		optic.ExitOptics();
 		if ( optic.HasEnergyManager() )
 		{
-			optic.GetCompEM().SwitchOff();
-			/*if ( GetGame().IsClient() )
-			{*/
-				Rangefinder.Cast(optic).StopPeriodicMeasurement();
-			//}
+			if ( GetGame().IsServer() )
+			{
+				Rangefinder rf = Rangefinder.Cast(optic);
+				rf.GetCompEM().SwitchOff();
+			}
+			else
+			{
+				Rangefinder rf_client = Rangefinder.Cast(optic);		
+				rf_client.SetPlayer(NULL);
+			}
 		}
 	}
 }

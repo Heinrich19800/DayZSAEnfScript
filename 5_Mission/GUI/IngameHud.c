@@ -793,7 +793,7 @@ class IngameHud extends Hud
 		return m_quickbar;
 	}
 	
-	void ShowQuickbar()
+	void ShowQuickbar( bool ignore_state = false )
 	{
 #ifdef PLATFORM_XBOX
 		return;
@@ -821,7 +821,10 @@ class IngameHud extends Hud
 				m_fade_timers.Clear();
 				
 				m_quickbar_widget.Show( true );
-				m_QuickbarState = true;
+				if ( !ignore_state )
+				{
+					m_QuickbarState = true;
+				}
 				
 				while (child)
 				{
@@ -864,15 +867,15 @@ class IngameHud extends Hud
 		}
 	}
 	
-	void ToggleQuickBar( bool show )
+	void ToggleQuickBar( bool show, bool ignore_state = false )
 	{
 		if ( show )
 		{
-			ShowQuickbar();
+			ShowQuickbar( ignore_state );
 		}
 		else
 		{
-			HideQuickbar( false, true );
+			HideQuickbar( false, ignore_state );
 		}
 	}
 	

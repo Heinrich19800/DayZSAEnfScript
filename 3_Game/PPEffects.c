@@ -271,6 +271,16 @@ class PPEffects
 	{
 		GetGame().ResetPPMask();
 	}
+	
+	static void ResetDOFOverride()
+	{
+		OverrideDOF(false,0,0,0,0,0);
+	}
+	
+	static void ResetLensEffect()
+	{
+		SetLensEffect(0,0,0,0);
+	}
 
 	static void HitEffect(float overlay)
 	{
@@ -336,6 +346,9 @@ class PPEffects
 		ResetBlurEffects();
 		ResetColorEffects();
 		ResetVignette();
+		ResetPPMask();
+		ResetDOFOverride();
+		ResetLensEffect();
 		SetBloodSaturation(1);
 	}	
 };

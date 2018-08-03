@@ -52,10 +52,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	protected ScrollWidget									m_ServerListScroller;
 	protected Widget										m_ServerList;
 	
-	protected ref map<int, ref GetServersResultRowArray>	m_Entries;
+	 ref map<int, ref GetServersResultRowArray>	m_Entries;
 	
-	protected ref array<ref ServerBrowserPage>				m_Pages;
-	protected ref array<ref ServerBrowserEntry>				m_EntryWidgets;
+	 ref array<ref ServerBrowserPage>				m_Pages;
+	 ref array<ref ServerBrowserEntry>				m_EntryWidgets;
 
 	protected ref ServerBrowserFilterContainer				m_Filters;
 	
@@ -67,9 +67,9 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	protected ESortOrder									m_SortOrder;
 	
 	protected SelectedPanel									m_SelectedPanel;
-	protected bool											m_Initialized;
-	protected bool											m_BegunLoading;
-	protected bool											m_Loading;
+	 bool											m_Initialized;
+	 bool											m_BegunLoading;
+	 bool											m_Loading;
 	protected int											m_TotalServers;
 	protected int											m_TotalLoadedServers;
 	protected int											m_LastLoadedPage;
@@ -198,10 +198,37 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		return false;
 	}
 	
+	void ScrollToEntry( ServerBrowserEntry entry )
+	{
+		if( entry )
+		{
+			float x, y;
+			float x_s, y_s;
+			float x_l, y_l;
+			entry.GetRoot().GetParent().Update();
+			entry.GetRoot().Update();
+			entry.GetRoot().GetParent().GetParent().GetParent().GetScreenPos( x, y );
+			entry.GetRoot().GetParent().GetParent().GetParent().GetScreenSize( x_s, y_s );
+			float bottom_pos = y + y_s;
+			entry.GetRoot().GetScreenPos( x_l, y_l );
+			entry.GetRoot().GetScreenSize( x_s, y_s );
+			if( y_l + y_s >= bottom_pos )
+			{
+				m_ServerListScroller.VScrollToPos( m_ServerListScroller.GetVScrollPos() + y_s );
+			}
+			else if( y_l <= y )
+			{
+				m_ServerListScroller.VScrollToPos( m_ServerListScroller.GetVScrollPos() - y_s );
+			}
+		}
+	}
+	
 	void Focus()
 	{
-		if( m_EntryWidgets.Count() > m_CurrentLoadedPage )
+		if( m_EntryWidgets.Count() > m_CurrentSelectedServer )
+		{
 			m_EntryWidgets.Get( m_CurrentSelectedServer ).Focus();
+		}
 	}
 	
 	void FilterFocus( bool focus )
@@ -413,6 +440,34 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void SelectServer( ServerBrowserEntry server )
 	{
+		#ifdef PLATFORM_CONSOLE
+			if( m_EntryWidgets.Find( m_SelectedServer ) == 0 && m_EntryWidgets.Find( server ) != 1 )
+			{
+				//m_ServerListScroller.VScrollToPos01( 1 );
+				//m_SelectedServer = m_EntryWidgets.Get( m_EntryWidgets.Count() - 1 );
+				//m_Menu.SelectServer( m_SelectedServer );
+				//m_SelectedServer.Select( false );
+				m_SelectedServer.Darken( m_SelectedServer.GetRoot(), 0, 0 );
+				m_SelectedServer.Select( false );
+				m_SelectedServer.ServerListFocus( true );
+				return;
+			}
+			else if( m_EntryWidgets.Find( m_SelectedServer ) == m_EntryWidgets.Count() - 1 && m_EntryWidgets.Find( server ) != m_EntryWidgets.Count() - 2 )
+			{
+				//m_ServerListScroller.VScrollToPos01( 0 );
+				//m_SelectedServer = m_EntryWidgets.Get( 0 );
+				//m_Menu.SelectServer( m_SelectedServer );
+				//m_SelectedServer.Select( false );
+				m_SelectedServer.Darken( m_SelectedServer.GetRoot(), 0, 0 );
+				m_SelectedServer.Select( false );
+				m_SelectedServer.ServerListFocus( true );
+				return;
+			}
+			else
+			{
+				ScrollToEntry( server );
+			}
+		#endif
 		m_SelectedServer = server;
 		m_Menu.SelectServer( server );
 	}

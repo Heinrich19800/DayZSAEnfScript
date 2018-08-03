@@ -325,7 +325,7 @@ class ConnectionLost
 	}
 };
 
-typedef Param2<string, bool> DayZProfilesOption;
+typedef Param3<string, bool, bool> DayZProfilesOption;
 class DayZProfilesOptions
 {
 	private ref map<EDayZProfilesOptions, ref DayZProfilesOption> m_DayZProfilesOptions;
@@ -343,9 +343,18 @@ class DayZProfilesOptions
 			//! init of DayZProfilesOption - profileOptionName, value from Profiles files, or use default value
 			bool profileVal = GetGame().GetProfileValueBool(profileOptionName, def);
 
-			m_DayZProfilesOptions.Set(option, new DayZProfilesOption(profileOptionName, profileVal));
+			m_DayZProfilesOptions.Set(option, new DayZProfilesOption(profileOptionName, profileVal, def));
 			SetProfileOption(option, profileVal);
 		}
+	}
+	
+	void ResetOptions()
+	{
+		foreach ( EDayZProfilesOptions e_opt, ref DayZProfilesOption r_opt : m_DayZProfilesOptions )
+		{
+			bool profileVal = GetGame().GetProfileValueBool(r_opt.param1, r_opt.param3);
+			SetProfileOption(e_opt, profileVal);
+		}	
 	}
 	
 	void SetProfileOption(EDayZProfilesOptions option, bool value)
@@ -456,6 +465,8 @@ class DayZGame extends CGame
 	float 	m_volume_VOIP;
 	float 	m_volume_radio;
 	
+	private string m_MainMenuWorld;
+	
 	ref TIntArray demounit = new TIntArray;
 	
 	static ref ScriptInvoker Event_OnRPC = new ScriptInvoker();
@@ -463,6 +474,10 @@ class DayZGame extends CGame
 	// CGame override functions
 	void DayZGame()
 	{
+#ifdef PLATFORM_CONSOLE
+		SetMainMenuWorld("Staroye");
+#endif
+		
 		m_MissionState = MISSION_STATE_GAME;
 		
 		m_keyboard_handler = NULL;
@@ -521,6 +536,7 @@ class DayZGame extends CGame
 
 		m_DayZProfileOptions = new DayZProfilesOptions;
 		GetCallQueue(CALL_CATEGORY_GUI).Call(DeferredInit);
+		
 		//m_isTileSet = true;
 	}
 	
@@ -532,6 +548,25 @@ class DayZGame extends CGame
 		Print("~DayZGame()");
 	}
 	
+	// ------------------------------------------------------------
+	void SetMainMenuWorld(string world)
+	{
+		m_MainMenuWorld = world;
+	}
+	
+	// ------------------------------------------------------------
+	string GetMainMenuWorld()
+	{
+		return m_MainMenuWorld;
+	}
+	
+	// ------------------------------------------------------------
+	void ExitToMainMenu()
+	{
+		AbortMission(GetMainMenuWorld());
+	}
+	
+	// ------------------------------------------------------------
 	void DeferredInit()
 	{
 		RegisterProfilesOptions();
@@ -1159,7 +1194,7 @@ class DayZGame extends CGame
 		SetLoadState( DayZLoadState.MAIN_MENU_START );
 		
 		#ifdef PLATFORM_CONSOLE
-			StartRandomCutscene("Staroye");
+			StartRandomCutscene(GetMainMenuWorld());
 		#else
 			string worldName;
 			GetWorldName(worldName);
@@ -1239,6 +1274,7 @@ class DayZGame extends CGame
 	
 	void SelectGamepad()
 	{
+		m_DayZProfileOptions.ResetOptions();
 		BiosUserManager user_manager = GetGame().GetUserManager();
 		
 		if( user_manager )

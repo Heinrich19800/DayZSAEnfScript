@@ -178,14 +178,17 @@ class InGameMenuXbox extends UIScriptedMenu
 			GetGame().GetUIManager().ShowDialog("EXIT", "Are you sure you want to exit?", IDC_INT_EXIT, DBT_YESNO, DBB_YES, DMT_QUESTION, NULL);
 			return true;
 		case IDC_INT_RETRY:
-			if ( !GetGame().IsMultiplayer() )
+			if ( GetGame().IsMultiplayer() )
 			{
-				GetGame().GetUIManager().ShowDialog("#main_menu_restart", "Are you sure you want to restart?", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
+				Respawn();
+				
+				return true;
 			}
 			else
 			{
-				GetGame().GetUIManager().ShowDialog("#main_menu_respawn", "#main_menu_respawn_question", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
+				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RestartMission);
 			}
+			
 			return true;
 		case IDC_MAIN_ONLINE:
 			m_OnlineMenu.Show( true );
@@ -212,35 +215,26 @@ class InGameMenuXbox extends UIScriptedMenu
 		{
 			g_Game.CancelQueueTime();
 		}
-		else if ( code == IDC_INT_RETRY && result == DBB_YES )
-		{
-			if ( GetGame().IsMultiplayer() )
-			{
-				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RespawnPlayer);
-				//turns off dead screen, hides HUD for countdown
-				//---------------------------------------------------
-				PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
-				if(player)
-				{
-					GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(player.ShowDeadScreen, DayZPlayerImplement.DEAD_SCREEN_DELAY, false, false);
-				}
-				
-				MissionGameplay missionGP = MissionGameplay.Cast(GetGame().GetMission());
-				missionGP.DestroyAllMenus();
-				//---------------------------------------------------
-				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().GetMission().Continue);
-				
-				return true;
-			}
-			else
-			{
-				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RestartMission);
-			}
-			
-			return true;
-		}
 		
 		return false;
+	}
+	
+	void Respawn()
+	{
+		//turns off dead screen, hides HUD for countdown
+		//---------------------------------------------------
+		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+		if(player)
+		{
+			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(player.ShowDeadScreen, DayZPlayerImplement.DEAD_SCREEN_DELAY, false, false);
+		}
+		
+		GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RespawnPlayer);
+		
+		MissionGameplay missionGP = MissionGameplay.Cast(GetGame().GetMission());
+		missionGP.DestroyAllMenus();
+		//---------------------------------------------------
+		GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().GetMission().Continue);
 	}
 	
 	bool IsLocalPlayer( string uid )

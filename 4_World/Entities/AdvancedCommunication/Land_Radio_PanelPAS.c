@@ -13,25 +13,26 @@ class Land_Radio_PanelPAS extends PASBroadcaster
 	}
 	
 	//--- POWER EVENTS
+	override void OnWorkStart()
+	{
+		//turn off device
+		SwitchOn ( true ); // start send/receive voice
+	}
+	
 	override void OnWorkStop()
 	{
 		//turn off device
-		SwitchOn ( false );
+		SwitchOn ( false ); // stop send/receive voice
 	}
 	
 	//--- ACTION EVENTS
 	override void OnSwitchOn()
 	{
-		//turn device on
-		SwitchOn ( true );	
+		
 	}
 	
 	override void OnSwitchOff()
 	{
-		//turn device off
-		SwitchOn ( false );
 		
-		//turn device off
-		GetCompEM().SwitchOff();
 	}
 }

@@ -156,10 +156,10 @@ class MissionBase extends Mission
 			break;
 		case MENU_OPTIONS:
 #ifdef PLATFORM_CONSOLE
-			menu = new OptionsMenuXbox;
+			menu = new OptionsMenuNew;
 #else
 #ifdef PLATFORM_PS4
-			menu = new OptionsMenuXbox;
+			menu = new OptionsMenuNew;
 #else
 			menu = new OptionsMenu;
 #endif
@@ -243,6 +243,9 @@ class MissionBase extends Mission
 			break;
 		case MENU_CAMERA_TOOLS:
 			menu = new CameraToolsMenu;
+			break;
+		case MENU_VIDEO:
+			menu = new MainMenuVideo;
 			break;
 		}
 

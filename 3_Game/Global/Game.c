@@ -152,14 +152,14 @@ class CGame
 	*/
 	proto native int		ConnectLastSession( UIScriptedMenu parent , int selectedCharacter = -1 );
 	/**
-  \brief Disconnects from current multiplayer session
+  \brief Disconnects from current multiplayer session, leave world empty for using last mission world
 	*/
-	proto native void		DisconnectSession();
+	proto native void		DisconnectSession(string world = "");
 	
 	/**
-  \brief Forces disconnect from current multiplayer session even if not yet in the game
+  \brief Forces disconnect from current multiplayer session even if not yet in the game, leave world empty for using last mission world
 	*/
-	proto native void 		DisconnectSessionForce();
+	proto native void 		DisconnectSessionForce(string world = "");
 
 	// profile functions
 	/**
@@ -660,7 +660,8 @@ class CGame
 	//! Create only enforce script mission, used for mission script reloading 
 	proto protected native void		CreateMission(string path);
 	proto native void		RestartMission();
-	proto native void		AbortMission();
+	//! Returns to main menu, leave world empty for using last mission world
+	proto native void		AbortMission(string world = "");
 	proto native void		RespawnPlayer();
 	proto native bool		CanRespawnPlayer();
 

@@ -2,6 +2,7 @@ class OptionSelectorMultistate extends OptionSelector
 {
 	void OptionSelectorMultistate( Widget parent, int current_index, ScriptedWidgetEventHandler parent_c, bool disabled, notnull array<string> options )
 	{
+		m_SelectorType				= 2;
 		m_Options					= options;
 		if( options.Count() == 0 )
 		{

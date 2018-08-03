@@ -73,18 +73,21 @@ class PlayerConstants
 	const float HEALTH_REGEN_MAX					= 0.15;		//health regen rate at MAXIMUM blood level
 	
 	const float UNCONSCIOUS_THRESHOLD				= 25.0;		//player goes unconscious when we get under this threshold
-	const float CONSCIOUS_THRESHOLD					= 75.0;		//player regains consciousness when he gets above this threshold
+	const float CONSCIOUS_THRESHOLD					= 50.0;		//player regains consciousness when he gets above this threshold
 	
-	const float SHOCK_REFILL_CONSCIOS_SPEED			= 10;	//shock refill speed when the player is conscious
-	const float SHOCK_REFILl_UNCONSCIOUS_SPEED		= 0.1;  //shock refill speed when the player is unconscious
+	const float SHOCK_REFILL_CONSCIOS_SPEED			= 5;		//shock refill speed when the player is conscious
+	const float SHOCK_REFILl_UNCONSCIOUS_SPEED		= 1;		//shock refill speed when the player is unconscious
 	
-	const float SHOCK_DAMAGE_BLOOD_THRESHOLD_HIGH	= 2750; // we start dealing shock damage over time when we get at this value or lower
-	const float SHOCK_DAMAGE_BLOOD_THRESHOLD_LOW	= 2500; // the closer we get to this value, the higher the over time shock damage we deal
+	const float SHOCK_DAMAGE_BLOOD_THRESHOLD_HIGH	= 3000;		// we start dealing shock damage over time when we get at this value or lower
+	const float SHOCK_DAMAGE_BLOOD_THRESHOLD_LOW	= 2500; 	// the closer we get to this value, the higher the over time shock damage we deal
 	
-	const float SHOCK_DAMAGE_HIGH	= 11; // shock damage when the blood near the upper blood threshold
-	const float SHOCK_DAMAGE_LOW	= 10; // shock damage when the blood near the lower blood threshold
+	const float SHOCK_DAMAGE_HIGH	= 20; // shock damage per second when the blood is near the upper blood threshold
+	const float SHOCK_DAMAGE_LOW	= 20; // shock damage per second when the blood is near the lower blood threshold
 	
-	const float SHOCK_REFILL_COOLDOWN_AFTER_HIT = 15;
+	const float SHOCK_REFILL_COOLDOWN_AFTER_HIT = 15; // duration of cooldown during which shock regeneration is paused
 	
-	const float UNCONSCIOUS_IN_WATER_TIME_LIMIT_TO_DEATH	=	20;// how long can player survive while unconscious when in water in secs 
+	const float UNCONSCIOUS_IN_WATER_TIME_LIMIT_TO_DEATH	=	20;	// how long can player survive while unconscious when in water in secs 
+	//----------------------------------------------------------
+	const float BLEEDING_SOURCE_BLOODLOSS_PER_SEC = -6; // amount of blood loss per second from one bleeding source 
+	//----------------------------------------------------------
 }

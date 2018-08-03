@@ -1,7 +1,8 @@
 class MainMenu extends UIScriptedMenu
 {
-	protected ref MainMenusfeed	m_Newsfeed;
+	protected ref MainMenuNewsfeed	m_Newsfeed;
 	protected ref MainMenuStats		m_Stats;
+	protected ref MainMenuVideo		m_Video;
 	
 	protected MissionMainMenu		m_Mission;
 	protected DayZIntroScene 		m_Scene;
@@ -28,10 +29,6 @@ class MainMenu extends UIScriptedMenu
 	protected Widget				m_NewsSec2;
 	protected Widget				m_PrevCharacter;
 	protected Widget				m_NextCharacter;
-	
-	protected VideoWidget			m_Video;
-	protected ref Timer				m_VideoPlayTimer;
-	protected ref WidgetFadeTimer	m_VideoFadeTimer;
 
 	override Widget Init()
 	{
@@ -51,13 +48,11 @@ class MainMenu extends UIScriptedMenu
 		m_CharacterStatsClose		= layoutRoot.FindAnyWidget( "character_stats_close" );
 		m_PrevCharacter				= layoutRoot.FindAnyWidget( "prev_character" );
 		m_NextCharacter				= layoutRoot.FindAnyWidget( "next_character" );
-		
-		m_Video						= VideoWidget.Cast( layoutRoot.FindAnyWidget( "video" ) );
 
 		m_Version					= TextWidget.Cast( layoutRoot.FindAnyWidget( "version" ) );
 		m_CharacterRotationFrame	= layoutRoot.FindAnyWidget( "character_rotation_frame" );
 			
-		m_Newsfeed					= new MainMenusfeed( layoutRoot.FindAnyWidget( "news_feed_root" ) );
+		m_Newsfeed					= new MainMenuNewsfeed( layoutRoot.FindAnyWidget( "news_feed_root" ) );
 		m_Stats						= new MainMenuStats( layoutRoot.FindAnyWidget( "character_stats_root" ) );
 		
 		m_Mission					= MissionMainMenu.Cast( GetGame().GetMission() );
@@ -71,16 +66,14 @@ class MainMenu extends UIScriptedMenu
 		
 		m_PlayerName				= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_text") );
 		
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 			m_PlayerName			= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_xbox") );
-			//m_VideoPlayTimer		= new Timer();
-			//m_VideoFadeTimer		= new WidgetFadeTimer();
 			layoutRoot.FindAnyWidget( "character_name_xbox_background" ).Show( true );
 			layoutRoot.FindAnyWidget( "settings_panel_root" ).Show( false );
 			layoutRoot.FindAnyWidget( "ConsoleToolbar" ).Show( true );
 			layoutRoot.FindAnyWidget( "character" ).Show( false );
 			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
-			//m_PlayVideo.Show( true );
+			m_PlayVideo.Show( true );
 			m_CustomizeCharacter.SetText( "OPTIONS" );
 			m_ChooseServer.SetText( "CONTROLS" );
 		#endif
@@ -96,7 +89,7 @@ class MainMenu extends UIScriptedMenu
 		
 		GetGame().GetUIManager().ScreenFadeOut(0);
 
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 			ColorRed( m_Play );
 		#else
 			SetFocus( layoutRoot );
@@ -107,6 +100,7 @@ class MainMenu extends UIScriptedMenu
 	
 	void ~MainMenu()
 	{
+		
 	}
 	
 	override bool OnMouseButtonDown( Widget w, int x, int y, int button )
@@ -143,7 +137,7 @@ class MainMenu extends UIScriptedMenu
 			}
 			else if ( w == m_CustomizeCharacter )
 			{
-				#ifdef PLATFORM_XBOX
+				#ifdef PLATFORM_CONSOLE
 					OpenSettings();
 				#else
 					CustomizeCharacter();
@@ -264,7 +258,7 @@ class MainMenu extends UIScriptedMenu
 	{
 		string name;
 		
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 			if( GetGame().GetUserManager() && GetGame().GetUserManager().GetSelectedUser() )
 			{
 				name = GetGame().GetUserManager().GetSelectedUser().GetName();
@@ -283,7 +277,7 @@ class MainMenu extends UIScriptedMenu
 	
 	override void OnShow()
 	{
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 			ColorRed( m_Play );
 		#else
 			SetFocus( layoutRoot );
@@ -301,14 +295,14 @@ class MainMenu extends UIScriptedMenu
 		//super.OnHide();
 	}
 
-#ifdef PLATFORM_XBOX
+#ifdef PLATFORM_CONSOLE
 	override void Update(float timeslice)
 	{
-			if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
-			{
-				g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
-				GetGame().GetInput().ResetActiveGamepad();
-			}
+		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
+		{
+			g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
+			GetGame().GetInput().ResetActiveGamepad();
+		}
 	}
 #endif
 	
@@ -330,7 +324,7 @@ class MainMenu extends UIScriptedMenu
 
 	void ChooseServer()
 	{
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 			EnterScriptedMenu( MENU_XBOX_CONTROLS );
 			return;
 		#endif
@@ -413,33 +407,7 @@ class MainMenu extends UIScriptedMenu
 	
 	void PlayVideo()
 	{
-		//m_Video.LoadVideo( "", 0 ); //TODO get video id
-		//m_Video.Play( VideoCommand.REWIND );
-		//m_Video.Play( VideoCommand.PLAY );
-		time_tt = 0;
-		m_Video.Show( true );
-		m_VideoFadeTimer.FadeIn( m_Video, 1.5 );
-		m_VideoPlayTimer.Run( 0.1, this, "PlayVideoLoop", null, true );
-		Print( "Starting" );
-	}
-	
-	float time_tt;
-	void PlayVideoLoop()
-	{/*
-		if( !m_Video.Play( VideoCommand.ISPLAYING ) )
-		{
-			m_VideoPlayTimer.Stop();
-			m_VideoFadeTimer.FadeOut( m_Video, 1.5 );
-		}*/
-		time_tt += 0.1;
-		Print( "Time " + time_tt );
-		if( time_tt >= 5 )
-		{
-			m_Video.Show( false );
-			Print( "Stopping" );
-			m_VideoPlayTimer.Stop();
-			m_VideoFadeTimer.FadeOut( m_Video, 1.5 );
-		}
+		EnterScriptedMenu(MENU_VIDEO);
 	}
 	
 	void Exit()
@@ -455,7 +423,7 @@ class MainMenu extends UIScriptedMenu
 			#ifdef NEW_UI
 				EnterScriptedMenu(MENU_SERVER_BROWSER);
 			#else
-				#ifdef PLATFORM_XBOX
+				#ifdef PLATFORM_CONSOLE
 					EnterScriptedMenu(MENU_SERVER_BROWSER);
 				#else
 					g_Game.GetUIManager().EnterServerBrowser(this);

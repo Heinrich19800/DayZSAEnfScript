@@ -4,28 +4,54 @@ class Rangefinder extends ItemOptics
 	
 	protected ref Timer 				m_timer;
 	protected ref Param1<string> 		m_MessageParam;
-	protected ref Param1<PlayerBase> 	m_Player;
+	protected PlayerBase 				m_Player;
 	
 	void Rangefinder()
 	{
 	}
 	
+	void SetPlayer(PlayerBase player)
+	{
+		m_Player = player
+	}
+	
+	PlayerBase GetPlayer()
+	{
+		return m_Player;
+	}
+	
 	// How frequently the measurement should be taken
 	float GetMeasurementUpdateInterval()
 	{
-		return 1.0;
+		return 0.1;
 	}
 	
-	void StartPeriodicMeasurement(PlayerBase player)
+	override void OnWorkStart()
+	{
+		if ( GetGame().IsClient()  ||  !GetGame().IsMultiplayer())
+		{
+			StartPeriodicMeasurement();
+		}
+	}
+	
+	override void OnWorkStop()
+	{
+		if ( GetGame().IsClient()  ||  !GetGame().IsMultiplayer())
+		{
+			StopPeriodicMeasurement();
+		}
+	}
+	
+	void StartPeriodicMeasurement()
 	{
 		if ( m_timer == null )
 		{
 			m_timer = new Timer;
-		}
+
+					}
 		if ( m_MessageParam == null ) 	m_MessageParam = new Param1<string>("");
-		if ( m_Player == null ) 		m_Player = new Param1<PlayerBase>(null);
-		m_Player.param1 = player;
-		m_timer.Run(GetMeasurementUpdateInterval(),this,"DoMeasurement",m_Player,true);
+		
+		m_timer.Run(GetMeasurementUpdateInterval(),this,"DoMeasurement",NULL,true);
 	}
 	
 	void StopPeriodicMeasurement()
@@ -37,52 +63,40 @@ class Rangefinder extends ItemOptics
 	}
 	
 	// Measures the distance and returns result in formated string
-	void DoMeasurement(PlayerBase player)
+	void DoMeasurement()
 	{
-		//string 		message			= "";
-		const float	MAX_RANGE 		= 9999;
-		float 		energy_needed 	= GetCompEM().GetEnergyUsage() * GetMeasurementUpdateInterval();
-		vector 		from 			= GetGame().GetCurrentCameraPosition();
-		vector 		to 				= from + (GetGame().GetCurrentCameraDirection() * MAX_RANGE);
-		vector 		contact_pos;
-		vector 		contact_dir;
-		int 		contactComponent;
+		PlayerBase player = GetPlayer();
 		
-		// Use energy
-		bool is_device_working = GetCompEM().ConsumeEnergy( energy_needed );
-		
-		// Fire raycast
-		if (is_device_working)
+		if (player)
 		{
+			const float	MAX_RANGE 		= 9999;
+			float 		energy_needed 	= GetCompEM().GetEnergyUsage() * GetMeasurementUpdateInterval();
+			vector 		from 			= GetGame().GetCurrentCameraPosition();
+			vector 		to 				= from + (GetGame().GetCurrentCameraDirection() * MAX_RANGE);
+			vector 		contact_pos;
+			vector 		contact_dir;
+			int 		contactComponent;
+			
 			DayZPhysics.RaycastRV( from, to, contact_pos, contact_dir, contactComponent, NULL , NULL, player, false, false, ObjIntersectIFire);
+	
 	#ifdef DEVELOPER
 			Debug.DrawArrow( from, contact_pos ); // Uncomment for debugging of raycast positions
 	#endif
-		}
-		
-		// Generate result
-		if (is_device_working)
-		{
+			
+			// Generate result
 			float dist = vector.Distance( from, contact_pos );
 			dist = Math.Round(dist);
+			
 			if (dist < RANGEFINDER_MAX_DISTANCE)
 			{
 				m_MessageParam.param1 = "#range_finder_distance" + ": " + dist.ToString() + " #meters";
 			}
 			else
+			{
 				m_MessageParam.param1 = "#range_finder_too_far";
-		}
-		else
-		{
-			return; //interrupts if no battery present
-			m_MessageParam.param1 = "#range_finder_distance" + ": ----" + " #meters";
-		}
+			}
 		
-		player.MessageAction(m_MessageParam.param1);
-		/*if ( GetGame().IsServer() && player && player.IsAlive() && m_MessageParam.param1 != "" )
-		{
-			GetGame().RPCSingleParam(player, ERPCs.RPC_USER_ACTION_MESSAGE, m_MessageParam, true, player.GetIdentity());
-		}*/
-		//return message;
+			player.MessageAction(m_MessageParam.param1);
+		}
 	}
 }

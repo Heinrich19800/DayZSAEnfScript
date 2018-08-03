@@ -1,4 +1,3 @@
-const float BLEED_PER_SEC = -4;
 class BleedingSourceState extends StateBase
 {
 	ref Param1<vector> m_Position = new Param1<vector>("0 0 0");
@@ -22,7 +21,7 @@ class BleedingSourceState extends StateBase
 	//!gets called every frame
 	override void OnUpdateServer(PlayerBase player, float deltatime)
 	{
-		player.AddHealth("GlobalHealth","Blood", (BLEED_PER_SEC * deltatime) );
+		player.AddHealth("GlobalHealth","Blood", (PlayerConstants.BLEEDING_SOURCE_BLOODLOSS_PER_SEC * deltatime) );
 	}
 
 	override void OnUpdateClient(PlayerBase player, float deltatime)

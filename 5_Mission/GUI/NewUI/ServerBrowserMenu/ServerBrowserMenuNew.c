@@ -57,7 +57,36 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		LoadData();
 		
 		m_OfficialTab.RefreshList();
+		/*
+		ref GetServersResult result = new GetServersResult;
 		
+		result.m_Page = 1;
+		result.m_Pages = 1;
+		result.m_Results = new GetServersResultRowArray;
+		
+		for( int i = 0; i < 50; i++ )
+		{
+			ref GetServersResultRow row = new GetServersResultRow;
+			row.m_Id = "id" + i.ToString();
+			row.m_Name = "Server " + i.ToString();
+			row.m_Official = true;
+			row.m_MaxPlayers = 10;
+			row.m_MinPlayers = 0;
+			row.m_CurrentNumberPlayers = 0;
+			
+			result.m_Results.Insert( row );
+		}
+		SetRefreshing( true );
+		m_OfficialTab.m_Initialized = true;
+		m_OfficialTab.m_BegunLoading = false;
+		
+		m_OfficialTab.m_Entries.Clear();
+		m_OfficialTab.m_Pages.Clear();
+		m_OfficialTab.m_EntryWidgets.Clear();
+		
+		m_OfficialTab.m_Loading = true;
+		m_OfficialTab.OnLoadServersAsync( result, EBiosError.OK, "" );
+		*/
 		return layoutRoot;
 	}
 	

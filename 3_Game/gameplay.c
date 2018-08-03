@@ -764,14 +764,50 @@ class OptionsAccess: Managed
 	//proto private void ~OptionsAccess();
 	//proto private void OptionsAccess();
 
-	proto native  int		GetAccessType();
-	proto native  int		GetControlType();
+	/**
+	\brief AccessType of current option
+ 	\return AccessType
+	*/
+	proto native  int	GetAccessType();
+	
+	/**
+	\brief Current option controller type. OA_CT_NUMERIC = 0, OA_CT_SWITCH = 1, OA_CT_LIST = 2
+	\return ControlType
+	*/
+	proto native  int	GetControlType();
+	
+	/**
+	\brief Applies the option value if the value has changed and forgets the old value. This function has no effect on internal options, see OptionsAccess::Test
+	*/
 	proto native  void	Apply();
+	
+	/**
+	\brief Sets the option value internaly if the value has changed and wasnt set immediately upon change
+	*/
 	proto native  void	Test();
+	
+	/**
+	\brief Reverts the option value to old value if the value has changed and wasnt applied. This function has effect on internal options
+	*/	
 	proto native  void	Revert();
-	proto native  int		IsChanged();
-	proto native  int		NeedRestart();
-	proto native  int		SetChangeImmediately();
+	
+	/**
+	\brief If the option value is changed and not applied or reverted. Value can already be set internally if the value was changed immediately
+	\return 1 if the value is changed, 0 othewise
+	*/
+	proto native  int	IsChanged();
+	
+	/**
+	\brief If the option value will take effect only after the game is restarted
+	\return 1 if the value is changed, 0 othewise
+	*/
+	proto native  int	NeedRestart();
+	
+	/**
+	\brief If the value is changed internally immediately upon change.
+	\return 1 if the value is changed immediately, 0 othewise
+	*/
+	proto native  int	SetChangeImmediately();
 };
 
 // -------------------------------------------------------------------------
@@ -797,17 +833,63 @@ class SwitchOptionsAccess extends OptionsAccess
 {
 	proto native void		Switch();
 	proto	void					GetItemText(out string value);
+	proto native int		GetIndex();
 };
 
 // -------------------------------------------------------------------------
 class GameOptions: Managed
-{
+{	
+	/**
+	\brief Tests, Applies every option and save config with options to file, see OptionsAccess::Test, OptionsAccess::Apply
+	*/
 	proto native void	Apply();
+
+	/**
+	\brief Load config with options and Revert every option, see OptionsAccess::Revert
+	*/
 	proto native void	Revert();
+
+	/**
+	\brief Tests every option, see OptionsAccess::Test
+	*/
 	proto native void	Test();
+
+	/**
+ 	\brief Get option by index
+	@param index	
+ 	\return OptionsAccess
+ 	*/
 	proto native OptionsAccess GetOption(int index);
+	
+	/**
+ 	\brief Get option by AccessType
+	@param AccessType	
+ 	\return OptionsAccess
+ 	*/
+	proto native OptionsAccess GetOptionByType(int accessType);
+	
+	/**
+ 	\brief Registered options count
+ 	\return number of options
+ 	*/
 	proto native int GetOptionsCount();
+
+	/**
+	\brief Checks if any option is changed and needs restart, see OptionsAccess::IsChanged, OptionsAccess::NeedRestart
+	\return 1 if such option was found, 0 othewise
+	*/
 	proto native int NeedRestart();
+	
+	/**
+	\brief Checks if any option is changed, see OptionsAccess::IsChanged
+	\return 1 if such option was found, 0 othewise
+	*/
+	proto native int IsChanged();
+	
+	/**
+	\brief Initializes option values with the current users settings
+	*/
+	proto native void Initialize();
 };
 
 // -------------------------------------------------------------------------

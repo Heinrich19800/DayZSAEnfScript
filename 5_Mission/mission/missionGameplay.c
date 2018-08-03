@@ -252,11 +252,6 @@ class MissionGameplay extends MissionBase
 			m_note = NoteMenu.Cast( GetUIManager().EnterScriptedMenu(MENU_NOTE, menu) ); //NULL means no parent
 			m_note.InitWrite(playerPB.m_paper,playerPB.m_writingImplement,playerPB.m_Handwriting);
 		}
-		
-		if (inspect && player && (player.GetHumanInventory().CanOpenInventory() == false || player.IsInventorySoftLocked()) )
-		{
-			m_UIManager.CloseMenu(MENU_INSPECT);
-		}
 
 #ifdef PLATFORM_XBOX
 		//Quick Reload Weapon
@@ -869,7 +864,7 @@ class MissionGameplay extends MissionBase
 		bool init = false;
 		UIScriptedMenu menu = GetUIManager().GetMenu();
 		
-		if (menu == NULL && GetGame().GetPlayer().GetHumanInventory().CanOpenInventory() && !GetGame().GetPlayer().IsInventorySoftLocked() )
+		if (menu == NULL && GetGame().GetPlayer().GetHumanInventory().CanOpenInventory() && !GetGame().GetPlayer().IsInventorySoftLocked() && GetGame().GetPlayer().GetHumanInventory().IsInventoryUnlocked() )
 		{
 			if (m_inventory_menu == NULL)
 			{
@@ -1035,7 +1030,7 @@ class MissionGameplay extends MissionBase
 		#ifdef BULDOZER
 			GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(g_Game.RequestExit, IDC_MAIN_QUIT);
 		#else
-			GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().AbortMission);
+			GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetDayZGame().ExitToMainMenu);
 		#endif
 	}
 	

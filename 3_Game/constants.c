@@ -74,6 +74,7 @@ const int MENU_RADIAL_QUICKBAR						= 29;
 const int MENU_LOGIN_QUEUE							= 30;
 const int MENU_SERVER_BROWSER						= 31;
 const int MENU_CAMERA_TOOLS							= 32;
+const int MENU_VIDEO								= 33;
 
 const int GUI_WINDOW_MISSION_LOADER = 1;
 
