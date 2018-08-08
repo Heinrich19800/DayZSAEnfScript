@@ -1,8 +1,6 @@
 /*! Xbox menu */
 class TitleScreenMenu extends UIScriptedMenu
 {
-	protected DayZIntroScene m_scene;
-	
 	void TitleScreenMenu()
 	{
 	}
@@ -16,7 +14,6 @@ class TitleScreenMenu extends UIScriptedMenu
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/xbox/day_z_title_screen.layout");
 		
 		MissionMainMenu mission = MissionMainMenu.Cast( g_Game.GetMission() );
-		m_scene = mission.GetIntroScene();
 		
 		RichTextWidget text_widget = RichTextWidget.Cast( layoutRoot.FindAnyWidget("InputPromptText") );
 		if (text_widget)

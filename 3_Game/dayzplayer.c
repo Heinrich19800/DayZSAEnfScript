@@ -482,8 +482,8 @@ enum DayZPlayerConstants
 	CMD_ACTIONMOD_EATFRUIT				= 17,		// erc,cro			[end]
 	CMD_ACTIONMOD_TAKETEMPSELF			= 18,		// erc,cro			[end]
 	CMD_ACTIONMOD_VIEWMAP				= 19,		// erc,cro			[end]
-	CMD_ACTIONMOD_RAISEMEGAPHONE		= 20,		// erc				[end]
-	CMD_ACTIONMOD_SEARCHINVENTORY		= 21,		// erc				[end]
+	CMD_ACTIONMOD_RAISEMEGAPHONE		= 20,		// erc,cro			[end]
+	CMD_ACTIONMOD_SEARCHINVENTORY		= 21,		// erc,cro			[end]
 	CMD_ACTIONMOD_CRAFTING				= 22,		// erc,cro			[end]
 	CMD_ACTIONMOD_LOOKOPTICS			= 23,		// erc,cro			[end]
 	
@@ -580,6 +580,7 @@ enum DayZPlayerConstants
 	CMD_ACTIONFB_SEARCHINVENTORY		= 107,		// pne				[end]
 	CMD_ACTIONFB_LOOKOPTICS				= 108,		// pne				[end]
 	CMD_ACTIONFB_MINEROCK				= 109,		// erc				[end, end2]
+	CMD_ACTIONFB_RAISEMEGAPHONE			= 110,		// pne				[end]
 	
 	// onetime 
 	CMD_ACTIONFB_PICKUP_HANDS			= 500,		// pne

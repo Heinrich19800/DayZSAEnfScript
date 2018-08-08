@@ -689,10 +689,11 @@ class VicinityContainer: CollapsibleContainer
 							{
 								if ( entity.IsInherited( PlayerBase ) )
 								{
-									if( entity.IsAlive() && !PlayerBase.Cast( entity ).IsUnconscious() )
+									if( entity.IsAlive() && ( !PlayerBase.Cast( entity ).IsUnconscious() && !PlayerBase.Cast( entity ).IsRestrained() ) )
 									{
 										continue;
 									}
+									
 									PlayerContainer plyr_cnt = new PlayerContainer( m_Parent );
 									plyr_cnt.SetPlayer( PlayerBase.Cast( entity ) );
 									( Container.Cast( m_Parent ) ).m_Body.Insert( plyr_cnt );
@@ -713,6 +714,13 @@ class VicinityContainer: CollapsibleContainer
 					{
 						if( m_ShowedItems.Get( entity ) )
 						{
+							if ( entity.IsInherited( PlayerBase ) )
+							{
+								if( entity.IsAlive() && ( !PlayerBase.Cast( entity ).IsUnconscious() && !PlayerBase.Cast( entity ).IsRestrained() ) )
+								{
+									continue;
+								}
+							}
 							new_showed_items.Insert( entity, m_ShowedItems.Get( entity ) );
 							showed_items_IDs.Insert( entity.GetID(), m_ShowedItemsIDs.Get( entity.GetID() ) );
 						}

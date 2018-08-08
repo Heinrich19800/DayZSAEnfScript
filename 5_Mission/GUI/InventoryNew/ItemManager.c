@@ -298,9 +298,9 @@ class ItemManager
 		{
 			if ( true/*show_temperature */ )
 			{
-				if ( item && item.IsInherited( InventoryItem ) )
+				if ( item && item.IsInherited( ItemBase ) )
 				{
-					int color = ColorManager.GetInstance().GetItemColor( InventoryItem.Cast( item ) ); // !!!!!
+					int color = ColorManager.GetInstance().GetItemColor( ItemBase.Cast( item ) ); // !!!!!
 					if ( color )
 					{
 						string name = item_w.GetName();
@@ -329,9 +329,9 @@ class ItemManager
 		{
 			if ( true/*show_temperature */ )
 			{
-				if ( item && item.IsInherited( InventoryItem ) )
+				if ( item && item.IsInherited( ItemBase ) )
 				{
-					int color = ColorManager.GetInstance().GetItemColor( InventoryItem.Cast( item ) ); // !!!!!
+					int color = ColorManager.GetInstance().GetItemColor( ItemBase.Cast( item ) ); // !!!!!
 
 					if ( color )
 					{

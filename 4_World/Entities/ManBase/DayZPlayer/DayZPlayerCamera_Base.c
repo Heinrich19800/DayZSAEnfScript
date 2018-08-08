@@ -157,7 +157,7 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 		//PrintString("OnActivate DayZPlayerCameraBase");
 		PlayerBase.Cast(m_pPlayer).OnCameraChanged(this);
 		SetCameraPPDelay(pPrevCamera);
-		GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(SetCameraPP,m_CameraPPDelay*1000,false,true,this);
+		GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(SetCameraPP,m_CameraPPDelay*1000,false,true,this); // this takes care of weapon/optics postprocessing
 	}
 	
 	float GetWeaponSwayModifier()

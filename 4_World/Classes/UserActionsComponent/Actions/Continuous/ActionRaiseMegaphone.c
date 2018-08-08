@@ -14,7 +14,7 @@ class ActionRaiseMegaphone: ActionContinuousBase
 	{
 		m_CallbackClass = ActionRaiseMegaphoneCB;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_RAISEMEGAPHONE;
-		m_CommandUIDProne = DayZPlayerConstants.CMD_ACTIONMOD_RAISEMEGAPHONE;		
+		m_CommandUIDProne = DayZPlayerConstants.CMD_ACTIONFB_RAISEMEGAPHONE;		
 		m_MessageStartFail = "I have failed to raise the megaphone.";
 		m_MessageStart = "I have raised the megaphone.";
 		m_MessageFail = "I have failed to raise the megaphone.";

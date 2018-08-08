@@ -5,7 +5,7 @@ class MainMenu extends UIScriptedMenu
 	protected ref MainMenuVideo		m_Video;
 	
 	protected MissionMainMenu		m_Mission;
-	protected DayZIntroScene 		m_Scene;
+	protected DayZIntroScene 		m_ScenePC;
 	
 	protected TextWidget			m_PlayerName;
 	protected TextWidget			m_Version;
@@ -56,13 +56,13 @@ class MainMenu extends UIScriptedMenu
 		m_Stats						= new MainMenuStats( layoutRoot.FindAnyWidget( "character_stats_root" ) );
 		
 		m_Mission					= MissionMainMenu.Cast( GetGame().GetMission() );
-		m_Scene						= m_Mission.GetIntroScene();
+#ifdef PLATFORM_CONSOLE
 		
-		if( m_Scene && m_Scene.m_Camera && m_Scene.m_DemoPos )
-		{
-			m_Scene.m_Camera.LookAt(Vector(m_Scene.m_DemoPos[0],m_Scene.m_DemoPos[1] + 1,m_Scene.m_DemoPos[2]));
-			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater( m_Scene.SceneCharacterSetPos, 250 );
-		}
+#else
+		m_ScenePC					= m_Mission.GetIntroScenePC();
+#endif
+		m_Mission.ResetIntroCamera();
+		
 		
 		m_PlayerName				= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_text") );
 		
@@ -107,8 +107,8 @@ class MainMenu extends UIScriptedMenu
 	{
 		if ( w == m_CharacterRotationFrame )
 		{
-			if (m_Scene)
-				m_Scene.CharacterRotationStart();
+			if (m_ScenePC)
+				m_ScenePC.CharacterRotationStart();
 			return true;
 		}
 		return false;
@@ -116,8 +116,8 @@ class MainMenu extends UIScriptedMenu
 	
 	override bool OnMouseButtonUp( Widget w, int x, int y, int button )
 	{
-		if (m_Scene)
-			m_Scene.CharacterRotationStop();
+		if (m_ScenePC)
+			m_ScenePC.CharacterRotationStop();
 		return false;
 	}
 	
@@ -284,9 +284,9 @@ class MainMenu extends UIScriptedMenu
 		#endif
 		Refresh();
 		
-		if( m_Scene && m_Scene.m_Camera )
+		if( m_ScenePC && m_ScenePC.GetCamera() )
 		{
-			m_Scene.m_Camera.LookAt(Vector(m_Scene.m_DemoPos[0],m_Scene.m_DemoPos[1] + 1,m_Scene.m_DemoPos[2]));
+			m_ScenePC.GetCamera().LookAt( m_ScenePC.GetIntroSceneCharacter().GetPosition() + Vector( 0, 1, 0 ) );
 		}
 	}
 	
@@ -308,13 +308,15 @@ class MainMenu extends UIScriptedMenu
 	
 	void Play()
 	{
-		if (m_Scene && m_Scene.m_DemoUnit)
+		if (m_ScenePC && m_ScenePC.GetIntroSceneCharacter())
 		{
 			//saves demounit for further use
-			if (m_Scene.m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY) && m_Scene.CurrentCharacterID() == -1)
-				m_Scene.SetCharacterInfo();
+			if (m_ScenePC.GetIntroSceneCharacter().GetInventory().FindAttachment(InventorySlots.BODY) && m_ScenePC.GetCurrentCharacterID() == -1)
+			{
+				m_ScenePC.SaveCharacterSetup();
+			}
 			
-			m_Scene.SaveCharName();
+			m_ScenePC.SaveCharName();
 		}
 		if (!g_Game.IsNewCharacter())
 			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectLastSession");
@@ -329,8 +331,8 @@ class MainMenu extends UIScriptedMenu
 			return;
 		#endif
 		
-		if( m_Scene )
-			m_Scene.SaveCharName();
+		if( m_ScenePC )
+			m_ScenePC.SaveCharName();
 		
 		#ifdef NEW_UI
 			EnterScriptedMenu(MENU_SERVER_BROWSER);
@@ -339,8 +341,10 @@ class MainMenu extends UIScriptedMenu
 		#endif
 		
 		//saves demounit for further use
-		if (m_Scene && m_Scene.m_DemoUnit && m_Scene.m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY) && m_Scene.CurrentCharacterID() == -1)
-			m_Scene.SetCharacterInfo();
+		if (m_ScenePC && m_ScenePC.GetIntroSceneCharacter() && m_ScenePC.GetIntroSceneCharacter().GetInventory().FindAttachment(InventorySlots.BODY) && m_ScenePC.GetCurrentCharacterID() == -1)
+		{
+			m_ScenePC.SaveCharacterSetup();
+		}
 	}
 	
 	void CustomizeCharacter()
@@ -350,20 +354,26 @@ class MainMenu extends UIScriptedMenu
 	
 	void NextCharacter()
 	{
-		m_Scene.SaveCharName();
-		m_Scene.ChangeCharacter( m_Scene.NextCharacterID() );
-		
-		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater( m_Scene.SceneCharacterSetPos, 250 );
-		m_PlayerName.SetText( g_Game.GetPlayerGameName() );
+		if ( m_ScenePC )
+		{
+			m_ScenePC.SaveCharName();
+			m_ScenePC.ChangeCharacter( m_ScenePC.NextCharacterID() );
+			
+			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater( m_ScenePC.SceneCharacterSetPos, 250 );
+			m_PlayerName.SetText( g_Game.GetPlayerGameName() );
+		}
 	}
 	
 	void PreviousCharacter()
 	{
-		m_Scene.SaveCharName();
-		m_Scene.ChangeCharacter( m_Scene.PrevCharacterID() );
-		
-		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater( m_Scene.SceneCharacterSetPos, 250 );
-		m_PlayerName.SetText( g_Game.GetPlayerGameName() );
+		if ( m_ScenePC )
+		{
+			m_ScenePC.SaveCharName();
+			m_ScenePC.ChangeCharacter( m_ScenePC.PrevCharacterID() );
+			
+			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater( m_ScenePC.SceneCharacterSetPos, 250 );
+			m_PlayerName.SetText( g_Game.GetPlayerGameName() );
+		}
 	}
 	
 	void OpenStats()
@@ -418,7 +428,7 @@ class MainMenu extends UIScriptedMenu
 	void ConnectLastSession()
 	{
 		//TODO fix code-side
-		if ( m_Scene /*&& !g_Game.ConnectLastSession(this, m_Scene.CurrentCharacterID())*/ )
+		if ( m_ScenePC /*&& !g_Game.ConnectLastSession(this, m_Scene.CurrentCharacterID())*/ )
 		{
 			#ifdef NEW_UI
 				EnterScriptedMenu(MENU_SERVER_BROWSER);

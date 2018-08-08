@@ -43,6 +43,15 @@ class ActionDigStash: ActionContinuousBase
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		ItemBase target_IB;
+		
+		// Check if player is standing on terrain
+		vector plr_pos = player.GetPosition();
+		float height = GetGame().SurfaceY(plr_pos[0], plr_pos[2]);
+		height = plr_pos[1] - height;
+		
+		if ( height > 0.2 )
+			return false; // Player is not standing on ground
+		
 		if ( Class.CastTo(target_IB, target.GetObject()) )
 		{			
 			// Check surface
@@ -111,7 +120,8 @@ class ActionDigStash: ActionContinuousBase
 	override void OnCompleteServer( ActionData action_data )
 	{
 		Object targetObject = action_data.m_Target.GetObject();
-		UndergroundStash target_stash;		
+		UndergroundStash target_stash;
+		
 		if ( Class.CastTo(target_stash, targetObject) )
 		{
 			ItemBase chest = target_stash.GetStashedItem();
@@ -129,8 +139,6 @@ class ActionDigStash: ActionContinuousBase
 			ItemBase stashed_item;
 			UndergroundStash stash;
 			vector pos = targetObject.GetPosition();
-			
-			//targetObject.SetPosition( targetObject.GetPosition() + "0 -5 0" ); // TO DO: Do not use teleportation hack if possible!
 			
 			Class.CastTo(stashed_item,  targetObject );
 			Class.CastTo(stash,  GetGame().CreateObject("UndergroundStash", pos, false) );

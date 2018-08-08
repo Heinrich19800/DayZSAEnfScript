@@ -1,4 +1,3 @@
-
 class CharacterMenu extends UIScriptedMenu
 {
 	ButtonWidget	m_genderButton;
@@ -18,31 +17,29 @@ class CharacterMenu extends UIScriptedMenu
 	//---------------------------
 	EditBoxWidget 	m_name_widget;
 	
+	protected MissionMainMenu m_MissionMainMenu;
+	
+	protected ref PlayerNameHandler m_PlayerNameHandler;
+	
 	//string m_format;
-	//bool m_scene.m_female;
-	DayZIntroScene m_scene;
+	//bool m_IntroScene.m_female;
+	DayZIntroScene m_IntroScene;
 
 	void CharacterMenu()
 	{
-		
+		m_PlayerNameHandler = new PlayerNameHandler;
+		m_MissionMainMenu = MissionMainMenu.Cast( GetGame().GetMission() );
+		m_IntroScene = m_MissionMainMenu.GetIntroScenePC();
 	}
 
 	void ~CharacterMenu()
 	{
-		MainMenu menu;
-		if (m_scene)
+		//sets name to widget in main menu
+		if (g_Game.GetUIManager().FindMenu(MENU_MAIN) != null)
 		{
-			//m_scene.m_Camera.LookAt(Vector(m_scene.m_DemoPos[0] + Math.Cos(m_scene.angle + m_scene.angle_offset + Math.PI*4/3), m_scene.m_DemoPos[1] + 0.75, m_scene.m_DemoPos[2] + Math.Sin(m_scene.angle + m_scene.angle_offset + Math.PI*4/3)));
-			m_scene.m_Camera.LookAt(m_scene.m_Target);
-			//m_scene.angle_offset = 0;
-			
-			//sets name to widget in main menu
-			if (g_Game.GetUIManager().FindMenu(MENU_MAIN) != null)
-			{
-				MainMenu.CastTo( menu, g_Game.GetUIManager().FindMenu(MENU_MAIN) );
-				TextWidget name_widget = TextWidget.Cast( menu.layoutRoot.FindAnyWidget("character_name_text") );
-				name_widget.SetText(g_Game.GetPlayerGameName());
-			}
+			MainMenu menu = MainMenu.Cast( GetGame().GetUIManager().FindMenu(MENU_MAIN) );
+			TextWidget name_widget = TextWidget.Cast( menu.layoutRoot.FindAnyWidget("character_name_text") );
+			name_widget.SetText( g_Game.GetPlayerGameName() );
 		}
 	}
 
@@ -64,14 +61,15 @@ class CharacterMenu extends UIScriptedMenu
 		
 		MissionMainMenu mission;
 		Class.CastTo(mission,  g_Game.GetMission() );
-		m_scene = mission.GetIntroScene();
-		m_scene.m_Camera.LookAt(Vector(m_scene.m_DemoPos[0],m_scene.m_DemoPos[1] + 1,m_scene.m_DemoPos[2]));
+		m_IntroScene = mission.GetIntroScenePC();
+		m_IntroScene.ResetIntroCamera();
+		
 		//DefaultCharacterScreen();
 		Class.CastTo(m_name_widget ,layoutRoot.FindAnyWidget("CharacterNameEdit"));
 		m_name_widget.SetText(g_Game.GetPlayerGameName());
-		m_name_widget.SetHandler(m_scene.m_player_name_handler);
+		m_name_widget.SetHandler(m_PlayerNameHandler);
 		
-		if (m_scene.m_female)
+		if (m_MissionMainMenu.IsCharacterFemale())
 		{
 			m_genderButton.SetText("F");
 		}
@@ -93,33 +91,42 @@ class CharacterMenu extends UIScriptedMenu
 		
 	override bool OnClick(Widget w, int x, int y, int button)
 	{
-		if (m_scene.m_DisableClick)
+		if (!m_MissionMainMenu.IsClickEnabled())
 		{
 			return false;
-		} 
+		}
+		
 		super.OnClick(w, x, y, button);
 		
 		switch (w.GetUserID())
 		{
 		case IDC_OK:
-			//m_scene.SaveDefaultCharacter();
-			//Close();
-			if (m_scene && m_scene.m_DemoUnit)
+			PlayerBase scene_char = m_MissionMainMenu.GetIntroSceneCharacter();
+			
+			if ( scene_char )
 			{
 				//saves demounit for further use
-				m_scene.SaveCharName();
-				if (m_scene.m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY) && m_scene.CurrentCharacterID() == -1)		m_scene.SetCharacterInfo();
+				m_MissionMainMenu.SaveCharName();
+				if ( m_MissionMainMenu.GetIntroSceneCharacter().GetInventory().FindAttachment(InventorySlots.BODY) && m_MissionMainMenu.GetCurrentCharacterID() == -1)
+				{
+					m_MissionMainMenu.SaveCharacterSetup();
+				}
 				
-				if (!g_Game.IsNewCharacter()) 		GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectLastSession");
-				else 								GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectBestServer");
+				if (!g_Game.IsNewCharacter()) 
+				{
+					GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectLastSession");
+				}
+				else
+				{
+					GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectBestServer");
+				}
 			}
 			
 			return true;
 			
 		case IDC_CANCEL:
-			//g_Game.ObjectDelete(m_scene.m_DemoUnit);
-			//m_scene.m_DemoUnit = NULL;
-			m_scene.SaveCharName();
+			m_MissionMainMenu.SaveCharName();
+			
 			Close();
 			return true;
 		
@@ -131,14 +138,14 @@ class CharacterMenu extends UIScriptedMenu
 		switch (w)
 		{
 			case m_genderButton:
-				if (!m_scene.m_female)
+				if (!m_MissionMainMenu.IsCharacterFemale())
 				{
-					m_scene.m_female = true;
+					m_MissionMainMenu.SetCharacterFemale( true );
 					m_genderButton.SetText("F");
 				}
 				else
 				{
-					m_scene.m_female = false;
+					m_MissionMainMenu.SetCharacterFemale( false );
 					m_genderButton.SetText("M");
 				}
 				m_skinIndex = 0;
@@ -157,45 +164,27 @@ class CharacterMenu extends UIScriptedMenu
 			break;
 			
 			case m_topNextButton:
-				m_topIndex++;
-				if (m_topIndex < 0)									m_topIndex = m_scene.m_shirtList.Count() - 1;
-				if (m_topIndex > m_scene.m_shirtList.Count() - 1)			m_topIndex = 0;
-				m_scene.SetAttachment(m_scene.m_shirtList.Get(m_topIndex), InventorySlots.BODY);
+				m_MissionMainMenu.CharChangePart(Direction.RIGHT, InventorySlots.BODY);
 			break;
 			
 			case m_topPreviousButton:
-				m_topIndex--;
-				if (m_topIndex < 0)									m_topIndex = m_scene.m_shirtList.Count() - 1;
-				if (m_topIndex > m_scene.m_shirtList.Count() - 1)			m_topIndex = 0;
-				m_scene.SetAttachment(m_scene.m_shirtList.Get(m_topIndex), InventorySlots.BODY);
+				m_MissionMainMenu.CharChangePart(Direction.LEFT, InventorySlots.BODY);
 			break
 			
 			case m_pantsNextButton:
-				m_pantsIndex++;
-				if (m_pantsIndex < 0)								m_pantsIndex = m_scene.m_pantsList.Count() - 1;
-				if (m_pantsIndex > m_scene.m_pantsList.Count() - 1)			m_pantsIndex = 0;
-				m_scene.SetAttachment(m_scene.m_pantsList.Get(m_pantsIndex), InventorySlots.LEGS);
+				m_MissionMainMenu.CharChangePart(Direction.RIGHT, InventorySlots.LEGS);
 			break;
 			
 			case m_pantsPreviousButton:
-				m_pantsIndex--;
-				if (m_pantsIndex < 0)								m_pantsIndex = m_scene.m_pantsList.Count() - 1;
-				if (m_pantsIndex > m_scene.m_pantsList.Count() - 1)			m_pantsIndex = 0;
-				m_scene.SetAttachment(m_scene.m_pantsList.Get(m_pantsIndex), InventorySlots.LEGS);
+				m_MissionMainMenu.CharChangePart(Direction.LEFT, InventorySlots.LEGS);
 			break;
 			
 			case m_shoesNextButton:
-				m_shoesIndex++;
-				if (m_shoesIndex < 0)								m_shoesIndex = m_scene.m_shoesList.Count() - 1;
-				if (m_shoesIndex > m_scene.m_shoesList.Count() - 1)			m_shoesIndex = 0;
-				m_scene.SetAttachment(m_scene.m_shoesList.Get(m_shoesIndex), InventorySlots.FEET);
+				m_MissionMainMenu.CharChangePart(Direction.RIGHT, InventorySlots.FEET);
 			break;
 			
 			case m_shoesPreviousButton:
-				m_shoesIndex--;
-				if (m_shoesIndex < 0)								m_shoesIndex = m_scene.m_shoesList.Count() - 1;
-				if (m_shoesIndex > m_scene.m_shoesList.Count() - 1)			m_shoesIndex = 0;
-				m_scene.SetAttachment(m_scene.m_shoesList.Get(m_shoesIndex), InventorySlots.FEET);
+				m_MissionMainMenu.CharChangePart(Direction.LEFT, InventorySlots.FEET);
 			break;
 		}
 //------------------------------------------------------------------------
@@ -208,7 +197,7 @@ class CharacterMenu extends UIScriptedMenu
 		
 		if (w.GetName() == "CharacterRotationFrame")
 		{
-			m_scene.CharacterRotationStart();
+			m_IntroScene.CharacterRotationStart();
 			return true;
 		}
 
@@ -219,7 +208,7 @@ class CharacterMenu extends UIScriptedMenu
 	{
 		super.OnMouseButtonUp(w, x, y, button);
 		
-		m_scene.CharacterRotationStop();
+		m_IntroScene.CharacterRotationStop();
 		return true;
 	}
 	
@@ -232,52 +221,66 @@ class CharacterMenu extends UIScriptedMenu
 		string character;
 		//string params[2];
 
-		if (m_scene.m_female)
+		if ( m_MissionMainMenu.IsCharacterFemale() )
 		{
-			if (m_skinIndex < 0)											m_skinIndex = m_scene.m_personalityFemaleList.Count() - 1;
-			if (m_skinIndex > m_scene.m_personalityFemaleList.Count() - 1)	m_skinIndex = 0;
+			if (m_skinIndex < 0)
+			{
+				m_skinIndex = m_IntroScene.m_CharPersonalityFemaleList.Count() - 1;
+			}
+			
+			if (m_skinIndex > m_IntroScene.m_CharPersonalityFemaleList.Count() - 1)
+			{
+				m_skinIndex = 0;
+			}
 			
 			/*params[0] = "F";
-			params[1] = m_scene.m_personalityFemaleList.Get(m_skinIndex);*/
-			character = m_scene.m_personalityFemaleList.Get(m_skinIndex);
+			params[1] = m_IntroScene.m_CharPersonalityFemaleList.Get(m_skinIndex);*/
+			character = m_IntroScene.m_CharPersonalityFemaleList.Get(m_skinIndex);
 		}
 		else
 		{
-			if (m_skinIndex < 0)											m_skinIndex = m_scene.m_personalityMaleList.Count() - 1;
-			if (m_skinIndex > m_scene.m_personalityMaleList.Count() - 1)	m_skinIndex = 0;
+			if (m_skinIndex < 0)
+			{
+				m_skinIndex = m_IntroScene.m_CharPersonalityMaleList.Count() - 1;
+			}
+			
+			if (m_skinIndex > m_IntroScene.m_CharPersonalityMaleList.Count() - 1)
+			{
+				m_skinIndex = 0;
+			}
 			
 			/*params[0] = "M";
-			params[1] = m_scene.m_personalityMaleList.Get(m_skinIndex);*/
-			character = m_scene.m_personalityMaleList.Get(m_skinIndex);
+			params[1] = m_IntroScene.m_CharPersonalityMaleList.Get(m_skinIndex);*/
+			character = m_IntroScene.m_CharPersonalityMaleList.Get(m_skinIndex);
 		}
 		
-		//g_Game.FormatString(m_scene.m_format, params, character);
-		m_scene.CreateNewCharacter(character);
-		if (m_scene.m_DemoUnit)
+		//g_Game.FormatString(m_IntroScene.m_format, params, character);
+		m_IntroScene.CreateNewCharacter(character);
+		if (m_IntroScene.GetIntroSceneCharacter())
 		{
-			m_scene.SetAttachment(m_scene.m_shirtList.Get(m_topIndex), InventorySlots.BODY);
-			m_scene.SetAttachment(m_scene.m_pantsList.Get(m_pantsIndex), InventorySlots.LEGS);
-			m_scene.SetAttachment(m_scene.m_shoesList.Get(m_shoesIndex), InventorySlots.FEET);
+			m_IntroScene.SetAttachment(m_IntroScene.m_CharShirtList.Get(m_topIndex), InventorySlots.BODY);
+			m_IntroScene.SetAttachment(m_IntroScene.m_CharPantsList.Get(m_pantsIndex), InventorySlots.LEGS);
+			m_IntroScene.SetAttachment(m_IntroScene.m_CharShoesList.Get(m_shoesIndex), InventorySlots.FEET);
 			/////////allows for attachment of items to other slots, if needed
 			if (g_Game.IsNewCharacter())
 			{
-				m_scene.SetAttachment("", InventorySlots.SHOULDER);
-				m_scene.SetAttachment("", InventorySlots.BOW);
-				m_scene.SetAttachment("", InventorySlots.MELEE);
-				m_scene.SetAttachment("", InventorySlots.VEST);
-				m_scene.SetAttachment("", InventorySlots.HIPS);
-				m_scene.SetAttachment("", InventorySlots.BACK);
-				m_scene.SetAttachment("", InventorySlots.HEADGEAR);
-				m_scene.SetAttachment("", InventorySlots.MASK);
-				m_scene.SetAttachment("", InventorySlots.EYEWEAR);
-				m_scene.SetAttachment("", InventorySlots.GLOVES);
-				m_scene.SetAttachment("", InventorySlots.ARMBAND);
-				m_scene.SetAttachment("", InventorySlots.HANDS); //5 = hands slot
+				m_IntroScene.SetAttachment("", InventorySlots.SHOULDER);
+				m_IntroScene.SetAttachment("", InventorySlots.BOW);
+				m_IntroScene.SetAttachment("", InventorySlots.MELEE);
+				m_IntroScene.SetAttachment("", InventorySlots.VEST);
+				m_IntroScene.SetAttachment("", InventorySlots.HIPS);
+				m_IntroScene.SetAttachment("", InventorySlots.BACK);
+				m_IntroScene.SetAttachment("", InventorySlots.HEADGEAR);
+				m_IntroScene.SetAttachment("", InventorySlots.MASK);
+				m_IntroScene.SetAttachment("", InventorySlots.EYEWEAR);
+				m_IntroScene.SetAttachment("", InventorySlots.GLOVES);
+				m_IntroScene.SetAttachment("", InventorySlots.ARMBAND);
+				m_IntroScene.SetAttachment("", InventorySlots.HANDS); //5 = hands slot
 				//Print(InventorySlots.GetSlotIdFromString("BACK"));
 			}
 			
-			m_scene.m_DisableClick = true;
-			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(m_scene.SceneCharacterSetPos, 250);
+			m_IntroScene.SetClickEnable( false );
+			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(m_IntroScene.SceneCharacterSetPos, 250);
 		}
 	}
 
@@ -286,27 +289,27 @@ class CharacterMenu extends UIScriptedMenu
 		g_Game.SetNewCharacter(true);
 		//g_Game.SetPlayerGameName(DEFAULT_CHARACTER_NAME);
 		ShowMenuButtons(true);
-		m_scene.m_currentCharacterID = -1;
+		m_IntroScene.SetCurrentCharacterID( -1 );
 		g_Game.SetPlayerGameName(m_name_widget.GetText());
 		//m_name_widget.SetText(g_Game.GetPlayerGameName());		
 		
 		// make random selection
-		m_scene.RandomSelectGender();
+		m_IntroScene.RandomSelectGender();
 		
-		if (m_scene.m_female)
+		if (m_IntroScene.IsCharacterFemale())
 		{
 			m_genderButton.SetText("F");
-			m_skinIndex =  m_scene.RandomSelectIndex(m_scene.m_personalityFemaleList);
+			m_skinIndex =  m_IntroScene.RandomSelectIndex(m_IntroScene.m_CharPersonalityFemaleList);
 		}
 		else
 		{
 			m_genderButton.SetText("M");
-			m_skinIndex =  m_scene.RandomSelectIndex(m_scene.m_personalityMaleList);
+			m_skinIndex =  m_IntroScene.RandomSelectIndex(m_IntroScene.m_CharPersonalityMaleList);
 		}
 		
-		m_topIndex = m_scene.RandomSelectIndex(m_scene.m_shirtList);
-		m_pantsIndex = m_scene.RandomSelectIndex(m_scene.m_pantsList);
-		m_shoesIndex = m_scene.RandomSelectIndex(m_scene.m_shoesList);
+		m_topIndex = m_IntroScene.RandomSelectIndex(m_IntroScene.m_CharShirtList);
+		m_pantsIndex = m_IntroScene.RandomSelectIndex(m_IntroScene.m_CharPantsList);
+		m_shoesIndex = m_IntroScene.RandomSelectIndex(m_IntroScene.m_CharShoesList);
 		
 		// update character
 		SetCharacter();
@@ -317,7 +320,7 @@ class CharacterMenu extends UIScriptedMenu
 	void ConnectLastSession()
 	{
 		//TODO fix code-side
-		if ( !g_Game.ConnectLastSession(this, m_scene.CurrentCharacterID()) )
+		if ( !g_Game.ConnectLastSession(this, m_MissionMainMenu.GetCurrentCharacterID()) )
 		{
 			g_Game.GetUIManager().EnterServerBrowser(this);
 		}

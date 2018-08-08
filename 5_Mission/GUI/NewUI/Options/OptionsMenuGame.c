@@ -19,10 +19,11 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 	protected ref OptionSelectorMultistate	m_ShowQuickbarSelector;
 	
 	protected GameOptions					m_Options;
+	protected OptionsMenuNew				m_Menu;
 	
 	protected ref map<int, ref Param2<string, string>> m_TextMap;
 	
-	void OptionsMenuGame( Widget parent, Widget details_root, GameOptions options )
+	void OptionsMenuGame( Widget parent, Widget details_root, GameOptions options, OptionsMenuNew menu )
 	{
 		#ifdef PLATFORM_CONSOLE
 			m_Root					= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/options/xbox/game_tab.layout", parent );
@@ -37,6 +38,8 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 		m_DetailsText				= RichTextWidget.Cast( m_DetailsRoot.FindAnyWidget( "details_content" ) );
 		
 		m_Options					= options;
+		m_Menu						= menu;
+		
 		m_FOVOption					= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_OPTIONS_FIELD_OF_VIEW ) );
 		
 		m_Root.FindAnyWidget( "fov_setting_option" ).SetUserID( AT_OPTIONS_FIELD_OF_VIEW );
@@ -75,11 +78,54 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 		#endif
 	}
 	
+	bool IsChanged()
+	{
+		#ifdef PLATFORM_CONSOLE
+		return ( m_ShowHUDSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.HUD ) || m_ShowCrosshairSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.CROSSHAIR ) );
+		#else
+		return ( m_ShowHUDSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.HUD ) || m_ShowCrosshairSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.CROSSHAIR ) || m_ShowQuickbarSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.QUICKBAR ) );
+		#endif
+	}
+	
+	void Apply()
+	{
+		IngameHud hud = GetHud();
+		
+		g_Game.SetProfileOption( EDayZProfilesOptions.HUD, m_ShowHUDSelector.GetValue() );
+		g_Game.SetProfileOption( EDayZProfilesOptions.CROSSHAIR, m_ShowCrosshairSelector.GetValue() );
+		
+		#ifdef PLATFORM_WINDOWS
+			g_Game.SetProfileOption( EDayZProfilesOptions.QUICKBAR, m_ShowQuickbarSelector.GetValue() );
+			if( hud )
+			{
+				hud.ToggleQuickBar( m_ShowQuickbarSelector.GetValue() );
+			}
+		#endif
+		
+		if( hud )
+		{
+			hud.ToggleHud( m_ShowHUDSelector.GetValue() );
+		}
+	}
+	
+	void Revert()
+	{
+		m_ShowHUDSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.HUD ), false );
+		m_ShowCrosshairSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.CROSSHAIR ), false );
+		m_FOVSelector.SetValue( m_FOVOption.ReadValue(), false );
+		
+		#ifdef PLATFORM_WINDOWS
+		m_ShowQuickbarSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.QUICKBAR ), false );
+		#else
+		#ifdef PLATFORM_CONSOLE
+			m_BrightnessSelector.SetValue( m_BrightnessOption.ReadValue(), false );
+		#endif
+		#endif
+	}
+	
 	void ReloadOptions()
 	{
-		OptionsMenuNew menu = OptionsMenuNew.Cast( GetGame().GetUIManager().GetMenu() );
-		if( menu )
-			menu.ReloadOptions();
+		m_Menu.ReloadOptions();
 	}
 	
 	void SetOptions( GameOptions options )
@@ -91,31 +137,22 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 	{
 		m_FOVOption.WriteValue( new_value );
 		g_Game.SetUserFOV( new_value );
+		m_Menu.OnChanged();
 	}
 	
 	void UpdateHUDOption( int new_index )
 	{
-		g_Game.SetProfileOption( EDayZProfilesOptions.HUD, new_index );
-		IngameHud hud = GetHud();
-		if( hud )
-		{
-			hud.ToggleHud( new_index );
-		}
+		m_Menu.OnChanged();
 	}
 	
 	void UpdateCrosshairOption( int new_index )
 	{
-		g_Game.SetProfileOption( EDayZProfilesOptions.CROSSHAIR, new_index );
+		m_Menu.OnChanged();
 	}
 	
 	void UpdateQuickbarOption( int new_index )
 	{
-		g_Game.SetProfileOption( EDayZProfilesOptions.QUICKBAR, new_index );
-		IngameHud hud = GetHud();
-		if( hud )
-		{
-			hud.ToggleQuickBar( new_index );
-		}
+		m_Menu.OnChanged();
 	}
 	
 	IngameHud GetHud()
@@ -133,14 +170,14 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 	void UpdateBrightnessOption( float value )
 	{
 		m_BrightnessOption.WriteValue( value );
+		m_Menu.OnChanged();
 	}
 #endif
 	
 	override bool OnFocus( Widget w, int x, int y )
 	{
-		OptionsMenuNew menu = OptionsMenuNew.Cast( GetGame().GetUIManager().GetMenu() );
-		if( menu )
-			menu.OnFocus( w, x, y );
+		if( m_Menu )
+			m_Menu.OnFocus( w, x, y );
 		if( w )
 		{
 			Param2<string, string> p = m_TextMap.Get( w.GetUserID() );

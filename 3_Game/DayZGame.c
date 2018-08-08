@@ -832,11 +832,6 @@ class DayZGame extends CGame
 				LoadProgressUpdate(prog_params.param1, prog_params.param2, prog_params.param3);
 			break;
 	
-		case EntityNetworkUpdateEventTypeID:
-			//EntityNetworkUpdateEventParams ent_params = params;
-			// update entity info
-			break;
-	
 		case ClientSpawningEventTypeID:
 			ClientSpawningEventParams spawningParams;
 			if (Class.CastTo(spawningParams, params))
@@ -1048,7 +1043,7 @@ class DayZGame extends CGame
 	// ------------------------------------------------------------
 	override void OnAfterCreate()
 	{
-		Math.Randomize(-1);
+		Math.Randomize( -1 );
 	}
 	
 	// ------------------------------------------------------------
@@ -1127,8 +1122,8 @@ class DayZGame extends CGame
 	{
 		DeleteGamepadDisconnectMenu();
 		PPEffects.SetBlurMenu( 1 );
-		m_GamepadDisconnectMenu = GetGame().GetWorkspace().CreateWidgets("gui/layouts/xbox/day_z_gamepad_connect.layout");;
-		RichTextWidget text_widget = RichTextWidget.Cast( m_GamepadDisconnectMenu.FindAnyWidget("InputPromptText") );
+		m_GamepadDisconnectMenu = GetGame().GetWorkspace().CreateWidgets("gui/layouts/xbox/day_z_gamepad_connect.layout");
+		RichTextWidget text_widget = RichTextWidget.Cast( m_GamepadDisconnectMenu.FindAnyWidget("Text") );
 		if (text_widget)
 		{
 			#ifdef PLATFORM_XBOX

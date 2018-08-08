@@ -39,7 +39,7 @@ class ActionTakeItem: ActionInteractBase
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		ItemBase tgt_item = ItemBase.Cast( target.GetObject() );
-		if ( tgt_item && !tgt_item.IsTaketable() ) return false;
+		if ( tgt_item && !tgt_item.IsTakeable() ) return false;
 		if ( tgt_item && tgt_item.IsBeingPlaced() ) return false;
 
 		if ( player.GetCommand_Vehicle() )

@@ -375,7 +375,6 @@ typedef int ChatChannel;
 //! state, progress, title
 typedef Param3<int, float, string> ProgressEventParams;
 typedef Param1<string> ScriptLogEventParams;
-typedef Param1<EntityAI> EntityNetworkUpdateEventParams;
 //! channel, from, text, color config class
 typedef Param4<int, string, string, string> ChatMessageEventParams;
 typedef Param1<int> ChatChannelEventParams;
@@ -463,8 +462,6 @@ enum EventType
 	NetworkManagerServerEventTypeID,
 	//! no params
 	DialogQueuedEventTypeID,
-	//! params: \ref EntityNetworkUpdateEventParams
-	EntityNetworkUpdateEventTypeID,
 	//! params: \ref ChatMessageEventParams
 	ChatMessageEventTypeID,
 	//! params: \ref ChatChannelEventParams
@@ -685,7 +682,7 @@ class MenuData: Managed
 	
 	//proto native void	GetCharacterStringList(int characterID, string name, out TStringArray values);
 	//proto bool			GetCharacterString(int characterID,string name, out string value);
-}
+};
 
 
 // -------------------------------------------------------------------------
@@ -748,6 +745,10 @@ const int AT_CONFIG_YAXIS = 53;
 const int AT_CONFIG_FLOATING_ZONE = 54;
 const int AT_CONFIG_MOUSE_FILTERING = 55;
 const int AT_CONFIG_HEAD_BOB = 56;
+const int AT_OPTIONS_VIDEO_DEFAULT = 57,
+const int AT_CONFIG_CONTROLLER_XAXIS = 58,
+const int AT_CONFIG_CONTROLLER_YAXIS = 59,
+const int AT_CONFIG_CONTROLLER_REVERSED_LOOK = 60,
 
 // Option Access Control Type
 const int OA_CT_NUMERIC = 0;

@@ -13,6 +13,7 @@ class OptionsMenuNew extends UIScriptedMenu
 	protected ButtonWidget				m_Reset;
 	
 	protected Widget					m_Details;
+	protected TextWidget				m_Version;
 	
 	void OptionsMenuNew()
 	{
@@ -34,29 +35,38 @@ class OptionsMenuNew extends UIScriptedMenu
 		layoutRoot.FindAnyWidget( "Tabber" ).GetScript( m_Tabber );
 		
 		m_Details			= layoutRoot.FindAnyWidget( "settings_details" );
+		m_Version			= TextWidget.Cast( layoutRoot.FindAnyWidget( "version" ) );
 		
-		m_GameTab			= new OptionsMenuGame( layoutRoot.FindAnyWidget( "Tab_0" ), m_Details, m_Options );
-		m_SoundsTab			= new OptionsMenuSounds( layoutRoot.FindAnyWidget( "Tab_1" ), m_Details, m_Options );
+		m_GameTab			= new OptionsMenuGame( layoutRoot.FindAnyWidget( "Tab_0" ), m_Details, m_Options, this );
+		m_SoundsTab			= new OptionsMenuSounds( layoutRoot.FindAnyWidget( "Tab_1" ), m_Details, m_Options, this );
 		
 		#ifdef PLATFORM_CONSOLE
-			m_ControlsTab	= new OptionsMenuControls( layoutRoot.FindAnyWidget( "Tab_2" ), m_Details, m_Options );
+			m_ControlsTab	= new OptionsMenuControls( layoutRoot.FindAnyWidget( "Tab_2" ), m_Details, m_Options, this );
 		#else
 		#ifdef PLATFORM_WINDOWS
-			m_VideoTab		= new OptionsMenuVideo( layoutRoot.FindAnyWidget( "Tab_2" ), m_Details, m_Options );
-			m_ControlsTab	= new OptionsMenuControls( layoutRoot.FindAnyWidget( "Tab_3" ), m_Details, m_Options );
+			m_VideoTab		= new OptionsMenuVideo( layoutRoot.FindAnyWidget( "Tab_2" ), m_Details, m_Options, this );
+			m_ControlsTab	= new OptionsMenuControls( layoutRoot.FindAnyWidget( "Tab_3" ), m_Details, m_Options, this );
 		#endif
 		#endif
 		
 		m_Apply				= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "apply" ) );
 		m_Back				= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "back" ) );
 		m_Reset				= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "reset" ) );
+		
+		string version;
+		GetGame().GetVersion( version );
+		if( version != "" )
+			m_Version.SetText( "#main_menu_version" + " " + version );
+		else
+			m_Version.Show( false );
+		#ifdef PLATFORM_WINDOWS
+		SetFocus( layoutRoot );
+		#endif
 		return layoutRoot;
 	}
 	
 	void ~OptionsMenuNew()
 	{
-		if( m_Options.IsChanged() )
-			g_Game.GetUIManager().ShowDialog("#main_menu_configure", "You have unsaved changes in the configuration. Would you like to discard them?", 1337, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 		m_Options.Revert();
 	}
 	
@@ -85,8 +95,24 @@ class OptionsMenuNew extends UIScriptedMenu
 	
 	void Apply()
 	{
-		m_Options.Test();
-		m_Options.Apply();
+		if( m_Options.IsChanged() || m_GameTab.IsChanged() )
+		{
+			m_Options.Test();
+			m_Options.Apply();
+		}
+		
+		if( m_GameTab.IsChanged() )
+		{
+			m_GameTab.Apply();
+		}
+		
+		m_Apply.Enable( false );
+		m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
+		layoutRoot.FindAnyWidget( "Apply" ).Show( false );
+		m_Reset.Enable( false );
+		m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
+		layoutRoot.FindAnyWidget( "Reset" ).Show( false );
+		
 		
 		if( m_Options.NeedRestart() )
 			g_Game.GetUIManager().ShowDialog("#main_menu_configure", "#menu_restart_needed", 117, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
@@ -94,7 +120,30 @@ class OptionsMenuNew extends UIScriptedMenu
 	
 	void Back()
 	{
+		bool changed = false;
+		
 		if( m_Options.IsChanged() )
+		{
+			changed = true;
+		}
+		
+		if( m_GameTab.IsChanged() )
+		{
+			changed = true;
+		}
+		
+		if( m_SoundsTab.IsChanged() )
+		{
+			changed = true;
+		}
+		
+		#ifdef PLATFORM_WINDOWS
+		else if( m_VideoTab.IsChanged() )
+		{
+			changed = true;
+		}
+		#endif
+		if( changed )
 			g_Game.GetUIManager().ShowDialog("#main_menu_configure", "You have unsaved changes in the configuration. Would you like to discard them?", 1337, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 		else
 		{
@@ -104,9 +153,56 @@ class OptionsMenuNew extends UIScriptedMenu
 		}
 	}
 	
+	void OnChanged()
+	{
+		bool changed = false;
+		if( m_Options.IsChanged() || m_GameTab.IsChanged() || m_SoundsTab.IsChanged() )
+		{
+			changed = true;
+		}
+		#ifdef PLATFORM_WINDOWS
+		else if( m_VideoTab.IsChanged() )
+		{
+			changed = true;
+		}	
+		#endif
+		
+		m_Apply.Enable( changed );
+		m_Reset.Enable( changed );
+		if( changed )
+		{
+			m_Apply.ClearFlags( WidgetFlags.IGNOREPOINTER );
+			m_Reset.ClearFlags( WidgetFlags.IGNOREPOINTER );
+		}
+		else
+		{
+			m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
+			m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
+		}
+		
+		layoutRoot.FindAnyWidget( "Apply" ).Show( changed );
+		layoutRoot.FindAnyWidget( "Reset" ).Show( changed );
+	}
+	
 	void Reset()
 	{
-		m_Options.Revert();
+		if( m_Options.IsChanged() )
+			m_Options.Revert();
+		if( m_GameTab.IsChanged() )
+			m_GameTab.Revert();
+		if( m_SoundsTab.IsChanged() )
+			m_SoundsTab.Revert();
+		#ifdef PLATFORM_WINDOWS
+		if( m_VideoTab.IsChanged() )
+			m_VideoTab.Revert();
+		#endif
+		m_Apply.Enable( false );
+		m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
+		layoutRoot.FindAnyWidget( "Apply" ).Show( false );
+		
+		m_Reset.Enable( false );
+		m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
+		layoutRoot.FindAnyWidget( "Reset" ).Show( false );
 	}
 	
 	void SliderFocus()
@@ -243,6 +339,11 @@ class OptionsMenuNew extends UIScriptedMenu
 		if( GetGame().GetInput().GetActionDown( UAQuickReload, false ) )
 		{
 			Reset();
+		}
+		
+		if( GetGame().GetInput().GetActionDown( UAUIBack, false ) )
+		{
+			Back();
 		}
 	}
 	

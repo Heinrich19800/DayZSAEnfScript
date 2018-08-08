@@ -18,10 +18,11 @@ class OptionsMenuSounds extends ScriptedWidgetEventHandler
 	protected ref OptionSelectorSlider	m_MusicSelector;
 	
 	protected GameOptions				m_Options;
+	protected OptionsMenuNew			m_Menu;
 	
 	protected ref map<int, ref Param2<string, string>> m_TextMap;
 	
-	void OptionsMenuSounds( Widget parent, Widget details_root, GameOptions options )
+	void OptionsMenuSounds( Widget parent, Widget details_root, GameOptions options, OptionsMenuNew menu )
 	{
 		#ifdef PLATFORM_CONSOLE
 			m_Root				= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/options/xbox/sound_tab.layout", parent );
@@ -35,7 +36,8 @@ class OptionsMenuSounds extends ScriptedWidgetEventHandler
 		m_DetailsLabel			= TextWidget.Cast( m_DetailsRoot.FindAnyWidget( "details_label" ) );
 		m_DetailsText			= RichTextWidget.Cast( m_DetailsRoot.FindAnyWidget( "details_content" ) );
 		
-		m_Options = options;
+		m_Options				= options;
+		m_Menu					= menu;
 		
 		m_MasterOption			= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_OPTIONS_MASTER_VOLUME ) );
 		m_EffectsOption			= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_OPTIONS_EFFECTS_SLIDER ) );
@@ -53,6 +55,11 @@ class OptionsMenuSounds extends ScriptedWidgetEventHandler
 		m_EffectsSelector		= new OptionSelectorSlider( m_Root.FindAnyWidget( "effects_setting_option" ), m_EffectsOption.ReadValue(), this, false, m_EffectsOption.GetMin(), m_EffectsOption.GetMax() );
 		m_VOIPSelector			= new OptionSelectorSlider( m_Root.FindAnyWidget( "voip_setting_option" ), m_VOIPOption.ReadValue(), this, false, m_VOIPOption.GetMin(), m_VOIPOption.GetMax() );
 		m_MusicSelector			= new OptionSelectorSlider( m_Root.FindAnyWidget( "music_setting_option" ), m_MusicOption.ReadValue(), this, false, m_MusicOption.GetMin(), m_MusicOption.GetMax() );
+		
+		m_MasterSelector.m_OptionChanged.Insert( UpdateMaster );
+		m_EffectsSelector.m_OptionChanged.Insert( UpdateEffects );
+		m_VOIPSelector.m_OptionChanged.Insert( UpdateVOIP );
+		m_MusicSelector.m_OptionChanged.Insert( UpdateMusic );
 	}
 	
 	override bool OnFocus( Widget w, int x, int y )
@@ -78,16 +85,56 @@ class OptionsMenuSounds extends ScriptedWidgetEventHandler
 		return ( w != null );
 	}
 	
+	bool IsChanged()
+	{
+		return false;
+	}
+	
+	void Apply()
+	{
+		
+	}
+	
+	void Revert()
+	{
+		m_MasterSelector.SetValue( m_MasterOption.ReadValue() );
+		m_EffectsSelector.SetValue( m_EffectsOption.ReadValue() );
+		m_VOIPSelector.SetValue( m_VOIPOption.ReadValue() );
+		m_MusicSelector.SetValue( m_MusicOption.ReadValue() );
+	}
+	
 	void ReloadOptions()
 	{
-		OptionsMenuNew menu = OptionsMenuNew.Cast( GetGame().GetUIManager().GetMenu() );
-		if( menu )
-			menu.ReloadOptions();
+		m_Menu.ReloadOptions();
 	}
 	
 	void SetOptions( GameOptions options )
 	{
 		m_Options = options;
+	}
+	
+	void UpdateMaster( float value )
+	{
+		m_MasterOption.WriteValue( value );
+		m_Menu.OnChanged();
+	}
+	
+	void UpdateEffects( float value )
+	{
+		m_EffectsOption.WriteValue( value );
+		m_Menu.OnChanged();
+	}
+	
+	void UpdateVOIP( float value )
+	{
+		m_VOIPOption.WriteValue( value );
+		m_Menu.OnChanged();
+	}
+	
+	void UpdateMusic( float value )
+	{
+		m_MusicOption.WriteValue( value );
+		m_Menu.OnChanged();
 	}
 	
 	void FillTextMap()

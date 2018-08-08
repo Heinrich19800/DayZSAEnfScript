@@ -214,7 +214,6 @@ class EmoteManager
 		else
 		{
 			if ( m_Player.GetActionManager() ) m_Player.GetActionManager().EnableActions();
-			//m_Player.GetInventory().UnlockInventory(LOCK_FROM_SCRIPT);
 			m_Player.m_InventorySoftLocked = false;
 			
 			if ( m_controllsLocked )

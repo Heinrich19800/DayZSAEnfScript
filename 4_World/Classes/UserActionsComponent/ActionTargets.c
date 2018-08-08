@@ -13,7 +13,7 @@ class VicinityObjects
 	{
 		// Do not store hologram items
 		ItemBase ib = ItemBase.Cast(object);
-		if(ib && !ib.IsTaketable()) 
+		if(ib && !ib.IsTakeable()) 
 			return;
 
 		if ( !m_VicinityObjects.Contains(object) )
@@ -616,5 +616,7 @@ class ActionTargets
 	//! p3d 
 	private const string CE_CENTER 					= "ce_center";
 	private const float HEIGHT_OFFSET 				= 0.2;
-	private const int OBSTRUCTED_COUNT_THRESHOLD	= 4;
+	
+	//! misc
+	private const int OBSTRUCTED_COUNT_THRESHOLD	= 3;
 };

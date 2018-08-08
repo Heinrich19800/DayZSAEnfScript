@@ -755,7 +755,7 @@ class CGame
 	//! Checks if this surface is softt (it can be dig into with shovel or similar items)
 	bool IsSurfaceSoft(string surface)
 	{
-		if ( surface == "cp_dirt"  ||  surface == "cp_broadleaf_dense1"  ||  surface == "cp_broadleaf_dense2"  ||  surface == "cp_broadleaf_sparse1"  ||  surface == "cp_broadleaf_sparse2"  ||  surface == "cp_conifer_common1"  ||  surface == "cp_grass"  ||  surface == "cp_grass_tall"  ||  surface == "grass_dry_ext" )
+		if ( surface == "cp_gravel"  ||  surface == "dirt_ext"  ||  surface == "cp_dirt"  ||  surface == "cp_broadleaf_dense1"  ||  surface == "cp_broadleaf_dense2"  ||  surface == "cp_broadleaf_sparse1"  ||  surface == "cp_broadleaf_sparse2"  ||  surface == "cp_conifer_common1"  ||  surface == "cp_grass"  ||  surface == "cp_grass_tall"  ||  surface == "grass_dry_ext" )
 		{
 			return true;
 		}

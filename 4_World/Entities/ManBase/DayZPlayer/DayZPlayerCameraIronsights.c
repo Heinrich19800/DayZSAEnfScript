@@ -356,10 +356,14 @@ class DayZPlayerCameraOptics : DayZPlayerCameraIronsights
 	
 	override void SetCameraPPDelay(DayZPlayerCamera pPrevCamera)
 	{
-		if (pPrevCamera.GetCameraName() == "DayZPlayerCamera1stPerson" || pPrevCamera.GetCameraName() == "DayZPlayerCameraIronsights")
+		if (pPrevCamera.GetCameraName() == "DayZPlayerCameraIronsights")
 		{
 			//Print("---optics---DayZPlayerCamera1stPerson || DayZPlayerCameraIronsights");
 			m_CameraPPDelay = DayZPlayerCameras.TIME_CAMERACHANGE_01;
+		}
+		else if (pPrevCamera.GetCameraName() == "DayZPlayerCamera1stPerson")
+		{
+			m_CameraPPDelay = 0; //changed to accomodate handheld optics, had to be changed here also
 		}
 		else
 		{

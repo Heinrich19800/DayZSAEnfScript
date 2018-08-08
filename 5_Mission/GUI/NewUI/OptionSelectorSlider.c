@@ -25,7 +25,7 @@ class OptionSelectorSlider extends OptionSelectorBase
 		m_MinValue					= min;
 		m_MaxValue					= max;
 		
-		m_Slider.SetCurrent( NormalizeInput( value ) );
+		SetValue( value );
 		
 		m_Enabled = !disabled;
 		if( m_Enabled )
@@ -87,6 +87,13 @@ class OptionSelectorSlider extends OptionSelectorBase
 	{
 		float ret = ( value - m_MinValue) / ( m_MaxValue - m_MinValue );
 		return ret;
+	}
+	
+	void SetValue( float value, bool update = true )
+	{
+		m_Slider.SetCurrent( NormalizeInput( value ) );
+		if( update )
+			m_OptionChanged.Invoke( GetValue() );
 	}
 	
 	float GetValue()

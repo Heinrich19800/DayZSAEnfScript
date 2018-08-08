@@ -20,8 +20,8 @@ class CharacterCreationMenu extends UIScriptedMenu
 	{
 		MissionMainMenu mission = MissionMainMenu.Cast( GetGame().GetMission() );
 		
-		m_Scene = mission.GetIntroScene();
-		m_Scene.m_Camera.LookAt( Vector( m_Scene.m_DemoPos[0], m_Scene.m_DemoPos[1] + 1, m_Scene.m_DemoPos[2] ) );
+		m_Scene = mission.GetIntroScenePC();
+		m_Scene.ResetIntroCamera();
 	}
 	
 	override Widget Init()
@@ -45,37 +45,39 @@ class CharacterCreationMenu extends UIScriptedMenu
 		else
 			m_Version.Show( false );
 		
-		m_GenderSelector					= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_gender_setting_option" ), 0, null, false, m_Scene.m_genderList );
-		if ( m_Scene.m_female )
+		m_GenderSelector					= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_gender_setting_option" ), 0, null, false, m_Scene.m_CharGenderList );
+		if ( m_Scene.IsCharacterFemale() )
 		{
 			m_GenderSelector.SetValue( "Female" );
-			m_SkinSelector	= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_head_setting_option" ), 0, null, false, m_Scene.m_personalityFemaleList );
+			m_SkinSelector	= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_head_setting_option" ), 0, null, false, m_Scene.m_CharPersonalityFemaleList );
 		}
 		else
 		{
 			m_GenderSelector.SetValue( "Male" );
-			m_SkinSelector	= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_head_setting_option" ), 0, null, false, m_Scene.m_personalityMaleList );
+			m_SkinSelector	= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_head_setting_option" ), 0, null, false, m_Scene.m_CharPersonalityMaleList );
 		}
 		
-		m_TopSelector						= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_top_setting_option" ), 0, null, false, m_Scene.m_shirtList );
-		m_BottomSelector					= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_bottom_setting_option" ), 0, null, false, m_Scene.m_pantsList );
-		m_ShoesSelector						= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_shoes_setting_option" ), 0, null, false, m_Scene.m_shoesList );
+		m_TopSelector						= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_top_setting_option" ), 0, null, false, m_Scene.m_CharShirtList );
+		m_BottomSelector					= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_bottom_setting_option" ), 0, null, false, m_Scene.m_CharPantsList );
+		m_ShoesSelector						= new OptionSelectorMultistate( layoutRoot.FindAnyWidget( "character_shoes_setting_option" ), 0, null, false, m_Scene.m_CharShoesList );
 		
-		if( m_Scene && m_Scene.m_DemoUnit )
+		if( m_Scene && m_Scene.GetIntroSceneCharacter() )
 		{
-			Object obj = m_Scene.m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY);
+			PlayerBase scene_char = m_Scene.GetIntroSceneCharacter();
+			
+			Object obj = scene_char.GetInventory().FindAttachment(InventorySlots.BODY);
 			if( obj )
 				m_TopSelector.SetValue( obj.GetType() );
 			
-			obj = m_Scene.m_DemoUnit.GetInventory().FindAttachment(InventorySlots.LEGS);
+			obj = scene_char.GetInventory().FindAttachment(InventorySlots.LEGS);
 			if( obj )
 				m_BottomSelector.SetValue( obj.GetType() );
 			
-			obj = m_Scene.m_DemoUnit.GetInventory().FindAttachment(InventorySlots.FEET);
+			obj = scene_char.GetInventory().FindAttachment(InventorySlots.FEET);
 			if( obj )
 				m_ShoesSelector.SetValue( obj.GetType() );
 			
-			m_SkinSelector.SetValue( m_Scene.m_DemoUnit.GetType() );
+			m_SkinSelector.SetValue( scene_char.GetType() );
 		}
 		
 		m_GenderSelector.m_OptionChanged.Insert( GenderChanged );
@@ -100,7 +102,7 @@ class CharacterCreationMenu extends UIScriptedMenu
 	void Apply()
 	{
 		g_Game.SetPlayerGameName( m_PlayerName.GetText() );
-		m_Scene.SetCharacterInfo();
+		m_Scene.SaveCharacterSetup();
 		m_Scene.SaveCharName();
 		m_Scene.SaveDefaultCharacter();
 		SetCharacter();
@@ -109,7 +111,7 @@ class CharacterCreationMenu extends UIScriptedMenu
 	
 	void SetCharacter()
 	{
-		if (m_Scene.m_DemoUnit)
+		if (m_Scene.GetIntroSceneCharacter())
 		{
 			m_PlayerName.SetText( g_Game.GetPlayerGameName() );
 			
@@ -140,21 +142,21 @@ class CharacterCreationMenu extends UIScriptedMenu
 	{
 		g_Game.SetNewCharacter(true);
 		
-		m_Scene.m_currentCharacterID = -1;
+		m_Scene.SetCurrentCharacterID( -1 );
 		
 		// make random selection
 		m_Scene.RandomSelectGender();
 		
-		if ( m_Scene.m_female )
+		if ( m_Scene.IsCharacterFemale() )
 		{
 			m_GenderSelector.SetValue( "Female" );
-			m_SkinSelector.LoadNewValues( m_Scene.m_personalityFemaleList, 0 );
+			m_SkinSelector.LoadNewValues( m_Scene.m_CharPersonalityFemaleList, 0 );
 			m_SkinSelector.SetRandomValue();
 		}
 		else
 		{
 			m_GenderSelector.SetValue( "Male" );
-			m_SkinSelector.LoadNewValues( m_Scene.m_personalityMaleList, 0 );
+			m_SkinSelector.LoadNewValues( m_Scene.m_CharPersonalityMaleList, 0 );
 			m_SkinSelector.SetRandomValue();
 		}
 		
@@ -170,16 +172,16 @@ class CharacterCreationMenu extends UIScriptedMenu
 	//Selector Events
 	void GenderChanged()
 	{
-		m_Scene.m_female = ( m_GenderSelector.GetStringValue() == "Female" );
+		m_Scene.SetCharacterFemale( ( m_GenderSelector.GetStringValue() == "Female" ) );
 		
-		if ( m_Scene.m_female )
+		if ( m_Scene.IsCharacterFemale() )
 		{
-			m_SkinSelector.LoadNewValues( m_Scene.m_personalityFemaleList, 0 );
+			m_SkinSelector.LoadNewValues( m_Scene.m_CharPersonalityFemaleList, 0 );
 			m_SkinSelector.SetRandomValue();
 		}
 		else
 		{
-			m_SkinSelector.LoadNewValues( m_Scene.m_personalityMaleList, 0 );
+			m_SkinSelector.LoadNewValues( m_Scene.m_CharPersonalityMaleList, 0 );
 			m_SkinSelector.SetRandomValue();
 		}
 	}
@@ -315,9 +317,9 @@ class CharacterCreationMenu extends UIScriptedMenu
 		SetFocus( m_Apply );
 		CheckNewOptions();
 		
-		if( m_Scene && m_Scene.m_Camera )
+		if( m_Scene && m_Scene.GetCamera() )
 		{
-			m_Scene.m_Camera.LookAt( Vector( m_Scene.m_DemoPos[0],m_Scene.m_DemoPos[1] + 1,m_Scene.m_DemoPos[2] ) );
+			m_Scene.GetCamera().LookAt( m_Scene.GetIntroSceneCharacter().GetPosition() + Vector( 0, 1, 0 ) );
 		}
 	}
 	

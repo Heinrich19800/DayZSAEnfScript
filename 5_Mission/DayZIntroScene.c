@@ -14,51 +14,53 @@ typedef TAdvanceArray<string> TStringAdvanceArray;
 
 class DayZIntroScene: Managed
 {
-	string m_lastCharacter;
-	bool m_female;
-	int m_LastShavedSeconds;
-	int m_CachedPlaytime;
-	int m_currentCharacterID;
-	ref TStringArray m_lastInventory;
+	protected string m_lastCharacter;
+	protected bool m_IsCharFemale;
+	protected int m_LastShavedSeconds;
+	protected int m_CachedPlaytime;
+	protected int m_currentCharacterID;
 	
-	ref TStringAdvanceArray m_genderList;
-	ref TStringAdvanceArray m_personalityMaleList;
-	ref TStringAdvanceArray m_personalityFemaleList;
-	ref TStringArray 		m_allCharacters;
-	ref TStringAdvanceArray m_shirtList;
-	ref TStringAdvanceArray m_pantsList;
-	ref TStringAdvanceArray m_shoesList;
+	ref TStringArray 			m_CharAllCharacters;
+	ref TStringAdvanceArray 	m_CharGenderList;
+	ref TStringAdvanceArray 	m_CharPersonalityMaleList;
+	ref TStringAdvanceArray 	m_CharPersonalityFemaleList;
+	ref TStringAdvanceArray		m_CharShirtList;
+	int 						m_CharShirtIndex;
+	ref TStringAdvanceArray 	m_CharPantsList;
+	int 						m_CharPantsIndex;
+	ref TStringAdvanceArray 	m_CharShoesList;
+	int 						m_CharShoesIndex;
 	
-	ref EntityAnimEndEventHandler 	m_anim_end_event_handler;
-	ref PlayerNameHandler 			m_player_name_handler;
+	protected ref EntityAnimEndEventHandler 	m_anim_end_event_handler;
+	protected ref PlayerNameHandler 			m_PlayerNameHandler;
 
-	Camera m_Camera;
-	PlayerBase m_DemoUnit;
-	Weather m_Weather;
-	vector 	m_DemoPos;
-	vector 	m_DemoRot;
-	vector 	m_CameraTrans[4];
-	vector 	m_Target;
-	bool	m_DisableClick;
-	bool 	m_RotatingCamera;
-	bool 	m_RotatingCharacter;
-	int 	m_RotatingCharacterMouseX;
-	int 	m_RotatingCharacterMouseY;
-	float 	m_RotatingCharacterRot;
-	float 	m_Radius;
-	float 	m_Radius_original;
-	float 	m_DiffX;
-	float 	m_DeltaX;
-	float 	m_DeltaZ;
-	float 	m_Angle;
-	float 	m_Angle_offset = 0;
-	float 	m_NewX = 0;
-	float 	m_NewZ = 0;
-	float 	m_BlurValue;
+	protected Camera 	m_Camera;
+	protected PlayerBase m_DemoUnit;
+	protected Weather	m_Weather;
+	protected vector 	m_DemoPos;
+	protected vector 	m_DemoRot;
+	protected vector 	m_CameraTrans[4];
+	protected vector 	m_Target;
+	protected bool		m_EnableClick;
+	protected bool 		m_RotatingCamera;
+	protected bool 		m_RotatingCharacter;
+	protected int 		m_RotatingCharacterMouseX;
+	protected int 		m_RotatingCharacterMouseY;
+	protected float 	m_RotatingCharacterRot;
+	protected float 	m_Radius;
+	protected float 	m_Radius_original;
+	protected float 	m_DiffX;
+	protected float 	m_DeltaX;
+	protected float 	m_DeltaZ;
+	protected float 	m_Angle;
+	protected float 	m_Angle_offset = 0;
+	protected float 	m_NewX = 0;
+	protected float 	m_NewZ = 0;
+	protected float 	m_BlurValue;
 
-	ref array<Man> m_Preloaded;
-	ref OptionsMenu m_optmenu = new OptionsMenu;
-	MenuData m_data;
+	protected ref array<Man> m_Preloaded;
+	protected ref OptionsMenu m_optmenu = new OptionsMenu;
+	protected MenuData m_data;
 
 	protected ref Timer m_timer;
 	protected EntityAI m_entity_to_take;
@@ -72,9 +74,7 @@ class DayZIntroScene: Managed
 		m_lastCharacter = "";
 		m_LastShavedSeconds = 0;
 		m_CachedPlaytime = 0;
-		m_lastInventory = new TStringArray;
-		m_DisableClick = 0;
-		m_player_name_handler = new PlayerNameHandler;
+		SetClickEnable( true );
 		//g_Game.GetPlayerName(m_player_name);
 		
 		m_Preloaded = new array<Man>;
@@ -192,33 +192,33 @@ class DayZIntroScene: Managed
 	void Init()
 	{
 		//fill default lists
-		m_genderList = new TStringAdvanceArray;
-		m_personalityMaleList = new TStringAdvanceArray;
-		m_personalityFemaleList = new TStringAdvanceArray;
-		m_allCharacters = new TStringArray;
-		m_shirtList = new TStringAdvanceArray;
-		m_pantsList = new TStringAdvanceArray;
-		m_shoesList = new TStringAdvanceArray;
+		m_CharGenderList = new TStringAdvanceArray;
+		m_CharPersonalityMaleList = new TStringAdvanceArray;
+		m_CharPersonalityFemaleList = new TStringAdvanceArray;
+		m_CharAllCharacters = new TStringArray;
+		m_CharShirtList = new TStringAdvanceArray;
+		m_CharPantsList = new TStringAdvanceArray;
+		m_CharShoesList = new TStringAdvanceArray;
 		
 		string character_CfgName;
 		string root_path = "cfgCharacterCreation";
 		
-		g_Game.ConfigGetTextArray(root_path + " gender", m_genderList);
-		g_Game.ConfigGetTextArray(root_path + " top", m_shirtList);
-		g_Game.ConfigGetTextArray(root_path + " bottom", m_pantsList);
-		g_Game.ConfigGetTextArray(root_path + " shoe", m_shoesList);
+		g_Game.ConfigGetTextArray(root_path + " gender", m_CharGenderList);
+		g_Game.ConfigGetTextArray(root_path + " top", m_CharShirtList);
+		g_Game.ConfigGetTextArray(root_path + " bottom", m_CharPantsList);
+		g_Game.ConfigGetTextArray(root_path + " shoe", m_CharShoesList);
 
-		m_allCharacters = GetGame().ListAvailableCharacters();
-		for (int i = 0; i < m_allCharacters.Count(); i++)
+		m_CharAllCharacters = GetGame().ListAvailableCharacters();
+		for (int i = 0; i < m_CharAllCharacters.Count(); i++)
 		{
-			character_CfgName = m_allCharacters.Get(i);
+			character_CfgName = m_CharAllCharacters.Get(i);
 			if (GetGame().IsKindOf(character_CfgName, "SurvivorMale_Base"))
 			{
-				m_personalityMaleList.Insert(character_CfgName);
+				m_CharPersonalityMaleList.Insert(character_CfgName);
 			}
 			else
 			{
-				m_personalityFemaleList.Insert(character_CfgName);
+				m_CharPersonalityFemaleList.Insert(character_CfgName);
 			}
 		}
 		
@@ -229,9 +229,45 @@ class DayZIntroScene: Managed
 		//PPEffects.ResetAll();
 	}
 	
+	Camera GetCamera()
+	{
+		return m_Camera;
+	}
+	
+	void SetCharacterFemale(bool fem)
+	{
+		m_IsCharFemale = fem;
+	}
+	
+	bool IsCharacterFemale()
+	{
+		return m_IsCharFemale;
+	}
+	
+	void SetClickEnable( bool enable )
+	{
+		m_EnableClick = enable;
+	}
+	
+	bool IsClickEnabled()
+	{
+		return m_EnableClick;
+	}
+	
+	void ResetIntroCamera()
+	{
+		GetCamera().LookAt( GetIntroSceneCharacter().GetPosition() + Vector( 0, 1, 0 ) );
+		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater( SceneCharacterSetPos, 250 );
+	}
+	
+	PlayerBase GetIntroSceneCharacter()
+	{
+		return m_DemoUnit;
+	}
+	
 	void RandomSelectGender()
 	{
-		m_female = Math.RandomInt(0, 2);
+		m_IsCharFemale = Math.RandomInt(0, 2);
 	}
 	
 	// ------------------------------------------------------------
@@ -242,21 +278,21 @@ class DayZIntroScene: Managed
 		
 		RandomSelectGender();
 		
-		if (m_female)
+		if (IsCharacterFemale())
 		{
-			character_name = m_personalityFemaleList.GetRandomElement();
+			character_name = m_CharPersonalityFemaleList.GetRandomElement();
 		}
 		else
 		{
-			character_name = m_personalityMaleList.GetRandomElement();
+			character_name = m_CharPersonalityMaleList.GetRandomElement();
 		}
 		CreateNewCharacter(character_name);
 		
 		if (m_DemoUnit)
 		{
-			SetAttachment(m_shirtList.GetRandomElement(), InventorySlots.BODY);
-			SetAttachment(m_pantsList.GetRandomElement(), InventorySlots.LEGS);
-			SetAttachment(m_shoesList.GetRandomElement(), InventorySlots.FEET);
+			SetAttachment(m_CharShirtList.GetRandomElement(), InventorySlots.BODY);
+			SetAttachment(m_CharPantsList.GetRandomElement(), InventorySlots.LEGS);
+			SetAttachment(m_CharShoesList.GetRandomElement(), InventorySlots.FEET);
 		}
 		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(SceneCharacterSetPos, 250);
 	}
@@ -299,6 +335,63 @@ class DayZIntroScene: Managed
 		g_Game.SetPlayerGameName(DEFAULT_CHARACTER_NAME);
 	}
 	
+	void CharChangePart( Direction dir, int inv_slot )
+	{
+		TStringAdvanceArray list;
+		int list_index;
+		
+		switch ( inv_slot )
+		{
+			case InventorySlots.BODY:
+			{
+				list = m_CharShirtList;
+				m_CharShirtIndex = AdjustListIndex(list, dir, m_CharShirtIndex);
+				list_index = m_CharShirtIndex;
+				break;
+			}
+			case InventorySlots.LEGS:
+			{
+				list = m_CharPantsList;
+				m_CharPantsIndex = AdjustListIndex(list, dir, m_CharPantsIndex);
+				list_index = m_CharPantsIndex;
+				break;
+			}
+			case InventorySlots.FEET:
+			{
+				list = m_CharShoesList;
+				m_CharShoesIndex = AdjustListIndex(list, dir, m_CharShoesIndex);
+				list_index = m_CharShoesIndex;
+				break;
+			}
+		}		
+		
+		SetAttachment(list.Get(list_index), inv_slot);
+	}
+	
+	int AdjustListIndex(TStringAdvanceArray list, Direction dir, int index)
+	{
+		if ( dir == Direction.RIGHT )
+		{
+			index++;
+			
+			if (index >= list.Count() )
+			{
+				index = 0;
+			}
+		}
+		else if ( dir == Direction.LEFT )
+		{
+			index--;
+			
+			if (index < 0)
+			{
+				index = list.Count() - 1;
+			}
+		}
+		
+		return index;
+	}
+	
 	// ------------------------------------------------------------
 	void ChangeCharacter(int characterID)
 	{
@@ -326,13 +419,14 @@ class DayZIntroScene: Managed
 			return;
 		}
 		
-		PlayerBase.CastTo(m_DemoUnit, m_data.CreateCharacterPerson(characterID));
+		Print("CreateCharacterPerson -> "+ characterID);
+		m_DemoUnit = PlayerBase.Cast(m_data.CreateCharacterPerson(characterID));
 		
 		if (m_DemoUnit)
 		{
 			g_Game.SetNewCharacter(false);
 			m_DemoUnit.PlaceOnSurface();
-			//m_DemoUnit.SetPosition(Vector(m_DemoPos[0],m_DemoPos[1],m_DemoPos[2]) + "0 0 333");
+			m_DemoUnit.SetPosition(m_DemoPos);
 			m_DemoUnit.SetOrientation(m_DemoRot);
 			m_DemoUnit.SetEventHandler(m_anim_end_event_handler);
 			m_DemoUnit.SetLastShavedSeconds(m_LastShavedSeconds);
@@ -377,7 +471,13 @@ class DayZIntroScene: Managed
 		return count - 1;
 	}
 	//-------------------------------------------------------------
-	int CurrentCharacterID()
+	void SetCurrentCharacterID( int id )
+	{
+		m_currentCharacterID = id;
+	}
+	
+	//-------------------------------------------------------------
+	int GetCurrentCharacterID()
 	{
 		return m_currentCharacterID;
 	}
@@ -391,7 +491,7 @@ class DayZIntroScene: Managed
 		}
 
 		g_Game.PreloadObject(type, 1.0);
-		Class.CastTo(m_DemoUnit, g_Game.CreateObject(type, SnapToGround(Vector(m_DemoPos[0],m_DemoPos[1],m_DemoPos[2]) + "0 0 333"), true));
+		m_DemoUnit = PlayerBase.Cast(g_Game.CreateObject(type, SnapToGround(Vector(m_DemoPos[0],m_DemoPos[1],m_DemoPos[2]) + "0 0 333"), true));
 		
 		if (m_DemoUnit)
 		{
@@ -419,7 +519,7 @@ class DayZIntroScene: Managed
 			m_DemoUnit.SetPosition(m_DemoPos);
 			m_DemoUnit.SetOrientation(m_DemoRot);
 		}
-		m_DisableClick = false;
+		SetClickEnable( true );
 	}
 	
 	// ------------------------------------------------------------
@@ -712,7 +812,7 @@ class DayZIntroScene: Managed
 		}*/
 	}
 	
-	void SetCharacterInfo()
+	void SaveCharacterSetup()
 	{
 		int topIndex; 
 		int bottomIndex;
@@ -723,19 +823,18 @@ class DayZIntroScene: Managed
 		{
 			Object obj = m_DemoUnit.GetInventory().FindAttachment(InventorySlots.BODY);
 			if( obj )
-				topIndex = m_shirtList.Find( obj.GetType() );
+				topIndex = m_CharShirtList.Find( obj.GetType() );
 			
 			obj = m_DemoUnit.GetInventory().FindAttachment(InventorySlots.LEGS);
 			if( obj )
-				bottomIndex = m_pantsList.Find( obj.GetType() );
+				bottomIndex = m_CharPantsList.Find( obj.GetType() );
 			
 			obj = m_DemoUnit.GetInventory().FindAttachment(InventorySlots.FEET);
 			if( obj )
-				shoesIndex = m_shoesList.Find( obj.GetType() );
+				shoesIndex = m_CharShoesList.Find( obj.GetType() );
 			
 			characterIndex = GetGame().ListAvailableCharacters().Find( m_DemoUnit.GetType() );
-		}
-		
+		}		
 		
 		//saves player' type and clothes to g_Game to sync with server
 		GetGame().SetCharacterInfo(topIndex, bottomIndex, shoesIndex, characterIndex);

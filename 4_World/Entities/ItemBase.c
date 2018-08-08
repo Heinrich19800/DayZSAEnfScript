@@ -2554,7 +2554,7 @@ class ItemBase extends InventoryItem
 		SetSynchDirty();
 	}
 
-	bool IsTaketable()
+	bool IsTakeable()
 	{
 		return m_IsTakeable;
 	}

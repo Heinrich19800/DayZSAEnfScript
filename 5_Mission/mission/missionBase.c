@@ -144,11 +144,7 @@ class MissionBase extends Mission
 #ifdef PLATFORM_CONSOLE
 			menu = new InGameMenuXbox;
 #else
-#ifdef PLATFORM_PS4
-			menu = new InGameMenuXbox;
-#else
 			menu = new InGameMenu;
-#endif
 #endif
 			break;
 		case MENU_CHARACTER:
@@ -246,6 +242,9 @@ class MissionBase extends Mission
 			break;
 		case MENU_VIDEO:
 			menu = new MainMenuVideo;
+			break;
+		case MENU_KEYBINDINGS:
+			menu = new OptionsMenuKeybindings;
 			break;
 		}
 

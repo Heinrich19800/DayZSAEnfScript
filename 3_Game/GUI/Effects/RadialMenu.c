@@ -344,13 +344,6 @@ class RadialMenu : ScriptedWidgetEventHandler
 		float distance = vector.Distance( Vector( mouse_x, mouse_y, 0 ), Vector( center_x, center_y, 0 ) );
 		
 		return distance;
-	}	
-	
-	protected int GetProperControllerStickAngle( int angle )
-	{
-		int proper_angle = ( 360 - angle ) % 360;	//rotation correction
-		
-		return proper_angle;
 	}
 	
 	//return angle 0-360 deg
@@ -429,9 +422,7 @@ class RadialMenu : ScriptedWidgetEventHandler
 				if ( m_ControllerAngle > -1 && m_ControllerTilt > -1 )
 				{
 					//Right analogue stick
-					int controller_stick_angle = GetProperControllerStickAngle( m_ControllerAngle );
-					Widget w_selected = GetObjectByDegAngle( controller_stick_angle );
-					
+					Widget w_selected = GetObjectByDegAngle( m_ControllerAngle );
 					//Select
 					if ( w_selected )
 					{

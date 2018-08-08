@@ -93,6 +93,24 @@ class ActionViewOptics : ActionContinuousBase
 		}
 	}
 	
+	override void OnCancelClient( ActionData action_data )
+	{
+		ItemOptics optic;
+		if( Class.CastTo(optic, action_data.m_MainItem) )
+		{
+			ExitOptics(optic, action_data.m_Player);
+		}
+	}
+	
+	override void OnCancelServer( ActionData action_data )
+	{
+		ItemOptics optic;
+		if( Class.CastTo(optic, action_data.m_MainItem) )
+		{
+			ExitOptics(optic, action_data.m_Player);
+		}
+	}
+	
 	override void OnCompleteClient( ActionData action_data )
 	{
 		ItemOptics optic;

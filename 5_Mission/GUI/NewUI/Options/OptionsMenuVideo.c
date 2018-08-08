@@ -8,6 +8,7 @@ class OptionsMenuVideo extends ScriptedWidgetEventHandler
 	protected RichTextWidget				m_DetailsText;
 	
 	protected GameOptions					m_Options;
+	protected OptionsMenuNew				m_Menu;
 	
 	//Overall
 	protected ref OptionSelectorMultistate	m_OverallQualitySelector;
@@ -63,7 +64,7 @@ class OptionsMenuVideo extends ScriptedWidgetEventHandler
 	
 	protected ref map<int, ref Param2<string, string>> m_TextMap;
 	
-	void OptionsMenuVideo( Widget parent, Widget details_root, GameOptions options )
+	void OptionsMenuVideo( Widget parent, Widget details_root, GameOptions options, OptionsMenuNew menu )
 	{
 		m_Root							= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/options/pc/video_tab.layout", parent );
 		m_DetailsRoot					= details_root;
@@ -71,6 +72,7 @@ class OptionsMenuVideo extends ScriptedWidgetEventHandler
 		m_DetailsText					= RichTextWidget.Cast( m_DetailsRoot.FindAnyWidget( "details_content" ) );
 		
 		SetOptions( options );
+		m_Menu							= menu;
 		
 		m_Root.FindAnyWidget( "overall_quality_setting_option" ).SetUserID( AT_QUALITY_PREFERENCE );
 		m_Root.FindAnyWidget( "display_mode_setting_option" ).SetUserID( AT_QUALITY_PREFERENCE );
@@ -179,9 +181,28 @@ class OptionsMenuVideo extends ScriptedWidgetEventHandler
 	
 	void ReloadOptions()
 	{
-		OptionsMenuNew menu = OptionsMenuNew.Cast( GetGame().GetUIManager().GetMenu() );
-		if( menu )
-			menu.ReloadOptions();
+		m_Menu.ReloadOptions();
+	}
+	
+	bool IsChanged()
+	{
+		return false;
+	}
+	
+	void Apply()
+	{
+		
+	}
+	
+	void Revert()
+	{
+		//m_DisplayModeSelector.SetValue( m_DisplayModeOption.GetIndex(), false );
+		m_ResolutionSelector.SetValue( m_ResolutionOption.GetIndex(), false );
+		m_BrightnessSelector.SetValue( m_BrightnessOption.ReadValue(), false );
+		m_VSyncSelector.SetValue( m_VSyncOption.GetIndex(), false );
+		m_ColorDepthSelector.SetValue( m_ColorDepthOption.GetIndex(), false );
+		
+		RefreshCustom();
 	}
 	
 	void SetOptions( GameOptions options )
@@ -264,74 +285,87 @@ class OptionsMenuVideo extends ScriptedWidgetEventHandler
 	void OnDisplayModeChanged( int value )
 	{
 		m_DisplayModeOption.SetIndex( value );
+		m_Menu.OnChanged();
 	}
 	
 	void OnResolutionChanged( int value )
 	{
 		m_ResolutionOption.SetIndex( value );
+		m_Menu.OnChanged();
 	}
 	
 	void OnBrightnessChanged( float value )
 	{
 		m_BrightnessOption.WriteValue( value );
+		m_Menu.OnChanged();
 	}
 	
 	void OnVSyncChanged( float value )
 	{
 		m_VSyncOption.SetIndex( value );
+		m_Menu.OnChanged();
 	}
 	
 	void OnColorDepthChanged( int value )
 	{
 		m_ColorDepthOption.SetIndex( value );
+		m_Menu.OnChanged();
 	}
 	
 	void OnObjectDetailChanged( int value )
 	{
 		m_ObjectDetailOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnTerrainDetailChanged( int value )
 	{
 		m_TerrainDetailOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnTextureDetailChanged( int value )
 	{
 		m_TextureDetailOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnCloudsDetailChanged( int value )
 	{
 		m_CloudsDetailOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnShadowDetailChanged( int value )
 	{
 		m_ShadowDetailOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnTextureFilteringChanged( int value )
 	{
 		m_TextureFilteringOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnTerrainSurfaceDetailChanged( int value )
 	{
 		//m_TerrainSurfaceDetailOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnPPAAChanged( int value )
 	{
 		m_PPAAOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnHWAAChanged( int value )
@@ -346,24 +380,28 @@ class OptionsMenuVideo extends ScriptedWidgetEventHandler
 			m_ATOCSelector.Enable();
 		}
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnATOCChanged( int value )
 	{
 		m_ATOCOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnAOChanged( int value )
 	{
 		m_AOOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	void OnPPQualityChanged( int value )
 	{
 		m_PPQualityOption.SetIndex( value );
 		OnOptionChanged();
+		m_Menu.OnChanged();
 	}
 	
 	override bool OnFocus( Widget w, int x, int y )
