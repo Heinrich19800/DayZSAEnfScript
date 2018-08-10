@@ -1,27 +1,27 @@
 class DayZIntroSceneXbox: Managed
 {
-	bool m_IsCharFemale;
-	int m_LastShavedSeconds;
-	int m_LastPlayedCharacterID;
+	protected bool m_IsCharFemale;
+	protected int m_LastShavedSeconds;
+	protected int m_LastPlayedCharacterID;
 	
-	ref TStringAdvanceArray m_genderList;
-	ref TStringAdvanceArray m_CharPersonalityMaleList;
-	ref TStringAdvanceArray m_CharPersonalityFemaleList;
-	ref TStringArray 		m_allCharacters;
-	ref TStringAdvanceArray m_CharShirtList;
-	ref TStringAdvanceArray m_CharPantsList;
-	ref TStringAdvanceArray m_CharShoesList;
+	protected ref TStringAdvanceArray 	m_genderList;
+	protected ref TStringAdvanceArray 	m_CharPersonalityMaleList;
+	protected ref TStringAdvanceArray 	m_CharPersonalityFemaleList;
+	protected ref TStringAdvanceArray 	m_CharShirtList;
+	protected ref TStringAdvanceArray 	m_CharPantsList;
+	protected ref TStringAdvanceArray 	m_CharShoesList;
+	protected ref TStringArray			m_AllCharacters;
 	
-	ref EntityAnimEndEventHandler 	m_anim_end_event_handler;
+	protected ref EntityAnimEndEventHandler 	m_anim_end_event_handler;
 
-	Camera		m_SceneCamera;
-	PlayerBase	m_SceneCharacter;
-	Weather		m_Weather;
-	vector		m_CharacterPos;
-	vector		m_CharacterRot;
-	float		m_BlurValue;
+	protected Camera		m_SceneCamera;
+	protected PlayerBase	m_SceneCharacter;
+	protected Weather		m_Weather;
+	protected vector		m_CharacterPos;
+	protected vector		m_CharacterRot;
+	protected float			m_BlurValue;
 
-	MenuData m_MenuData;
+	protected MenuData m_MenuData;
 
 	//==================================
 	// DayZIntroSceneXbox
@@ -48,7 +48,7 @@ class DayZIntroSceneXbox: Managed
 		// Camera Setup
 		vector camera_position;
 		camera_position[0] 			= 1318.25;	// X
-		camera_position[1] 			= 1.91;		// Y
+		camera_position[1] 			= 1.6;		// Y
 		camera_position[2] 			= 1602.17;	// Z
 		float camera_rotation		= 115;
 		float camera_fov			= 1;
@@ -56,23 +56,23 @@ class DayZIntroSceneXbox: Managed
 		float camera_focus_streght	= 0.5;
 		
 		// Character
-		float character_distance = 5.0;
+		float character_distance = 3.0;
 		
 		// Date
 		TIntArray date = new TIntArray;
 		date.Insert(2020);	// Year
-		date.Insert(10);	// Month
+		date.Insert(03);	// Month
 		date.Insert(15);	// Day
-		date.Insert(18);	// Hour
+		date.Insert(09);	// Hour
 		date.Insert(00);	// Minite
 		
 		// Weather
-		float weather_storm_density		= 0.0;
-		float weather_storm_threshold	= 0.0;
+		float weather_storm_density		= 0.2;
+		float weather_storm_threshold	= 0.2;
 		float weather_storm_time_out	= 0.0;
-		float weather_overcast			= 0.2;
+		float weather_overcast			= 1.0;
 		float weather_rain				= 0.0;
-		float weather_fog				= 0.1;
+		float weather_fog				= 0.0;
 		float weather_windspeed			= 0.1;
 		
 		// Date Setup 
@@ -95,9 +95,14 @@ class DayZIntroSceneXbox: Managed
 		m_SceneCamera = CameraCreate(camera_position, camera_rotation, camera_fov, camera_focus_distance, camera_focus_streght);
 		m_SceneCamera.SetActive(true);
 		
+		//ColorGrading,
+		//Colors
+		SetCameraPostProcessEffect(0, 1, PostProcessEffectType.ColorGrading, "");
+		
 		// Character Setup
 		vector cam_dir = m_SceneCamera.GetDirection();
 		m_CharacterPos = camera_position + ( cam_dir * character_distance );
+		m_CharacterPos[1] = GetGame().SurfaceY(m_CharacterPos[0], m_CharacterPos[2]);
 		m_CharacterRot = cam_dir * -1;
 
 Print("DayZIntroSceneXbox Init");
@@ -116,7 +121,7 @@ Print("DayZIntroSceneXbox End");
 		m_genderList = new TStringAdvanceArray;
 		m_CharPersonalityMaleList = new TStringAdvanceArray;
 		m_CharPersonalityFemaleList = new TStringAdvanceArray;
-		m_allCharacters = new TStringArray;
+		m_AllCharacters = new TStringArray;
 		m_CharShirtList = new TStringAdvanceArray;
 		m_CharPantsList = new TStringAdvanceArray;
 		m_CharShoesList = new TStringAdvanceArray;
@@ -129,10 +134,10 @@ Print("DayZIntroSceneXbox End");
 		g_Game.ConfigGetTextArray(root_path + " bottom", m_CharPantsList);
 		g_Game.ConfigGetTextArray(root_path + " shoe", m_CharShoesList);
 
-		m_allCharacters = GetGame().ListAvailableCharacters();
-		for (int i = 0; i < m_allCharacters.Count(); i++)
+		m_AllCharacters = GetGame().ListAvailableCharacters();
+		for (int i = 0; i < m_AllCharacters.Count(); i++)
 		{
-			character_CfgName = m_allCharacters.Get(i);
+			character_CfgName = m_AllCharacters.Get(i);
 			if (GetGame().IsKindOf(character_CfgName, "SurvivorMale_Base"))
 			{
 				m_CharPersonalityMaleList.Insert(character_CfgName);
@@ -147,7 +152,6 @@ Print("DayZIntroSceneXbox End");
 		
 		PPEffects.Init();
 		PPEffects.DisableBurlapSackBlindness(); //HOTFIX
-		//PPEffects.ResetAll();
 	}
 	
 	//==================================
@@ -284,7 +288,7 @@ Print("DayZIntroSceneXbox End");
 			return;
 		}
 		
-		PlayerBase.CastTo(m_SceneCharacter, m_MenuData.CreateCharacterPerson(characterID));
+		m_SceneCharacter = PlayerBase.Cast(m_MenuData.CreateCharacterPerson(characterID));
 		
 		if (m_SceneCharacter)
 		{

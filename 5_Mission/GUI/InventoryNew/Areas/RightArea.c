@@ -18,6 +18,11 @@ class RightArea: Container
 		return m_PlayerContainer.GetFocusedItem();
 	}
 	
+	PlayerContainer GetPlayerContainer()
+	{
+		return m_PlayerContainer;
+	}
+	
 	override void MoveGridCursor( int direction )
 	{
 		m_PlayerContainer.MoveGridCursor( direction );

@@ -26,6 +26,11 @@ class HandsArea: ContainerBase
 		return m_HandsContainer.IsActive();
 	}
 	
+	bool CanEquip()
+	{
+		return m_HandsContainer.CanEquip();
+	}
+	
 	void UnfocusGrid()
 	{
 		m_HandsContainer.UnfocusGrid();
@@ -94,6 +99,21 @@ class HandsArea: ContainerBase
 	void TransferItemToVicinity()
 	{
 		m_HandsContainer.TransferItemToVicinity();
+	}
+	
+	bool IsItemActive()
+	{
+		return m_HandsContainer.IsItemActive();
+	}
+	
+	bool IsItemWithQuantityActive()
+	{
+		return m_HandsContainer.IsItemWithQuantityActive();
+	}
+	
+	bool IsEmpty()
+	{
+		return m_HandsContainer.IsEmpty();
 	}
 
 	override void UpdateInterval()

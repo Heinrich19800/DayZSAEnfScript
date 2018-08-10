@@ -53,7 +53,7 @@ class DayZPlayerImplement extends DayZPlayer
 		m_CameraEyeZoom = false;
 		m_CameraOptics = false;
 		m_IsShootingFromCamera = true;
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 		m_Camera3rdPerson = true;
 		#endif
 	}

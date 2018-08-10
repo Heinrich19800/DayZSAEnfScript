@@ -21,7 +21,11 @@ class ItemManager
 	protected bool m_ItemMicromanagmentMode;
 	protected bool m_ItemMoving;
 	
+	#ifndef PLATFORM_XBOX
 	protected const float TOOLTIP_DELAY = 0.25; // in seconds
+	#else
+	protected const float TOOLTIP_DELAY = 1.5; // in seconds
+	#endif
 	
 	void ItemManager( Widget root )
 	{
@@ -350,7 +354,7 @@ class ItemManager
 		}
 	}
 
-	void PrepareTooltip( EntityAI item )
+	void PrepareTooltip( EntityAI item, int x = 0, int y = 0 )
 	{
 		if( IsDragging() )
 		{
@@ -360,14 +364,16 @@ class ItemManager
 		if ( item.IsInherited( InventoryItem) )
 		{
 			UpdateItemInfo( m_TooltipWidget, item );
-			int x, y, screen_w, screen_h;
+			int screen_w, screen_h;
 			float w, h;
 
+			#ifndef PLATFORM_XBOX
 			GetMousePos(x,y);
+			#endif
 			GetScreenSize(screen_w, screen_h);
 			m_TooltipWidget.GetScreenSize(w,h);
 
-			int m_normal_item_size = 32;
+			int m_normal_item_size = 70;
 			screen_w -= 10;
 			screen_h -= 10;
 			x += m_normal_item_size;

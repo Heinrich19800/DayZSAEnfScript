@@ -19,15 +19,45 @@ class ItemWithCargoAndAttachments: ClosableContainer
 		}
 	}
 	
+	bool CanEquip()
+	{
+		return m_Atts.CanEquip();
+	}
+	
+	bool CanCombine()
+	{
+		return m_Atts.CanCombine();
+	}
+	
 	void TransferItemToVicinity()
 	{
 		m_Atts.TransferItemToVicinity();
 	}
 	
+	override void SelectItem()
+	{
+		m_Atts.SelectItem();
+	}
+	
 	EntityAI GetFocusedItem()
 	{
 		return EntityAI.Cast( m_CargoGrid.GetFocusedItem().GetObject() );
-	}	
+	}
+	
+	bool IsEmpty()
+	{
+		return m_Atts.IsEmpty();
+	}
+	
+	bool IsItemActive()
+	{
+		return m_Atts.IsItemActive();
+	}
+	
+	bool IsItemWithQuantityActive()
+	{
+		return m_Atts.IsItemWithQuantityActive();
+	}
 	
 	/*void SetLastActive()
 	{

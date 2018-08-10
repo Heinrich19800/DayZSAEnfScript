@@ -6,6 +6,40 @@ enum Direction
 	DOWN
 }
 
+enum ConsoleToolbarType
+{
+	PLAYER_EQUIPMENT_SLOTS_ITEM,
+	PLAYER_EQUIPMENT_SLOTS_ITEM_WITH_CARGO,
+	PLAYER_EQUIPMENT_SLOTS_ITEM_WITH_ATTACHMENTS,
+	PLAYER_EQUIPMENT_SLOTS_ITEM_FREE,
+	
+	PLAYER_CARGO_CONTAINER_EMPTY_CONTAINER,
+	PLAYER_CARGO_CONTAINER_ITEM,
+	PLAYER_CARGO_CONTAINER_ITEM_NO_EQUIP,
+	PLAYER_CARGO_CONTAINER_ITEM_WITH_QUANTITY,
+	PLAYER_CARGO_CONTAINER_ITEM_WITH_ATTACHMENTS,
+	PLAYER_CARGO_CONTAINER_ITEM_WITH_ATTACHMENTS_NO_EQUIP,
+	
+	PLAYER_ITEM_WITH_ATTACHMENTS_CONTAINER_ITEM,
+	
+	HANDS_ITEM,
+	HANDS_ITEM_NO_EQUIP,
+	HANDS_ITEM_WITH_QUANTITY,
+	HANDS_ITEM_EMPTY,
+	
+	VICINITY_CONTAINER_LIST_ITEM_WITH_CONTAINER,
+	VICINITY_CONTAINER_LIST_ITEM_WITH_CONTAINER_NO_EQUIP,
+	VICINITY_CONTAINER_LIST_ITEM,
+	VICINITY_CONTAINER_LIST_ITEM_NO_EQUIP,
+	VICINITY_CONTAINER_LIST_ITEM_WITH_QUANTITY,
+	VICINITY_CONTAINER_LIST_EMPTY_ITEM,
+	
+	VICINITY_CONTAINER_DETAILS_EMPTY,
+	VICINITY_CONTAINER_DETAILS_ITEM,
+	VICINITY_CONTAINER_DETAILS_ITEM_NO_EQUIP,
+	VICINITY_CONTAINER_DETAILS_ITEM_WITH_QUANTITY
+}
+
 class Inventory: ContainerBase
 {
 	protected ref LeftArea			m_LeftArea;
@@ -180,6 +214,7 @@ class Inventory: ContainerBase
 			m_HandsArea.MoveGridCursor(Direction.DOWN);
 		}
 		
+		UpdateConsoleToolbar();
 		
 		once++;
 		if( control == ControlID.CID_SELECT && value != 0 )
@@ -198,6 +233,7 @@ class Inventory: ContainerBase
 			}
 			ItemManager.GetInstance().SetItemMicromanagmentMode( false );
 			ItemManager.GetInstance().SetItemMoving( false );
+			UpdateConsoleToolbar();
 			return true;
 		}
 
@@ -519,6 +555,7 @@ class Inventory: ContainerBase
 			{
 				m_LeftArea.EquipItem();
 			}
+			UpdateConsoleToolbar();
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUISelectItem , false ) )
@@ -537,6 +574,7 @@ class Inventory: ContainerBase
 			{
 				//m_HandsArea.SelectItem();
 			}
+			UpdateConsoleToolbar();
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUIFastTransferToVicinity, false ) )
@@ -549,6 +587,7 @@ class Inventory: ContainerBase
 			{
 				m_RightArea.TransferItemToVicinity();
 			}
+			UpdateConsoleToolbar();
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUIFastTransferItem, false ) )
@@ -569,10 +608,12 @@ class Inventory: ContainerBase
 			{
 				m_HandsArea.TransferItem();
 			}
+			UpdateConsoleToolbar();
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUINextUp, false ) )
 		{
+			ItemManager.GetInstance().HideTooltip();
 			if( !ItemManager.GetInstance().IsMicromanagmentMode() )
 			{
 				m_RightArea.UnfocusGrid();
@@ -609,6 +650,7 @@ class Inventory: ContainerBase
 
 		if( GetGame().GetInput().GetActionDown( UAUINextDown, false ) )
 		{
+			ItemManager.GetInstance().HideTooltip();
 			if( !ItemManager.GetInstance().IsMicromanagmentMode() )
 			{
 				m_RightArea.UnfocusGrid();
@@ -644,6 +686,7 @@ class Inventory: ContainerBase
 
 		if( GetGame().GetInput().GetActionDown( UAUITabLeft, false ) )
 		{
+			ItemManager.GetInstance().HideTooltip();
 			if( m_LeftArea.IsActive() )
 			{
 				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
@@ -698,6 +741,7 @@ class Inventory: ContainerBase
 
 		if( GetGame().GetInput().GetActionDown( UAUITabRight, false ) )
 		{
+			ItemManager.GetInstance().HideTooltip();
 			if( m_LeftArea.IsActive() )
 			{
 				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
@@ -884,6 +928,7 @@ class Inventory: ContainerBase
 		RefreshQuickbar();
 		UpdateInterval();
 		GetGame().GetUpdateQueue(CALL_CATEGORY_SYSTEM).Insert(this.UpdateInterval);
+		UpdateConsoleToolbar();
 	}
 
 	override void OnHide()
@@ -910,7 +955,7 @@ class Inventory: ContainerBase
 		}
 		ItemManager.GetInstance().SetSelectedItem( NULL, NULL );
 		#ifdef PLATFORM_XBOX
-			ResetFocusedContainers();
+		//	ResetFocusedContainers();
 		#endif
 		
 		#ifdef PLATFORM_PS4
@@ -947,37 +992,281 @@ class Inventory: ContainerBase
 #endif
 	}
 	
+	
+	string to_hands_swap = "<image set=\"xbox_buttons\" name=\"A\" /> To hands/swap    ";
+	string drop = "<image set=\"xbox_buttons\" name=\"Y\" />(hold) Drop    ";
+	string equip = "<image set=\"xbox_buttons\" name=\"X\" /> Equip    ";
+	string split = "<image set=\"xbox_buttons\" name=\"X\" /> Split    ";
+	string to_inventory = "<image set=\"xbox_buttons\" name=\"Y\" /> To inventory    ";
+	string open_close_container = "<image set=\"xbox_buttons\" name=\"RS\" /> Open/Close container    ";
+	string combine = "<image set=\"xbox_buttons\" name=\"B\" /> Combine";
+	
+	string ConsoleToolbarTypeToString( int console_toolbar_type )
+	{
+		switch ( console_toolbar_type )
+		{
+			case ConsoleToolbarType.PLAYER_EQUIPMENT_SLOTS_ITEM:
+			return to_hands_swap + drop;
+			case ConsoleToolbarType.PLAYER_EQUIPMENT_SLOTS_ITEM_WITH_CARGO:
+			return open_close_container + to_hands_swap + drop;
+			case ConsoleToolbarType.PLAYER_EQUIPMENT_SLOTS_ITEM_WITH_ATTACHMENTS:
+			return open_close_container + to_hands_swap + drop;
+			case ConsoleToolbarType.PLAYER_EQUIPMENT_SLOTS_ITEM_FREE:
+			return "";
+			
+			case ConsoleToolbarType.PLAYER_CARGO_CONTAINER_EMPTY_CONTAINER:
+			return "";
+			case ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM:
+			return to_hands_swap + drop + equip;
+			case ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM_NO_EQUIP:
+			return to_hands_swap + drop;
+			case ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM_WITH_QUANTITY:
+			return to_hands_swap + drop + split;
+			case ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM_WITH_ATTACHMENTS:
+			return to_hands_swap + drop + equip;
+			case ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM_WITH_ATTACHMENTS_NO_EQUIP:
+			return to_hands_swap + drop;
+			
+			case ConsoleToolbarType.HANDS_ITEM:
+			return to_inventory + drop + equip;
+			case ConsoleToolbarType.HANDS_ITEM_NO_EQUIP:
+			return to_inventory + drop;
+			case ConsoleToolbarType.HANDS_ITEM_WITH_QUANTITY:
+			return to_inventory + drop + split;
+			case ConsoleToolbarType.HANDS_ITEM_EMPTY:
+			return "";
+			
+			case ConsoleToolbarType.VICINITY_CONTAINER_LIST_ITEM_WITH_CONTAINER:
+			return open_close_container + to_hands_swap + to_inventory + equip;
+			case ConsoleToolbarType.VICINITY_CONTAINER_LIST_ITEM_WITH_CONTAINER_NO_EQUIP:
+			return open_close_container + to_hands_swap + to_inventory;
+			case ConsoleToolbarType.VICINITY_CONTAINER_LIST_ITEM:
+			return to_hands_swap + to_inventory + equip;
+			case ConsoleToolbarType.VICINITY_CONTAINER_LIST_ITEM_NO_EQUIP:
+			return to_hands_swap + to_inventory;
+			case ConsoleToolbarType.VICINITY_CONTAINER_LIST_ITEM_WITH_QUANTITY:
+			return to_hands_swap + to_inventory;
+			case ConsoleToolbarType.VICINITY_CONTAINER_LIST_EMPTY_ITEM:
+			return "";
+			
+			case ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_EMPTY:
+			return "";
+			case ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_ITEM:
+			return to_hands_swap + to_inventory + equip;
+			case ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_ITEM_NO_EQUIP:
+			return to_hands_swap + to_inventory;
+			case ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_ITEM_WITH_QUANTITY:
+			return to_hands_swap + to_inventory + split;
+		}
+		return "";
+	}
+	
 	//Console toolbar
 	void UpdateConsoleToolbar()
 	{
+#ifdef PLATFORM_XBOX	
 		string general_text;
 		string context_text;
 		
-#ifdef PLATFORM_XBOX
 		general_text = "<image set=\"xbox_buttons\" name=\"LB\" />/<image set=\"xbox_buttons\" name=\"RB\" /> Switch column        <image set=\"xbox_buttons\" name=\"LT\" />/<image set=\"xbox_buttons\" name=\"RT\"/> Switch cargo container";
 		
+		//context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_EQUIPMENT_SLOTS_ITEM );
 		if ( m_LeftArea.IsActive() )
 		{
-			context_text = "<image set=\"xbox_buttons\" name=\"RS\" /> Open/Close container    <image set=\"xbox_buttons\" name=\"A\" /> To hands/swap    <image set=\"xbox_buttons\" name=\"B\" /> Combine    <image set=\"xbox_buttons\" name=\"X\" /> Equip    <image set=\"xbox_buttons\" name=\"Y\" /> To inventory";
+			VicinityContainer vicinity_container = m_LeftArea.GetVicinityContainer();
+			if( vicinity_container.IsVicinityContainerIconsActive() )
+			{
+				VicinityIconsContainer vicinity_icons_container = vicinity_container.GetVicinityIconsContainer();
+				if( vicinity_icons_container.IsItemWithContainerActive() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_LIST_ITEM_WITH_CONTAINER );
+				}
+				else if( vicinity_icons_container.IsItemWithQuantityActive() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_LIST_ITEM_WITH_QUANTITY );
+				}
+				else if( vicinity_icons_container.IsItemActive() )
+				{
+					if( vicinity_icons_container.CanEquip() )
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_LIST_ITEM );
+					}
+					else
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_LIST_ITEM_NO_EQUIP );
+					}
+				}
+				else if( vicinity_icons_container.IsEmptyItemActive() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_LIST_EMPTY_ITEM );
+				}
+				
+				if( vicinity_icons_container.CanCombine() )
+				{
+						context_text += combine;
+				}
+			}
+			else if( vicinity_container.IsItemWithCargoActive()	)
+			{
+				ItemWithCargo iwc = ItemWithCargo.Cast( vicinity_container.GetFocusedContainer() );
+				if( iwc.IsEmpty() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_EMPTY );
+				}
+				else if( iwc.IsItemActive() )
+				{
+					if( iwc.CanEquip() )
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_ITEM );
+					}
+					else
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_ITEM_NO_EQUIP );
+					}
+				}
+				else if( iwc.IsItemWithQuantityActive() )
+				{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_ITEM_WITH_QUANTITY );
+				}
+				
+				if( iwc.CanCombine() )
+				{
+					context_text += combine;
+				}
+			}
+			else if( vicinity_container.IsItemWithAttachmentsActive() )
+			{
+				ItemWithCargoAndAttachments iwca = ItemWithCargoAndAttachments.Cast( vicinity_container.GetFocusedContainer() );
+				if( iwca.IsEmpty() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_EMPTY );
+				}
+				else if( iwca.IsItemActive() )
+				{
+					if( iwca.CanEquip() )
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_ITEM );
+					}
+					else
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_ITEM_NO_EQUIP );
+					}
+				}
+				else if( iwca.IsItemWithQuantityActive() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.VICINITY_CONTAINER_DETAILS_ITEM_WITH_QUANTITY );
+				}
+				
+				if( iwca.CanCombine() )
+				{
+					context_text += combine;
+				}
+			}
 		}
 		else if ( m_RightArea.IsActive() )
 		{
+			PlayerContainer player_container = m_RightArea.GetPlayerContainer();
 			if ( m_RightArea.IsPlayerEquipmentActive() )
 			{
-				context_text = "<image set=\"xbox_buttons\" name=\"RS\" /> Open/Close container    <image set=\"xbox_buttons\" name=\"A\" /> To hands/swap    <image set=\"xbox_buttons\" name=\"B\" /> Combine    <image set=\"xbox_buttons\" name=\"Y\" /> To inventory    <image set=\"xbox_buttons\" name=\"Y\" />(hold) Drop";
+				if( player_container.IsItemActive() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_EQUIPMENT_SLOTS_ITEM );
+				}
+				else if( player_container.IsItemWithContainerActive() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_EQUIPMENT_SLOTS_ITEM_WITH_CARGO );
+				}
+				else if( player_container.IsEmptyItemActive() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_EQUIPMENT_SLOTS_ITEM_FREE );
+				}
+				
+				if( player_container.CanCombine() )
+				{
+					context_text += combine;
+				}
 			}
-			else
+			else if( player_container.IsItemWithCargoActive() )
 			{
-				context_text = "<image set=\"xbox_buttons\" name=\"RS\" /> Open/Close container    <image set=\"xbox_buttons\" name=\"A\" /> To hands/swap    <image set=\"xbox_buttons\" name=\"B\" /> Combine    <image set=\"xbox_buttons\" name=\"X\" /> Equip    <image set=\"xbox_buttons\" name=\"Y\" />(hold) Drop";
+				ItemWithCargo iwc1 = ItemWithCargo.Cast( player_container.GetFocusedContainer() );
+				if( iwc1.IsEmpty() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_CARGO_CONTAINER_EMPTY_CONTAINER );
+				}
+				else if( iwc1.IsItemActive() )
+				{
+					if( iwc1.CanEquip() )
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM );
+					}
+					else
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM_NO_EQUIP );
+					}
+				}
+				else if( iwc1.IsItemWithQuantityActive() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM_WITH_QUANTITY );
+				}
+				
+				if( iwc1.CanCombine() )
+				{
+					context_text += combine;
+				}
+			}
+			else if( player_container.IsItemWithAttachmentsActive() )
+			{
+				ItemWithCargoAndAttachments iwca1 = ItemWithCargoAndAttachments.Cast( player_container.GetFocusedContainer() );
+				if( iwca1.IsEmpty() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_CARGO_CONTAINER_EMPTY_CONTAINER );
+				}
+				else if( iwca1.IsItemActive() )
+				{
+					if( iwca1.CanEquip() )
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM );
+					}
+					else
+					{
+						context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM_NO_EQUIP );
+					}
+				}
+				else if( iwca1.IsItemWithQuantityActive() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.PLAYER_CARGO_CONTAINER_ITEM_WITH_QUANTITY );
+				}
+				
+				if( iwca1.CanCombine() )
+				{
+					context_text += combine;
+				}
 			}
 		}
 		else if ( m_HandsArea.IsActive() )
 		{
-			context_text = "<image set=\"xbox_buttons\" name=\"X\" /> Equip    <image set=\"xbox_buttons\" name=\"Y\" /> To inventory    <image set=\"xbox_buttons\" name=\"Y\" />(hold) Drop";
-		}		
-#endif
+			if( m_HandsArea.IsItemActive() )
+			{
+				if( m_HandsArea.CanEquip() )
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.HANDS_ITEM );
+				}
+				else
+				{
+					context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.HANDS_ITEM_NO_EQUIP );
+				}
+			}
+			else if( m_HandsArea.IsItemWithQuantityActive() )
+			{
+				context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.HANDS_ITEM_WITH_QUANTITY );
+			}
+			else if( m_HandsArea.IsEmpty() )
+			{
+				context_text = ConsoleToolbarTypeToString( ConsoleToolbarType.HANDS_ITEM_EMPTY );
+			}
+		}
 
-#ifdef PLATFORM_PS4
+/*#ifdef PLATFORM_PS4
 		general_text = "<image set=\"playstation_buttons\" name=\"L1\" />/<image set=\"playstation_buttons\" name=\"R1\" /> Switch column        <image set=\"playstation_buttons\" name=\"L2\" />/<image set=\"playstation_buttons\" name=\"R2\"/> Switch cargo container";
 		
 		if ( m_LeftArea.IsActive() )
@@ -999,7 +1288,7 @@ class Inventory: ContainerBase
 		{
 			context_text = "<image set=\"playstation_buttons\" name=\"square\" /> Equip    <image set=\"playstation_buttons\" name=\"triangle\" /> To inventory    <image set=\"playstation_buttons\" name=\"triangle\" />(hold) Drop";
 		}
-#endif
+#endif*/
 		
 		//!!!!! Richtext string must end with character or white space (no tag elements)
 		//set toolbar text
@@ -1010,5 +1299,6 @@ class Inventory: ContainerBase
 		RichTextWidget context_toolbar = RichTextWidget.Cast( m_ConsoleToolbar.FindAnyWidget( "ContextToolbarText" ) );
 		context_text = context_text + " ";					//richtext end-tag issue hotfix
 		context_toolbar.SetText( context_text );
+		#endif
 	}
 }

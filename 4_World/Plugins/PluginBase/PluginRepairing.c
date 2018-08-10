@@ -67,8 +67,9 @@ class PluginRepairing extends PluginBase
 				
 		if ( !CanRepairToPristine( player ) )
 		{
+			float item_max_health = item.GetMaxHealth( "", "" );
 			float item_health = item.GetHealth( "", "" );
-			float clamp_health = Math.Clamp( item_health, 0, 70 );
+			float clamp_health = Math.Clamp( item_health, 0, ( item_max_health * 0.7 ) );
 			item.SetHealth( "", "", clamp_health );
 		}		
 	}

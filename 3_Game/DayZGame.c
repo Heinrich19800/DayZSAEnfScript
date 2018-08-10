@@ -475,7 +475,7 @@ class DayZGame extends CGame
 	void DayZGame()
 	{
 #ifdef PLATFORM_CONSOLE
-		SetMainMenuWorld("Staroye");
+		SetMainMenuWorld("MainMenuSceneXbox");
 #endif
 		
 		m_MissionState = MISSION_STATE_GAME;
@@ -1325,6 +1325,11 @@ class DayZGame extends CGame
 				ConnectFromCLI();
 				break;
 			}
+			#ifdef PLATFORM_PS4
+			// HACK(kroslakmar): PS4 seems to be in wrong state when selecting server to connect
+			// to in server browser.
+			case DayZLoadState.MAIN_MENU_START:
+			#endif
 			case DayZLoadState.MAIN_MENU_CONTROLLER_SELECT:
 			{
 				SetGameState( DayZGameState.CONNECTING );

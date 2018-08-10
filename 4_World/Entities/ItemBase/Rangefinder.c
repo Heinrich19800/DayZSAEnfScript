@@ -78,10 +78,6 @@ class Rangefinder extends ItemOptics
 			int 		contactComponent;
 			
 			DayZPhysics.RaycastRV( from, to, contact_pos, contact_dir, contactComponent, NULL , NULL, player, false, false, ObjIntersectIFire);
-	
-	#ifdef DEVELOPER
-			Debug.DrawArrow( from, contact_pos ); // Uncomment for debugging of raycast positions
-	#endif
 			
 			// Generate result
 			float dist = vector.Distance( from, contact_pos );

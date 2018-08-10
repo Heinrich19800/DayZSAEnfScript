@@ -15,6 +15,16 @@ class VicinityContainer: CollapsibleContainer
 		LoadDefaultState();
 	}
 	
+	bool IsVicinityContainerIconsActive()
+	{
+		return m_VicinityIconsContainer.IsActive();
+	}
+	
+	VicinityIconsContainer GetVicinityIconsContainer()
+	{
+		return m_VicinityIconsContainer;
+	}
+	
 	override void RefreshItemPosition( EntityAI item_to_refresh )
 	{
 		for ( int i = 0; i < m_ShowedItems.Count(); i++ )
@@ -32,6 +42,21 @@ class VicinityContainer: CollapsibleContainer
 		}
 	}
 	
+	bool IsItemWithCargoActive()
+	{
+		return m_FocusedContainer.IsInherited( ItemWithCargo );
+	}
+	
+	bool IsItemWithAttachmentsActive()
+	{
+		return m_FocusedContainer.IsInherited( ItemWithCargoAndAttachments );
+	}
+	
+	Container GetFocusedContainer()
+	{
+		return m_FocusedContainer;
+	}
+	
 	override void SelectItem()
 	{
 		if( m_FocusedContainer.IsInherited( ItemWithCargo ) || m_FocusedContainer.IsInherited( ItemWithCargoAndAttachments ) )
@@ -44,7 +69,7 @@ class VicinityContainer: CollapsibleContainer
 			}
 			else if ( iwca )
 			{
-				//iwca.SelectItem();
+				iwca.SelectItem();
 			}
 		}
 		else
@@ -55,17 +80,22 @@ class VicinityContainer: CollapsibleContainer
 
 	override void Select()
 	{
-		if( m_FocusedContainer.IsInherited( ItemWithCargo ) )
+		if( m_FocusedContainer.IsInherited( ItemWithCargo ) || m_FocusedContainer.IsInherited( ItemWithCargoAndAttachments ) )
 		{
 			ItemWithCargo iwc = ItemWithCargo.Cast( m_FocusedContainer );
+			ItemWithCargoAndAttachments iwca = ItemWithCargoAndAttachments.Cast( m_FocusedContainer );
 			if( iwc )
 			{
 				iwc.Select();
 			}
+			else if ( iwca )
+			{
+				iwca.Select();
+			}
 		}
 		else
 		{
-			m_VicinityIconsContainer.Select( m_FocusedColumn );
+			m_VicinityIconsContainer.Select( );
 		}
 	}
 	
@@ -81,7 +111,7 @@ class VicinityContainer: CollapsibleContainer
 		}
 		else
 		{
-			m_VicinityIconsContainer.EquipItem( m_FocusedColumn );
+			m_VicinityIconsContainer.EquipItem( );
 		}
 	}
 	
@@ -97,7 +127,7 @@ class VicinityContainer: CollapsibleContainer
 		}
 		else
 		{
-			m_VicinityIconsContainer.TransferItem( m_FocusedColumn );
+			m_VicinityIconsContainer.TransferItem( );
 		}
 	}
 	
@@ -113,7 +143,7 @@ class VicinityContainer: CollapsibleContainer
 		}
 		else
 		{
-			m_VicinityIconsContainer.Combine( m_FocusedColumn );
+			m_VicinityIconsContainer.Combine();
 		}
 	}
 
@@ -138,44 +168,7 @@ class VicinityContainer: CollapsibleContainer
 		}
 		else
 		{
-			m_FocusedContainer.UnfocusAll();
-
-			if( direction == Direction.RIGHT )
-			{
-				m_FocusedColumn++;
-				if( m_FocusedColumn == ITEMS_IN_ROW )
-				m_FocusedColumn = 0;
-			}
-			else if( direction == Direction.LEFT )
-			{
-				m_FocusedColumn--;
-				if( m_FocusedColumn < 0 )
-				m_FocusedColumn = ITEMS_IN_ROW - 1;
-			}
-			else if( direction == Direction.UP )
-			{
-				m_FocusedRow--;
-				if( m_FocusedRow < 0 )
-				{
-					m_FocusedRow = 0 ;
-					LeftArea left_area = LeftArea.Cast( GetParent() );
-					left_area.SetPreviousActive();
-					return;
-				}				
-			}
-			else if( direction == Direction.DOWN )
-			{
-				m_FocusedRow++;
-				if( m_FocusedRow == m_VicinityIconsContainer.Count() )
-				{
-					m_FocusedRow = 0 ;
-					left_area = LeftArea.Cast( GetParent() );
-					left_area.SetNextActive();
-					return;
-				}				
-			}
-			
-			m_VicinityIconsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
+			m_VicinityIconsContainer.MoveGridCursor( direction );
 		}
 	}
 
@@ -597,6 +590,7 @@ class VicinityContainer: CollapsibleContainer
 
 		//GetItemsShowableInInventory
 		array<Object> showable_items = new array<Object>;
+		int m_OldShowedItemIconsCount = m_ShowedItemIcons.Count();
 		m_ShowedItemIcons.Clear();
 
 		for( i = 0; i < objects.Count(); i++ )
@@ -745,6 +739,11 @@ class VicinityContainer: CollapsibleContainer
 			RecomputeOpenedContainers();
 	
 			m_VicinityIconsContainer.ShowItemsInContainers( m_ShowedItemIcons );
+			
+			if(m_ShowedItemIcons.Count() < m_OldShowedItemIconsCount )
+			{
+				Inventory.Cast(m_Parent.m_Parent).UpdateConsoleToolbar();	
+			}
 		}
 	}
 

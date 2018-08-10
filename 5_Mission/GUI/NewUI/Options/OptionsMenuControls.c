@@ -63,6 +63,7 @@ class OptionsMenuControls extends ScriptedWidgetEventHandler
 		m_Root.FindAnyWidget( "hsensitivity_setting_option" ).SetUserID( AT_CONFIG_YAXIS );
 		m_Root.FindAnyWidget( "invert_setting_option" ).SetUserID( AT_CONFIG_YREVERSED );
 		m_Keybindings.SetUserID( 777 );
+		m_Keybindings.SetHandler( this );
 		#endif
 		#endif
 		
@@ -93,8 +94,6 @@ class OptionsMenuControls extends ScriptedWidgetEventHandler
 		m_ControllerInvertSelector.m_OptionChanged.Insert( UpdateControllerInvertView );
 		
 		FillTextMap();
-		
-		m_Keybindings.SetHandler( this );
 	}
 	
 	void EnterKeybindingMenu()
@@ -106,11 +105,15 @@ class OptionsMenuControls extends ScriptedWidgetEventHandler
 	{
 		if( button == MouseState.LEFT )
 		{
+			#ifdef PLATFORM_WINDOWS
+			#ifndef PLATFORM_CONSOLE
 			if( w == m_Keybindings )
 			{
 				EnterKeybindingMenu();
 				return true;
 			}
+			#endif
+			#endif
 		}
 		return false;
 	}

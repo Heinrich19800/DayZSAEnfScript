@@ -95,6 +95,16 @@ class MainMenu extends UIScriptedMenu
 			SetFocus( layoutRoot );
 		#endif
 		
+		#ifdef PLATFORM_CONSOLE
+		string launch_done;
+		if( !GetGame().GetProfileString( "FirstLaunchDone", launch_done ) || launch_done != "true" )
+		{
+			GetGame().SetProfileString( "FirstLaunchDone", "true" );
+			GetGame().GetUIManager().ShowDialog( "TUTORIALS", "Would you like to see a basic tutorial?", 555, DBT_YESNO, DBB_YES, DMT_QUESTION, this );
+			GetGame().SaveProfile();
+		}
+		#endif
+		
 		return layoutRoot;
 	}
 	

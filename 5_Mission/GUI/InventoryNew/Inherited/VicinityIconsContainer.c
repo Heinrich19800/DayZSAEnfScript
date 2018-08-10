@@ -19,9 +19,111 @@ class VicinityIconsContainer: Container
 		}		
 	}
 	
-	void EquipItem( int column )
+	EntityAI GetActiveItem()
 	{
-		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + column ).FindAnyWidget( "Render" + column ) );
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
+		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
+		return ipw.GetItem();
+	}
+	
+	bool IsItemWithContainerActive()
+	{
+		EntityAI ent = GetActiveItem();
+		return ent && ( ent.GetInventory().GetCargo() || ent.GetSlotsCountCorrect() > 0 );
+	}
+	
+	bool IsItemWithQuantityActive()
+	{
+		EntityAI ent = GetActiveItem();
+		return ent && QuantityConversions.HasItemQuantity( ent );
+	}
+	
+	bool IsItemActive()
+	{
+		EntityAI ent = GetActiveItem();
+		return ent && !IsItemWithQuantityActive() && !IsItemWithContainerActive();
+	}
+	
+	bool IsEmptyItemActive()
+	{
+		EntityAI ent = GetActiveItem();
+		return ent == NULL;
+	}
+	
+	override void MoveGridCursor( int direction )
+	{
+		UnfocusAll();
+
+		if( direction == Direction.RIGHT )
+		{
+			m_FocusedColumn++;
+			if( m_FocusedColumn == ITEMS_IN_ROW )
+			m_FocusedColumn = 0;
+		}
+		else if( direction == Direction.LEFT )
+		{
+			m_FocusedColumn--;
+			if( m_FocusedColumn < 0 )
+			m_FocusedColumn = ITEMS_IN_ROW - 1;
+		}
+		else if( direction == Direction.UP )
+		{
+			m_FocusedRow--;
+			if( m_FocusedRow < 0 )
+			{
+				m_FocusedRow = 0 ;
+				LeftArea left_area = LeftArea.Cast( GetParent().GetParent() );
+				left_area.SetPreviousActive();
+				return;
+			}				
+		}
+		else if( direction == Direction.DOWN )
+		{
+			m_FocusedRow++;
+			if( m_FocusedRow == Count() )
+			{
+				m_FocusedRow = 0 ;
+				left_area = LeftArea.Cast( GetParent().GetParent() );
+				left_area.SetNextActive();
+				return;
+			}				
+		}
+		
+		Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
+	}
+	
+	int GetRecipeCount( bool recipe_anywhere, EntityAI entity1, EntityAI entity2 )
+	{
+		PluginRecipesManager plugin_recipes_manager = PluginRecipesManager.Cast( GetPlugin( PluginRecipesManager ) );
+		return plugin_recipes_manager.GetValidRecipes( ItemBase.Cast( entity1 ), ItemBase.Cast( entity2 ), NULL, PlayerBase.Cast( GetGame().GetPlayer() ) );
+	}
+	
+	bool CanCombine()
+	{
+		ItemBase ent = ItemBase.Cast(  GetActiveItem() );
+		ItemBase item_in_hands = ItemBase.Cast(	GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() );
+		
+		return GetRecipeCount( false, ent, item_in_hands ) > 0;
+	}
+	
+	bool CanEquip()
+	{
+		EntityAI ent = GetActiveItem();
+		InventoryLocation il = new InventoryLocation;
+		bool found = GetGame().GetPlayer().GetInventory().FindFreeLocationFor(ent,FindInventoryLocationType.ATTACHMENT,il);
+		if (found)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	override void EquipItem( )
+	{
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		EntityAI ent = ipw.GetItem();
 		
@@ -31,9 +133,9 @@ class VicinityIconsContainer: Container
 		}
 	}
 		
-	void TransferItem( int column )
+	override void TransferItem( )
 	{
-		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + column ).FindAnyWidget( "Render" + column ) );
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		EntityAI ent = ipw.GetItem();
 		if( ent )
@@ -45,11 +147,11 @@ class VicinityIconsContainer: Container
 		}
 	}
 	
-	void Combine( int column )
+	override void Combine( )
 	{
-		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + column ).FindAnyWidget( "Render" + column ) );
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
-		EntityAI ent = ipw.GetItem();
+		ItemBase ent = ItemBase.Cast( ipw.GetItem() );
 		
 		if( ent && !ent.IsInherited( Magazine ))
 		{
@@ -66,9 +168,9 @@ class VicinityIconsContainer: Container
 		}
 	}
 	
-	void Select( int column )
+	override void Select()
 	{
-		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + column ).FindAnyWidget( "Render" + column ) );
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		EntityAI ent = ipw.GetItem();
 		

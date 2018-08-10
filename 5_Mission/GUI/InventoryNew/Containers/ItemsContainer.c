@@ -59,7 +59,9 @@ class ItemsContainer: Container
 	
 	Icon GetIconByIndex( int index )
 	{
-		return m_EntitiesMap.GetElement( index  );
+		if( index < m_EntitiesMap.Count() && index > -1 )
+			return m_EntitiesMap.GetElement( index  );
+		return null;
 	}
 
 	void RemoveItem( Icon icon )

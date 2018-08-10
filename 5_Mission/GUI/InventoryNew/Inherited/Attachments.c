@@ -11,6 +11,39 @@ class Attachments
 		m_Entity = entity;
 		m_Ics = new array<ref IconsContainer>();
 	}
+	
+	bool IsEmpty()
+	{
+		ref array<string> attachments_slots = GetItemSlots( m_Entity );
+		int count = attachments_slots.Count();
+		return count == 0;
+	}
+	
+	void SelectItem()
+	{
+		ItemBase item = ItemBase.Cast( GetFocusedEntity() );
+		ItemManager.GetInstance().SetSelectedItem( item, NULL );
+	}
+	
+	bool IsItemActive()
+	{
+		ItemBase item = ItemBase.Cast( GetFocusedEntity() );
+		if( item == NULL )
+		{
+			return false;
+		}
+		return !IsEmpty() && ( !QuantityConversions.HasItemQuantity( item )  || ( QuantityConversions.HasItemQuantity( item ) && !item.CanBeSplit() ) );
+	}
+	
+	bool IsItemWithQuantityActive()
+	{
+		ItemBase item = ItemBase.Cast( GetFocusedEntity() );
+		if( item == NULL )
+		{
+			return false;
+		}
+		return !IsEmpty() && QuantityConversions.HasItemQuantity( item ) && item.CanBeSplit();
+	}
 
 	void UnfocusAll()
 	{
@@ -32,13 +65,21 @@ class Attachments
 			return;
 		}
 		m_Ics.Get( 0 ).GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
+		
+		EntityAI focused_item = GetFocusedEntity();
+		if( focused_item )
+		{
+			float x, y;
+			m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+			ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+		}
 	}
 	
 	void SetActive( bool active )
 	{
 		float alpha;
 		if( active )
-		{
+		{			
 			SetDefaultFocus();
 			alpha = 1;
 		}
@@ -115,6 +156,39 @@ class Attachments
 		}
 	}
 	
+	int GetRecipeCount( bool recipe_anywhere, EntityAI entity1, EntityAI entity2 )
+	{
+		PluginRecipesManager plugin_recipes_manager = PluginRecipesManager.Cast( GetPlugin( PluginRecipesManager ) );
+		return plugin_recipes_manager.GetValidRecipes( ItemBase.Cast( entity1 ), ItemBase.Cast( entity2 ), NULL, PlayerBase.Cast( GetGame().GetPlayer() ) );
+	}
+	
+	bool CanCombine()
+	{
+		ItemBase ent = ItemBase.Cast( GetFocusedEntity() );
+		ItemBase item_in_hands = ItemBase.Cast(	GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() );
+		
+		return GetRecipeCount( false, ent, item_in_hands ) > 0;
+	}
+	
+	bool CanEquip()
+	{
+		EntityAI entity = ItemBase.Cast( GetFocusedEntity() );
+		InventoryLocation il = new InventoryLocation;
+		if( entity.IsInherited( Magazine ) )
+		{
+			return false;
+		}
+		bool found = GetGame().GetPlayer().GetInventory().FindFreeLocationFor(entity,FindInventoryLocationType.ATTACHMENT,il);
+		if (found)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	void EquipItem()
 	{
 		ItemBase entity = ItemBase.Cast( GetFocusedEntity() );
@@ -144,7 +218,7 @@ class Attachments
 				if (GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() == wpn)
 				{
 					InventoryLocation inv_loc_dst = new InventoryLocation;
-					m_Entity.GetInventory().FindFreeLocationFor( entity, FindInventoryLocationType.ANY, inv_loc_dst );
+					player.GetInventory().FindFreeLocationFor( entity, FindInventoryLocationType.CARGO, inv_loc_dst );
 					player.GetWeaponManager().DetachMagazine(inv_loc_dst);
 				}
 			}
@@ -263,6 +337,14 @@ class Attachments
 
 		//Container cnt = Container.Cast( m_Body.Get( 1 ) );
 		m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
+		
+		EntityAI focused_item = GetFocusedEntity();
+		if( focused_item )
+		{
+			float x, y;
+			m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+			ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+		}
 	}
 
 	void Remove()

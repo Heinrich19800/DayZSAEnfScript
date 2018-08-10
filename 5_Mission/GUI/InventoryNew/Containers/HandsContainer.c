@@ -135,6 +135,25 @@ class HandsContainer: Container
 		}
 	}
 	
+	bool CanEquip()
+	{
+		EntityAI item_in_hands = GetGame().GetPlayer().GetHumanInventory().GetEntityInHands();
+		if( item_in_hands.IsInherited( Magazine ) )
+		{
+			return false;
+		}
+		InventoryLocation il = new InventoryLocation;
+		bool found = GetGame().GetPlayer().GetInventory().FindFreeLocationFor(item_in_hands,FindInventoryLocationType.ATTACHMENT,il);
+		if (found)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	override void EquipItem()
 	{
 		if( m_Cargo && m_Cargo.IsActive() )
@@ -181,6 +200,12 @@ class HandsContainer: Container
 					m_Atts.SetActive( active );
 				}
 			}
+			if( active )
+			{
+				float x, y;
+				GetMainPanel().GetScreenPos( x, y );
+				ItemManager.GetInstance().PrepareTooltip( item_in_hands, x, y );
+			}
 		}
 		else
 		{
@@ -212,6 +237,34 @@ class HandsContainer: Container
 			return m_MainPanel.FindAnyWidget("SelectedContainer").IsVisible();
 		}
 		return false;
+	}
+	
+	bool IsItemActive()
+	{
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+		ItemBase item = ItemBase.Cast( player.GetHumanInventory().GetEntityInHands() );
+		if( item == NULL )
+		{
+			return false;
+		}
+		return !IsEmpty() && ( !QuantityConversions.HasItemQuantity( item )  || ( QuantityConversions.HasItemQuantity( item ) && !item.CanBeSplit() ) );
+	}
+	
+	bool IsItemWithQuantityActive()
+	{
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+		ItemBase item = ItemBase.Cast( player.GetHumanInventory().GetEntityInHands() );
+		if( item == NULL )
+		{
+			return false;
+		}
+		return !IsEmpty() && QuantityConversions.HasItemQuantity( item ) && item.CanBeSplit();
+	}
+	
+	bool IsEmpty()
+	{
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+		return player.GetHumanInventory().GetEntityInHands() == NULL;
 	}
 	
 	void TransferItemToVicinity()

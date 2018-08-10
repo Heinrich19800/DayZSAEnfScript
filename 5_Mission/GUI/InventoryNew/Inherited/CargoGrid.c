@@ -44,6 +44,31 @@ class UICargoGrid
 		return m_ItemsContainer.IsActive();
 	}
 	
+	bool IsEmpty()
+	{
+		return m_ItemsContainer.GetItemCount() == 0;
+	}
+	
+	bool IsItemActive()
+	{
+		if( GetFocusedItem() == NULL )
+		{
+			return false;
+		}
+		ItemBase item = ItemBase.Cast( GetFocusedItem().GetObject() );
+		return !IsEmpty() && ( !QuantityConversions.HasItemQuantity( item )  || ( QuantityConversions.HasItemQuantity( item ) && !item.CanBeSplit() ) );
+	}
+	
+	bool IsItemWithQuantityActive()
+	{
+		if( GetFocusedItem() == NULL )
+		{
+			return false;
+		}
+		ItemBase item = ItemBase.Cast( GetFocusedItem().GetObject() );
+		return !IsEmpty() && QuantityConversions.HasItemQuantity( item ) && item.CanBeSplit();
+	}
+	
 	void RecomputeGridHeight()
 	{
 		for( int i = 0; i < m_Rows.Count(); i++ )
@@ -113,6 +138,10 @@ class UICargoGrid
 	
 	void TransferItem()
 	{
+		if( GetFocusedItem() == NULL )
+		{
+			return;
+		}
 		EntityAI entity = EntityAI.Cast( GetFocusedItem().GetObject() );
 		if( entity )
 		{
@@ -128,8 +157,53 @@ class UICargoGrid
 		m_ReactivateCursor = true;
 	}
 	
+	bool CanEquip()
+	{
+		if( GetFocusedItem() == NULL )
+		{
+			return false;
+		}
+		EntityAI entity = EntityAI.Cast( GetFocusedItem().GetObject() );
+		InventoryLocation il = new InventoryLocation;
+		if( entity.IsInherited( Magazine ) )
+		{
+			return false;
+		}
+		bool found = GetGame().GetPlayer().GetInventory().FindFreeLocationFor(entity,FindInventoryLocationType.ATTACHMENT,il);
+		if (found)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	int GetRecipeCount( bool recipe_anywhere, EntityAI entity1, EntityAI entity2 )
+	{
+		PluginRecipesManager plugin_recipes_manager = PluginRecipesManager.Cast( GetPlugin( PluginRecipesManager ) );
+		return plugin_recipes_manager.GetValidRecipes( ItemBase.Cast( entity1 ), ItemBase.Cast( entity2 ), NULL, PlayerBase.Cast( GetGame().GetPlayer() ) );
+	}
+	
+	bool CanCombine()
+	{
+		if( GetFocusedItem() == NULL )
+		{
+			return false;
+		}
+		ItemBase ent = ItemBase.Cast( GetFocusedItem().GetObject() );
+		ItemBase item_in_hands = ItemBase.Cast(	GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() );
+		
+		return GetRecipeCount( false, ent, item_in_hands ) > 0;
+	}
+	
 	void EquipItem()
 	{
+		if( GetFocusedItem() == NULL )
+		{
+			return;
+		}
 		ItemBase entity = ItemBase.Cast( GetFocusedItem().GetObject() );
 		if( entity && !entity.IsInherited( Magazine ) )
 		{
@@ -147,7 +221,7 @@ class UICargoGrid
 			{
 				GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.ATTACHMENT, entity );
 			}
-				
+			m_ReactivateCursor = true;		
 		}
 	}
 	
@@ -171,11 +245,13 @@ class UICargoGrid
 			Container cnt;
 			
 			Icon icon = m_ItemsContainer.GetIconByIndex( m_FocusedItemPosition );
-			if( icon == NULL )
+			if( icon != NULL )
 			{
-				return;
+				icon.SetActive( false );
+				ItemManager.GetInstance().HideTooltip( );
+				//m_FocusedItemPosition = 0;
+				//return;
 			}
-			icon.SetActive( false );
 			
 			int focused_row = m_FocusedItemPosition / ROWS_NUMBER_XBOX;
 			int max_rows = m_ItemsContainer.GetItemCount() / ROWS_NUMBER_XBOX + 1;
@@ -352,6 +428,10 @@ class UICargoGrid
 								
 								if( !ItemManager.GetInstance().IsMicromanagmentMode() && m_ReactivateCursor && m_ItemsContainer.GetItemCount() > 0 )
 								{
+									if( m_ItemsContainer.GetItemCount() == m_FocusedItemPosition )
+									{
+										m_FocusedItemPosition--;
+									}
 									Icon icon = m_ItemsContainer.GetIconByIndex( m_FocusedItemPosition );
 									if( icon )
 									{

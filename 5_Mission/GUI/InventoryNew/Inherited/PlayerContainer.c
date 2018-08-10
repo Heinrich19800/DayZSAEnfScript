@@ -27,6 +27,48 @@ class PlayerContainer: CollapsibleContainer
 		}
 	}
 	
+	override void SetFirstActive()
+	{
+		super.SetFirstActive();
+		
+		EntityAI focused_item = GetFocusedItem();
+		if( focused_item )
+		{
+			float x, y;
+			Container cnt = Container.Cast( m_Body.Get( 1 ) );
+			cnt.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+			ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+		}
+	}
+	
+	bool IsItemWithContainerActive()
+	{
+		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+		EntityAI ent = item_preview.GetItem();
+		return ent && ( ent.GetInventory().GetCargo() || ent.GetSlotsCountCorrect() > 0 );
+	}
+	
+	bool IsItemWithQuantityActive()
+	{
+		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+		EntityAI ent = item_preview.GetItem();
+		return ent && QuantityConversions.HasItemQuantity( ent );
+	}
+	
+	bool IsItemActive()
+	{
+		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+		EntityAI ent = item_preview.GetItem();
+		return ent && !IsItemWithQuantityActive() && !IsItemWithContainerActive();
+	}
+	
+	bool IsEmptyItemActive()
+	{
+		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+		EntityAI ent = item_preview.GetItem();
+		return ent == NULL;
+	}
+	
 	void UnfocusPlayerAttachmentsContainer()
 	{
 		m_PlayerAttachmentsContainer.UnfocusAll();
@@ -101,6 +143,21 @@ class PlayerContainer: CollapsibleContainer
 		ToggleWidget( item_preview.GetParent() );		
 	}
 	
+	Container GetFocusedContainer()
+	{
+		return m_FocusedContainer;
+	}
+	
+	bool IsItemWithCargoActive()
+	{
+		return m_FocusedContainer.IsInherited( ItemWithCargo );
+	}
+	
+	bool IsItemWithAttachmentsActive()
+	{
+		return m_FocusedContainer.IsInherited( ItemWithCargoAndAttachments );
+	}
+	
 	override float GetFocusedContainerHeight()
 	{
 		float x, y;
@@ -140,6 +197,20 @@ class PlayerContainer: CollapsibleContainer
 				player.PredictiveDropEntity( item );
 			}
 		}
+	}
+	
+	int GetRecipeCount( bool recipe_anywhere, EntityAI entity1, EntityAI entity2 )
+	{
+		PluginRecipesManager plugin_recipes_manager = PluginRecipesManager.Cast( GetPlugin( PluginRecipesManager ) );
+		return plugin_recipes_manager.GetValidRecipes( ItemBase.Cast( entity1 ), ItemBase.Cast( entity2 ), NULL, PlayerBase.Cast( GetGame().GetPlayer() ) );
+	}
+	
+	bool CanCombine()
+	{
+		ItemBase ent =  ItemBase.Cast( GetFocusedItem() );
+		ItemBase item_in_hands = ItemBase.Cast(	GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() );
+		
+		return GetRecipeCount( false, ent, item_in_hands ) > 0;
 	}
 	
 	override void EquipItem()
@@ -324,6 +395,7 @@ class PlayerContainer: CollapsibleContainer
 		}
 		else
 		{
+			ItemManager.GetInstance().HideTooltip();
 			m_FocusedContainer.UnfocusAll();
 			
 			if( direction == Direction.UP )
@@ -366,7 +438,15 @@ class PlayerContainer: CollapsibleContainer
 			}
 			
 			Container cnt = Container.Cast( m_Body.Get( 1 ) );
-   			cnt.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
+   		cnt.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
+			
+			EntityAI focused_item = GetFocusedItem();
+			if( focused_item )
+			{
+				float x, y;
+				cnt.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+				ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+			}
 		}
 	}
 
@@ -875,6 +955,7 @@ class PlayerContainer: CollapsibleContainer
 				name2.Replace( "PanelWidget", "GhostSlot" );
 				ipw.GetParent().GetParent().FindAnyWidget( name2 ).Show( true );
 				ipw.SetItem( NULL );
+				Inventory.Cast(m_Parent.m_Parent).UpdateConsoleToolbar();	
 			}
 
 		}

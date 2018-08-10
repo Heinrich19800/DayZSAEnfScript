@@ -15,7 +15,32 @@ class ItemWithCargo: ClosableContainer
 	EntityAI GetFocusedItem()
 	{
 		return EntityAI.Cast( m_CargoGrid.GetFocusedItem().GetObject() );
-	}	
+	}
+	
+	bool IsEmpty()
+	{
+		return m_CargoGrid.IsEmpty();
+	}
+	
+	bool IsItemActive()
+	{
+		return m_CargoGrid.IsItemActive();
+	}
+	
+	bool CanEquip()
+	{
+		return m_CargoGrid.CanEquip();
+	}
+	
+	bool CanCombine()
+	{
+		return m_CargoGrid.CanCombine();
+	}
+	
+	bool IsItemWithQuantityActive()
+	{
+		return m_CargoGrid.IsItemWithQuantityActive();
+	}
 	
 	override void RefreshQuantity( EntityAI item_to_refresh )
 	{
@@ -145,6 +170,8 @@ class ItemWithCargo: ClosableContainer
 	
 	override void Combine()
 	{
+		if( !m_CargoGrid.GetFocusedItem() )
+			return;
 		EntityAI prev_item = EntityAI.Cast( m_CargoGrid.GetFocusedItem().GetObject() );
 		Icon icon;
 		if(prev_item)

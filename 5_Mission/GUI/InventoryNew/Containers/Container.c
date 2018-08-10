@@ -118,6 +118,15 @@ class Container: ContainerBase
 				{
 					ContainerBase cnt = ContainerBase.Cast( m_Body.Get( 0 ) );
 					cnt.GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
+					ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( cnt.GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+					EntityAI focused_item =  item_preview.GetItem();
+					
+					if( focused_item )
+					{
+						float x, y;
+						cnt.GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+						ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+					}
 				}
 			}
 		}
@@ -206,6 +215,7 @@ class Container: ContainerBase
 
 	void SetNextActive()
 	{
+		ItemManager.GetInstance().HideTooltip( );
 		if( ItemManager.GetInstance().IsMicromanagmentMode() )
 		{
 			ItemManager.GetInstance().SetItemMoving( true );
@@ -249,6 +259,17 @@ class Container: ContainerBase
 			Container first = Container.Cast( m_OpenedContainers[activeIndex] );
 			first.SetActive( true );
 			m_FocusedContainer = first;
+			
+			ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( first.GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+			EntityAI focused_item =  item_preview.GetItem();
+			
+			if( focused_item )
+			{
+				float x, y;
+				Container cnt = Container.Cast( m_Body.Get( 1 ) );
+				first.Get( 0 ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+				ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+			}
 		}
 	}
 
@@ -295,6 +316,17 @@ class Container: ContainerBase
 			Container first = Container.Cast( m_OpenedContainers[activeIndex] );
 			first.SetActive( true );
 			m_FocusedContainer = first;
+			
+			ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( first.GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+			EntityAI focused_item =  item_preview.GetItem();
+			
+			if( focused_item )
+			{
+				float x, y;
+				Container cnt = Container.Cast( m_Body.Get( 1 ) );
+				first.Get( 0 ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+				ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+			}
 		}
 	}
 	

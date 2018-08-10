@@ -40,6 +40,13 @@ class Icon: ContainerBase
 
 	override void SetActive( bool active )
 	{
+		if( active && GetObject() )
+		{
+			float x, y;
+			GetMainPanel().GetScreenPos( x, y );
+			ItemManager.GetInstance().PrepareTooltip( EntityAI.Cast( GetObject() ), x, y );
+		}
+		
 		if( GetMainPanel() )
 		{
 			GetMainPanel().FindAnyWidget("Selected").Show( active );
