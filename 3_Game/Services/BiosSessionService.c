@@ -104,7 +104,12 @@ class BiosSessionService
 	*/
 	void OnClearActivity(EBiosError error)
 	{
-		OnlineServices.ErrorCaught( error );
+		string addr;
+		int port;
+		if( GetGame().GetHostAddress( addr, port ) )
+		{
+			LeaveGameplaySessionAsync( addr, port );
+		}
 	}
 	
 	//! Callback function

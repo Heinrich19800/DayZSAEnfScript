@@ -1263,7 +1263,11 @@ class DayZGame extends CGame
 		{
 			if( !m_IntroMenu )
 				CreateTitleScreen();
+			#ifdef PLATFORM_CONSOLE
+			#ifndef PLATFORM_WINDOWS
 			GetGame().GetInput().IdentifyGamepad( GamepadButton.A );
+			#endif
+			#endif
 		}
 	}
 	

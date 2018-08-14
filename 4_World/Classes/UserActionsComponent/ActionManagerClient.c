@@ -231,9 +231,13 @@ class ActionManagerClient: ActionManagerBase
 	protected void FindContextualUserActions( int pCurrentCommandID )
 	{
 		RemoveActions();
-		m_SelectableActions.Clear();
+		
 		if (m_Player.IsRaised())
+		{
+			m_SelectableActions.Clear();
 			return;
+		}
+			
 		
 		if ( (m_PrimaryActionEnabled || m_SecondaryActionEnabled || m_TertiaryActionEnabled) )
 		{

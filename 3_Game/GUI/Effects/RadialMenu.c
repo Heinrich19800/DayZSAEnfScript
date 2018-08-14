@@ -18,7 +18,8 @@ class RadialMenu : ScriptedWidgetEventHandler
 	protected bool 						m_UsingMouse;
 	protected int 						m_ControllerAngle;
 	protected int 						m_ControllerTilt;
-	
+	protected bool						m_IsViewInverted;
+
 	//controller
 	protected int 						m_ControllerTimout;
 	protected bool						m_IsControllerTimoutEnabled 		= true;		//enables/disables controller deselect timeout reset
@@ -44,6 +45,10 @@ class RadialMenu : ScriptedWidgetEventHandler
 	void RadialMenu()
 	{
 		m_Instance = this;
+
+		GameOptions options = new GameOptions;
+		SwitchOptionsAccess invert = SwitchOptionsAccess.Cast( options.GetOptionByType( AT_CONFIG_CONTROLLER_REVERSED_LOOK ) );
+		m_IsViewInverted = invert.GetIndex();
 		
 		m_RadialItemCards = new ref map<Widget, float>;
 		m_UpdateTimer = new ref Timer();
@@ -478,6 +483,19 @@ class RadialMenu : ScriptedWidgetEventHandler
 		}
 	}
 	
+	int NormalizeInvertAngle( int angle )
+	{
+		if( m_IsViewInverted )
+		{
+			return angle;
+		}
+		else
+		{
+			int ret = ( 360 - angle ) % 360;
+			return ret;
+		}
+	}
+	
 	//============================================
 	// Handler Events
 	//============================================
@@ -494,7 +512,9 @@ class RadialMenu : ScriptedWidgetEventHandler
 			m_ControllerAngle 	= value >> 4; 	// <0,360>
 			m_ControllerTilt	= value & 0xF; 	// <0,10>
 			
-			m_ControllerTimout = 0;				//reset controller timeout
+			m_ControllerTimout	= 0;			//reset controller timeout
+			
+			m_ControllerAngle	= NormalizeInvertAngle( m_ControllerAngle );
 			
 			return true;
 		}

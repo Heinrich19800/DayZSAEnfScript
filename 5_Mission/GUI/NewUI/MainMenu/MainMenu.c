@@ -16,6 +16,7 @@ class MainMenu extends UIScriptedMenu
 	protected ButtonWidget			m_ChooseServer;
 	protected ButtonWidget			m_CustomizeCharacter;
 	protected ButtonWidget			m_PlayVideo;
+	protected ButtonWidget			m_Tutorials;
 	protected Widget				m_StatButton;
 	protected Widget				m_MessageButton;
 	protected Widget				m_SettingsButton;
@@ -38,6 +39,7 @@ class MainMenu extends UIScriptedMenu
 		m_ChooseServer				= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "choose_server" ) );
 		m_CustomizeCharacter		= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "customize_character" ) );
 		m_PlayVideo					= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "play_video" ) );
+		m_Tutorials					= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "tutorials" ) );
 		m_StatButton				= layoutRoot.FindAnyWidget( "stat_button" );
 		m_MessageButton				= layoutRoot.FindAnyWidget( "message_button" );
 		m_SettingsButton			= layoutRoot.FindAnyWidget( "settings_button" );
@@ -74,6 +76,7 @@ class MainMenu extends UIScriptedMenu
 			layoutRoot.FindAnyWidget( "character" ).Show( false );
 			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
 			m_PlayVideo.Show( true );
+			//m_Tutorials.Show( true );
 			m_CustomizeCharacter.SetText( "OPTIONS" );
 			m_ChooseServer.SetText( "CONTROLS" );
 		#endif
@@ -95,6 +98,7 @@ class MainMenu extends UIScriptedMenu
 			SetFocus( layoutRoot );
 		#endif
 		
+		/*
 		#ifdef PLATFORM_CONSOLE
 		string launch_done;
 		if( !GetGame().GetProfileString( "FirstLaunchDone", launch_done ) || launch_done != "true" )
@@ -104,6 +108,7 @@ class MainMenu extends UIScriptedMenu
 			GetGame().SaveProfile();
 		}
 		#endif
+		*/
 		
 		return layoutRoot;
 	}
@@ -207,6 +212,11 @@ class MainMenu extends UIScriptedMenu
 			else if ( w == m_PlayVideo )
 			{
 				PlayVideo();
+				return true;
+			}
+			else if ( w == m_Tutorials )
+			{
+				OpenTutorials();
 				return true;
 			}
 		}
@@ -430,6 +440,11 @@ class MainMenu extends UIScriptedMenu
 		EnterScriptedMenu(MENU_VIDEO);
 	}
 	
+	void OpenTutorials()
+	{
+		EnterScriptedMenu(MENU_TUTORIAL);
+	}
+	
 	void Exit()
 	{
 		GetGame().GetUIManager().ShowDialog("EXIT", "Are you sure you want to exit?", IDC_MAIN_QUIT, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
@@ -533,6 +548,11 @@ class MainMenu extends UIScriptedMenu
 				ColorWhite( GetFocus(), null );
 			#endif
 			return true;
+		}
+		else if( code == 555 )
+		{
+			if( result == 2 )
+				OpenTutorials();
 		}
 		return false;
 	}

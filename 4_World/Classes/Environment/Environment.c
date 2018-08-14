@@ -111,7 +111,7 @@ class Environment
 	// Calculates heatisolation of clothing, process its wetness, collects heat from heated items and calculates player's heat comfort
 	void Update(float pDelta)
 	{		
-		/*if (m_Player)
+		if (m_Player)
 		{
 			m_BuildingRCCheckTimer += pDelta;
 			//! check if player is under roof (only if the Building check is false)
@@ -158,7 +158,7 @@ class Environment
 					m_WetDryTick = 0;
 				}
 			}
-		}*/
+		}
 	}
 	
 	void AddToEnvironmentTemperature(float pTemperature)

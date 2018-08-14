@@ -1624,7 +1624,8 @@ class FireplaceBase extends ItemBase
 			{
 				PlayerBase player = PlayerBase.Cast(nearest_objects.Get(i));
 				distance = vector.Distance(player.GetPosition(), GetPosition());
-
+				distance = Math.Max( distance, 0.1 );	//min distance cannot be 0 (division by zero)
+				
 				//! heat transfer through air to player (env temperature)
 				float temp = GetTemperature() * (PARAM_HEAT_THROUGH_AIR_COEF / distance);
 				player.AddToEnvironmentTemperature(temp);
@@ -1639,6 +1640,8 @@ class FireplaceBase extends ItemBase
 				if ( wetness > 0 )
 				{
 					distance = vector.Distance(item.GetPosition(), GetPosition());
+					distance = Math.Max( distance, 0.1 );	//min distance cannot be 0 (division by zero)
+					
 					wetness = wetness * (PARAM_HEAT_THROUGH_AIR_COEF / distance);
 					wetness = Math.Clamp ( wetness, item.GetWetMin(), item.GetWetMax() );
 					item.AddWet(-wetness);

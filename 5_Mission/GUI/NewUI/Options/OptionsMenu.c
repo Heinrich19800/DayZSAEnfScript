@@ -138,10 +138,12 @@ class OptionsMenuNew extends UIScriptedMenu
 		}
 		
 		#ifdef PLATFORM_WINDOWS
+		#ifndef PLATFORM_CONSOLE
 		else if( m_VideoTab.IsChanged() )
 		{
 			changed = true;
 		}
+		#endif
 		#endif
 		if( changed )
 			g_Game.GetUIManager().ShowDialog("#main_menu_configure", "You have unsaved changes in the configuration. Would you like to discard them?", 1337, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
@@ -161,10 +163,12 @@ class OptionsMenuNew extends UIScriptedMenu
 			changed = true;
 		}
 		#ifdef PLATFORM_WINDOWS
+		#ifndef PLATFORM_CONSOLE
 		else if( m_VideoTab.IsChanged() )
 		{
 			changed = true;
 		}	
+		#endif
 		#endif
 		
 		m_Apply.Enable( changed );
@@ -193,8 +197,10 @@ class OptionsMenuNew extends UIScriptedMenu
 		if( m_SoundsTab.IsChanged() )
 			m_SoundsTab.Revert();
 		#ifdef PLATFORM_WINDOWS
+		#ifndef PLATFORM_CONSOLE
 		if( m_VideoTab.IsChanged() )
 			m_VideoTab.Revert();
+		#endif
 		#endif
 		m_Apply.Enable( false );
 		m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
@@ -226,8 +232,10 @@ class OptionsMenuNew extends UIScriptedMenu
 			m_ControlsTab.SetOptions( m_Options );
 		
 		#ifdef PLATFORM_WINDOWS
+		#ifndef PLATFORM_CONSOLE
 			if( m_VideoTab )
 				m_VideoTab.SetOptions( m_Options );
+		#endif
 		#endif
 	}
 	

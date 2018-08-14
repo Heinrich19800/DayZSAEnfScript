@@ -261,6 +261,7 @@ class Attachments
 
 	void MoveGridCursor( int direction )
 	{
+		ItemManager.GetInstance().HideTooltip();
 		UnfocusAll();
 		if( direction == Direction.UP )
 		{

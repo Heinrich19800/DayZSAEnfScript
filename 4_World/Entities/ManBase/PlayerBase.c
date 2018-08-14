@@ -2038,12 +2038,12 @@ class PlayerBase extends ManBase
 				Magazine mag;
 				Class.CastTo( wpn,  weapon );
 				Class.CastTo( mag,  magazine );
-				if(GetWeaponManager().CanLoadBullet( wpn, mag ) )				
-					GetWeaponManager().LoadBullet( mag );
-				else if(GetWeaponManager().CanAttachMagazine( wpn, mag ) )
+				if(GetWeaponManager().CanAttachMagazine( wpn, mag ) )
 					GetWeaponManager().AttachMagazine( mag );
 				else if(GetWeaponManager().CanSwapMagazine( wpn, mag ) )
 					GetWeaponManager().SwapMagazine( mag );
+				else if(GetWeaponManager().CanLoadBullet( wpn, mag ) )				
+					GetWeaponManager().LoadBullet( mag );
 				else
 				{
 				}
@@ -2058,7 +2058,8 @@ class PlayerBase extends ManBase
 		WeaponManager weapon_manager = GetWeaponManager();
 		EntityAI magazine_to_reload;
 		
-		int max_mag_ammo_count = 0;
+		int last_mag_ammo_count = 0;
+		int mag_ammo_count;
 		
 		//Get all magazines in (player) inventory
 		for ( int att_i = 0; att_i < GetInventory().AttachmentCount(); ++att_i )
@@ -2076,15 +2077,48 @@ class PlayerBase extends ManBase
 					if ( cargo_item.IsMagazine() )
 					{
 						Magazine magazine = Magazine.Cast( cargo_item );
+						mag_ammo_count = magazine.GetAmmoCount();
 						
-						if ( weapon_manager.CanLoadBullet( weapon_base, magazine ) || weapon_manager.CanAttachMagazine( weapon_base, magazine ) || weapon_manager.CanSwapMagazine( weapon_base, magazine ) )
+						//magazines (get magazine with max ammo count)
+						if ( weapon_manager.CanAttachMagazine( weapon_base, magazine ) || weapon_manager.CanSwapMagazine( weapon_base, magazine ) )
 						{
-							if ( magazine.GetAmmoCount() > 0 && magazine.GetAmmoCount() > max_mag_ammo_count )
+							if ( mag_ammo_count > 0 )
 							{
-								magazine_to_reload = EntityAI.Cast( magazine );
-								max_mag_ammo_count = magazine.GetAmmoCount();
+								if ( last_mag_ammo_count == 0 )
+								{
+									magazine_to_reload = EntityAI.Cast( magazine );
+									last_mag_ammo_count = mag_ammo_count;
+								}
+								else
+								{
+									if ( last_mag_ammo_count < mag_ammo_count )
+									{
+										magazine_to_reload = EntityAI.Cast( magazine );
+										last_mag_ammo_count = mag_ammo_count;
+									}
+								}
 							}
-						}
+						}	
+						//bullets (get ammo pile with min ammo count)
+						else if ( weapon_manager.CanLoadBullet( weapon_base, magazine ) )
+						{
+							if ( mag_ammo_count > 0 )
+							{
+								if ( last_mag_ammo_count == 0 )
+								{
+									magazine_to_reload = EntityAI.Cast( magazine );
+									last_mag_ammo_count = mag_ammo_count;
+								}
+								else
+								{
+									if ( last_mag_ammo_count > mag_ammo_count )
+									{
+										magazine_to_reload = EntityAI.Cast( magazine );
+										last_mag_ammo_count = mag_ammo_count;
+									}
+								}
+							}
+						}							
 					}
 				}
 			}

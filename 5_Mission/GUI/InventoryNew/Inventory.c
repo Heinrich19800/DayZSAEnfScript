@@ -165,7 +165,6 @@ class Inventory: ContainerBase
 		//Print("control: "+ control +" value: "+value);
 		
 		//Right stick
-		
 		if ( control == ControlID.CID_RADIALMENU )
 		{
 			m_ControllerAngle 	= value >> 4; 	// <0,360>
@@ -556,6 +555,7 @@ class Inventory: ContainerBase
 				m_LeftArea.EquipItem();
 			}
 			UpdateConsoleToolbar();
+			ItemManager.GetInstance().HideTooltip();
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUISelectItem , false ) )
@@ -575,6 +575,7 @@ class Inventory: ContainerBase
 				//m_HandsArea.SelectItem();
 			}
 			UpdateConsoleToolbar();
+			ItemManager.GetInstance().HideTooltip();
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUIFastTransferToVicinity, false ) )
@@ -588,6 +589,7 @@ class Inventory: ContainerBase
 				m_RightArea.TransferItemToVicinity();
 			}
 			UpdateConsoleToolbar();
+			ItemManager.GetInstance().HideTooltip();
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUIFastTransferItem, false ) )
@@ -609,6 +611,7 @@ class Inventory: ContainerBase
 				m_HandsArea.TransferItem();
 			}
 			UpdateConsoleToolbar();
+			ItemManager.GetInstance().HideTooltip();
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUINextUp, false ) )
@@ -634,17 +637,11 @@ class Inventory: ContainerBase
 			}
 			
 #ifdef PLATFORM_XBOX
-			if ( m_RightArea.IsActive() )
-			{
 				UpdateConsoleToolbar();
-			}
 #endif
 
 #ifdef PLATFORM_PS4
-			if ( m_RightArea.IsActive() )
-			{
 				UpdateConsoleToolbar();
-			}
 #endif			
 		}
 
@@ -670,17 +667,11 @@ class Inventory: ContainerBase
 				m_HandsArea.SetNextActive();
 			}
 #ifdef PLATFORM_XBOX
-			if ( m_RightArea.IsActive() )
-			{
 				UpdateConsoleToolbar();
-			}
 #endif
 
 #ifdef PLATFORM_PS4
-			if ( m_RightArea.IsActive() )
-			{
 				UpdateConsoleToolbar();
-			}
 #endif
 		}
 
@@ -1105,6 +1096,11 @@ class Inventory: ContainerBase
 				{
 						context_text += combine;
 				}
+				
+				if( vicinity_icons_container.CanCombineAmmo() )
+				{
+					context_text += combine;
+				}
 			}
 			else if( vicinity_container.IsItemWithCargoActive()	)
 			{
@@ -1130,6 +1126,11 @@ class Inventory: ContainerBase
 				}
 				
 				if( iwc.CanCombine() )
+				{
+					context_text += combine;
+				}
+				
+				if( iwc.CanCombineAmmo() )
 				{
 					context_text += combine;
 				}
@@ -1210,6 +1211,11 @@ class Inventory: ContainerBase
 				}
 				
 				if( iwc1.CanCombine() )
+				{
+					context_text += combine;
+				}
+				
+				if( iwc1.CanCombineAmmo() )
 				{
 					context_text += combine;
 				}

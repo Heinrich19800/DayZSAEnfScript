@@ -52,6 +52,7 @@ class VicinityIconsContainer: Container
 	
 	override void MoveGridCursor( int direction )
 	{
+		ItemManager.GetInstance().HideTooltip();
 		UnfocusAll();
 
 		if( direction == Direction.RIGHT )
@@ -90,6 +91,17 @@ class VicinityIconsContainer: Container
 		}
 		
 		Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
+		
+		Container cnt = Get( m_FocusedRow );
+		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( cnt.GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+		EntityAI focused_item =  item_preview.GetItem();
+
+		if( focused_item )
+		{
+			float x, y;
+			cnt.GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+			ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+		}
 	}
 	
 	int GetRecipeCount( bool recipe_anywhere, EntityAI entity1, EntityAI entity2 )
@@ -104,6 +116,17 @@ class VicinityIconsContainer: Container
 		ItemBase item_in_hands = ItemBase.Cast(	GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() );
 		
 		return GetRecipeCount( false, ent, item_in_hands ) > 0;
+	}
+	
+	bool CanCombineAmmo()
+	{
+		PlayerBase m_player = PlayerBase.Cast( GetGame().GetPlayer() );
+		ItemBase ent = ItemBase.Cast(  GetActiveItem() );
+		ItemBase item_in_hands = ItemBase.Cast(	GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() );
+		ActionManagerClient amc;
+		Class.CastTo(amc, m_player.GetActionManager());
+
+		return amc.CanPerformActionFromInventory( item_in_hands, ent );
 	}
 	
 	bool CanEquip()

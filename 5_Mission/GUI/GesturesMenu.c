@@ -218,6 +218,7 @@ class GesturesMenu extends UIScriptedMenu
 			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_HEART, 		"Heart", 		GestureCategories.CONSOLE_GESTURES ) );
 			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SOS, 		"Wave", 		GestureCategories.CONSOLE_GESTURES ) );
 			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNTKISS,	"Magnifique", 	GestureCategories.CONSOLE_GESTURES ) );
+			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SUICIDE, 	"Suicide", 		GestureCategories.CONSOLE_GESTURES ) );
 			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_THROAT, 	"Die", 			GestureCategories.CONSOLE_GESTURES ) );
 			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNT, 		"Frig off", 	GestureCategories.CONSOLE_GESTURES ) );
 			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_DANCE, 		"Dance", 		GestureCategories.CONSOLE_GESTURES ) );

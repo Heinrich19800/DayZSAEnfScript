@@ -198,6 +198,21 @@ class UICargoGrid
 		return GetRecipeCount( false, ent, item_in_hands ) > 0;
 	}
 	
+	bool CanCombineAmmo()
+	{
+		if( GetFocusedItem() == NULL )
+		{
+			return false;
+		}
+		PlayerBase m_player = PlayerBase.Cast( GetGame().GetPlayer() );
+		ItemBase ent = ItemBase.Cast( GetFocusedItem().GetObject() );
+		ItemBase item_in_hands = ItemBase.Cast(	GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() );
+		ActionManagerClient amc;
+		Class.CastTo(amc, m_player.GetActionManager());
+
+		return amc.CanPerformActionFromInventory( item_in_hands, ent );
+	}
+	
 	void EquipItem()
 	{
 		if( GetFocusedItem() == NULL )
@@ -205,7 +220,7 @@ class UICargoGrid
 			return;
 		}
 		ItemBase entity = ItemBase.Cast( GetFocusedItem().GetObject() );
-		if( entity && !entity.IsInherited( Magazine ) )
+		if( entity )
 		{
 			if( entity.HasQuantity() )
 			{
@@ -438,6 +453,7 @@ class UICargoGrid
 										icon.SetActive( true );
 										m_ReactivateCursor = false;
 									}
+									Inventory.Cast(m_Parent.m_Parent.m_Parent.m_Parent).UpdateConsoleToolbar();
 								}
 								
 								Container cnt = Container.Cast( m_ItemsContainer.GetParent().GetParent().GetParent() );
@@ -517,7 +533,7 @@ class UICargoGrid
 			if( m_SetDefaultFocusAfterInitIcon )
 			{
 				SetDefaultFocus();
-				m_SetDefaultFocusAfterInitIcon = false;
+				m_SetDefaultFocusAfterInitIcon = false;	
 			}
 		}
 

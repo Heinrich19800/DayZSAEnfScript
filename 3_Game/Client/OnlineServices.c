@@ -391,15 +391,10 @@ class OnlineServices
 	
 	static void LeaveGameplaySession()
 	{
-		string addr;
-		int port;
-		if( GetGame().GetHostAddress( addr, port ) )
+		GetClientServices();
+		if( m_ClientServices )
 		{
-			GetClientServices();
-			if( m_ClientServices )
-			{
-				m_ClientServices.GetSessionService().LeaveGameplaySessionAsync( addr, port );
-			}
+			m_ClientServices.GetSessionService().ClearActivityAsync();
 		}
 	}
 	

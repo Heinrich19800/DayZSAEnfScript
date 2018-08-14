@@ -18,10 +18,12 @@ class DayZIntroSceneXbox: Managed
 	protected PlayerBase	m_SceneCharacter;
 	protected Weather		m_Weather;
 	protected vector		m_CharacterPos;
-	protected vector		m_CharacterRot;
+	protected vector		m_CharacterDir;
 	protected float			m_BlurValue;
 
 	protected MenuData m_MenuData;
+	
+	ref Timer m_TimerUpdate = new Timer( CALL_CATEGORY_GAMEPLAY );
 
 	//==================================
 	// DayZIntroSceneXbox
@@ -35,7 +37,7 @@ class DayZIntroSceneXbox: Managed
 		
 		m_LastPlayedCharacterID = m_MenuData.GetLastPlayedCharacter();
 		m_CharacterPos = "0 0 0";
-		m_CharacterRot = "0 0 0";
+		m_CharacterDir = "0 0 0";
 		m_LastShavedSeconds = 0;
 		
 		//g_Game.m_PlayerName = "Survivor"; //default
@@ -47,30 +49,31 @@ class DayZIntroSceneXbox: Managed
 	
 		// Camera Setup
 		vector camera_position;
-		camera_position[0] 			= 1318.25;	// X
-		camera_position[1] 			= 1.6;		// Y
+		camera_position[0] 			= 1317.25;	// X
+		camera_position[1] 			= 1.65;		// Y
 		camera_position[2] 			= 1602.17;	// Z
-		float camera_rotation		= 115;
-		float camera_fov			= 1;
+		float camera_rotation_h		= 115;
+		float camera_rotation_v		= -7;
+		float camera_fov			= 0.8;
 		float camera_focus_distance	= 5.0;
 		float camera_focus_streght	= 0.5;
 		
 		// Character
-		float character_distance = 3.0;
+		float character_distance = 2.2;
 		
 		// Date
 		TIntArray date = new TIntArray;
 		date.Insert(2020);	// Year
 		date.Insert(03);	// Month
 		date.Insert(15);	// Day
-		date.Insert(09);	// Hour
+		date.Insert(15);	// Hour
 		date.Insert(00);	// Minite
 		
 		// Weather
-		float weather_storm_density		= 0.2;
-		float weather_storm_threshold	= 0.2;
+		float weather_storm_density		= 0.1;
+		float weather_storm_threshold	= 0.1;
 		float weather_storm_time_out	= 0.0;
-		float weather_overcast			= 1.0;
+		float weather_overcast			= 0.5;
 		float weather_rain				= 0.0;
 		float weather_fog				= 0.0;
 		float weather_windspeed			= 0.1;
@@ -92,24 +95,42 @@ class DayZIntroSceneXbox: Managed
 		m_Weather.SetWindFunctionParams(1, 1, 1);
 		
 		// Camera Setup 
-		m_SceneCamera = CameraCreate(camera_position, camera_rotation, camera_fov, camera_focus_distance, camera_focus_streght);
+		m_SceneCamera = CameraCreate(camera_position, camera_rotation_h, camera_rotation_v, camera_fov, camera_focus_distance, camera_focus_streght);
 		m_SceneCamera.SetActive(true);
 		
 		//ColorGrading,
 		//Colors
-		SetCameraPostProcessEffect(0, 1, PostProcessEffectType.ColorGrading, "");
+		PPEffects.SetVignette(0.3, 0,0,0);
 		
 		// Character Setup
 		vector cam_dir = m_SceneCamera.GetDirection();
 		m_CharacterPos = camera_position + ( cam_dir * character_distance );
 		m_CharacterPos[1] = GetGame().SurfaceY(m_CharacterPos[0], m_CharacterPos[2]);
-		m_CharacterRot = cam_dir * -1;
-
-Print("DayZIntroSceneXbox Init");
+		m_CharacterDir = (camera_position - m_CharacterPos);
 		
 		Init();
-Print("DayZIntroSceneXbox End");
 	
+		m_TimerUpdate.Run(0.1, this, "UpdateChar", NULL, true);
+	}
+	
+	void ~DayZIntroSceneXbox()
+	{
+		if ( m_TimerUpdate )
+		{
+			m_TimerUpdate.Stop();
+			delete m_TimerUpdate;
+			m_TimerUpdate = null;
+		}
+	}
+	
+	void UpdateChar()
+	{
+		if ( m_SceneCharacter )
+		{
+			vector v = m_SceneCharacter.GetOrientation();
+			v[0] = -60;
+			m_SceneCharacter.SetOrientation(v);
+		}
 	}
 	
 	//==================================
@@ -157,10 +178,10 @@ Print("DayZIntroSceneXbox End");
 	//==================================
 	// CameraCreate
 	//==================================
-	protected Camera CameraCreate(vector cam_pos, float cam_rot, float cam_fov, float cam_focus_dist, float cam_focus_strg)
+	protected Camera CameraCreate(vector cam_pos, float cam_rot_h, float cam_rot_v, float cam_fov, float cam_focus_dist, float cam_focus_strg)
 	{
 		Camera cam = Camera.Cast( g_Game.CreateObject("staticcamera", SnapToGround(cam_pos), true));
-		cam.SetOrientation( Vector( cam_rot, 0, 0) );
+		cam.SetOrientation( Vector( cam_rot_h, cam_rot_v, 0) );
 		cam.SetFOV( cam_fov );
 		cam.SetFocus(cam_focus_dist, cam_focus_strg);
 		
@@ -294,7 +315,7 @@ Print("DayZIntroSceneXbox End");
 		{
 			g_Game.SetNewCharacter(false);
 			m_SceneCharacter.PlaceOnSurface();
-			m_SceneCharacter.SetOrientation(m_CharacterRot);
+			m_SceneCharacter.SetDirection(m_CharacterDir);
 			m_SceneCharacter.SetEventHandler(m_anim_end_event_handler);
 			m_SceneCharacter.SetLastShavedSeconds(m_LastShavedSeconds);
 	
@@ -321,7 +342,7 @@ Print("DayZIntroSceneXbox End");
 		if (m_SceneCharacter)
 		{
 			m_SceneCharacter.PlaceOnSurface();
-			m_SceneCharacter.SetOrientation(m_CharacterRot);
+			m_SceneCharacter.SetDirection(m_CharacterDir);
 			m_SceneCharacter.SetEventHandler(m_anim_end_event_handler);
 			m_SceneCharacter.SetLastShavedSeconds(m_LastShavedSeconds);
 
@@ -340,7 +361,7 @@ Print("DayZIntroSceneXbox End");
 		if (m_SceneCharacter)
 		{
 			m_SceneCharacter.SetPosition(m_CharacterPos);
-			m_SceneCharacter.SetOrientation(m_CharacterRot);
+			m_SceneCharacter.SetDirection(m_CharacterDir.Normalized() );
 		}
 	}
 	

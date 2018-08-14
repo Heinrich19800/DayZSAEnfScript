@@ -37,6 +37,11 @@ class ItemWithCargo: ClosableContainer
 		return m_CargoGrid.CanCombine();
 	}
 	
+	bool CanCombineAmmo()
+	{
+		return m_CargoGrid.CanCombineAmmo();
+	}
+	
 	bool IsItemWithQuantityActive()
 	{
 		return m_CargoGrid.IsItemWithQuantityActive();

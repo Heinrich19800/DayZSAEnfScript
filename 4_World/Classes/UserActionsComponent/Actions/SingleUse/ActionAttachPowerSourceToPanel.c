@@ -49,13 +49,14 @@ class ActionAttachPowerSourceToPanel: ActionSingleUseBase
 		
 		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
 		{
-			//target_entity.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
-			target_entity.LocalTakeEntityAsAttachmentEx( item_entity, target_location.GetSlot() );
+			target_entity.ServerTakeEntityAsAttachmentEx( item_entity, target_location.GetSlot() );
 		}
 	}
 	
 	override void OnCompleteClient( ActionData action_data )
 	{
+		// Probably not needed since attaching is done server side.
+		/*
 		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
 		EntityAI item_entity = EntityAI.Cast( action_data.m_MainItem );
 		
@@ -67,5 +68,6 @@ class ActionAttachPowerSourceToPanel: ActionSingleUseBase
 			//target_entity.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
 			target_entity.LocalTakeEntityAsAttachmentEx( item_entity, target_location.GetSlot() );
 		}
+		*/
 	}
 }
