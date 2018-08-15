@@ -232,6 +232,7 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	void SetPopulation( int population, int slots )
 	{
+		/*
 		string pop_text;
 		float pop_percentage = population / slots;
 		if( population == 0 )
@@ -244,7 +245,8 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 			pop_text	= "High (" + population.ToString() + ")" ;
 		else
 			pop_text	= "Full";
-		m_ServerPopulation.SetText( pop_text );
+		*/
+		m_ServerPopulation.SetText( population.ToString() );
 	}
 	
 	void SetSlots( int slots )

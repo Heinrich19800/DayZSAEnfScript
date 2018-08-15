@@ -628,7 +628,7 @@ void DayZPlayerTypeRegisterItems(DayZPlayerType pType)
 		pType.AddItemInHandsProfileIK("FireplaceIndoor", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded,					"dz/anims/anm/player/ik/gear/FireplaceIndoor.anm");
 			
 		//! Cooking two handed	
-		pType.AddItemInHandsProfileIK("Pot", "dz/anims/workspaces/player/player_main/player_main_2h.asi", twoHanded, 									"dz/anims/anm/player/ik/two_handed/CookingPot.anm");
+		pType.AddItemInHandsProfileIK("Pot", "dz/anims/workspaces/player/player_main/weapons/player_main_2h_extinguisher.asi", twoHanded, 				"dz/anims/anm/player/ik/two_handed/CookingPot.anm");
 		pType.AddItemInHandsProfileIK("FireplaceBase", "dz/anims/workspaces/player/player_main/player_main_2h.asi", twoHanded,							"dz/anims/anm/player/ik/two_handed/Fireplace.anm"); 
 		
 	}	

@@ -465,8 +465,6 @@ class DayZGame extends CGame
 	float 	m_volume_VOIP;
 	float 	m_volume_radio;
 	
-	private string m_MainMenuWorld;
-	
 	ref TIntArray demounit = new TIntArray;
 	
 	static ref ScriptInvoker Event_OnRPC = new ScriptInvoker();
@@ -549,17 +547,6 @@ class DayZGame extends CGame
 	}
 	
 	// ------------------------------------------------------------
-	void SetMainMenuWorld(string world)
-	{
-		m_MainMenuWorld = world;
-	}
-	
-	// ------------------------------------------------------------
-	string GetMainMenuWorld()
-	{
-		return m_MainMenuWorld;
-	}
-	
 	// ------------------------------------------------------------
 	void ExitToMainMenu()
 	{
@@ -1242,11 +1229,13 @@ class DayZGame extends CGame
 				}
 				default:
 				{
+					/*
 					if( !selected_user )
 					{
+						SetLoadState( DayZLoadState.MAIN_MENU_START );
 						user_manager.PickUser();
 						return;
-					}
+					}*/
 				}
 			}
 		}
@@ -1261,7 +1250,7 @@ class DayZGame extends CGame
 		}
 		else
 		{
-			if( !m_IntroMenu )
+			if( !m_IntroMenu && !( GetGame().GetUIManager().GetMenu() && GetGame().GetUIManager().GetMenu().GetID() == MENU_TITLE_SCREEN ) )
 				CreateTitleScreen();
 			#ifdef PLATFORM_CONSOLE
 			#ifndef PLATFORM_WINDOWS

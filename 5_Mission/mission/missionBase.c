@@ -246,6 +246,9 @@ class MissionBase extends Mission
 		case MENU_KEYBINDINGS:
 			menu = new OptionsMenuKeybindings;
 			break;
+		case MENU_TUTORIAL:
+			menu = new TutorialsMenu;
+			break;
 		}
 
 		if (menu)

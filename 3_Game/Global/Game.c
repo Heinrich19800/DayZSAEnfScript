@@ -665,6 +665,9 @@ class CGame
 	proto native void		RespawnPlayer();
 	proto native bool		CanRespawnPlayer();
 
+	proto native void		SetMainMenuWorld(string world);
+	proto native owned string GetMainMenuWorld();	
+	
 	//! Logout methods
 	proto native void		LogoutRequestTime();
 	proto native void		LogoutRequestCancel();

@@ -260,7 +260,7 @@ class OptionsMenuNew extends UIScriptedMenu
 	
 	override bool OnMouseEnter( Widget w, int x, int y )
 	{
-		if( IsFocusable( w ) )
+		if( w && IsFocusable( w ) )
 		{
 			ColorRed( w );
 			return true;
@@ -270,7 +270,7 @@ class OptionsMenuNew extends UIScriptedMenu
 	
 	override bool OnMouseLeave( Widget w, Widget enterW, int x, int y )
 	{
-		if( IsFocusable( w ) )
+		if( w && IsFocusable( w ) )
 		{
 			ColorWhite( w, enterW );
 			return true;
@@ -280,7 +280,7 @@ class OptionsMenuNew extends UIScriptedMenu
 	
 	override bool OnFocus( Widget w, int x, int y )
 	{
-		if( IsFocusable( w ) )
+		if( w && IsFocusable( w ) )
 		{
 			ColorRed( w );
 			return true;
@@ -294,7 +294,7 @@ class OptionsMenuNew extends UIScriptedMenu
 	
 	override bool OnFocusLost( Widget w, int x, int y )
 	{
-		if( IsFocusable( w ) )
+		if( w && IsFocusable( w ) )
 		{
 			ColorWhite( w, null );
 			return true;
@@ -314,9 +314,6 @@ class OptionsMenuNew extends UIScriptedMenu
 	override void OnShow()
 	{
 		super.OnShow();
-		#ifdef PLATFORM_CONSOLE
-			ColorRed( m_Apply );
-		#endif
 		Refresh();
 	}
 	
@@ -359,21 +356,12 @@ class OptionsMenuNew extends UIScriptedMenu
 	void ColorRed( Widget w )
 	{
 		SetFocus( w );
-		if( w.IsInherited( ButtonWidget ) )
-		{
-			ButtonWidget button = ButtonWidget.Cast( w );
-			button.SetTextColor( ARGB( 255, 255, 0, 0 ) );
-			button.SetAlpha( 0.9 );
-		}
 	}
 	
 	void ColorWhite( Widget w, Widget enterW )
 	{
-		if( w.IsInherited( ButtonWidget ) )
-		{
-			ButtonWidget button = ButtonWidget.Cast( w );
-			button.SetTextColor( ARGB( 255, 255, 255, 255 ) );
-			button.SetAlpha( 0.75 );
-		}
+		#ifdef PLATFORM_WINDOWS
+		SetFocus( null );
+		#endif
 	}
 }

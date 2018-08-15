@@ -98,8 +98,7 @@ class DayZIntroSceneXbox: Managed
 		m_SceneCamera = CameraCreate(camera_position, camera_rotation_h, camera_rotation_v, camera_fov, camera_focus_distance, camera_focus_streght);
 		m_SceneCamera.SetActive(true);
 		
-		//ColorGrading,
-		//Colors
+		//Vignette
 		PPEffects.SetVignette(0.3, 0,0,0);
 		
 		// Character Setup

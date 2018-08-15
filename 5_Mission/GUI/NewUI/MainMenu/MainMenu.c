@@ -72,11 +72,11 @@ class MainMenu extends UIScriptedMenu
 			m_PlayerName			= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_xbox") );
 			layoutRoot.FindAnyWidget( "character_name_xbox_background" ).Show( true );
 			layoutRoot.FindAnyWidget( "settings_panel_root" ).Show( false );
-			layoutRoot.FindAnyWidget( "ConsoleToolbar" ).Show( true );
+			layoutRoot.FindAnyWidget( "toolbar_bg" ).Show( true );
 			layoutRoot.FindAnyWidget( "character" ).Show( false );
 			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
 			m_PlayVideo.Show( true );
-			//m_Tutorials.Show( true );
+			m_Tutorials.Show( true );
 			m_CustomizeCharacter.SetText( "OPTIONS" );
 			m_ChooseServer.SetText( "CONTROLS" );
 		#endif
@@ -98,7 +98,6 @@ class MainMenu extends UIScriptedMenu
 			SetFocus( layoutRoot );
 		#endif
 		
-		/*
 		#ifdef PLATFORM_CONSOLE
 		string launch_done;
 		if( !GetGame().GetProfileString( "FirstLaunchDone", launch_done ) || launch_done != "true" )
@@ -108,7 +107,6 @@ class MainMenu extends UIScriptedMenu
 			GetGame().SaveProfile();
 		}
 		#endif
-		*/
 		
 		return layoutRoot;
 	}
@@ -481,12 +479,6 @@ class MainMenu extends UIScriptedMenu
 	void ColorRed( Widget w )
 	{
 		SetFocus( w );
-		if( w.IsInherited( ButtonWidget ) )
-		{
-			ButtonWidget button = ButtonWidget.Cast( w );
-			button.SetTextColor( ARGB( 255, 255, 0, 0 ) );
-			button.SetAlpha( 0.9 );
-		}
 		
 		TextWidget text		= TextWidget.Cast(w.FindWidget( w.GetName() + "_text" ) );
 		TextWidget text2	= TextWidget.Cast(w.FindWidget( w.GetName() + "_text_1" ) );
@@ -510,12 +502,9 @@ class MainMenu extends UIScriptedMenu
 	
 	void ColorWhite( Widget w, Widget enterW )
 	{
-		if( w.IsInherited( ButtonWidget ) )
-		{
-			ButtonWidget button = ButtonWidget.Cast( w );
-			button.SetTextColor( ARGB( 255, 255, 255, 255 ) );
-			button.SetAlpha( 0.75 );
-		}
+		#ifdef PLATFORM_WINDOWS
+		SetFocus( null );
+		#endif
 		
 		TextWidget text		= TextWidget.Cast(w.FindWidget( w.GetName() + "_text" ) );
 		TextWidget text2	= TextWidget.Cast(w.FindWidget( w.GetName() + "_text_1" ) );

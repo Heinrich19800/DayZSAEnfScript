@@ -253,7 +253,8 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			g_Game.GetPlayerNameShort( 14, name );
 		#endif
 		
-		m_PlayerName.SetText( name );
+		if( m_PlayerName )
+			m_PlayerName.SetText( name );
 	}
 	
 	override void Update( float timeslice )
@@ -404,12 +405,6 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	void ColorRed( Widget w, int x, int y )
 	{
 		SetFocus( w );
-		if( w.IsInherited( ButtonWidget ) )
-		{
-			ButtonWidget button = ButtonWidget.Cast( w );
-			button.SetTextColor( ARGB( 255, 255, 0, 0 ) );
-			button.SetAlpha( 0.9 );
-		}
 		
 		TextWidget text		= TextWidget.Cast(w.FindWidget( w.GetName() + "_text" ) );
 		TextWidget text2	= TextWidget.Cast(w.FindWidget( w.GetName() + "_text_1" ) );
@@ -433,14 +428,9 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	
 	void ColorWhite( Widget w, Widget enterW, int x, int y )
 	{
-		if( GetFocus() == w )
-			return;
-		if( w.IsInherited( ButtonWidget ) )
-		{
-			ButtonWidget button = ButtonWidget.Cast( w );
-			button.SetTextColor( ARGB( 255, 255, 255, 255 ) );
-			button.SetAlpha( 0.75 );
-		}
+		#ifdef PLATFORM_WINDOWS
+		SetFocus( null );
+		#endif
 		
 		TextWidget text		= TextWidget.Cast(w.FindWidget( w.GetName() + "_text" ) );
 		TextWidget text2	= TextWidget.Cast(w.FindWidget( w.GetName() + "_text_1" ) );

@@ -174,6 +174,9 @@ class DayZIntroScene: Managed
 		m_Weather.GetRain().Set( rain, 0, 0);
 		m_Weather.GetFog().Set( fog, 0, 0);
 		
+		//Vignette
+		PPEffects.SetVignette(0.3, 0,0,0);
+		
 		if ( storm.Count() == 3 )
 		{
 			m_Weather.SetStorm(storm.Get(0),storm.Get(1),storm.Get(2));
