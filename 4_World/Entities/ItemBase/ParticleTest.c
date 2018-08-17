@@ -4,7 +4,7 @@
 
 class ParticleTest extends ItemBase
 {
-	protected const int	PARTICLE_PATH = ParticleList.PARTICLE_TEST;
+	protected const int	PARTICLE_PATH = ParticleList.SMOKING_CAR_ENGINE;
 	protected Particle 	m_Particle;
 	
 	// Constructor

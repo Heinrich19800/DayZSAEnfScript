@@ -15,7 +15,7 @@ class MainMenuVideo extends UIScriptedMenu
 		m_VideoPlayTimer		= new Timer();
 		m_VideoFadeTimer		= new WidgetFadeTimer();
 		
-		m_Video.LoadVideo( "G:\\video\\DayZ_xbox_onboarding_RC3.mp4", 0 );
+		m_Video.LoadVideo( "G:\\video\\DayZ_xbox_onboarding_MASTER.mp4", 0 );
 		m_Video.Play( VideoCommand.REWIND );
 		m_Video.Play( VideoCommand.PLAY );
 		m_VideoFadeTimer.FadeIn( m_Video, 1.5 );

@@ -62,6 +62,13 @@ class OptionsMenuSounds extends ScriptedWidgetEventHandler
 		m_MusicSelector.m_OptionChanged.Insert( UpdateMusic );
 	}
 	
+	void Focus()
+	{
+		#ifdef PLATFORM_CONSOLE
+			SetFocus( m_MasterSelector.GetParent() );
+		#endif
+	}
+	
 	override bool OnFocus( Widget w, int x, int y )
 	{
 		OptionsMenuNew menu = OptionsMenuNew.Cast( GetGame().GetUIManager().GetMenu() );

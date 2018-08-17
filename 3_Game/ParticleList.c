@@ -149,6 +149,8 @@ class ParticleList
 	
 	// ENVIRO EFX
 	static const int SMOKING_HELI_WRECK				= RegisterParticle("smoke_heli_wreck_01");
+	static const int SMOKING_CAR_ENGINE				= RegisterParticle("menu_engine_fire");
+	static const int EVAPORATION					= RegisterParticle("menu_evaporation");
 	
 	static int RegisterParticle (string file_name)
 	{

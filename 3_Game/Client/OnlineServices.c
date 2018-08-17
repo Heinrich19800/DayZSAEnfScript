@@ -204,6 +204,7 @@ class OnlineServices
 			perms.Insert( EBiosPrivacyPermission.COMMUNICATE_VOICE );
 			
 			ErrorCaught( m_ClientServices.GetPrivacyService().GetPermissionsAsync( player_list, perms ) );
+			Print("Load permissions");
 		}
 		else
 		{
@@ -411,5 +412,21 @@ class OnlineServices
 			}
 			SetGameplayActivity();
 		}
+	}
+	
+	static void AutoConnectToEmptyServer()
+	{
+		GetClientServices();
+		if( m_ClientServices )
+		{
+			ref GetFirstServerWithEmptySlotInput input = new GetFirstServerWithEmptySlotInput;
+			input.SetOfficial( true );
+			m_ClientServices.GetLobbyService().GetFirstServerWithEmptySlot( input );
+		}
+	}
+	
+	static void OnAutoConnectToEmptyServer( ref GetServersResult result_list, EBiosError error )
+	{
+		
 	}
 }

@@ -1332,6 +1332,23 @@ class DayZGame extends CGame
 		}
 	}
 	
+	bool GetLastVisitedServer( out string ip, out int port )
+	{
+		if( m_Visited )
+		{
+			if( m_Visited.Count() > 0 )
+			{
+				string uid = m_Visited.Get( m_Visited.Count() - 1 );
+				TStringArray output = new TStringArray;
+				uid.Split( ":", output );
+				ip = output[0];
+				port = output[1].ToInt();
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	void AddVisitedServer( string ip, int port )
 	{
 		string uid = ip + ":" + port;
@@ -1369,7 +1386,7 @@ class DayZGame extends CGame
 		test = test;
 	}
 	
-	void ConnectFromServerBrowser( string ip, int port, string password )
+	void ConnectFromServerBrowser( string ip, int port, string password = "" )
 	{
 		m_ConnectAddress	= ip;
 		m_ConnectPort		= port;

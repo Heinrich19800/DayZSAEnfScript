@@ -1,9 +1,6 @@
 class InGameMenuXbox extends UIScriptedMenu
 {
 	protected ref PlayerListScriptedWidget	m_ServerInfoPanel;
-	protected ref PlayerListScriptedWidget	m_FriendsInfoPanel;
-	
-	protected TabberUI						m_TabScript;
 	
 	protected Widget						m_OnlineMenu;
 	
@@ -16,7 +13,6 @@ class InGameMenuXbox extends UIScriptedMenu
 	void ~InGameMenuXbox()
 	{
 		ClientData.SyncEvent_OnPlayerListUpdate.Remove( SyncEvent_OnRecievedPlayerList );
-		OnlineServices.m_FriendsAsyncInvoker.Remove( OnFriendsUpdate );
 		OnlineServices.m_PermissionsAsyncInvoker.Remove( OnPermissionsUpdate );
 		
 		Mission mission = GetGame().GetMission();
@@ -35,9 +31,6 @@ class InGameMenuXbox extends UIScriptedMenu
 	{
 		layoutRoot		= GetGame().GetWorkspace().CreateWidgets("gui/layouts/xbox/day_z_ingamemenu_xbox.layout");
 		m_OnlineMenu	= GetGame().GetWorkspace().CreateWidgets("gui/layouts/xbox/ingamemenu_xbox/online_info_menu.layout", layoutRoot);
-		
-		
-		layoutRoot.FindAnyWidget( "OnlineInfo" ).GetScript( m_TabScript );
 		
 		m_OnlineMenu.Show( false );
 		string version;
@@ -62,17 +55,15 @@ class InGameMenuXbox extends UIScriptedMenu
 		
 		if( !player_is_alive )
 		{
-			layoutRoot.FindAnyWidget( "ContinueBtn" ).Show( false );
+			layoutRoot.FindAnyWidget( "continuebtn" ).Show( false );
 		}
 		
 		if( GetGame().IsMultiplayer() )
 		{
-			layoutRoot.FindAnyWidget( "OnlineBtn" ).Show( true );
+			layoutRoot.FindAnyWidget( "onlinebtn" ).Show( true );
 			
 			m_ServerInfoPanel = new PlayerListScriptedWidget( m_OnlineMenu.FindAnyWidget( "ServerInfoPanel" ), "SERVER PLAYERS" );
-			//m_FriendsInfoPanel = new PlayerListScriptedWidget( m_OnlineMenu.FindAnyWidget( "FriendsInfoPanel" ), "FRIENDS" );
 			
-			//OnlineServices.m_FriendsAsyncInvoker.Insert( OnFriendsUpdate );
 			OnlineServices.m_PermissionsAsyncInvoker.Insert( OnPermissionsUpdate );
 			ClientData.SyncEvent_OnPlayerListUpdate.Insert( SyncEvent_OnRecievedPlayerList );
 			
@@ -80,7 +71,6 @@ class InGameMenuXbox extends UIScriptedMenu
 			m_ServerInfoPanel.ReloadLocal( OnlineServices.GetMuteList() );
 			
 			#ifndef PLATFORM_WINDOWS // if app is not on Windows with -XBOX parameter
-				//ClientData.m_OnlineServices.LoadFriends();
 				ClientData.m_OnlineServices.LoadPermissions( ClientData.GetSimplePlayerList() );
 			#endif
 			
@@ -192,8 +182,12 @@ class InGameMenuXbox extends UIScriptedMenu
 			return true;
 		case IDC_MAIN_ONLINE:
 			m_OnlineMenu.Show( true );
-			layoutRoot.FindAnyWidget( "CampaignMenuLeftPanel" ).Show( false );
+			layoutRoot.FindAnyWidget( "play_panel_root" ).Show( false );
+			layoutRoot.FindAnyWidget( "dayz_logo" ).Show( false );
 			m_ServerInfoPanel.FocusFirst();
+			return true;
+		case 117:
+			EnterScriptedMenu(MENU_TUTORIAL);
 			return true;
 		}
 
@@ -254,7 +248,7 @@ class InGameMenuXbox extends UIScriptedMenu
 			TextWidget mute_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "Mute" ).FindAnyWidget( "MuteText" ) );
 			if( GetGame().GetInput().GetActionDown( UAUIUp, false ) )
 			{
-				if( m_ServerInfoPanel && m_TabScript.GetSelectedIndex() == 0 )
+				if( m_ServerInfoPanel )
 				{
 					m_ServerInfoPanel.SetPreviousActive();
 					
@@ -286,24 +280,10 @@ class InGameMenuXbox extends UIScriptedMenu
 						}
 					}
 				}
-				else if( m_FriendsInfoPanel && m_TabScript.GetSelectedIndex() == 1 )
-				{
-					m_FriendsInfoPanel.SetPreviousActive();
-					
-					uid = m_FriendsInfoPanel.FindPlayerByWidget( GetFocus() );
-					if( IsLocalPlayer( uid ) || m_FriendsInfoPanel.IsEmpty() )
-					{
-						layoutRoot.FindAnyWidget( "Gamercard" ).Show( false );
-					}
-					else
-					{
-						layoutRoot.FindAnyWidget( "Gamercard" ).Show( true );
-					}
-				}
 			}
 			if( GetGame().GetInput().GetActionDown( UAUIDown, false ) )
 			{
-				if( m_ServerInfoPanel && m_TabScript.GetSelectedIndex() == 0 )
+				if( m_ServerInfoPanel )
 				{
 					m_ServerInfoPanel.SetNextActive();
 					
@@ -335,35 +315,13 @@ class InGameMenuXbox extends UIScriptedMenu
 						}
 					}
 				}
-				else if( m_FriendsInfoPanel && m_TabScript.GetSelectedIndex() == 1 )
-				{
-					m_FriendsInfoPanel.SetNextActive();
-					
-					uid = m_FriendsInfoPanel.FindPlayerByWidget( GetFocus() );
-					if( uid == "" )
-						return;
-					if( IsLocalPlayer( uid ) || m_FriendsInfoPanel.IsEmpty() )
-					{
-						layoutRoot.FindAnyWidget( "Gamercard" ).Show( false );
-					}
-					else
-					{
-						layoutRoot.FindAnyWidget( "Gamercard" ).Show( true );
-					}
-				}
-			}
-			
-			if( GetGame().GetInput().GetActionDown( UAUITabLeft, false ) || GetGame().GetInput().GetActionDown( UAUITabRight, false ) )
-			{
-				m_TabScript.NextTab();
-				ToggleInfos();
 			}
 			
 			if( GetGame().GetInput().GetActionDown( UAUIFastEquipOrSplit, false ) )
 			{
 				bool muted;
 				ScriptInputUserData ctx;
-				if( m_ServerInfoPanel && m_TabScript.GetSelectedIndex() == 0 )
+				if( m_ServerInfoPanel )
 				{
 					uid = m_ServerInfoPanel.FindPlayerByWidget( GetFocus() );
 					if( uid == "" )
@@ -395,19 +353,9 @@ class InGameMenuXbox extends UIScriptedMenu
 			
 			if( GetGame().GetInput().GetActionDown( UAQuickReload, false ) )
 			{
-				if( m_TabScript.GetSelectedIndex() == 0 )
+				if( m_ServerInfoPanel )
 				{
-					if( m_ServerInfoPanel )
-					{
-						uid = m_ServerInfoPanel.FindPlayerByWidget( GetFocus() );
-					}
-				}
-				else if( m_TabScript.GetSelectedIndex() == 1 )
-				{
-					if( m_FriendsInfoPanel )
-					{
-						uid = m_FriendsInfoPanel.FindPlayerByWidget( GetFocus() );
-					}
+					uid = m_ServerInfoPanel.FindPlayerByWidget( GetFocus() );
 				}
 				if( uid == "" )
 					return;
@@ -419,39 +367,7 @@ class InGameMenuXbox extends UIScriptedMenu
 			//g_Game.CancelQueueTime();
 		}
 	}
-	
-	void ToggleInfos()
-	{
-		if( m_TabScript.GetSelectedIndex() == 1 )
-		{
-			SelectFriends();
-		}
-		else
-		{
-			SelectServer();
-		}
-	}
-	
-	void SelectFriends()
-	{
-		layoutRoot.FindAnyWidget( "Mute" ).Show( false );
-		
-		if( m_FriendsInfoPanel )
-		{
-			m_FriendsInfoPanel.FocusFirst();
-			
-			string uid = m_FriendsInfoPanel.FindPlayerByWidget( GetFocus() );
-			if( IsLocalPlayer( uid ) || m_FriendsInfoPanel.IsEmpty() )
-			{
-				layoutRoot.FindAnyWidget( "Gamercard" ).Show( false );
-			}
-			else
-			{
-				layoutRoot.FindAnyWidget( "Gamercard" ).Show( true );
-			}
-		}
-	}
-	
+
 	void SelectServer()
 	{
 		layoutRoot.FindAnyWidget( "Mute" ).Show( true );
@@ -509,23 +425,6 @@ class InGameMenuXbox extends UIScriptedMenu
 			{
 				layoutRoot.FindAnyWidget( "Mute" ).Show( false );
 			}
-		}
-	}
-	
-	void OnFriendsUpdate( ref BiosFriendInfoArray friend_list )
-	{
-
-		m_FriendsInfoPanel.Reload( friend_list );
-		string uid = m_FriendsInfoPanel.FindPlayerByWidget( GetFocus() );
-		if( uid == "" )
-			return;
-		if( IsLocalPlayer( uid ) || m_FriendsInfoPanel.IsEmpty() )
-		{
-			layoutRoot.FindAnyWidget( "Gamercard" ).Show( false );
-		}
-		else
-		{
-			layoutRoot.FindAnyWidget( "Gamercard" ).Show( true );
 		}
 	}
 	

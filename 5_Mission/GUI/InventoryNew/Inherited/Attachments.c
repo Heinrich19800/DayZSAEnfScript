@@ -414,6 +414,23 @@ class Attachments
 			item_preview2.SetItem( m_Entity.GetInventory().FindAttachment( slot_id ) );
 			item_preview2.SetModelOrientation( Vector( 0, 0, 0 ) );
 			item_preview2.SetView( m_Entity.GetViewIndex() );
+			
+			int size_x, size_y;
+			GetGame().GetInventoryItemSize( m_Entity.GetInventory().FindAttachment( slot_id ) , size_x, size_y );
+			int capacity = size_x * size_y;
+			TextWidget tw = TextWidget.Cast( item_preview2.GetParent().GetParent().FindAnyWidget( "ItemSize" + i % 7 ) );
+			
+			#ifdef PLATFORM_CONSOLE
+			tw.Show( true );
+			#endif
+			if(capacity == 0)
+			{
+				tw.SetText( "" );
+			}
+			else
+			{
+				tw.SetText( capacity.ToString() );
+			}
 
 			if( !ItemManager.GetInstance().IsDragging() )
 			{

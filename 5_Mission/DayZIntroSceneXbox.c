@@ -19,11 +19,17 @@ class DayZIntroSceneXbox: Managed
 	protected Weather		m_Weather;
 	protected vector		m_CharacterPos;
 	protected vector		m_CharacterDir;
-	protected float			m_BlurValue;
+	protected ref TIntArray m_Date = new TIntArray;
 
 	protected MenuData m_MenuData;
 	
+	protected ref MenuCarEngineSmoke	m_FXParticleCarSmoke;
+	protected ref MenuEvaporation		m_FXParticleStreamLeft;
+	protected ref MenuEvaporation		m_FXParticleStreamRight;
+	
 	ref Timer m_TimerUpdate = new Timer( CALL_CATEGORY_GAMEPLAY );
+	ref Timer m_TimerParticle = new Timer( CALL_CATEGORY_GAMEPLAY );
+	ref Timer m_TimerDate = new Timer( CALL_CATEGORY_GAMEPLAY );
 
 	//==================================
 	// DayZIntroSceneXbox
@@ -49,42 +55,40 @@ class DayZIntroSceneXbox: Managed
 	
 		// Camera Setup
 		vector camera_position;
-		camera_position[0] 			= 1317.25;	// X
-		camera_position[1] 			= 1.65;		// Y
-		camera_position[2] 			= 1602.17;	// Z
-		float camera_rotation_h		= 115;
-		float camera_rotation_v		= -7;
-		float camera_fov			= 0.8;
-		float camera_focus_distance	= 5.0;
-		float camera_focus_streght	= 0.5;
+		camera_position[0] 			= 1323.0;	// X
+		camera_position[1] 			= 1.0;		// Y
+		camera_position[2] 			= 1590.37	// Z
+		float camera_rotation_h		= 100;
+		float camera_rotation_v		= -3;
+		float camera_fov			= 0.85;
+		float camera_focus_distance	= 0.0;
+		float camera_focus_streght	= 0.0;
 		
 		// Character
-		float character_distance = 2.2;
+		float character_distance = 2.1;
 		
-		// Date
-		TIntArray date = new TIntArray;
-		date.Insert(2020);	// Year
-		date.Insert(03);	// Month
-		date.Insert(15);	// Day
-		date.Insert(15);	// Hour
-		date.Insert(00);	// Minite
+		// Date		
+		m_Date.Insert(2020);	// Year
+		m_Date.Insert(03);	// Month
+		m_Date.Insert(15);	// Day
+		m_Date.Insert(15);	// Hour
+		m_Date.Insert(00);	// Minite
 		
 		// Weather
-		float weather_storm_density		= 0.1;
-		float weather_storm_threshold	= 0.1;
-		float weather_storm_time_out	= 0.0;
-		float weather_overcast			= 0.5;
+		float weather_overcast			= 0.45;
 		float weather_rain				= 0.0;
 		float weather_fog				= 0.0;
-		float weather_windspeed			= 0.1;
-		
-		// Date Setup 
-		g_Game.GetWorld().SetDate(date.Get(0), date.Get(1), date.Get(2), date.Get(3), date.Get(4));
+		float weather_storm_density		= 0.0;
+		float weather_storm_threshold	= 0.0;
+		float weather_storm_time_out	= 0.0;
+		float weather_windspeed			= 0.3;
 		
 		// Weather Setup 
 		m_Weather = g_Game.GetWeather();
 		m_Weather.GetOvercast().SetLimits( weather_overcast, weather_overcast );
-		m_Weather.GetOvercast().Set( weather_overcast, 0, 0);
+		m_Weather.GetOvercast().SetForecastTimeLimits(weather_overcast, weather_overcast);
+		m_Weather.GetOvercast().Set( weather_overcast, 1.0, 1.0);		
+		m_Weather.GetOvercast().SetNextChange( 1 );
 		m_Weather.GetRain().SetLimits( weather_rain, weather_rain );
 		m_Weather.GetRain().Set( weather_rain, 0, 0);
 		m_Weather.GetFog().SetLimits( weather_fog, weather_fog );
@@ -94,12 +98,15 @@ class DayZIntroSceneXbox: Managed
 		m_Weather.SetWindMaximumSpeed(weather_windspeed);
 		m_Weather.SetWindFunctionParams(1, 1, 1);
 		
-		// Camera Setup 
+		// Date Setup - Clouds HACK
+		g_Game.GetWorld().SetDate(2020, 10, 15, 9, 00);
+		
+		// Camera Setup
 		m_SceneCamera = CameraCreate(camera_position, camera_rotation_h, camera_rotation_v, camera_fov, camera_focus_distance, camera_focus_streght);
 		m_SceneCamera.SetActive(true);
 		
 		//Vignette
-		PPEffects.SetVignette(0.3, 0,0,0);
+		PPEffects.SetVignette(0.3, 0, 0, 0);
 		
 		// Character Setup
 		vector cam_dir = m_SceneCamera.GetDirection();
@@ -109,7 +116,13 @@ class DayZIntroSceneXbox: Managed
 		
 		Init();
 	
-		m_TimerUpdate.Run(0.1, this, "UpdateChar", NULL, true);
+		m_TimerParticle.Run(0.1, this, "SetupParticles", NULL, false);
+		m_TimerDate.Run(1.0, this, "SetupDate", NULL, true);
+		m_TimerUpdate.Run(0.5, this, "SetupCharacter", NULL, true);
+		
+		Material material = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/chromaber");
+		material.SetParam("PowerX", 0.002);
+		material.SetParam("PowerY", 0.002);
 	}
 	
 	void ~DayZIntroSceneXbox()
@@ -120,16 +133,25 @@ class DayZIntroSceneXbox: Managed
 			delete m_TimerUpdate;
 			m_TimerUpdate = null;
 		}
-	}
-	
-	void UpdateChar()
-	{
-		if ( m_SceneCharacter )
+		
+		if ( m_TimerParticle )
 		{
-			vector v = m_SceneCharacter.GetOrientation();
-			v[0] = -60;
-			m_SceneCharacter.SetOrientation(v);
+			m_TimerParticle.Stop();
+			delete m_TimerParticle;
+			m_TimerParticle = null;
 		}
+		
+		
+		if ( m_TimerDate )
+		{
+			m_TimerDate.Stop();
+			delete m_TimerDate;
+			m_TimerDate = null;
+		}
+		
+		Material material = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/chromaber");
+		material.SetParam("PowerX", 0.0);
+		material.SetParam("PowerY", 0.0);
 	}
 	
 	//==================================
@@ -172,6 +194,53 @@ class DayZIntroSceneXbox: Managed
 		
 		PPEffects.Init();
 		PPEffects.DisableBurlapSackBlindness(); //HOTFIX
+	}
+	
+	//==================================
+	// SetupCharacter
+	//==================================
+	void SetupCharacter()
+	{
+		if ( m_SceneCharacter )
+		{
+			vector v = m_SceneCharacter.GetOrientation();
+			v[0] = -75;
+			m_SceneCharacter.SetOrientation(v);
+		}
+	}
+	
+	//==================================
+	// SetupParticles
+	//==================================
+	void SetupParticles()
+	{
+		m_FXParticleCarSmoke = new MenuCarEngineSmoke();
+		//SEffectManager.PlayInWorld(m_FXParticleCarSmoke, "1330.36 2.11628 1594.31");
+		//SEffectManager.PlayInWorld(m_FXParticleCarSmoke, "1333.88 1.51392 1594.88");
+		SEffectManager.PlayInWorld(m_FXParticleCarSmoke, "1331.52 2.34052 1593.55");
+		
+		vector pos = m_SceneCamera.GetPosition() + m_SceneCamera.GetDirection() * 1.5;
+		vector dir = m_SceneCamera.GetDirection();
+		float temp = dir[0];
+		dir[0] = dir[2];
+		dir[2] = -temp;
+			
+		vector pos_right = pos + (dir * 1.5);
+		vector pos_left = pos + (-dir * 1.5);
+		
+		m_FXParticleStreamLeft = new MenuEvaporation();
+		SEffectManager.PlayInWorld(m_FXParticleStreamLeft, pos_right);
+		
+		m_FXParticleStreamRight = new MenuEvaporation();
+		SEffectManager.PlayInWorld(m_FXParticleStreamRight, pos_left);
+	}
+	
+	//==================================
+	// SetupDate
+	//==================================
+	void SetupDate()
+	{
+		g_Game.GetWorld().SetDate(m_Date.Get(0), m_Date.Get(1), m_Date.Get(2), m_Date.Get(3), m_Date.Get(4));
 	}
 	
 	//==================================

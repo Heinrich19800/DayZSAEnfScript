@@ -23,6 +23,13 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 	
 	void ScrollFixedAmount( bool down, float amount )
 	{
+		m_root.Update();
+		Content.Update();
+		float width;
+	
+		m_root.GetScreenSize(width, m_root_height);
+		Content.GetScreenSize(width, m_content_height);
+		
 		float diff = m_root_height / m_content_height;
 		float one_percent = diff / 100;
 		float percents = amount / m_content_height;
@@ -40,6 +47,13 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 	
 	void ScrollToPos( float pos )
 	{
+		m_root.Update();
+		Content.Update();
+		float width;
+	
+		m_root.GetScreenSize(width, m_root_height);
+		Content.GetScreenSize(width, m_content_height);
+		
 		float diff = m_root_height / m_content_height;
 		float percents = pos / m_content_height;
 
@@ -54,6 +68,13 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 	
 	void ScrollToBottom()
 	{
+		m_root.Update();
+		Content.Update();
+		float width;
+	
+		m_root.GetScreenSize(width, m_root_height);
+		Content.GetScreenSize(width, m_content_height);
+		
 		float diff = m_root_height / m_content_height;
 		m_position = 1 - diff;
 		UpdateScroller();
@@ -142,6 +163,13 @@ class ScrollBarContainer : ScriptedWidgetEventHandler
 	
 	protected void UpdateScroll(int mouse_x, int mouse_y, bool is_dragging)
 	{
+		m_root.Update();
+		Content.Update();
+		float width;
+	
+		m_root.GetScreenSize(width, m_root_height);
+		Content.GetScreenSize(width, m_content_height);
+		
 		if (m_scrolling)
 		{
 			if (is_dragging)

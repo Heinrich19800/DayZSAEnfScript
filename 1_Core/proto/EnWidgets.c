@@ -235,7 +235,7 @@ class ImageWidget extends Widget
 	\param uv
 	Pointer to array of at least 8 floats (4 corners * 2 floats for u/v)
 	*/
-	proto native void SetUV(Widget w, float uv[4][2]);
+	proto native void SetUV(float uv[4][2]);
 };
 
 class MultilineEditBoxWidget extends TextWidget

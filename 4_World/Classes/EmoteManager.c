@@ -376,7 +376,7 @@ class EmoteManager
 				break;
 			
 				case ID_EMOTE_SUICIDE :
-					int suicideID = -1;
+					int suicideID = DayZPlayerConstants.CMD_SUICIDEFB_UNARMED;
 					string suicideStr;
 					ItemBase weapon;
 					weapon = m_Player.GetItemInHands();
@@ -793,7 +793,7 @@ class EmoteManager
 			m_Callback.RegisterAnimationEvent("Death",1);
 			m_Player.SetSuicide(true);
 			m_Callback.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END2);
-			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(this.KillPlayer, 4000, false);
+			//GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(this.KillPlayer, 4000, false);
 		}
 	}
 

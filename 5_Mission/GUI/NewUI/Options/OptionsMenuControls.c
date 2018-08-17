@@ -101,6 +101,13 @@ class OptionsMenuControls extends ScriptedWidgetEventHandler
 		m_Menu.EnterScriptedMenu( MENU_KEYBINDINGS );
 	}
 	
+	void Focus()
+	{
+		#ifdef PLATFORM_CONSOLE
+			SetFocus( m_ControllerInvertSelector.GetParent() );
+		#endif
+	}
+	
 	override bool OnClick( Widget w, int x, int y, int button )
 	{
 		if( button == MouseState.LEFT )

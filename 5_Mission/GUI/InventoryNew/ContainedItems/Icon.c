@@ -1387,6 +1387,15 @@ class Icon: ContainerBase
 		WidgetEventHandler.GetInstance().RegisterOnMouseLeave( GetMainPanel(),  this, "MouseLeave" );
 		WidgetEventHandler.GetInstance().RegisterOnDoubleClick( GetMainPanel(),  this, "DoubleClick" );
 		
+		TextWidget tw = TextWidget.Cast( GetMainPanel().FindAnyWidget( "ItemSize" ) );
+		#ifdef PLATFORM_CONSOLE
+		tw.Show( true );
+		#endif
+		int size_x, size_y;
+		GetGame().GetInventoryItemSize( m_Obj, size_x, size_y );
+		int capacity = size_x * size_y;
+		tw.SetText( capacity.ToString() );
+		
 		Refresh();
 	}
 

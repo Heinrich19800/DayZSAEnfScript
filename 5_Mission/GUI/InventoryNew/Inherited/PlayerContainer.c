@@ -510,6 +510,11 @@ class PlayerContainer: CollapsibleContainer
 						//WidgetEventHandler.GetInstance().RegisterOnDraggingOver( item_preview.GetParent().GetParent().FindAnyWidget( "Icon" + column ),  this, "DraggingOver" );
 						image_widget.LoadImageFile( 0, "set:dayz_inventory image:" + icon_name );
 					//END - LoadIconIntoWidgetSlot
+					
+					#ifdef PLATFORM_CONSOLE
+					TextWidget tw = TextWidget.Cast( item_preview.GetParent().GetParent().FindAnyWidget( "ItemSize" + column ) );
+					tw.Show(true);
+					#endif
 
 					GetGame().ConfigGetText( path + " name", slot_name );
 					int slot_id = InventorySlots.GetSlotIdFromString( slot_name );
@@ -874,8 +879,15 @@ class PlayerContainer: CollapsibleContainer
 					ipw.GetParent().GetParent().FindAnyWidget( name2 ).Show( false );
 					ipw.SetItem( entity );
 					showed_player_ghost_entities.Insert( entity );
+					
+					int size_x, size_y;
+					GetGame().GetInventoryItemSize( entity, size_x, size_y );
+					int capacity = size_x * size_y;
+					name2.Replace( "GhostSlot", "ItemSize" );
+					TextWidget tw = TextWidget.Cast( ipw.GetParent().GetParent().FindAnyWidget( name2 ) );
+					tw.SetText( capacity.ToString() );
 	
-					name2.Replace( "GhostSlot", "AmmoIcon" );
+					name2.Replace( "ItemSize", "AmmoIcon" );
 					Weapon_Base wpn;
 					if ( Class.CastTo(wpn,  ipw.GetItem() ) )
 					{
@@ -955,7 +967,10 @@ class PlayerContainer: CollapsibleContainer
 				name2.Replace( "PanelWidget", "GhostSlot" );
 				ipw.GetParent().GetParent().FindAnyWidget( name2 ).Show( true );
 				ipw.SetItem( NULL );
-				Inventory.Cast(m_Parent.m_Parent).UpdateConsoleToolbar();	
+				Inventory.Cast(m_Parent.m_Parent).UpdateConsoleToolbar();
+				name2.Replace( "GhostSlot", "ItemSize" );
+				TextWidget tw1 = TextWidget.Cast( ipw.GetParent().GetParent().FindAnyWidget( name2 ) );
+				tw1.SetText( "" );
 			}
 
 		}

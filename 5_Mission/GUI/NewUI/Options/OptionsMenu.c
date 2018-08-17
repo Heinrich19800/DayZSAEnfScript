@@ -62,6 +62,9 @@ class OptionsMenuNew extends UIScriptedMenu
 		#ifdef PLATFORM_WINDOWS
 		SetFocus( layoutRoot );
 		#endif
+		
+		m_Tabber.m_OnTabSwitch.Insert( OnTabSwitch );
+		
 		return layoutRoot;
 	}
 	
@@ -93,6 +96,41 @@ class OptionsMenuNew extends UIScriptedMenu
 		return false;
 	}
 	
+	void OnTabSwitch( int tab )
+	{
+		switch( tab )
+		{
+			case 0:
+			{
+				m_GameTab.Focus();
+				break;
+			}
+			case 1:
+			{
+				m_SoundsTab.Focus();
+				break;
+			}
+			case 2:
+			{
+				#ifdef PLATFORM_CONSOLE
+					m_ControlsTab.Focus();
+				#else
+				#ifdef PLATFORM_WINDOWS
+					m_VideoTab.Focus();
+				#endif
+				#endif
+				break;
+			}
+			case 3:
+			{
+				#ifdef PLATFORM_WINDOWS
+					m_ControlsTab.Focus();
+				#endif
+				break;
+			}
+		}
+	}
+	
 	void Apply()
 	{
 		if( m_Options.IsChanged() || m_GameTab.IsChanged() )
@@ -106,13 +144,16 @@ class OptionsMenuNew extends UIScriptedMenu
 			m_GameTab.Apply();
 		}
 		
+		#ifdef PLATFORM_WINDOWS
+		#ifndef PLATFORM_CONSOLE
 		m_Apply.Enable( false );
 		m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
 		layoutRoot.FindAnyWidget( "Apply" ).Show( false );
 		m_Reset.Enable( false );
 		m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
 		layoutRoot.FindAnyWidget( "Reset" ).Show( false );
-		
+		#endif
+		#endif
 		
 		if( m_Options.NeedRestart() )
 			g_Game.GetUIManager().ShowDialog("#main_menu_configure", "#menu_restart_needed", 117, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
@@ -167,12 +208,11 @@ class OptionsMenuNew extends UIScriptedMenu
 		else if( m_VideoTab.IsChanged() )
 		{
 			changed = true;
-		}	
-		#endif
-		#endif
+		}
 		
 		m_Apply.Enable( changed );
 		m_Reset.Enable( changed );
+		
 		if( changed )
 		{
 			m_Apply.ClearFlags( WidgetFlags.IGNOREPOINTER );
@@ -186,6 +226,8 @@ class OptionsMenuNew extends UIScriptedMenu
 		
 		layoutRoot.FindAnyWidget( "Apply" ).Show( changed );
 		layoutRoot.FindAnyWidget( "Reset" ).Show( changed );
+		#endif
+		#endif
 	}
 	
 	void Reset()
@@ -200,8 +242,7 @@ class OptionsMenuNew extends UIScriptedMenu
 		#ifndef PLATFORM_CONSOLE
 		if( m_VideoTab.IsChanged() )
 			m_VideoTab.Revert();
-		#endif
-		#endif
+		
 		m_Apply.Enable( false );
 		m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
 		layoutRoot.FindAnyWidget( "Apply" ).Show( false );
@@ -209,6 +250,8 @@ class OptionsMenuNew extends UIScriptedMenu
 		m_Reset.Enable( false );
 		m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
 		layoutRoot.FindAnyWidget( "Reset" ).Show( false );
+		#endif
+		#endif
 	}
 	
 	void SliderFocus()

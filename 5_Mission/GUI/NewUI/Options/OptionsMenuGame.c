@@ -78,6 +78,13 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 		#endif
 	}
 	
+	void Focus()
+	{
+		#ifdef PLATFORM_CONSOLE
+			SetFocus( m_FOVSelector.GetParent() );
+		#endif
+	}
+	
 	bool IsChanged()
 	{
 		#ifdef PLATFORM_CONSOLE

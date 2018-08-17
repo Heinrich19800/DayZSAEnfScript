@@ -731,6 +731,21 @@ class MissionGameplay extends MissionBase
 			m_chat.Clear();
 	}
 	
+	void MoveHudForInventory( bool inv_open )
+	{
+		#ifdef PLATFORM_XBOX
+		IngameHud hud = IngameHud.Cast( GetHud() );
+		if( inv_open )
+		{
+			hud.GetHudPanelWidget().SetPos( 0, -0.09 );
+		}
+		else
+		{
+			hud.GetHudPanelWidget().SetPos( 0, 0 );
+		}
+		#endif
+	}
+	
 	void ShowInventory()
 	{
 		bool init = false;
@@ -746,6 +761,7 @@ class MissionGameplay extends MissionBase
 			{
 				GetUIManager().ShowScriptedMenu(m_inventory_menu, NULL);
 			}
+			MoveHudForInventory( true );
 			init = true;
 		}
 		
@@ -824,6 +840,7 @@ class MissionGameplay extends MissionBase
 		if (inventory)
 		{
 			GetUIManager().HideScriptedMenu(inventory);
+			MoveHudForInventory( false );
 		}
 	}
 	

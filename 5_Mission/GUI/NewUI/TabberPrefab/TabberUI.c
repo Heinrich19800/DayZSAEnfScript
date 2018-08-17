@@ -16,37 +16,42 @@ class TabberUI extends ScriptedWidgetEventHandler
 		
 		m_Root = w;
 		Widget tab_controls	= m_Root.FindAnyWidget( "Tab_Control_Container" );
-		Widget tab_child	= tab_controls.GetChildren();
-		
-		int tab_count;
-		
-		while( tab_child )
+		if( tab_controls )
 		{
-			tab_count++;
-			tab_child = tab_child.GetSibling();
-		}
-		
-		AlignTabbers( m_Root.FindAnyWidget( "Tab_Control_Container" ) );
-		
-		for( int i = 0; i < tab_count; i++ )
-		{
-			Widget tab_control	= tab_controls.FindAnyWidget( "Tab_Control_" + i );
-			Widget tab_widget	= m_Root.FindAnyWidget( "Tab_" + i );
-			if( tab_control && tab_widget )
+			Widget tab_child	= tab_controls.GetChildren();
+			
+			int tab_count;
+			
+			while( tab_child )
 			{
-				tab_control.SetHandler( this );
-				m_TabControls.Insert( i, tab_control );
-				m_Tabs.Insert( i, tab_widget );
+				tab_count++;
+				tab_child = tab_child.GetSibling();
 			}
-			else
+			
+			AlignTabbers( m_Root.FindAnyWidget( "Tab_Control_Container" ) );
+			
+			for( int i = 0; i < tab_count; i++ )
 			{
-				Error( "Tabber could not find correctly named tab or control at index " + i );
+				Widget tab_control	= tab_controls.FindAnyWidget( "Tab_Control_" + i );
+				Widget tab_widget	= m_Root.FindAnyWidget( "Tab_" + i );
+				if( tab_control && tab_widget )
+				{
+					tab_control.SetHandler( this );
+					m_TabControls.Insert( i, tab_control );
+					m_Tabs.Insert( i, tab_widget );
+				}
+				else
+				{
+					Error( "Tabber could not find correctly named tab or control at index " + i );
+				}
 			}
+			
+			#ifdef PLATFORM_CONSOLE
+				Widget xb_controls = m_Root.FindAnyWidget( "XboxControls" );
+				if( xb_controls )
+					xb_controls.Show( tab_count > 1 );
+			#endif
 		}
-		
-		#ifdef PLATFORM_CONSOLE
-			m_Root.FindAnyWidget( "XboxControls" ).Show( tab_count > 1 );
-		#endif
 	}
 	
 	void AlignTabbers( Widget tab_controls )

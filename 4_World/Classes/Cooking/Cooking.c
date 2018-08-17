@@ -180,7 +180,7 @@ class Cooking
 				item_to_cook.ChangeFoodStage( new_stage_type );
 				//Temp
 				//Remove all modifiers
-				item_to_cook.RemoveAllAgentsExcept(AGT_BRAIN + AGT_SALMONELLA);
+				item_to_cook.RemoveAllAgentsExcept(AGT_BRAIN);
 				
 				//remove lard when baking with cooking equipment
 				if ( cooking_equipment && cooking_method == CookingMethodType.BAKING )
@@ -262,7 +262,7 @@ class Cooking
 				item_to_cook.ChangeFoodStage( new_stage_type );
 				//Temp
 				//Remove all modifiers
-				item_to_cook.RemoveAllAgentsExcept(AGT_BRAIN + AGT_SALMONELLA);
+				item_to_cook.RemoveAllAgentsExcept(AGT_BRAIN);
 
 				//reset cooking time
 				item_to_cook.SetCookingTime( 0 );

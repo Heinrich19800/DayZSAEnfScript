@@ -179,6 +179,13 @@ class OptionsMenuVideo extends ScriptedWidgetEventHandler
 		GetGame().EndOptionsVideo();
 	}
 	
+	void Focus()
+	{
+		#ifdef PLATFORM_CONSOLE
+			SetFocus( m_OverallQualitySelector.GetParent() );
+		#endif
+	}
+	
 	void ReloadOptions()
 	{
 		m_Menu.ReloadOptions();

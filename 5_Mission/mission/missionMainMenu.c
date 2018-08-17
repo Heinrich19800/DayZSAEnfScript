@@ -130,16 +130,26 @@ class MissionMainMenu extends MissionBase
 			Error("missionMainMenu->GetCurrentCharacterID on PLATFORM_CONSOLE is not implemented!");
 			return -1;
 		#else
+		if ( m_IntroScenePC )
+		{
 			return m_IntroScenePC.GetCurrentCharacterID();
+		}
+		return -1;
 		#endif
 	}
 	
 	void ResetIntroCamera()
 	{
 		#ifdef PLATFORM_CONSOLE
+		if ( m_IntroSceneXbox )
+		{
 			m_IntroSceneXbox.ResetIntroCamera();
+		}
 		#else
+		if ( m_IntroScenePC )
+		{
 			m_IntroScenePC.ResetIntroCamera();
+		}
 		#endif
 	}
 

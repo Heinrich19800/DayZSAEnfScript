@@ -16,6 +16,11 @@ class VicinityIconsContainer: Container
 			WidgetEventHandler.GetInstance().RegisterOnDraggingOver( m_Container.GetMainPanel().FindAnyWidget( "PanelWidget" + j ),  m_Parent, "DraggingOverIcon" );
 			WidgetEventHandler.GetInstance().RegisterOnDraggingOver( m_Container.GetMainPanel().FindAnyWidget( "GhostSlot" + j ),  m_Parent, "DraggingOverHeader" );
 			WidgetEventHandler.GetInstance().RegisterOnDraggingOver( m_Container.GetMainPanel().FindAnyWidget( "Icon" + j ),  m_Parent, "DraggingOverHeader" );
+			
+			#ifdef PLATFORM_CONSOLE
+			TextWidget tw = TextWidget.Cast( m_Container.GetMainPanel().FindAnyWidget( "ItemSize" + j) );
+			tw.Show( true );
+			#endif
 		}		
 	}
 	
@@ -327,6 +332,12 @@ class VicinityIconsContainer: Container
 			item_preview.SetView( item.GetViewIndex() );
 			item_preview.GetParent().SetUserID( item.GetID() );
 			
+			int size_x, size_y;
+			GetGame().GetInventoryItemSize( item, size_x, size_y );
+			int capacity = size_x * size_y;
+			TextWidget tw = TextWidget.Cast( m_Container.Get( x / ITEMS_IN_ROW ).GetMainPanel().FindAnyWidget( "ItemSize" + x % ITEMS_IN_ROW ) );
+			tw.SetText( capacity.ToString() );
+			
 			if( !ItemManager.GetInstance().IsDragging() )
 			{
 				ItemManager.GetInstance().SetTemperature( item, item_preview );
@@ -428,6 +439,8 @@ class VicinityIconsContainer: Container
 			item_preview.Show(false);
 			item_preview.SetItem( NULL );
 			item_preview.GetParent().Show(false);
+			TextWidget tw1 = TextWidget.Cast( m_Container.Get( x / ITEMS_IN_ROW ).GetMainPanel().FindAnyWidget( "ItemSize" + x % ITEMS_IN_ROW ) );
+			tw1.SetText( "" );
 		}
 	}
 	
@@ -747,6 +760,11 @@ class VicinityIconsContainer: Container
 						WidgetEventHandler.GetInstance().RegisterOnDraggingOver( con.GetMainPanel().FindAnyWidget( "PanelWidget" + j ),  m_Parent, "DraggingOverIcon" );
 						WidgetEventHandler.GetInstance().RegisterOnDraggingOver( con.GetMainPanel().FindAnyWidget( "GhostSlot" + j ),  m_Parent, "DraggingOverHeader" );
 						WidgetEventHandler.GetInstance().RegisterOnDraggingOver( con.GetMainPanel().FindAnyWidget( "Icon" + j ),  m_Parent, "DraggingOverHeader" );
+						
+						#ifdef PLATFORM_CONSOLE
+						TextWidget tw = TextWidget.Cast( con.GetMainPanel().FindAnyWidget( "ItemSize" + j) );
+						tw.Show( true );
+						#endif
 					}
 				}
 			}

@@ -127,11 +127,12 @@ class TutorialsMenu extends UIScriptedMenu
 			panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + l );
 			if( tab_array[index][l] != NULL )
 			{
-				TextWidget text_widget = TextWidget.Cast( panel_widget.FindAnyWidget( "TextWidget" + l ) );
+				MultilineTextWidget text_widget = MultilineTextWidget.Cast( panel_widget.FindAnyWidget( "TextWidget" + l ) );
 				button_marker_widget = layoutRoot.FindAnyWidget( "button_marker_" + tab_array[index][l].m_ButtonName );
 				text_widget.SetText( tab_array[index][l].m_InfoText );
 				panel_widget.Show( true );
 				button_marker_widget.Show( true );
+				text_widget.Update();
 				panel_widget.Update();
 				if( !button_marker_groups.Contains(tab_array[index][l].m_ButtonName ))
 				{

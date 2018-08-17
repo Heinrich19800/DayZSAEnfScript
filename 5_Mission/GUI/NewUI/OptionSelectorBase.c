@@ -18,6 +18,11 @@ class OptionSelectorBase extends ScriptedWidgetEventHandler
 		delete m_Root;
 	}
 	
+	Widget GetParent()
+	{
+		return m_Parent;
+	}
+	
 	bool IsFocusable( Widget w )
 	{
 		return w == m_Parent;

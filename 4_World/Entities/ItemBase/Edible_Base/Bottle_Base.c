@@ -203,14 +203,17 @@ class Bottle_Base extends Edible_Base
 	//sounds
 	protected void SoundCookingStart( string sound_name )
 	{
-		if ( m_SoundPlaying != sound_name )
-		{
-			//stop previous sound
-			SoundCookingStop();
-			
-			//create new
-			m_SoundCooking = PlaySoundLoop( sound_name, 50 );
-			m_SoundPlaying = sound_name;
+		if ( GetGame() && ( !GetGame().IsMultiplayer() || GetGame().IsClient() ) )
+		{	
+			if ( m_SoundPlaying != sound_name )
+			{
+				//stop previous sound
+				SoundCookingStop();
+				
+				//create new
+				m_SoundCooking = PlaySoundLoop( sound_name, 50 );
+				m_SoundPlaying = sound_name;
+			}
 		}
 	}
 	

@@ -47,6 +47,40 @@ class GetServersResultRow
 
 typedef array<ref GetServersResultRow> GetServersResultRowArray;
 
+class GetFirstServerWithEmptySlotResult
+{
+	GetServersResult m_Result;
+};
+
+//! GetServersInput the input structure of the GetServers operation
+class GetFirstServerWithEmptySlotInput
+{
+	bool		m_Official;
+	string		m_GameVersion;
+	int			m_RegionId;
+
+	bool		m_UseOfficial;
+	bool		m_UseGameVersion;
+	bool		m_UseRegionId;
+		
+	void SetOfficial( bool Official )
+	{
+		m_Official					= Official;
+		m_UseOfficial				= true;
+	}
+	
+	void SetGameVersion( string GameVersion )
+	{
+		m_GameVersion				= GameVersion;
+		m_UseGameVersion			= true;
+	}
+	
+	void SetRegionId( int RegionId )
+	{
+		m_RegionId					= RegionId;
+		m_UseRegionId				= true;
+	}
+};
 
 //! GetServersResult the output structure of the GetServers operation
 class GetServersResult
@@ -217,6 +251,13 @@ class BiosLobbyService
 	*/
 	proto native EBiosError GetServers(GetServersInput inputValues);
 
+	//! First 1st free server
+	/*!
+		The async result is returned in the OnGetFirstServerWithEmptySlot callback.
+				
+	*/
+	proto native EBiosError GetFirstServerWithEmptySlot(GetFirstServerWithEmptySlotInput inputValues);
+
 	//! Async callback for GetServers
 	/*!
 		@param result_list result object
@@ -226,5 +267,10 @@ class BiosLobbyService
 	void OnDoneAsync(ref GetServersResult result_list, EBiosError error, string response)
 	{
 		OnlineServices.OnLoadServersAsync( result_list, error, response );
+	}
+	
+	void OnGetFirstServerWithEmptySlot(ref GetServersResult result_list, EBiosError error)
+	{
+		OnlineServices.OnAutoConnectToEmptyServer( result_list, error );
 	}
 };

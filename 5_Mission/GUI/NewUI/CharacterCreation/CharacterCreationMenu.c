@@ -314,7 +314,10 @@ class CharacterCreationMenu extends UIScriptedMenu
 	
 	override void OnShow()
 	{
+		#ifdef PLATFORM_CONSOLE
 		SetFocus( m_Apply );
+		#endif
+		
 		CheckNewOptions();
 		
 		if( m_Scene && m_Scene.GetCamera() )
