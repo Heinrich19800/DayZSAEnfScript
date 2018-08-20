@@ -57,7 +57,7 @@ class DayZIntroSceneXbox: Managed
 		vector camera_position;
 		camera_position[0] 			= 1323.0;	// X
 		camera_position[1] 			= 1.0;		// Y
-		camera_position[2] 			= 1590.37	// Z
+		camera_position[2] 			= 1590.37;	// Z
 		float camera_rotation_h		= 100;
 		float camera_rotation_v		= -3;
 		float camera_fov			= 0.85;
@@ -68,11 +68,11 @@ class DayZIntroSceneXbox: Managed
 		float character_distance = 2.1;
 		
 		// Date		
-		m_Date.Insert(2020);	// Year
-		m_Date.Insert(03);	// Month
-		m_Date.Insert(15);	// Day
-		m_Date.Insert(15);	// Hour
-		m_Date.Insert(00);	// Minite
+		m_Date.Insert(2017);	// Year
+		m_Date.Insert(10);	// Month
+		m_Date.Insert(11);	// Day
+		m_Date.Insert(9);	// Hour
+		m_Date.Insert(20);	// Minite
 		
 		// Weather
 		float weather_overcast			= 0.45;
@@ -87,12 +87,12 @@ class DayZIntroSceneXbox: Managed
 		m_Weather = g_Game.GetWeather();
 		m_Weather.GetOvercast().SetLimits( weather_overcast, weather_overcast );
 		m_Weather.GetOvercast().SetForecastTimeLimits(weather_overcast, weather_overcast);
-		m_Weather.GetOvercast().Set( weather_overcast, 1.0, 1.0);		
+		m_Weather.GetOvercast().Set( weather_overcast, 1.0, 1000);		
 		m_Weather.GetOvercast().SetNextChange( 1 );
 		m_Weather.GetRain().SetLimits( weather_rain, weather_rain );
-		m_Weather.GetRain().Set( weather_rain, 0, 0);
+		m_Weather.GetRain().Set( weather_rain, 0, 1000);
 		m_Weather.GetFog().SetLimits( weather_fog, weather_fog );
-		m_Weather.GetFog().Set( weather_fog, 0, 0);
+		m_Weather.GetFog().Set( weather_fog, 0, 1000);
 		m_Weather.SetStorm(weather_storm_density, weather_storm_threshold, weather_storm_time_out);
 		m_Weather.SetWindSpeed(weather_windspeed);
 		m_Weather.SetWindMaximumSpeed(weather_windspeed);
@@ -193,6 +193,7 @@ class DayZIntroSceneXbox: Managed
 		ChangeCharacter(m_LastPlayedCharacterID);
 		
 		PPEffects.Init();
+		PPEffects.SetBlur(0);
 		PPEffects.DisableBurlapSackBlindness(); //HOTFIX
 	}
 	
@@ -206,6 +207,7 @@ class DayZIntroSceneXbox: Managed
 			vector v = m_SceneCharacter.GetOrientation();
 			v[0] = -75;
 			m_SceneCharacter.SetOrientation(v);
+			m_SceneCharacter.SetPosition(m_CharacterPos);
 		}
 	}
 	

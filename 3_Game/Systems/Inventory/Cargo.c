@@ -59,10 +59,7 @@ class CargoBase : Managed
 	bool CanReceiveItemIntoCargo (EntityAI cargo) { return true; }
 };
 
-class CargoGrid : CargoBase
-{
-};
-
+#ifdef PLATFORM_CONSOLE
 class CargoList : CargoBase
 {
 	/**@fn			GetMaxWeight
@@ -86,4 +83,8 @@ class CargoList : CargoBase
 		return with_item <= max;
 	}
 };
-
+#else
+class CargoGrid : CargoBase
+{
+};
+#endif

@@ -38,7 +38,7 @@ class CAContinuousEmptyMagazine : CAContinuousBase
 		
 		if ( m_TargetUnits == 0 )
 		{
-			return UA_SETEND_2;
+			return UA_FINISHED;
 		}
 		else
 		{

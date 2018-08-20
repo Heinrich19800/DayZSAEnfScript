@@ -14,7 +14,7 @@ class UICargoGrid
 		m_Parent = parent;
 		int capacity = m_Entity.GetInventory().GetCargo().GetHeight() * m_Entity.GetInventory().GetCargo().GetWidth();
 		TextWidget tw = m_Parent.GetMainPanel().FindAnyWidget("CargoCount");
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 			if( tw )
 				tw.Show( true );
 		#endif
@@ -80,7 +80,7 @@ class UICargoGrid
 		
 			//START - Init grid rows
 			
-			#ifdef PLATFORM_XBOX
+			#ifdef PLATFORM_CONSOLE
 			int cargo_height = ( ( m_ItemsContainer.GetItemCount() / ROWS_NUMBER_XBOX ) * 2 ) + 2;
 			if( m_ItemsContainer.GetItemCount() % ROWS_NUMBER_XBOX == 0 )
 			{
@@ -395,7 +395,7 @@ class UICargoGrid
 				showed_items.Insert( item.GetID() );
 			}
 			//END - Add new Icons
-			#ifdef PLATFORM_XBOX
+			#ifdef PLATFORM_CONSOLE
 				if( m_RefreshItemPositions )
 				{
 						RecomputeGridHeight();
@@ -436,7 +436,7 @@ class UICargoGrid
 							
 							m_ItemsContainer.RemoveItem( showed_item );
 							ItemManager.GetInstance().HideTooltip();
-							#ifdef PLATFORM_XBOX
+							#ifdef PLATFORM_CONSOLE
 								RecomputeGridHeight();
 								m_Parent.Refresh();
 								m_ItemsContainer.RecomputeItemPositions();
@@ -466,12 +466,14 @@ class UICargoGrid
 									cnt = Container.Cast( m_ItemsContainer.GetParent() );
 									cnt.UpdateBodySpacers();
 								}
+							Inventory.Cast(m_Parent.m_Parent.m_Parent.m_Parent).UpdateConsoleToolbar();
 							#endif
 						}
 						else
 						{
 							m_ItemsContainer.RemoveItem( iconn );
-							#ifdef PLATFORM_XBOX
+							#ifdef PLATFORM_CONSOLE
+							Inventory.Cast(m_Parent.m_Parent.m_Parent.m_Parent).UpdateConsoleToolbar();
 								RecomputeGridHeight();
 								if(m_Parent)
 									m_Parent.Refresh();
@@ -482,6 +484,7 @@ class UICargoGrid
 									HandsContainer.Cast( m_Parent ).RefreshHands();
 							#endif
 							delete iconn;
+							
 						}
 					}
 				}
@@ -512,7 +515,7 @@ class UICargoGrid
 
 			Icon icon = new Icon( m_ItemsContainer );
 			icon.Init( item );
-			#ifdef PLATFORM_XBOX
+			#ifdef PLATFORM_CONSOLE
 				icon.SetSize( 2, 2 );
 				icon.SetPos( (m_ItemsContainer.GetItemCount() % ROWS_NUMBER_XBOX)*2, (m_ItemsContainer.GetItemCount() / ROWS_NUMBER_XBOX)*2 );
 				icon.m_posX = (m_ItemsContainer.GetItemCount() % ROWS_NUMBER_XBOX)*2;
@@ -526,7 +529,7 @@ class UICargoGrid
 			#endif
 			m_ItemsContainer.AddItem( icon );
 			
-			#ifdef PLATFORM_XBOX
+			#ifdef PLATFORM_CONSOLE
 			m_RefreshItemPositions = true;
 			#endif
 			

@@ -86,6 +86,17 @@ class CharacterCreationMenu extends UIScriptedMenu
 		m_BottomSelector.m_OptionChanged.Insert( BottomChanged );
 		m_ShoesSelector.m_OptionChanged.Insert( ShoesChanged );
 		
+		#ifdef PLATFORM_PS4
+			ImageWidget toolbar_a = layoutRoot.FindAnyWidget( "SelectIcon" );
+			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
+			ImageWidget toolbar_x = layoutRoot.FindAnyWidget( "ResetIcon" );
+			ImageWidget toolbar_y = layoutRoot.FindAnyWidget( "RandomizeIcon" );
+			toolbar_a.LoadImageFile( 0, "set:playstation_buttons image:cross" );
+			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
+			toolbar_x.LoadImageFile( 0, "set:playstation_buttons image:square" );
+			toolbar_y.LoadImageFile( 0, "set:playstation_buttons image:triangle" );
+		#endif
+		
 		return layoutRoot;
 	}
 	

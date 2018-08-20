@@ -44,7 +44,7 @@ class CAContinuousTransferQuantity : CAContinuousBase
 		Class.CastTo(trg, action_data.m_Target.GetObject());
 		if ( action_data.m_MainItem.GetQuantity() >= action_data.m_MainItem.GetQuantityMax() || trg.GetQuantity() == 0 )
 		{
-			return UA_SETEND_2;
+			return UA_FINISHED;
 		}
 		else
 		{

@@ -22,6 +22,8 @@ class MissionServer extends MissionBase
 	ref TStringArray shoesArray;
 	ref TStringArray backpackArray  = {"TaloonBag_Blue","TaloonBag_Green","TaloonBag_Orange","TaloonBag_Violet"}; //only for testing equips, will remove eventually
 	
+	float m_SavePlayerPositionTimer;
+	
 	void MissionServer()
 	{
 		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(this.UpdatePlayersStats, 30000, true);
@@ -34,11 +36,14 @@ class MissionServer extends MissionBase
 		m_LogoutPlayers = new map<PlayerBase, ref LogoutInfo>;
 		
 		InitEquipArrays();
+		
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater( ServerDebugPos.SavePlayerPositions, 20000, true );
 	}
 
 	void ~MissionServer()
 	{
 		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Remove(this.UpdatePlayersStats);
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove( ServerDebugPos.SavePlayerPositions );
 	}
 
 	void InitEquipArrays()
@@ -70,7 +75,7 @@ class MissionServer extends MissionBase
 	{
 		UpdateDummyScheduler();
 		TickScheduler(timeslice);
-		UpdateLogoutPlayers();
+		UpdateLogoutPlayers();	
 	}
 
 	override bool IsServer()

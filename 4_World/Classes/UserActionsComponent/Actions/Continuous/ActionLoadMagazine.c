@@ -65,7 +65,7 @@ class ActionLoadMagazine: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnExecuteServer( ActionData action_data )
+	override void OnRepeatServer( ActionData action_data )
 	{
 		Param1<float> timeSpendParam;
 		if( !Class.CastTo(timeSpendParam, action_data.m_ActionComponent.GetACData()) ) return;

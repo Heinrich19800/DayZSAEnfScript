@@ -57,7 +57,7 @@ class CAContinuousFertilizeGardenSlot : CAContinuousQuantity
 		
 		if ( m_ItemQuantity <= 0 )
 		{
-			return UA_SETEND_2;
+			return UA_FINISHED;
 		}
 		else
 		{

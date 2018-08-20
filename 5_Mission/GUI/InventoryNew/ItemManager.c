@@ -21,7 +21,7 @@ class ItemManager
 	protected bool m_ItemMicromanagmentMode;
 	protected bool m_ItemMoving;
 	
-	#ifndef PLATFORM_XBOX
+	#ifndef PLATFORM_CONSOLE
 	protected const float TOOLTIP_DELAY = 0.25; // in seconds
 	#else
 	protected const float TOOLTIP_DELAY = 1.5; // in seconds
@@ -367,7 +367,7 @@ class ItemManager
 			int screen_w, screen_h;
 			float w, h;
 
-			#ifndef PLATFORM_XBOX
+			#ifndef PLATFORM_CONSOLE
 			GetMousePos(x,y);
 			#endif
 			GetScreenSize(screen_w, screen_h);

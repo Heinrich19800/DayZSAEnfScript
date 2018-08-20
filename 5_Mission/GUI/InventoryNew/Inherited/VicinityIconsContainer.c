@@ -332,11 +332,15 @@ class VicinityIconsContainer: Container
 			item_preview.SetView( item.GetViewIndex() );
 			item_preview.GetParent().SetUserID( item.GetID() );
 			
-			int size_x, size_y;
-			GetGame().GetInventoryItemSize( item, size_x, size_y );
-			int capacity = size_x * size_y;
-			TextWidget tw = TextWidget.Cast( m_Container.Get( x / ITEMS_IN_ROW ).GetMainPanel().FindAnyWidget( "ItemSize" + x % ITEMS_IN_ROW ) );
-			tw.SetText( capacity.ToString() );
+			InventoryItem inventory_item = InventoryItem.Cast( item);
+			if( inventory_item )
+			{
+				int size_x, size_y;
+				GetGame().GetInventoryItemSize( inventory_item, size_x, size_y );
+				int capacity = size_x * size_y;
+				TextWidget tw = TextWidget.Cast( m_Container.Get( x / ITEMS_IN_ROW ).GetMainPanel().FindAnyWidget( "ItemSize" + x % ITEMS_IN_ROW ) );
+				tw.SetText( capacity.ToString() );
+			}
 			
 			if( !ItemManager.GetInstance().IsDragging() )
 			{

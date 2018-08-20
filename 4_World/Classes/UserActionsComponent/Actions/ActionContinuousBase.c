@@ -33,7 +33,7 @@ class ActionContinuousBaseCB : ActionBaseCB
 			m_inLoop = false;
 		}else if ( !m_Interrupted && pEventID == UA_ANIM_EVENT ) 
 		{
-			action.Do(m_ActionData, UA_ANIM_EVENT);
+			action.OnAnimationEvent( m_ActionData );
 		}
 	}
 	

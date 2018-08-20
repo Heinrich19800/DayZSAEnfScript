@@ -232,13 +232,42 @@ class PlayerContainer: CollapsibleContainer
 	
 	override void TransferItem()
 	{
-		if( !m_FocusedContainer.IsInherited( ItemWithCargo ) && !m_FocusedContainer.IsInherited( ItemWithCargoAndAttachments ) )
+		LeftArea left_area = LeftArea.Cast( GetParent() );
+		if( left_area )
 		{
-			ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
-			EntityAI item = item_preview.GetItem();
-			if( item )
+			if( m_FocusedContainer.IsInherited( ItemWithCargo ) || m_FocusedContainer.IsInherited( ItemWithCargoAndAttachments ) )
 			{
-				GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.CARGO, item );
+				ItemWithCargo iwc = ItemWithCargo.Cast( m_FocusedContainer );
+				ItemWithCargoAndAttachments iwca = ItemWithCargoAndAttachments.Cast( m_FocusedContainer );
+				if( iwc )
+				{
+					iwc.TransferItem();
+				}
+				else if ( iwca )
+				{
+					iwca.TransferItem();
+				}
+			}
+			else
+			{
+				ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+				EntityAI item = item_preview.GetItem();
+				if( item )
+				{
+					GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.CARGO, item );
+				}
+			}
+		}
+		else
+		{
+			if( !m_FocusedContainer.IsInherited( ItemWithCargo ) && !m_FocusedContainer.IsInherited( ItemWithCargoAndAttachments ) )
+			{
+				item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+				item = item_preview.GetItem();
+				if( item )
+				{
+					GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.CARGO, item );
+				}
 			}
 		}
 	}
@@ -405,7 +434,15 @@ class PlayerContainer: CollapsibleContainer
 				{
 					m_FocusedRow  = 1 ;
 					RightArea right_area = RightArea.Cast( GetParent() );
-					right_area.SetPreviousActive();
+					LeftArea left_area = LeftArea.Cast( GetParent() );
+					if( right_area )
+					{
+						right_area.SetPreviousActive();
+					}
+					else
+					{
+						left_area.SetPreviousActive();
+					}
 					return;
 				}				
 			}
@@ -416,7 +453,15 @@ class PlayerContainer: CollapsibleContainer
 				{
 					m_FocusedRow = 0 ;
 					right_area = RightArea.Cast( GetParent() );
-					right_area.SetNextActive();
+					left_area = LeftArea.Cast( GetParent() );
+					if( right_area )
+					{
+						right_area.SetNextActive();
+					}
+					else
+					{
+						left_area.SetNextActive();
+					}
 					return;
 				}				
 			}

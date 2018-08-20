@@ -272,16 +272,6 @@ class ControlsXbox extends UIScriptedMenu
 		m_tab_images[1] = ImageWidget.Cast( layoutRoot.FindAnyWidget("WeaponsAndActionsBackdropImageWidget") );
 		m_tab_images[2] = ImageWidget.Cast( layoutRoot.FindAnyWidget("InventoryTabBackdropImageWidget") );
 		m_tab_images[3] = ImageWidget.Cast( layoutRoot.FindAnyWidget("MenusTabBackdropImageWidget") );
-		
-		/*m_ControlsLayoutImage = ImageWidget.Cast( layoutRoot.FindAnyWidget( "XboxControlsImage" ) );
-		
-#ifdef PLATFORM_XBOX
-		m_ControlsLayoutImage.LoadImageFile( 0, "{F12419054D147408}Gui/textures/day_z_xbox_controls.edds" );
-#endif
-		
-#ifdef PLATFORM_PS4
-		m_ControlsLayoutImage.LoadImageFile( 0, "{8CC5531F7A593B80}Gui/textures/dayz_ps4_controls.edds" );
-#endif*/
 		PPEffects.SetBlurMenu( 0.6 );
 		DrawConnectingLines( 0 );
 		return layoutRoot;

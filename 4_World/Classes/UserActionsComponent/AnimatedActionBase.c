@@ -193,6 +193,22 @@ class AnimatedActionBase : ActionBase
 	{
 	}
 	
+	void OnAnimationEvent( ActionData action_data )
+	{
+		if(!action_data.m_WasExecuted)
+		{
+			if(GetGame().IsServer())
+			{
+				OnExecuteServer(action_data);
+			}
+			else
+			{
+				OnExecuteClient(action_data);
+			}
+			action_data.m_WasExecuted = true;
+		}
+	}
+	
 	override bool ActionConditionContinue( ActionData action_data ) //condition for action
 	{
 		return ActionCondition(action_data.m_Player,action_data.m_Target,action_data.m_MainItem);
@@ -355,6 +371,8 @@ class AnimatedActionBase : ActionBase
 							OnRepeatClient(action_data);
 						}
 						InformPlayers(action_data.m_Player,action_data.m_Target,UA_REPEAT);
+						action_data.m_WasExecuted = false;
+
 						Do(action_data, UA_PROCESSING);
 					}
 					else
@@ -365,7 +383,7 @@ class AnimatedActionBase : ActionBase
 					}				
 					break;
 				
-				case UA_ANIM_EVENT:
+				/*case UA_ANIM_EVENT:
 					if( CanContinue(action_data))
 					{
 						if ( GetGame().IsServer() )
@@ -386,7 +404,7 @@ class AnimatedActionBase : ActionBase
 						InformPlayers(action_data.m_Player, action_data.m_Target, UA_CANCEL);
 						Do(action_data, UA_CANCEL);
 					}
-					break;
+					break;*/
 				case UA_FINISHED:
 					if ( GetGame().IsServer() )
 					{

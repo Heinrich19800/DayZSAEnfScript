@@ -19,6 +19,11 @@ class TutorialsMenu extends UIScriptedMenu
 		m_tab_images[2] = ImageWidget.Cast( layoutRoot.FindAnyWidget("InventoryTabBackdropImageWidget") );
 		m_tab_images[3] = ImageWidget.Cast( layoutRoot.FindAnyWidget("MenusTabBackdropImageWidget") );
 		
+		#ifdef PLATFORM_PS4
+			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
+			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
+		#endif
+		
 		PPEffects.SetBlurMenu( 0.6 );
 		DrawConnectingLines( 0 );
 		return layoutRoot;
@@ -127,7 +132,7 @@ class TutorialsMenu extends UIScriptedMenu
 			panel_widget = layoutRoot.FindAnyWidget( "PanelWidget" + l );
 			if( tab_array[index][l] != NULL )
 			{
-				MultilineTextWidget text_widget = MultilineTextWidget.Cast( panel_widget.FindAnyWidget( "TextWidget" + l ) );
+				RichTextWidget text_widget = RichTextWidget.Cast( panel_widget.FindAnyWidget( "TextWidget" + l ) );
 				button_marker_widget = layoutRoot.FindAnyWidget( "button_marker_" + tab_array[index][l].m_ButtonName );
 				text_widget.SetText( tab_array[index][l].m_InfoText );
 				panel_widget.Show( true );

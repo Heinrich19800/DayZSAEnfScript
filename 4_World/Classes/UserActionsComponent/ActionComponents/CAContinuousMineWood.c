@@ -51,7 +51,7 @@ class CAContinuousMineWood : CAContinuousBase
 		
 		if ( action_data.m_MainItem.IsDamageDestroyed() || targetObject.IsDamageDestroyed() )
 		{
-			return UA_SETEND_2;
+			return UA_FINISHED;
 		}
 		else
 		{

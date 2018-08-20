@@ -60,10 +60,21 @@ class OptionsMenuNew extends UIScriptedMenu
 		else
 			m_Version.Show( false );
 		#ifdef PLATFORM_WINDOWS
-		SetFocus( layoutRoot );
+			SetFocus( layoutRoot );
 		#endif
 		
 		m_Tabber.m_OnTabSwitch.Insert( OnTabSwitch );
+		
+		#ifdef PLATFORM_PS4
+			ImageWidget toolbar_a = layoutRoot.FindAnyWidget( "ToggleIcon" );
+			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
+			ImageWidget toolbar_x = layoutRoot.FindAnyWidget( "ApplyIcon" );
+			ImageWidget toolbar_y = layoutRoot.FindAnyWidget( "ResetIcon" );
+			toolbar_a.LoadImageFile( 0, "set:playstation_buttons image:cross" );
+			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
+			toolbar_x.LoadImageFile( 0, "set:playstation_buttons image:square" );
+			toolbar_y.LoadImageFile( 0, "set:playstation_buttons image:triangle" );
+		#endif
 		
 		return layoutRoot;
 	}
@@ -144,16 +155,19 @@ class OptionsMenuNew extends UIScriptedMenu
 			m_GameTab.Apply();
 		}
 		
+		#ifdef PLATFORM_CONSOLE
+			layoutRoot.FindAnyWidget( "Reset" ).Show( false );
+			layoutRoot.FindAnyWidget( "Apply" ).Show( false );
+		#else
 		#ifdef PLATFORM_WINDOWS
-		#ifndef PLATFORM_CONSOLE
-		m_Apply.Enable( false );
-		m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
-		layoutRoot.FindAnyWidget( "Apply" ).Show( false );
-		m_Reset.Enable( false );
-		m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
-		layoutRoot.FindAnyWidget( "Reset" ).Show( false );
+			m_Apply.Enable( false );
+			m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
+			m_Reset.Enable( false );
+			m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
 		#endif
 		#endif
+		
+		
 		
 		if( m_Options.NeedRestart() )
 			g_Game.GetUIManager().ShowDialog("#main_menu_configure", "#menu_restart_needed", 117, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
@@ -186,6 +200,7 @@ class OptionsMenuNew extends UIScriptedMenu
 		}
 		#endif
 		#endif
+		
 		if( changed )
 			g_Game.GetUIManager().ShowDialog("#main_menu_configure", "You have unsaved changes in the configuration. Would you like to discard them?", 1337, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 		else
@@ -209,59 +224,73 @@ class OptionsMenuNew extends UIScriptedMenu
 		{
 			changed = true;
 		}
+		#endif
+		#endif
 		
-		m_Apply.Enable( changed );
-		m_Reset.Enable( changed );
-		
-		if( changed )
-		{
-			m_Apply.ClearFlags( WidgetFlags.IGNOREPOINTER );
-			m_Reset.ClearFlags( WidgetFlags.IGNOREPOINTER );
-		}
-		else
-		{
-			m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
-			m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
-		}
-		
-		layoutRoot.FindAnyWidget( "Apply" ).Show( changed );
-		layoutRoot.FindAnyWidget( "Reset" ).Show( changed );
+		#ifdef PLATFORM_CONSOLE
+			layoutRoot.FindAnyWidget( "Apply" ).Show( changed );
+			layoutRoot.FindAnyWidget( "Reset" ).Show( changed );
+		#else
+		#ifdef PLATFORM_WINDOWS
+			m_Apply.Enable( changed );
+			m_Reset.Enable( changed );
+			
+			if( changed )
+			{
+				m_Apply.ClearFlags( WidgetFlags.IGNOREPOINTER );
+				m_Reset.ClearFlags( WidgetFlags.IGNOREPOINTER );
+			}
+			else
+			{
+				m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
+				m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
+			}
 		#endif
 		#endif
 	}
 	
 	void Reset()
 	{
-		if( m_Options.IsChanged() )
+		//if( m_Options.IsChanged() )
 			m_Options.Revert();
-		if( m_GameTab.IsChanged() )
+		//if( m_GameTab.IsChanged() )
 			m_GameTab.Revert();
-		if( m_SoundsTab.IsChanged() )
+		//if( m_SoundsTab.IsChanged() )
 			m_SoundsTab.Revert();
+			m_ControlsTab.Revert();
 		#ifdef PLATFORM_WINDOWS
 		#ifndef PLATFORM_CONSOLE
-		if( m_VideoTab.IsChanged() )
+		//if( m_VideoTab.IsChanged() )
 			m_VideoTab.Revert();
+		#endif
+		#endif
 		
-		m_Apply.Enable( false );
-		m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
-		layoutRoot.FindAnyWidget( "Apply" ).Show( false );
+		#ifdef PLATFORM_CONSOLE
+			layoutRoot.FindAnyWidget( "Apply" ).Show( false );
+			layoutRoot.FindAnyWidget( "Reset" ).Show( false );
+		#else
+		#ifdef PLATFORM_WINDOWS
+			m_Apply.Enable( false );
+			m_Apply.SetFlags( WidgetFlags.IGNOREPOINTER );
 		
-		m_Reset.Enable( false );
-		m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
-		layoutRoot.FindAnyWidget( "Reset" ).Show( false );
+			m_Reset.Enable( false );
+			m_Reset.SetFlags( WidgetFlags.IGNOREPOINTER );
 		#endif
 		#endif
 	}
 	
 	void SliderFocus()
 	{
+		#ifdef PLATFORM_CONSOLE
 		layoutRoot.FindAnyWidget( "Toggle" ).Show( false );
+		#endif
 	}
 	
 	void ToggleFocus()
 	{
+		#ifdef PLATFORM_CONSOLE
 		layoutRoot.FindAnyWidget( "Toggle" ).Show( true );
+		#endif
 	}
 	
 	void ReloadOptions()

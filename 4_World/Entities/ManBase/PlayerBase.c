@@ -1774,7 +1774,7 @@ class PlayerBase extends ManBase
 		m_LastPostFrameTickTime = GetGame().GetTime();
 		if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )
 		{
-			m_HUD.Update();
+			m_HUD.Update(delta_time);
 			
 			if( GetBulletHitReaction() ) 
 			{

@@ -224,7 +224,7 @@ class UIManager
 	//UI cursor
 	void ShowUICursor( bool visible )
 	{
-#ifdef PLATFORM_XBOX
+#ifdef PLATFORM_CONSOLE
 		Hud hud;
 		if( GetGame() && GetGame().GetMission() )
 		{
@@ -239,11 +239,7 @@ class UIManager
 			ShowCursor( false);
 		}
 #else
-#ifdef PLATFORM_PS4
-		ShowCursor( false );
-#else
 		ShowCursor( visible );
-#endif
 #endif
 	}
 };

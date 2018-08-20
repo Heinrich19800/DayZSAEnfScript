@@ -44,7 +44,7 @@ class CAContinuousFill : CAContinuousBase
 		
 		if ( action_data.m_MainItem.GetQuantity() >= action_data.m_MainItem.GetQuantityMax() )
 		{
-			return UA_SETEND_2;
+			return UA_FINISHED;
 		}
 		else
 		{

@@ -30,7 +30,7 @@ class CAContinuousWringClothes : CAContinuousQuantityRepeat
 		
 		if ( action_data.m_MainItem.GetWet() <= 0 )
 		{
-			return UA_SETEND_2;
+			return UA_FINISHED;
 		}
 		else
 		{

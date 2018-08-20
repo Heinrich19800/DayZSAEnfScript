@@ -16,6 +16,9 @@ class InventoryMenuNew extends UIScriptedMenu
 	void ~InventoryMenuNew()
 	{
 		UnlockControls();
+		MissionGameplay mission = MissionGameplay.Cast( GetGame().GetMission() );
+		if( mission )
+			mission.MoveHudForInventory( false );
 	}
 	
 	override Widget Init()
@@ -79,7 +82,7 @@ class InventoryMenuNew extends UIScriptedMenu
 	
 	override bool UseMouse()
 	{
-#ifdef PLATFORM_XBOX
+#ifdef PLATFORM_CONSOLE
 		return false;
 #endif
 		return true;

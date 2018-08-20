@@ -10,7 +10,7 @@ class ActionSingleUseBaseCB : ActionBaseCB
 		if ( !m_Interrupted && pEventID == UA_ANIM_EVENT ) 
 		{
 			AnimatedActionBase action = AnimatedActionBase.Cast(m_ActionData.m_Action);
-			action.Do(m_ActionData, UA_ANIM_EVENT);
+			action.OnAnimationEvent(m_ActionData);
 		}	
 	}
 	

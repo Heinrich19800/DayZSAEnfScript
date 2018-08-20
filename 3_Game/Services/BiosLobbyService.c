@@ -269,7 +269,7 @@ class BiosLobbyService
 		OnlineServices.OnLoadServersAsync( result_list, error, response );
 	}
 	
-	void OnGetFirstServerWithEmptySlot(ref GetServersResult result_list, EBiosError error)
+	void OnGetFirstServerWithEmptySlot(ref GetFirstServerWithEmptySlotResult result_list, EBiosError error)
 	{
 		OnlineServices.OnAutoConnectToEmptyServer( result_list, error );
 	}

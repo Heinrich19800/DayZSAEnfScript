@@ -32,7 +32,11 @@ class KeybindingsMenu extends UIScriptedMenu
 			m_Version.SetText( "#main_menu_version" + " " + version );
 		else
 			m_Version.Show( false );
-		
+
+		#ifdef PLATFORM_PS4
+			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
+			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
+		#endif
 		return layoutRoot;
 	}
 	

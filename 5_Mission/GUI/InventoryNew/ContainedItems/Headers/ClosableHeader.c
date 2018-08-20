@@ -14,7 +14,7 @@ class ClosableHeader: Header
 
 	override void SetLayoutName()
 	{
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 		m_LayoutName = WidgetLayoutName.ClosableHeaderXbox;
 		#else
 		m_LayoutName = WidgetLayoutName.ClosableHeader;

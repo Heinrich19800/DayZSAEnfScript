@@ -6,6 +6,7 @@ class OnlineServices
 	static ref ScriptInvoker												m_MuteUpdateAsyncInvoker	= new ScriptInvoker();
 	
 	static ref BiosClientServices											m_ClientServices;
+	static ref TrialService													m_TrialService				= new TrialService;
 	
 	protected static ref map<string, ref BiosFriendInfo>					m_FriendsList;
 	protected static ref map<string, bool>									m_MuteList;
@@ -414,19 +415,67 @@ class OnlineServices
 		}
 	}
 	
+	static int m_AutoConnectTries = 0;
 	static void AutoConnectToEmptyServer()
 	{
 		GetClientServices();
 		if( m_ClientServices )
 		{
+			m_AutoConnectTries = 0;
 			ref GetFirstServerWithEmptySlotInput input = new GetFirstServerWithEmptySlotInput;
 			input.SetOfficial( true );
 			m_ClientServices.GetLobbyService().GetFirstServerWithEmptySlot( input );
 		}
 	}
 	
-	static void OnAutoConnectToEmptyServer( ref GetServersResult result_list, EBiosError error )
+	static GetServersResultRow GetRandomFreeResult( GetFirstServerWithEmptySlotResult results )
 	{
+		GetServersResultRow result;
+		array<ref GetServersResultRow> results_free = new array<ref GetServersResultRow>;
 		
+		if( results && results.m_Result && results.m_Result.m_Results && results.m_Result.m_Results.Count() > 0 )
+		{
+			foreach( GetServersResultRow result_temp : results.m_Result.m_Results )
+			{
+				if( result_temp.m_FreeSlots > 0 )
+				{
+					results_free.Insert( result_temp );
+				}
+			}
+		}
+		
+		return results_free.GetRandomElement();
+	}
+	
+	static void OnAutoConnectToEmptyServer( ref GetFirstServerWithEmptySlotResult result_list, EBiosError error )
+	{
+		if( !ErrorCaught( error ) )
+		{
+			GetServersResultRow result = GetRandomFreeResult( result_list );
+			if( result )
+			{
+				g_Game.ConnectFromServerBrowser( result.m_HostIp, result.m_HostPort );
+				return;
+			}
+		}
+		
+		if( m_AutoConnectTries < 2 )
+		{
+			m_AutoConnectTries++;
+			ref GetFirstServerWithEmptySlotInput input = new GetFirstServerWithEmptySlotInput;
+			input.SetOfficial( true );
+			m_ClientServices.GetLobbyService().GetFirstServerWithEmptySlot( input );
+		}
+		else
+		{
+			GetGame().GetUIManager().ShowDialog( "SERVERS UNAVALIABLE", "#xbox_authentification_fail", 232, DBT_OK, DBB_NONE, DMT_INFO, GetGame().GetUIManager().GetMenu() );
+		}
+	}
+	
+	static bool IsGameTrial( bool sim )
+	{
+		if( m_TrialService )
+			return m_TrialService.IsGameTrial( sim );
+		return false;
 	}
 }

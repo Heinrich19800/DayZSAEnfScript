@@ -136,6 +136,8 @@ class MissionMainMenu extends MissionBase
 		}
 		return -1;
 		#endif
+		
+		return -1;
 	}
 	
 	void ResetIntroCamera()

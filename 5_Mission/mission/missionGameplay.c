@@ -733,15 +733,18 @@ class MissionGameplay extends MissionBase
 	
 	void MoveHudForInventory( bool inv_open )
 	{
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 		IngameHud hud = IngameHud.Cast( GetHud() );
-		if( inv_open )
+		if( hud )
 		{
-			hud.GetHudPanelWidget().SetPos( 0, -0.09 );
-		}
-		else
-		{
-			hud.GetHudPanelWidget().SetPos( 0, 0 );
+			if( inv_open )
+			{
+				hud.GetHudPanelWidget().SetPos( 0, -0.09 );
+			}
+			else
+			{
+				hud.GetHudPanelWidget().SetPos( 0, 0 );
+			}
 		}
 		#endif
 	}
@@ -807,6 +810,7 @@ class MissionGameplay extends MissionBase
 			{
 				GetUIManager().ShowScriptedMenu(m_inventory_menu_new, NULL);
 			}
+			MoveHudForInventory( true );
 			init = true;
 		}
 		

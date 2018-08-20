@@ -3,7 +3,7 @@ class Header: ContainerBase
 	protected EntityAI	m_Entity;
 	void Header( ContainerBase parent, string function_name )
 	{
-		#ifndef PLATFORM_XBOX
+		#ifndef PLATFORM_CONSOLE
 		WidgetEventHandler.GetInstance().RegisterOnMouseButtonDown( GetMainPanel().FindAnyWidget( "collapse_button" ),  m_Parent, function_name );
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "collapse_button" ),  m_Parent, "OnDropReceivedFromHeader" );
 		#endif

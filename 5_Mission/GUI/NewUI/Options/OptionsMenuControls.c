@@ -201,7 +201,17 @@ class OptionsMenuControls extends ScriptedWidgetEventHandler
 	
 	void Revert()
 	{
+		m_ControllerVSensitivitySelector.SetValue( m_ControllerVSensitivityOption.ReadValue(), false );
+		m_ControllerHSensitivitySelector.SetValue( m_ControllerHSensitivityOption.ReadValue(), false );
+		m_ControllerInvertSelector.SetValue( m_ControllerInvertOption.GetIndex(), false );
 		
+		#ifdef PLATFORM_WINDOWS
+		#ifndef PLATFORM_CONSOLE
+		m_VSensitivitySelector.SetValue( m_VSensitivityOption.ReadValue(), false );
+		m_HSensitivitySelector.SetValue( m_HSensitivityOption.ReadValue(), false );
+		m_InvertSelector.SetValue( m_InvertOption.GetIndex(), false );
+		#endif
+		#endif
 	}
 	
 #ifdef PLATFORM_WINDOWS

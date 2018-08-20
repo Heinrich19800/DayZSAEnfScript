@@ -9,6 +9,7 @@ class ActionData
 	PlayerBase							m_Player;
 	int 								m_PossibleStanceMask;
 	ref array<ref InventoryLocation>	m_ReservedInventoryLocations;
+	bool								m_WasExecuted;
 }
 
 class ActionBase
@@ -73,6 +74,7 @@ class ActionBase
 		action_data.m_MainItem = item;
 		action_data.m_PossibleStanceMask = GetStanceMask(player);
 		action_data.m_ReservedInventoryLocations = new array<ref InventoryLocation>;
+		action_data.m_WasExecuted = false;
 		
 		if ( (!GetGame().IsMultiplayer() || GetGame().IsClient()) && !IsInstant() )
 		{

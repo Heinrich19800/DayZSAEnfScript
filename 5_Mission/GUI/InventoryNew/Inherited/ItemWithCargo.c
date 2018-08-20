@@ -14,6 +14,10 @@ class ItemWithCargo: ClosableContainer
 
 	EntityAI GetFocusedItem()
 	{
+		if( m_CargoGrid.GetFocusedItem() == NULL )
+		{
+			return NULL;
+		}
 		return EntityAI.Cast( m_CargoGrid.GetFocusedItem().GetObject() );
 	}
 	

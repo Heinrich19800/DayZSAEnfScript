@@ -116,8 +116,9 @@ class Container: ContainerBase
 			{
 				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
 				{
+					m_FocusedColumn = 0;
 					ContainerBase cnt = ContainerBase.Cast( m_Body.Get( 0 ) );
-					cnt.GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
+					cnt.GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
 					ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( cnt.GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
 					EntityAI focused_item =  item_preview.GetItem();
 					

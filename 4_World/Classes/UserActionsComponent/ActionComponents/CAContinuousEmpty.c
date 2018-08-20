@@ -54,7 +54,7 @@ class CAContinuousEmpty : CAContinuousBase
 		if ( action_data.m_MainItem.GetWet() >= action_data.m_MainItem.GetWetMax() )
 		{
 			//Print("SetEND_2");
-			return UA_SETEND_2;
+			return UA_FINISHED;
 		}
 		else
 		{

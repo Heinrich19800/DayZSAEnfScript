@@ -75,10 +75,24 @@ class MainMenu extends UIScriptedMenu
 			layoutRoot.FindAnyWidget( "toolbar_bg" ).Show( true );
 			layoutRoot.FindAnyWidget( "character" ).Show( false );
 			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
-			m_PlayVideo.Show( true );
+			layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( true );
 			m_Tutorials.Show( true );
-			m_CustomizeCharacter.SetText( "OPTIONS" );
+			m_CustomizeCharacter.Show( false );
+		#endif
+		#ifdef PLATFORM_XBOX
+			m_CustomizeCharacter.Show( true );
 			m_ChooseServer.SetText( "CONTROLS" );
+			m_CustomizeCharacter.SetText( "OPTIONS" );
+			m_PlayVideo.Show( true );
+		#endif
+		#ifdef PLATFORM_PS4
+			m_ChooseServer.Show( false );
+			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
+			layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( false );
+		#endif
+		#ifdef PLATFORM_WINDOWS
+			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( true );
+			layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( false );
 		#endif
 		
 		Refresh();
@@ -106,6 +120,13 @@ class MainMenu extends UIScriptedMenu
 			GetGame().GetUIManager().ShowDialog( "TUTORIALS", "Would you like to see a basic tutorial?", 555, DBT_YESNO, DBB_YES, DMT_QUESTION, this );
 			GetGame().SaveProfile();
 		}
+		#endif
+		
+		#ifdef PLATFORM_PS4
+			ImageWidget toolbar_a = layoutRoot.FindAnyWidget( "SelectIcon" );
+			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
+			toolbar_a.LoadImageFile( 0, "set:playstation_buttons image:cross" );
+			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
 		#endif
 		
 		return layoutRoot;
@@ -336,10 +357,26 @@ class MainMenu extends UIScriptedMenu
 			
 			m_ScenePC.SaveCharName();
 		}
-		if (!g_Game.IsNewCharacter())
-			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectLastSession");
-		else
-			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectBestServer");
+
+		#ifdef PLATFORM_XBOX
+			if( OnlineServices.IsGameTrial( false ) )
+		    {
+				AutoConnect();
+		    }
+		    else
+		    {
+				EnterScriptedMenu(MENU_SERVER_BROWSER);
+		    }
+		#else
+			#ifdef PLATFORM_PS4
+				EnterScriptedMenu(MENU_SERVER_BROWSER);
+			#else
+				if( !g_Game.IsNewCharacter() )
+					GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectLastSession");
+				else
+					GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallByName(this, "ConnectBestServer");
+			#endif
+		#endif
 	}
 
 	void ChooseServer()
@@ -447,11 +484,31 @@ class MainMenu extends UIScriptedMenu
 	{
 		GetGame().GetUIManager().ShowDialog("EXIT", "Are you sure you want to exit?", IDC_MAIN_QUIT, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 	}
+		
+	bool TryConnectLastSession( out string ip, out int port )
+	{
+		if( g_Game.GetLastVisitedServer( ip, port ) )
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	void AutoConnect()
+	{
+		OnlineServices.AutoConnectToEmptyServer();
+	}
 	
 	void ConnectLastSession()
 	{
-		//TODO fix code-side
-		if ( m_ScenePC /*&& !g_Game.ConnectLastSession(this, m_Scene.CurrentCharacterID())*/ )
+		string ip;
+		int port;
+		
+		if( TryConnectLastSession( ip, port ) )
+		{
+			g_Game.ConnectFromServerBrowser( ip, port );
+		}
+		else
 		{
 			#ifdef NEW_UI
 				EnterScriptedMenu(MENU_SERVER_BROWSER);
@@ -463,15 +520,10 @@ class MainMenu extends UIScriptedMenu
 				#endif
 			#endif
 		}
-		else
-		{
-			EnterScriptedMenu(MENU_SERVER_BROWSER);
-		}
 	}
 	
 	void ConnectBestServer()
 	{
-		//TODO add functionality! For now works as follows:
 		ConnectLastSession();
 	}
 	
@@ -479,6 +531,12 @@ class MainMenu extends UIScriptedMenu
 	void ColorRed( Widget w )
 	{
 		SetFocus( w );
+		
+		ButtonWidget button = ButtonWidget.Cast( w );
+		if( button && button != m_Play )
+		{
+			button.SetTextColor( ARGB( 255, 200, 0, 0 ) );
+		}
 		
 		TextWidget text		= TextWidget.Cast(w.FindWidget( w.GetName() + "_text" ) );
 		TextWidget text2	= TextWidget.Cast(w.FindWidget( w.GetName() + "_text_1" ) );
@@ -505,6 +563,12 @@ class MainMenu extends UIScriptedMenu
 		#ifdef PLATFORM_WINDOWS
 		SetFocus( null );
 		#endif
+		
+		ButtonWidget button = ButtonWidget.Cast( w );
+		if( button && button != m_Play )
+		{
+			button.SetTextColor( ARGB( 255, 255, 255, 255 ) );
+		}
 		
 		TextWidget text		= TextWidget.Cast(w.FindWidget( w.GetName() + "_text" ) );
 		TextWidget text2	= TextWidget.Cast(w.FindWidget( w.GetName() + "_text_1" ) );

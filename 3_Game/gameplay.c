@@ -582,7 +582,7 @@ class Hud: Managed
 	void RefreshQuantity( EntityAI item_to_refresh ) {}
 	void UpdateBloodName() {}
 	void RefreshItemPosition( EntityAI item_to_refresh ) {}
-	void Update(){}
+	void Update(float time_delta){}
 	void InitInventory();
 	bool IsXboxDebugCursorEnabled();
 

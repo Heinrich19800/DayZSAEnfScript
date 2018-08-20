@@ -37,7 +37,7 @@ class HandsPreview: ContainerBase
 		m_ParentWidget.SetColor( ARGB( 230, 20, 20, 20 ) );
 		bool show_combine_swap = ItemManager.GetInstance().IsDragging();
 
-		#ifndef PLATFORM_XBOX
+		#ifndef PLATFORM_CONSOLE
 		if( icon && !icon.IsDragged() )
 		{
 			icon.GetMainPanel().FindAnyWidget( "Combine" ).Show(  show_combine_swap );

@@ -142,7 +142,11 @@ class DayZPlayerCameraIronsights extends DayZPlayerCameraBase
 				//temp_array.Clear();
 				temp_array = m_weaponUsed.GetWeaponDOF();
 				if (temp_array.Count() == 6)
-					PPEffects.OverrideDOF(temp_array[0],temp_array[1],temp_array[2],temp_array[3],temp_array[4],temp_array[5]);
+				{
+					#ifdef PLATFORM_WINDOWS
+						PPEffects.OverrideDOF(temp_array[0],temp_array[1],temp_array[2],temp_array[3],temp_array[4],temp_array[5]);
+					#endif
+				}
 			}
 			else
 				PPEffects.OverrideDOF(false, 0, 0, 0, 0, 0);
@@ -340,7 +344,9 @@ class DayZPlayerCameraOptics : DayZPlayerCameraIronsights
 				//optics blur
 				if (m_opticsUsed.GetOpticsPPBlur() != 0)
 				{
-					PPEffects.SetBlurOptics(m_opticsUsed.GetOpticsPPBlur());
+					#ifdef PLATFORM_WINDOWS
+						PPEffects.SetBlurOptics(m_opticsUsed.GetOpticsPPBlur());
+					#endif
 				}
 				else
 					PPEffects.SetBlurOptics(0);

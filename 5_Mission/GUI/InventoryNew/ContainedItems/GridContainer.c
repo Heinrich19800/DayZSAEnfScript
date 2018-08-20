@@ -10,7 +10,7 @@ class GridContainer: ContainerBase
 	void GridContainer( ContainerBase parent )
 	{
 		m_ParentContainer = ItemsContainer.Cast( parent );
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 		m_MaxColumns = 8;
 		#else
 		m_MaxColumns = 10;
@@ -122,7 +122,7 @@ class GridContainer: ContainerBase
 
 	override void SetLayoutName()
 	{
-		#ifdef PLATFORM_XBOX
+		#ifdef PLATFORM_CONSOLE
 		m_LayoutName = WidgetLayoutName.GridContainerXbox;
 		#else
 		m_LayoutName = WidgetLayoutName.GridContainer;

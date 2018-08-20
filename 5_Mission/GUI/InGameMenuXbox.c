@@ -4,6 +4,14 @@ class InGameMenuXbox extends UIScriptedMenu
 	
 	protected Widget						m_OnlineMenu;
 	
+	protected ButtonWidget					m_ContinueButton;
+	protected ButtonWidget					m_ExitButton;
+	protected ButtonWidget					m_RestartButton;
+	protected ButtonWidget					m_OptionsButton;
+	protected ButtonWidget					m_ControlsButton;
+	protected ButtonWidget					m_OnlineButton;
+	protected ButtonWidget					m_TutorialsButton;
+	
 	const int 								BUTTON_XBOX_CONTROLS = 201;
 	
 	void InGameMenuXbox()
@@ -33,6 +41,20 @@ class InGameMenuXbox extends UIScriptedMenu
 		m_OnlineMenu	= GetGame().GetWorkspace().CreateWidgets("gui/layouts/xbox/ingamemenu_xbox/online_info_menu.layout", layoutRoot);
 		
 		m_OnlineMenu.Show( false );
+		
+		m_ContinueButton	= layoutRoot.FindAnyWidget( "continuebtn" );
+		m_ExitButton		= layoutRoot.FindAnyWidget( "exitbtn" );
+		m_RestartButton		= layoutRoot.FindAnyWidget( "restartbtn" );
+		m_OptionsButton		= layoutRoot.FindAnyWidget( "optionsbtn" );
+		m_ControlsButton	= layoutRoot.FindAnyWidget( "controlsbtn" );
+		m_OnlineButton		= layoutRoot.FindAnyWidget( "onlinebtn" );
+		m_TutorialsButton	= layoutRoot.FindAnyWidget( "tutorialsbtn" );
+		
+		#ifdef PLATFORM_PS4
+		m_ControlsButton.Show( false );
+		m_OnlineButton.Show( false );
+		#endif
+		
 		string version;
 		GetGame().GetVersion(version);
 		
@@ -55,12 +77,14 @@ class InGameMenuXbox extends UIScriptedMenu
 		
 		if( !player_is_alive )
 		{
-			layoutRoot.FindAnyWidget( "continuebtn" ).Show( false );
+			layoutRoot.FindAnyWidget( "bottom" ).Show( false );
 		}
 		
 		if( GetGame().IsMultiplayer() )
 		{
-			layoutRoot.FindAnyWidget( "onlinebtn" ).Show( true );
+			#ifdef PLATFORM_XBOX
+			m_OnlineButton.Show( true );
+			#endif
 			
 			m_ServerInfoPanel = new PlayerListScriptedWidget( m_OnlineMenu.FindAnyWidget( "ServerInfoPanel" ), "SERVER PLAYERS" );
 			
@@ -139,6 +163,19 @@ class InGameMenuXbox extends UIScriptedMenu
 			}
 		}
 		PPEffects.SetBlurMenu( 0.6 );
+			
+		#ifdef PLATFORM_PS4
+			m_OptionsButton.Show( false );
+		
+			ImageWidget toolbar_a = layoutRoot.FindAnyWidget( "SelectIcon" );
+			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
+			ImageWidget toolbar_x = layoutRoot.FindAnyWidget( "GamercardIcon" );
+			ImageWidget toolbar_y = layoutRoot.FindAnyWidget( "MuteIcon" );
+			toolbar_a.LoadImageFile( 0, "set:playstation_buttons image:cross" );
+			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
+			toolbar_x.LoadImageFile( 0, "set:playstation_buttons image:square" );
+			toolbar_y.LoadImageFile( 0, "set:playstation_buttons image:triangle" );
+		#endif
 	
 		return layoutRoot;
 	}
@@ -181,7 +218,9 @@ class InGameMenuXbox extends UIScriptedMenu
 			
 			return true;
 		case IDC_MAIN_ONLINE:
+		#ifndef PLATFORM_PS4
 			m_OnlineMenu.Show( true );
+		#endif
 			layoutRoot.FindAnyWidget( "play_panel_root" ).Show( false );
 			layoutRoot.FindAnyWidget( "dayz_logo" ).Show( false );
 			m_ServerInfoPanel.FocusFirst();
@@ -362,6 +401,7 @@ class InGameMenuXbox extends UIScriptedMenu
 				OnlineServices.ShowUserProfile( uid );
 			}
 		}
+		
 		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
 		{
 			//g_Game.CancelQueueTime();
@@ -459,6 +499,78 @@ class InGameMenuXbox extends UIScriptedMenu
 			{
 				layoutRoot.FindAnyWidget( "Mute" ).Show( false );
 			}
+		}
+	}
+	
+	override bool OnMouseEnter( Widget w, int x, int y )
+	{
+		if( IsFocusable( w ) )
+		{
+			ColorRed( w );
+			return true;
+		}
+		return false;
+	}
+	
+	override bool OnMouseLeave( Widget w, Widget enterW, int x, int y )
+	{
+		if( IsFocusable( w ) )
+		{
+			ColorWhite( w, enterW );
+			return true;
+		}
+		return false;
+	}
+	
+	override bool OnFocus( Widget w, int x, int y )
+	{
+		if( IsFocusable( w ) )
+		{
+			ColorRed( w );
+			return true;
+		}
+		return false;
+	}
+	
+	override bool OnFocusLost( Widget w, int x, int y )
+	{
+		if( IsFocusable( w ) )
+		{
+			ColorWhite( w, null );
+			return true;
+		}
+		return false;
+	}
+	
+	bool IsFocusable( Widget w )
+	{
+		if( m_ContinueButton || w == m_ExitButton || w == m_RestartButton || w == m_OptionsButton || w == m_ControlsButton || w == m_OnlineButton || w == m_TutorialsButton );
+			return true;
+		return false;
+	}
+	
+	//Coloring functions (Until WidgetStyles are useful)
+	void ColorRed( Widget w )
+	{
+		SetFocus( w );
+		
+		ButtonWidget button = ButtonWidget.Cast( w );
+		if( button && button != m_ContinueButton )
+		{
+			button.SetTextColor( ARGB( 255, 200, 0, 0 ) );
+		}
+	}
+	
+	void ColorWhite( Widget w, Widget enterW )
+	{
+		#ifdef PLATFORM_WINDOWS
+		SetFocus( null );
+		#endif
+		
+		ButtonWidget button = ButtonWidget.Cast( w );
+		if( button && button != m_ContinueButton )
+		{
+			button.SetTextColor( ARGB( 255, 255, 255, 255 ) );
 		}
 	}
 }

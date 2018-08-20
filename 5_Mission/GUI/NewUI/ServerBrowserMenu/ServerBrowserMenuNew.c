@@ -57,6 +57,18 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		LoadData();
 		
 		m_OfficialTab.RefreshList();
+		
+		#ifdef PLATFORM_PS4
+			ImageWidget toolbar_a = layoutRoot.FindAnyWidget( "ConnectIcon" );
+			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
+			ImageWidget toolbar_x = layoutRoot.FindAnyWidget( "RefreshIcon" );
+			ImageWidget toolbar_y = layoutRoot.FindAnyWidget( "ResetIcon" );
+			toolbar_a.LoadImageFile( 0, "set:playstation_buttons image:cross" );
+			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
+			toolbar_x.LoadImageFile( 0, "set:playstation_buttons image:square" );
+			toolbar_y.LoadImageFile( 0, "set:playstation_buttons image:triangle" );
+		#endif
+		
 		/*
 		ref GetServersResult result = new GetServersResult;
 		
@@ -87,6 +99,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		m_OfficialTab.m_Loading = true;
 		m_OfficialTab.OnLoadServersAsync( result, EBiosError.OK, "" );
 		*/
+		PPEffects.SetBlurMenu( 0.5 );
 		return layoutRoot;
 	}
 	
@@ -95,7 +108,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		SaveData();
 		OnlineServices.m_ServersAsyncInvoker.Remove( OnLoadServersAsync );
 		m_Tabber.m_OnTabSwitch.Remove( OnTabSwitch );
-		PPEffects.SetBlur( 0.0 );
+		PPEffects.SetBlurMenu( 0.0 );
 	}
 	
 	override bool OnClick( Widget w, int x, int y, int button )

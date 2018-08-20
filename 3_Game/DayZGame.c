@@ -428,6 +428,8 @@ class DayZGame extends CGame
 	const int MISSION_STATE_GAME = 1;
 	const int MISSION_STATE_FINNISH = 2;
 	
+	static ref ScriptInvoker Event_OnClientReady = new ScriptInvoker;
+	
 	private int m_MissionState;
 	
 	protected DayZGameState m_GameState;
@@ -757,6 +759,8 @@ class DayZGame extends CGame
 			break;
 			
 		case MPSessionPlayerReadyEventTypeID:
+			Event_OnClientReady.Invoke();
+			
 			LoadingHide();
 		
 			// fade out from the black screen
@@ -1128,6 +1132,9 @@ class DayZGame extends CGame
 		PPEffects.SetBlurMenu( 0 );
 		if( m_GamepadDisconnectMenu )
 			delete m_GamepadDisconnectMenu;
+		if( GetGame().GetUIManager().IsDialogVisible() )
+			GetGame().GetUIManager().CloseDialog();
+		
 	}
 	
 	void JoinLaunch()

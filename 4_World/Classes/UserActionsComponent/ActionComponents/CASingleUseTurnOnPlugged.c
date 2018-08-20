@@ -8,7 +8,7 @@ class CASingleUseTurnOnPlugged : CASingleUse
 		}
 		if ( !action_data.m_MainItem.GetCompEM().CanWork() )
 		{
-			return UA_SETEND_2;
+			return UA_FINISHED;
 		}
 		return UA_FINISHED;
 	}

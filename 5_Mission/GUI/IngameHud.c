@@ -97,7 +97,10 @@ class IngameHud extends Hud
 	protected bool m_QuickbarState;
 	protected bool m_Faded;
 	protected bool m_ZeroingKeyPressed;
-		
+	
+	protected ref HudTextInfoXbox m_HudInfoText;
+	protected ref Timer m_XboxTutTimer;
+	
 	void IngameHud()
 	{
 		m_fade_timer_crosshair = new WidgetFadeTimer;
@@ -185,6 +188,7 @@ class IngameHud extends Hud
 		m_stancePanel = m_HudPanelWidget.FindAnyWidget("StancePanel");
 		m_ActionTarget = m_HudPanelWidget.FindAnyWidget("ActionTargetsCursorWidget");
 		Class.CastTo(m_BloodType, m_HudPanelWidget.FindAnyWidget("BloodType") );
+		hud_panel_widget.FindAnyWidget( "TextInfoXbox" ).Show(false);
 		
 		// state notifiers
 		m_StatesWidgetNames.Clear();
@@ -200,6 +204,10 @@ class IngameHud extends Hud
 			m_Timer = new Timer( CALL_CATEGORY_GAMEPLAY );
 			m_Timer.Run(1, this, "RefreshQuickbar", NULL, true );
 			//m_Timer.Run(1, this, "CheckHudElementsVisibility", NULL, true ); //modify duration if needed, currently on 1s "update"
+		#endif
+		
+		#ifdef PLATFORM_XBOX
+			DayZGame.Event_OnClientReady.Insert( this.Event_OnClientReady );
 		#endif
 
 			m_Notifiers.Show( true );
@@ -289,6 +297,17 @@ class IngameHud extends Hud
 		ToggleHud( g_Game.GetProfileOption( EDayZProfilesOptions.HUD ) );
 		ToggleQuickBar( g_Game.GetProfileOption( EDayZProfilesOptions.QUICKBAR ) );
 	}
+	
+	void Event_OnClientReady()
+	{
+		m_XboxTutTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+		m_XboxTutTimer.Run(3, this, "ShowXoboxTut", NULL, false );
+	}
+	
+	void ShowXoboxTut()
+	{
+		m_HudInfoText = new HudTextInfoXbox( m_HudPanelWidget );
+	}	
 	
 	override bool IsXboxDebugCursorEnabled()
 	{
@@ -994,11 +1013,19 @@ class IngameHud extends Hud
 
 	protected int m_LastTime;
 	protected float m_BlinkTime;
-	override void Update()
+	override void Update(float time_delta)
 	{
-		super.Update();
+		super.Update(time_delta);
 		
 		m_ActionTarget.Update();
+		
+		
+		#ifdef PLATFORM_XBOX
+		if ( m_HudInfoText )
+		{
+			m_HudInfoText.Update(time_delta);
+		}
+		#endif
 		
 		//
 		//modifiers - tendency status (critical)
