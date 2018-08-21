@@ -18,12 +18,12 @@ class JsonPlayerPositions
 		string file_name = GetCurrentDate("_")+"-"+GetCurrentTime("_");
 		file_name = file_name + ".json";
 		
-		if ( !FileExist( "ServerPlayers" ) )
+		if ( !FileExist( "$profile:ServerPlayers" ) )
 		{
-			MakeDirectory("ServerPlayers");
+			MakeDirectory("$profile:ServerPlayers");
 		}
 		
-		JsonFileLoader<JsonPlayerPositions>.JsonSaveFile( "ServerPlayers/"+ file_name, this );
+		JsonFileLoader<JsonPlayerPositions>.JsonSaveFile( "$profile:ServerPlayers/"+ file_name, this );
 	}
 	
 	//--------------------------------------------

@@ -487,13 +487,14 @@ class AnimatedActionBase : ActionBase
 				case UA_STARTT:
 					if ( GetGame().IsServer() )
 					{
-						OnInterruptServer(action_data);
+						OnCompleteServer(action_data);
+						ApplyModifiers(action_data);
 					}
 					else
 					{
-						OnInterruptClient(action_data);					
+						OnCompleteClient(action_data);					
 					}
-					InformPlayers(action_data.m_Player,action_data.m_Target,UA_INTERRUPT);
+					InformPlayers(action_data.m_Player,action_data.m_Target,UA_FINISHED);
 					break;
 				
 					break;
