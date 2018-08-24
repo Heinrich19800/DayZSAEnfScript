@@ -1,5 +1,6 @@
 class OptionsMenuNew extends UIScriptedMenu
 {
+	const int SLIDER_WIDGET = 42;
 	protected TabberUI					m_Tabber;
 	protected ref OptionsMenuGame		m_GameTab;
 	protected ref OptionsMenuSounds		m_SoundsTab;
@@ -357,9 +358,18 @@ class OptionsMenuNew extends UIScriptedMenu
 			ColorRed( w );
 			return true;
 		}
-		if( x == -1 && y == 1 )
+		if( w )
 		{
-			SliderFocus();
+			if( w.IsInherited( SliderWidget ) || w.GetUserID() == SLIDER_WIDGET )
+			{
+				SliderFocus();
+				return true;
+			}
+			else
+			{
+				ToggleFocus();
+				return true;
+			}
 		}
 		return false;
 	}
