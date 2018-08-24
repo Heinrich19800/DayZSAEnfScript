@@ -99,7 +99,7 @@ class ActionAttachWheels: ActionAttach
 	{
 		EntityAI target_entity;
 		Class.CastTo(target_entity,  action_data.m_Target.GetObject() ); // cast to ItemBase
-		int slot_index	= action_data.m_MainItem.GetInventory().GetSlotId();
+		int slot_index	= action_data.m_MainItem.GetInventory().GetSlotId(0);
 		int test	= m_wheel_hub;
 		if (!target_entity.LocalTakeEntityAsAttachmentEx( action_data.m_MainItem, slot_index ))
 			target_entity.LocalTakeEntityAsAttachment( action_data.m_MainItem );
@@ -108,7 +108,7 @@ class ActionAttachWheels: ActionAttach
 	{
 		EntityAI target_entity;
 		Class.CastTo(target_entity,  action_data.m_Target.GetObject() ); // cast to ItemBase
-		int slot_index	= action_data.m_MainItem.GetInventory().GetSlotId();
+		int slot_index	= action_data.m_MainItem.GetInventory().GetSlotId(0);
 		int test	= m_wheel_hub;
 		if (!target_entity.LocalTakeEntityAsAttachmentEx( action_data.m_MainItem, slot_index ))
 			target_entity.LocalTakeEntityAsAttachment( action_data.m_MainItem );

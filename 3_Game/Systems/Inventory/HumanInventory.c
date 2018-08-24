@@ -120,21 +120,28 @@ class HumanInventory : GameInventory
 		Error("No inventory location");
 		return false;
 	}
+	
+	bool RedirectToHandEvent (InventoryMode mode, notnull InventoryLocation src, notnull InventoryLocation dst)
+	{
+		if (src.GetType() == InventoryLocationType.HANDS)
+		{
+			Man man = GetManOwner();
+			if (man.IsAlive())
+			{
+				hndDebugPrint("[inv] HI::RedirectToHandEvent - source location == HANDS, player has to handle this");
+				man.GetHumanInventory().HandEvent(mode, new HandEventMoveTo(man, src.GetItem(), dst));
+				return true;
+			}
+		}
+		return false;
+	}
 
 	override bool TakeToDst (InventoryMode mode, notnull InventoryLocation src, notnull InventoryLocation dst)
 	{
 		Print("[inv] Take2Dst(" + typename.EnumToString(InventoryMode, mode) + ") src=" + src.DumpToString() + " dst=" + dst.DumpToString());
 
-		if (src.GetType() == InventoryLocationType.HANDS)
-		{
-			hndDebugPrint("[inv] HI::TakeToDst - source location == HANDS, player has to handle this - redirecting to HandEvent");
-			Man man = GetManOwner();
-			if (man.IsAlive())
-			{
-				man.GetHumanInventory().HandEvent(mode, new HandEventMoveTo(man, src.GetItem(), dst));
-				return true;
-			}
-		}
+		if (RedirectToHandEvent(mode, src, dst))
+			return true;
 
 		if (dst.GetType() == InventoryLocationType.HANDS)
 		{

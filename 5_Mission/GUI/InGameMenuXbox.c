@@ -146,6 +146,7 @@ class InGameMenuXbox extends UIScriptedMenu
 		if ( GetGame().IsMultiplayer() && !( GetGame().CanRespawnPlayer() || ( player && player.IsUnconscious() ) ) )
 		{
 			restart_btn.Enable( false );
+			restart_btn.Show( false );
 		}
 		//
 		

@@ -349,7 +349,7 @@ class Inventory: ContainerBase
 				}
 				else
 				{
-					int slot_id = item.GetInventory().GetSlotId();
+					int slot_id = item.GetInventory().GetSlotId(0);
 					EntityAI slot_item = player.GetInventory().FindAttachment( slot_id );
 					if( slot_item && player.GetInventory().CanSwapEntities( item, slot_item ) )
 					{
@@ -472,7 +472,7 @@ class Inventory: ContainerBase
 			
 			if( player && item )
 			{
-				int slot_id = item.GetInventory().GetSlotId();
+				int slot_id = item.GetInventory().GetSlotId(0);
 				EntityAI slot_item = player.GetInventory().FindAttachment( slot_id );
 				
 				bool can_take =( player.GetInventory().CanAddAttachment( item ) || ( slot_item && player.GetInventory().CanSwapEntities( item, slot_item ) ) );

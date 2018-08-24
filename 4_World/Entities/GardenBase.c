@@ -175,7 +175,7 @@ class GardenBase extends Building
 	{
 		Print("PRINT ALL SLOTS FROM...");
 		Print(this);
-		int slots = GetInventory().GetSlotsCount();
+		int slots = GetInventory().GetAttachmentSlotsCount();
 		Print(slots);
 		
 		for ( int i = 0; i < slots ; i++ )

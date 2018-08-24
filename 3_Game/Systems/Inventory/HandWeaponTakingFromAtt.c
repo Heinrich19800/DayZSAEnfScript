@@ -7,14 +7,25 @@ int SlotToAnimType (notnull InventoryLocation src)
 	{
 		switch (src.GetSlot())
 		{
-			case InventorySlots.SHOULDER:
+			/*case InventorySlots.SHOULDER:
 				return WeaponHideShowTypes.HIDESHOW_SLOT_RFLLEFTBACK;
-			//case InventorySlots.BACK:
-				//return WeaponHideShowTypes.HIDESHOW_SLOT_LEFTBACK;
-
-			//case InventorySlots.BODY:
-			//case InventorySlots.MELEE:
-
+				//return WeaponHideShowTypes.HIDESHOW_SLOT_2HDLEFTBACK;
+			
+			case InventorySlots.MELEE:
+				return WeaponHideShowTypes.HIDESHOW_SLOT_RFLRIGHTBACK;
+				//return WeaponHideShowTypes.HIDESHOW_SLOT_2HDRIGHTBACK;
+			
+			case InventorySlots.HIPS:
+				return WeaponHideShowTypes.HIDESHOW_SLOT_PISTOLBELT;
+			
+			case InventorySlots.VEST:
+				return WeaponHideShowTypes.HIDESHOW_SLOT_PISTOLCHEST;
+			
+			case InventorySlots.BODY:
+				return WeaponHideShowTypes.HIDESHOW_SLOT_PISTOLCHEST;
+			
+			case InventorySlots.VEST:
+				return WeaponHideShowTypes.HIDESHOW_SLOT_KNIFEBACK;*/
 			default:
 				Error("[hndfsm] HandStartTakingWeapon, error - weapon in unknown slot");
 		};

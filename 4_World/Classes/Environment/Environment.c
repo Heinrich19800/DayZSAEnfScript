@@ -439,7 +439,7 @@ class Environment
 			if ( attachment.IsItemBase() )
 			{
 				item = Class.Cast(attachment);
-				int attachmentSlot = attachment.GetInventory().GetSlotId();
+				int attachmentSlot = attachment.GetInventory().GetSlotId(0);
 
 				for (int i = 0; i < pSlotIds.Count(); i++)
 				{

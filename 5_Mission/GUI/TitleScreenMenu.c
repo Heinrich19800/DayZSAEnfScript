@@ -33,8 +33,15 @@ class TitleScreenMenu extends UIScriptedMenu
 	
 	override void OnShow()
 	{
+		if( g_Game.GetLoadState() == DayZLoadState.MAIN_MENU_CONTROLLER_SELECT )
+		{
+			g_Game.SetLoadState(DayZLoadState.MAIN_MENU_START);
+		}
+		
 		if( g_Game.GetGameState() != DayZGameState.CONNECTING )
+		{
 			g_Game.SelectUser();
+		}
 	}
 	
 	override void OnHide()

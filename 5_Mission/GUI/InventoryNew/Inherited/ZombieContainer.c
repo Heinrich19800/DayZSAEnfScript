@@ -184,7 +184,7 @@ class ZombieContainer: CollapsibleContainer
 			EntityAI entity = m_ZombieEntity.GetInventory().GetAttachmentFromIndex( i );
 			if ( entity )
 			{
-				int slot_id = entity.GetInventory().GetSlotId();
+				int slot_id = entity.GetInventory().GetSlotId(0);
 				ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_InventorySlots.Get( slot_id ) );
 				if( ipw == NULL )
 				{

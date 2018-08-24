@@ -385,6 +385,7 @@ class DayZIntroSceneXbox: Managed
 		{
 			g_Game.SetNewCharacter(false);
 			m_SceneCharacter.PlaceOnSurface();
+			m_SceneCharacter.SetPosition( m_CharacterPos );
 			m_SceneCharacter.SetDirection(m_CharacterDir);
 			m_SceneCharacter.SetEventHandler(m_anim_end_event_handler);
 			m_SceneCharacter.SetLastShavedSeconds(m_LastShavedSeconds);
@@ -407,7 +408,8 @@ class DayZIntroSceneXbox: Managed
 		}
 
 		g_Game.PreloadObject(type, 1.0);
-		Class.CastTo(m_SceneCharacter, g_Game.CreateObject(type, SnapToGround(Vector(m_CharacterPos[0],m_CharacterPos[1],m_CharacterPos[2]) + "0 0 333"), true));
+		Class.CastTo(m_SceneCharacter, g_Game.CreateObject(type, m_CharacterPos, true));
+		Print("CreateNewCharacter");
 		
 		if (m_SceneCharacter)
 		{

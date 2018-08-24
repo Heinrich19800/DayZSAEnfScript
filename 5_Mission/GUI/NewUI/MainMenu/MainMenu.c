@@ -74,8 +74,7 @@ class MainMenu extends UIScriptedMenu
 			layoutRoot.FindAnyWidget( "settings_panel_root" ).Show( false );
 			layoutRoot.FindAnyWidget( "toolbar_bg" ).Show( true );
 			layoutRoot.FindAnyWidget( "character" ).Show( false );
-			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
-			layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( true );
+			
 			m_Tutorials.Show( true );
 			m_CustomizeCharacter.Show( false );
 		#endif
@@ -84,15 +83,6 @@ class MainMenu extends UIScriptedMenu
 			m_ChooseServer.SetText( "CONTROLS" );
 			m_CustomizeCharacter.SetText( "OPTIONS" );
 			m_PlayVideo.Show( true );
-		#endif
-		#ifdef PLATFORM_PS4
-			m_ChooseServer.Show( false );
-			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
-			layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( false );
-		#endif
-		#ifdef PLATFORM_WINDOWS
-			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( true );
-			layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( false );
 		#endif
 		
 		Refresh();
@@ -123,13 +113,44 @@ class MainMenu extends UIScriptedMenu
 		#endif
 		
 		#ifdef PLATFORM_PS4
+			m_ChooseServer.Show( false );
 			ImageWidget toolbar_a = layoutRoot.FindAnyWidget( "SelectIcon" );
 			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
 			toolbar_a.LoadImageFile( 0, "set:playstation_buttons image:cross" );
 			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
 		#endif
 		
+		UpdateNewsFeed();
+		
 		return layoutRoot;
+	}
+	
+	void UpdateNewsFeed()
+	{
+		#ifdef PLATFORM_XBOX
+			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
+		
+			if( OnlineServices.IsGameTrial( false ) )
+		    {
+				layoutRoot.FindAnyWidget( "news_feed_root_xbox_trial" ).Show( true );
+				layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( false );
+		    }
+		    else
+		    {
+				layoutRoot.FindAnyWidget( "news_feed_root_xbox_trial" ).Show( false );
+				layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( true );
+		    }
+		#endif		
+		#ifdef PLATFORM_PS4
+			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
+			layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( false );
+			layoutRoot.FindAnyWidget( "news_feed_root_xbox_trial" ).Show( false );
+		#endif
+		#ifdef PLATFORM_WINDOWS
+			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( true );
+			layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( false );
+			layoutRoot.FindAnyWidget( "news_feed_root_xbox_trial" ).Show( false );
+		#endif
 	}
 	
 	void ~MainMenu()

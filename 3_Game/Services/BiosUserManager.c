@@ -123,6 +123,7 @@ class BiosUserManager
 		{
 			SelectUser( null );
 			
+			GetGame().GetUIManager().CloseAllSubmenus();
 			GetGame().GetMission().AbortMission();
 			
 			GetGame().GetInput().ResetActiveGamepad();

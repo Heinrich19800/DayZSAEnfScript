@@ -5,6 +5,6 @@ class BinocularsBase extends Weapon
 	*/
 	override int GetSlotsCountCorrect()
 	{
-		return GetInventory().GetSlotsCount();
+		return GetInventory().GetAttachmentSlotsCount();
 	};
 }

@@ -17,24 +17,23 @@ class MyBotTrigger : BotTrigger
  **/
 class Bot
 {
-	PlayerBase m_Owner;
-	protected ref Timer m_Timer;
+	PlayerBase m_Owner = null;
+	protected ref Timer m_Timer = new Timer;
 	protected const float c_TriggerTimeoutMS = 1000.0;
 	protected const float c_UpdateMS = 2000.0;
-	protected ref BotFSM m_FSM;
-	protected bool m_UseTrigger;
-	protected bool m_Triggered;
-	protected ref BotTrigger m_BotTrigger;
-	protected ref BotStateBase m_BotTest;
+	protected ref BotFSM m_FSM = null;
+	protected bool m_UseTrigger = false;
+	protected bool m_Triggered = false;
+	protected DayZPlayerInstanceType m_InstanceType = DayZPlayerInstanceType.INSTANCETYPE_CLIENT;
+	protected ref BotTrigger m_BotTrigger = null;
+	protected ref BotStateBase m_BotTest = null;
 
 	void Bot (PlayerBase ow)
 	{
 		m_Owner = ow;
-		m_Timer = new Timer();
-		m_UseTrigger = false;
-		m_Triggered = false;
-		m_BotTrigger = null;
 	}
+	
+	void SetInstanceType (DayZPlayerInstanceType t) { m_InstanceType = t; }
 
 	void Start (bool use_trigger, BotTrigger trigger = null)
 	{

@@ -1912,7 +1912,7 @@ class PlayerBase extends ManBase
 			{
 				InventoryLocation il = new InventoryLocation;
 				quickBarEntity.GetInventory().GetCurrentInventoryLocation(il);
-				if( il.GetSlot()!= InventorySlots.INVALID && il.GetSlot() == inHandEntity.GetInventory().GetSlotId() )
+				if( il.GetSlot()!= InventorySlots.INVALID && il.GetSlot() == inHandEntity.GetInventory().GetSlotId(0) )
 				{
 					PredictiveSwapEntities( inHandEntity, quickBarEntity );	
 				}
@@ -3067,7 +3067,7 @@ class PlayerBase extends ManBase
 		if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER || !GetGame().IsMultiplayer() )
 		{
 			ItemBase item;
-			for ( int i = 0; i < GetInventory().GetSlotsCount(); ++i )
+			for ( int i = 0; i < GetInventory().GetAttachmentSlotsCount(); ++i )
 			{
 				item = ItemBase.Cast( GetInventory().FindAttachment(i) );
 				if ( item )

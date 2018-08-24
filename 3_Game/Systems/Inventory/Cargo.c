@@ -84,7 +84,7 @@ class CargoList : CargoBase
 	}
 };
 #else
-class CargoGrid : CargoBase
-{
-};
+	class CargoGrid : CargoBase
+	{
+	};
 #endif

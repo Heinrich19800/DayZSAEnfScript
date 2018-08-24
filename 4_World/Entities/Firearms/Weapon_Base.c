@@ -200,6 +200,7 @@ class Weapon_Base extends Weapon
 			ctx.Write(ammoTypeName);
 			loc.WriteToContext(ctx);
 
+			wpnDebugPrint("[wpnfsm] OnStableStateEntry - sending state to remote");
 			p.StoreInputForRemotes(ctx);
 			
 		}
@@ -369,7 +370,7 @@ class Weapon_Base extends Weapon
 	override int GetSlotsCountCorrect ()
 	{
 		int ac = GetInventory().AttachmentCount();
-		int	sc = GetInventory().GetSlotsCount() + GetMuzzleCount();
+		int	sc = GetInventory().GetAttachmentSlotsCount() + GetMuzzleCount();
 		if (ac > sc) sc = ac; // fix of some weapons which has 1 attachments but 0 slots...
 		return sc;
 	};
@@ -489,7 +490,7 @@ class Weapon_Base extends Weapon
 			ctx.Write(INPUT_UDT_WEAPON_REMOTE_EVENT);
 			e.WriteToContext(ctx);
 
-			//wpnDebugPrint("[wpnfsm] send 2 remote: sending e=" + e + " id=" + e.GetEventID() + " p=" + e.m_player + "  m=" + e.m_magazine);
+			wpnDebugPrint("[wpnfsm] send 2 remote: sending e=" + e + " id=" + e.GetEventID() + " p=" + e.m_player + "  m=" + e.m_magazine);
 			p.StoreInputForRemotes(ctx);
 		}
 	}

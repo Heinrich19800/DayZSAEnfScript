@@ -531,7 +531,7 @@ class InventoryView: InventoryViewBase
 			{
 				if ( m_view_attachments_grids.Contains(attachment_entity) == false )
 				{	
-					attachment_slot_id = attachment_entity.GetInventory().GetSlotId();
+					attachment_slot_id = attachment_entity.GetInventory().GetSlotId(0);
 					is_slot_occupied = m_attachment_slots.Contains( attachment_slot_id );
 					//PrintString("SLOT " + itoa(attachment_slot_id) + " = " +  itoa(is_slot_occupied) );
 					// check if attachment slot is occupied
@@ -566,7 +566,7 @@ class InventoryView: InventoryViewBase
 					if( attachment_entity )
 					{
 						//show ghost icon
-						attachment_slot_id = attachment_entity.GetInventory().GetSlotId();
+						attachment_slot_id = attachment_entity.GetInventory().GetSlotId(0);
 						m_attachment_slots.Get(attachment_slot_id).Show( true );
 					}
 					c--;

@@ -85,15 +85,18 @@ class Cooking
 			bool is_water_boiling;
 			
 			//handle water boiling
-			if ( cooking_equipment_temp >= LIQUID_BOILING_POINT && cooking_equipment.GetQuantity() > 0 )
+			if ( cooking_equipment_temp >= LIQUID_BOILING_POINT )
 			{
-				is_water_boiling = true;
-				
 				//remove agents
-				//cooking_equipment.RemoveAllAgents();
+				cooking_equipment.RemoveAllAgents();
 				
-				//vaporize liquid
-				cooking_equipment.AddQuantity( -LIQUID_VAPOR_QUANTITY );
+				if ( cooking_equipment.GetQuantity() > 0 )
+				{
+					is_water_boiling = true;
+					
+					//vaporize liquid
+					cooking_equipment.AddQuantity( -LIQUID_VAPOR_QUANTITY );
+				};
 			}
 			
 			//handle audio visuals

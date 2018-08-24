@@ -317,7 +317,7 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 
 				if (remote && (!src.GetItem() || !dst.GetItem()))
 				{
-					Error("[syncinv] remote input (cmd=SYNC_MOVE) dropped, item not in bubble");
+					Error("[syncinv] remote input (cmd=SYNC_MOVE) dropped, item not in bubble! src=" + src.DumpToString() + " dst=" + dst.DumpToString());
 					break; // not in bubble
 				}
 				
@@ -493,13 +493,29 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 		switch (mode)
 		{
 			case InventoryMode.SERVER:
+			{				
+				if (RedirectToHandEvent(mode, src, dst))
+					return true;
+
+				if (GetDayZPlayerOwner().NeedInventoryJunctureFromServer(src.GetItem(), src.GetParent(), dst.GetParent()))
+				{
+					syncDebugPrint("[syncinv] DZPI::Take2Dst(" + typename.EnumToString(InventoryMode, mode) + ") need juncture src=" + src.DumpToString() + " dst=" + dst.DumpToString());
+					
+					if (GetGame().AddInventoryJuncture(GetDayZPlayerOwner(), src.GetItem(), dst, true, GameInventory.c_InventoryReservationTimeoutMS))
+						syncDebugPrint("[syncinv] DZPI::Take2Dst(" + typename.EnumToString(InventoryMode, mode) + ") got juncture");
+					else
+						syncDebugPrint("[syncinv] DZPI::Take2Dst(" + typename.EnumToString(InventoryMode, mode) + ") got juncture");
+				}
+
 				syncDebugPrint("[syncinv] DZPI::Take2Dst(" + typename.EnumToString(InventoryMode, mode) + " server sync move src=" + src.DumpToString() + " dst=" + dst.DumpToString());
 				ScriptInputUserData ctx = new ScriptInputUserData;
 				InventoryInputUserData.SerializeMove(ctx, InventoryCommandType.SYNC_MOVE, src, dst);
 	
 				GetDayZPlayerOwner().SendSyncJuncture(DayZPlayerSyncJunctures.SJ_INVENTORY, ctx);
+				syncDebugPrint("[syncinv] store input for remote - DZPI::Take2Dst(" + typename.EnumToString(InventoryMode, mode) + " server sync move src=" + src.DumpToString() + " dst=" + dst.DumpToString());
 				GetDayZPlayerOwner().StoreInputForRemotes(ctx); // @TODO: is this right place? maybe in HandleInputData(server=true, ...)
 				return true;
+			}
 		}
 		return super.TakeToDst(mode, src, dst);
 	}

@@ -778,16 +778,16 @@ class ItemBase extends InventoryItem
 			InventoryLocation destination_location = new InventoryLocation;
 			ItemBase new_item;
 			new_item = ItemBase.Cast( destination_entity.GetInventory().CreateAttachmentEx( this.GetType(), slot_id ) );
-			
-			if( new_item )
-			{			
-				MiscGameplayFunctions.TransferItemProperties(this,new_item);
-				AddQuantity( -split_quantity_new );
-				new_item.SetQuantity( split_quantity_new );
+				
+				if( new_item )
+				{			
+					MiscGameplayFunctions.TransferItemProperties(this,new_item);
+					AddQuantity(-split_quantity_new);
+					new_item.SetQuantity( split_quantity_new );
+				}
 			}
 		}
-	}
-
+	
 	void SplitItem(PlayerBase player)
 	{
 		if ( !CanBeSplit() )
@@ -891,9 +891,9 @@ class ItemBase extends InventoryItem
 			float this_free_space;
 			
 			int max_quantity;
-			if( use_stack_max )
+			int stack_max = InventorySlots.GetStackMaxForSlotId( GetInventory().GetSlotId(0) );
+			if( use_stack_max && stack_max > 0 )
 			{
-			int stack_max = InventorySlots.GetStackMaxForSlotId( GetInventory().GetSlotId() );
 				max_quantity = stack_max;
 			}
 			else
@@ -1957,7 +1957,7 @@ class ItemBase extends InventoryItem
 	bool IsFullQuantity()
 	{
 		if( GetQuantity() == GetQuantityMax() )
-		{
+			{
 				return true;			
 			}
 		else
@@ -2199,7 +2199,7 @@ class ItemBase extends InventoryItem
 			return true;			
 		}
 	}
-
+	
 	//----------------------------------------------------------------
 	//-------------------------	Color
 	// sets items color variable given color components

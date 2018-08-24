@@ -96,5 +96,10 @@ class InventoryMenuNew extends UIScriptedMenu
 		if(m_Inventory)
 			m_Inventory.OnHide();
 		UnlockControls();
+		MissionGameplay mission = MissionGameplay.Cast( GetGame().GetMission() );
+		if( mission )
+		{
+			mission.MoveHudForInventory( false );
+		}
 	}
 }

@@ -37,13 +37,20 @@ class MissionServer extends MissionBase
 		
 		InitEquipArrays();
 		
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater( ServerDebugPos.SavePlayerPositions, 20000, true );
+		if ( GetDayZGame().IsDebugPlayerPosition() )
+		{
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater( ServerDebugPos.SavePlayerPositions, 20000, true );
+		}
 	}
 
 	void ~MissionServer()
 	{
 		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Remove(this.UpdatePlayersStats);
-		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove( ServerDebugPos.SavePlayerPositions );
+		
+		if ( GetDayZGame().IsDebugPlayerPosition() )
+		{
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove( ServerDebugPos.SavePlayerPositions );
+		}
 	}
 
 	void InitEquipArrays()

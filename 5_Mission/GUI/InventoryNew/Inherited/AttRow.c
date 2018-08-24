@@ -47,7 +47,7 @@ class AttRow: ClosableContainer
 		{
 			if ( receiver_item )
 			{
-				stack_max = InventorySlots.GetStackMaxForSlotId( receiver_item.GetInventory().GetSlotId() );
+				stack_max = InventorySlots.GetStackMaxForSlotId( receiver_item.GetInventory().GetSlotId(0) );
 				quantity = receiver_item.GetQuantity();
 				bool combinable = ( quantity < stack_max ) && receiver_item.CanBeCombined( ItemBase.Cast( iw.GetItem() ) );
 				if ( combinable || stack_max > 1 )
@@ -125,7 +125,7 @@ class AttRow: ClosableContainer
 		
 		if( receiver_item )
 		{
-			int stack_max = InventorySlots.GetStackMaxForSlotId( receiver_item.GetInventory().GetSlotId() );
+			int stack_max = InventorySlots.GetStackMaxForSlotId( receiver_item.GetInventory().GetSlotId(0) );
 			int quantity = receiver_item.GetQuantity();
 			bool combinable = ( quantity < stack_max ) && ( ItemBase.Cast( receiver_item ).CanBeCombined( ItemBase.Cast( iw.GetItem() ) ) );
 			if ( combinable || stack_max > 1 )

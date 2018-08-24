@@ -228,6 +228,15 @@ class PlayerContainer: CollapsibleContainer
 				//iwca.Combine();
 			}
 		}
+		else
+		{
+			ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+			EntityAI item = item_preview.GetItem();
+			if( item )
+			{
+				GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.ATTACHMENT, item );
+			}
+		}
 	}
 	
 	override void TransferItem()
@@ -569,6 +578,7 @@ class PlayerContainer: CollapsibleContainer
 			}
 			//LoadDefaultState();
 		//END - InitGhostSlots
+		RecomputeOpenedContainers();
 	}
 
 	/*void LoadDefaultState()
@@ -836,7 +846,7 @@ class PlayerContainer: CollapsibleContainer
 		}
 
 		EntityAI item = ipw.GetItem();
-		//PlayerBase player = GetGame().GetPlayer();
+		PlayerBase real_player = GetGame().GetPlayer();
 		if( !item )
 		{
 			return;
@@ -881,15 +891,15 @@ class PlayerContainer: CollapsibleContainer
 
 		if( m_Player.GetInventory().CanAddAttachmentEx( item, receiver.GetUserID() ) )
 		{
-			m_Player.PredictiveTakeEntityAsAttachmentEx( item, receiver.GetUserID() );
+			real_player.PredictiveTakeEntityToTargetAttachmentEx( m_Player, item, receiver.GetUserID() );
 		}
 		else if(  m_Player.GetInventory().CanAddAttachment( item ) )
 		{
-			m_Player.PredictiveTakeEntityAsAttachment( item );
+			real_player.PredictiveTakeEntityToTargetAttachment( m_Player, item );
 		}
 		else if( ( m_Player.GetInventory().CanAddEntityToInventory( item ) && !m_Player.GetInventory().HasEntityInInventory( item ) ) || m_Player.GetHumanInventory().HasEntityInHands( item ) )
 		{
-			m_Player.PredictiveTakeEntityToInventory( FindInventoryLocationType.ANY, item );
+			real_player.PredictiveTakeEntityToTargetInventory( m_Player, FindInventoryLocationType.ANY, item );
 		}
 
 		if ( menu )
@@ -913,7 +923,7 @@ class PlayerContainer: CollapsibleContainer
 			EntityAI entity = m_Player.GetInventory().GetAttachmentFromIndex( i );
 			if ( entity )
 			{
-				int slot_id = entity.GetInventory().GetSlotId();
+				int slot_id = entity.GetInventory().GetSlotId(0);
 				ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_InventorySlots.Get( slot_id ) );
 				if( ipw && ipw.GetParent() )
 				{

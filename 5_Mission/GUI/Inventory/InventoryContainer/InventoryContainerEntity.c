@@ -92,7 +92,7 @@ class InventoryContainerEntity: InventoryContainer
 		ImageWidget expand_icon;
 		ImageWidget collapse_icon;
 
-		InventoryViewGridContainer view_grid = InventoryViewGridContainer.Cast( m_inventory_slots.Get( entity.GetInventory().GetSlotId() ) );
+		InventoryViewGridContainer view_grid = InventoryViewGridContainer.Cast( m_inventory_slots.Get( entity.GetInventory().GetSlotId(0) ) );
 		if ( view_grid )
 		{
 			Widget container_icon = view_grid.GetContainerIcon();
@@ -155,7 +155,7 @@ class InventoryContainerEntity: InventoryContainer
 			entity = m_entity.GetInventory().GetAttachmentFromIndex(i);
 			if ( entity )
 			{
-				int attachment_slot_id = entity.GetInventory().GetSlotId();
+				int attachment_slot_id = entity.GetInventory().GetSlotId(0);
 				bool is_valid_slot = m_inventory_slots_state.Contains( attachment_slot_id );
 				if ( is_valid_slot )
 				{ 
@@ -201,7 +201,7 @@ class InventoryContainerEntity: InventoryContainer
 			entity = m_inventory_entities.GetKey(i);
 			if ( entity )
 			{
-				attachment_slot_id = entity.GetInventory().GetSlotId();
+				attachment_slot_id = entity.GetInventory().GetSlotId(0);
 				slot_state = m_inventory_slots_state.Get(attachment_slot_id);
 				bool is = false;
 				if ( m_entities.Find(entity) == INDEX_NOT_FOUND ) is = true;

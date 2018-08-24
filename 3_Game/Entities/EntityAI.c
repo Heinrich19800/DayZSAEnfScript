@@ -622,7 +622,7 @@ class EntityAI extends Entity
 	int GetSlotsCountCorrect()
 	{
 		if( GetInventory() )
-			return GetInventory().GetSlotsCount();
+			return GetInventory().GetAttachmentSlotsCount();
 		else
 			return -1;
 	}

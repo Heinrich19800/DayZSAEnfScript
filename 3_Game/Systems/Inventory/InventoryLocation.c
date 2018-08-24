@@ -148,6 +148,13 @@ class InventoryLocation
 	 * @param[in]	e		entity with this inventory location (null for new spawns)
 	 **/
 	proto native void SetHands (notnull EntityAI parent, EntityAI e);
+	
+	/**
+	 * @fn		SetParent
+	 * brief	sets current inventory location's GetParent
+	 **/
+	proto native void SetParent (notnull EntityAI parent);
+
 	/**
 	 * @fn		Reset
 	 * @brief	resets inventory location to UNKNOWN

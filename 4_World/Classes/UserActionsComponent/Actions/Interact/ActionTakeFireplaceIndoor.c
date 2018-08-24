@@ -39,42 +39,47 @@ class ActionTakeFireplaceIndoor: ActionInteractBase
 		Object target_object = action_data.m_Target.GetObject();
 		FireplaceIndoor fireplace_indoor = FireplaceIndoor.Cast( target_object );
 		
-		//create fireplace object
-		vector spawn_pos = action_data.m_Player.GetPosition();
-		Fireplace fireplace = Fireplace.Cast( GetDayZGame().CreateObject( "Fireplace", spawn_pos ) );
-		action_data.m_Player.PredictiveTakeEntityToHands( fireplace );
+		TakeFireplaceFromIndoorLambda lambda(fireplace_indoor, "Fireplace", action_data.m_Player);
+		action_data.m_Player.ServerReplaceItemWithNew(lambda);
+	}
+}
+
+class TakeFireplaceFromIndoorLambda : ReplaceItemWithNewLambdaBase
+{
+	PlayerBase m_Player;
+
+	void TakeFireplaceFromIndoorLambda (EntityAI old_item, string new_item_type, PlayerBase player)
+	{
+		m_Player = player;
+
+		InventoryLocation targetHnd = new InventoryLocation;
+		targetHnd.SetHands(player, null);
+		OverrideNewLocation(targetHnd);
+	}
+
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
+	{
+		super.CopyOldPropertiesToNew(old_item, new_item);
 		
-		//transfer all required parameters to this object (damage, wetness)
-		fireplace.SetHealth( "", "", fireplace_indoor.GetHealth("", "") );
-		fireplace.SetWet( fireplace_indoor.GetWet() );
-		
-		//transfer all cargo items to this object, position of all items must be preserved
-		//fireplace in hands cannot have any items in it but this can be changed in the future
-		CargoBase cargo = fireplace_indoor.GetInventory().GetCargo();
-		for ( int i = 0; i < cargo.GetItemCount(); i++ )
-		{	
-			EntityAI c = cargo.GetItem(i);
-			InventoryLocation srcc = new InventoryLocation;
-			if ( c.GetInventory().GetCurrentInventoryLocation( srcc ) )
-			{
-				InventoryLocation dstc = new InventoryLocation;
-				dstc.SetCargo( fireplace, c, srcc.GetIdx(), srcc.GetRow(), srcc.GetCol() );
-				action_data.m_Player.ServerTakeEntityToTargetCargoEx( fireplace, c, srcc.GetIdx(), srcc.GetRow(), srcc.GetCol() );
-			}
-		}
-		
-		//transfer all attachments to this object
-		int att_count = fireplace_indoor.GetInventory().AttachmentCount();
-		for ( int j = 0; j < att_count; j++ )
+		array<EntityAI> children = new array<EntityAI>;
+		old_item.GetInventory().EnumerateInventory(InventoryTraversalType.LEVELORDER, children);
+		int count = children.Count();
+		for (int i = 0; i < count; i++)
 		{
-			EntityAI a = fireplace_indoor.GetInventory().GetAttachmentFromIndex( 0 );
-			InventoryLocation srca = new InventoryLocation;
-			if ( a.GetInventory().GetCurrentInventoryLocation( srca ) )
+			EntityAI child = children.Get(i);
+			if (child)
 			{
-				InventoryLocation dsta = new InventoryLocation;
-				dsta.SetAttachment( fireplace, a, srca.GetSlot() );
-				action_data.m_Player.ServerTakeEntityToTargetAttachmentEx( fireplace, a, srca.GetSlot() );
+				InventoryLocation child_src = new InventoryLocation;
+				child.GetInventory().GetCurrentInventoryLocation(child_src);
+				
+				InventoryLocation child_dst = new InventoryLocation;
+				child_dst.Copy(child_src);
+				child_dst.SetParent(new_item);
+				
+				m_Player.LocalTakeToDst(child_src, child_dst);
+				
+				GetGame().RemoteObjectTreeCreate(child); // this forces server to send CreateVehicle Message to client. This is needed for preserving the appearance of network operations on client (so that DeleteObject(old) arrives before CreateVehicle(new)). @NOTE: this does not delete the object on server, only it's network representation.
 			}
 		}
 	}
-}
+};

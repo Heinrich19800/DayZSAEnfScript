@@ -188,8 +188,9 @@ Print("Loading Inc: "+ m_Counter);
 
 class LoginQueueMenu extends UIScriptedMenu
 {	
-	private TextWidget m_messageText;
-	private int m_iPosition; // position in login queue
+	protected TextWidget m_messageText;
+	protected int m_iPosition; // position in login queue
+	protected ButtonWidget m_ButtonLeave;
 	 
 	void LoginQueueMenu()
 	{
@@ -209,6 +210,7 @@ class LoginQueueMenu extends UIScriptedMenu
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/dialog_queue_position.layout");
 		
 		m_messageText = TextWidget.Cast( layoutRoot.FindAnyWidget("MessageText") );
+		m_ButtonLeave = ButtonWidget.Cast( layoutRoot.FindAnyWidget("ButtonLeave") ); 
 
 		return layoutRoot;
 	}
@@ -241,22 +243,34 @@ class LoginQueueMenu extends UIScriptedMenu
 				m_messageText.SetText(pos.ToString());
 			}
 		}
+		
+		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
+		{
+			GetDayZGame().m_loginQueue.LeaveConnectQueue();
+		}
 	}
 	
 	override bool OnClick(Widget w, int x, int y, int button)
 	{
 		super.OnClick(w, x, y, button);
-		
-		switch (w.GetUserID())
+		if ( w == m_ButtonLeave )
 		{
-		case IDC_OK:	
-			g_Game.GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().DisconnectSessionForce);
+			LeaveConnectQueue();
 			return true;
 		}
 
 		return false;
 	}
-		
+	
+	void LeaveConnectQueue()
+	{
+#ifdef PLATFORM_CONSOLE
+		GetDayZGame().SetGameState( DayZGameState.MAIN_MENU );
+		GetDayZGame().SetLoadState( DayZLoadState.MAIN_MENU_START );
+#endif		
+		g_Game.GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().DisconnectSessionForce);
+	}
+	
 	override bool OnKeyDown(Widget w, int x, int y, int key)
 	{
 		super.OnKeyDown( w, x, y, key);
@@ -265,7 +279,7 @@ class LoginQueueMenu extends UIScriptedMenu
 		{
 			// TODO: just temporary until new inputs are done
 		case KeyCode.KC_ESCAPE:
-			g_Game.GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().DisconnectSessionForce);
+			LeaveConnectQueue();
 			return true;
 		}
 		return false;
@@ -470,6 +484,8 @@ class DayZGame extends CGame
 	ref TIntArray demounit = new TIntArray;
 	
 	static ref ScriptInvoker Event_OnRPC = new ScriptInvoker();
+	
+	protected bool m_DebugPlayerPosition;
 
 	// CGame override functions
 	void DayZGame()
@@ -509,12 +525,16 @@ class DayZGame extends CGame
 				m_ParamDoNoLogs = true;
 			}
 			
-			
 		}
 		
 		if ( CommandlineGetParam("stresstest", tmp) )
 		{
 			m_IsStressTest = true;
+		}
+		
+		if ( CommandlineGetParam("enDebugPlayerPositions", tmp) )
+		{
+			m_DebugPlayerPosition = true;
 		}
 		
 		/*m_ParamNewMenu= false;
@@ -656,6 +676,11 @@ class DayZGame extends CGame
 		return m_IsStressTest;
 	}
 	
+	bool IsDebugPlayerPosition()
+	{
+		return m_DebugPlayerPosition;
+	}
+	
 	void SetGameState( DayZGameState state )
 	{
 		m_GameState = state;
@@ -748,14 +773,23 @@ class DayZGame extends CGame
 			if( null != GetUserManager().GetSelectedUser() )
 			{
 				OnlineServices.LeaveGameplaySession();
-				SetGameState( DayZGameState.MAIN_MENU );
-				SetLoadState( DayZLoadState.MAIN_MENU_START );
+				if ( GetGameState() == DayZGameState.IN_GAME )
+				{
+					SetGameState( DayZGameState.MAIN_MENU );
+					SetLoadState( DayZLoadState.MAIN_MENU_START );
+				}
 			}
 #endif
 			break;
 		
 		case MPSessionFailEventTypeID:
 			LoadingHide();
+			
+			if ( GetGameState() == DayZGameState.CONNECTING )
+			{
+				SetGameState( DayZGameState.MAIN_MENU );
+			}
+			
 			break;
 			
 		case MPSessionPlayerReadyEventTypeID:
@@ -1106,7 +1140,9 @@ class DayZGame extends CGame
 	void DeleteTitleScreen()
 	{
 		if( m_IntroMenu )
+		{
 			delete m_IntroMenu;
+		}
 	}
 	
 	void CreateGamepadDisconnectMenu()

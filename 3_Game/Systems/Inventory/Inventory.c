@@ -84,13 +84,23 @@ class GameInventory
 
 	///@{ attachments
 	/**@fn		GetSlotId
-	 * @return	attachment slot where this item belongs
+	 * @param	index		index into array of configured slots (@see GetSlotIdCount)
+	 * @return	slot where this item belongs
 	 **/
-	proto native int GetSlotId ();
-	/**@fn		GetSlotsCount
+	proto native int GetSlotId (int index);
+	/**@fn		GetSlotIdCount
+	 * @return	number of slots this item can belong to
+	 **/
+	proto native int GetSlotsIdCount ();
+	/**@fn		GetAttachmentSlotId
+	 * @param	index		index of the slot for attachment (@see GetAttachmentSlotsCount)
+	 * @return	slot for attachment
+	 **/
+	proto native int GetAttachmentSlotId (int index);
+	/**@fn		GetAttachmentSlotsCount
 	 * @return	number of slots for attachments
 	 **/
-	proto native int GetSlotsCount ();
+	proto native int GetAttachmentSlotsCount ();
 	/**@fn		HasInventorySlot
 	 * @return	true if this entity has inventory slot with id=slotId
 	 **/
@@ -722,7 +732,7 @@ class GameInventory
 				return LocationSyncMoveEntity(src, dst);
 
 			case InventoryMode.SERVER:
-				Error("Server side inventory command without player is not implemented.. none shall pass!");
+				Error("Server side inventory command without player is not implemented.. none shall pass! (src=" + src.DumpToString() + " dst=" + dst.DumpToString() + ")");
 				return false;
 				//bool ret = LocationSyncMoveEntity(src, dst);
 				//InventoryInputUserData.SendServerMove(nullptr, InventoryCommandType.SYNC_MOVE, src, dst);
@@ -790,23 +800,23 @@ class GameInventory
 	bool TakeEntityAsAttachmentEx (InventoryMode mode, notnull EntityAI item, int slot)
 	{
 		Print("[inv] I::Take2AttEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " slot=" + slot);
-		InventoryLocation src = new InventoryLocation;
-		if (item.GetInventory().GetCurrentInventoryLocation(src))
-		{
-			InventoryLocation dst = new InventoryLocation;
-			dst.SetAttachment(GetInventoryOwner(), item, slot);
-
-			return TakeToDst(mode, src, dst);
-		}
-		Error("[inv] I::Take2AttEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " Error - src has no inventory location");
-		return false;
+		return TakeEntityAsTargetAttachmentEx(mode, GetInventoryOwner(), item, slot);
 	}
 
 	/// put item as attachment of target
 	bool TakeEntityAsTargetAttachmentEx (InventoryMode mode, notnull EntityAI target, notnull EntityAI item, int slot)
 	{
 		Print("[inv] I::Take2TargetAttEx(" + typename.EnumToString(InventoryMode, mode) + ") as ATT of target=" + target + " item=" + item + " slot=" + slot);
-		return TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.ATTACHMENT, item);
+		InventoryLocation src = new InventoryLocation;
+		if (item.GetInventory().GetCurrentInventoryLocation(src))
+		{
+			InventoryLocation dst = new InventoryLocation;
+			dst.SetAttachment(target, item, slot);
+
+			return TakeToDst(mode, src, dst);
+		}
+		Error("[inv] I::Take2AttEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item + " Error - src has no inventory location");
+		return false;
 	}
 
 	bool TakeEntityAsAttachment (InventoryMode mode, notnull EntityAI item)

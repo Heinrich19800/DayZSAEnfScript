@@ -44,8 +44,7 @@ class ActionAttach: ActionSingleUseBase
 		
 		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
 		{
-			//target_entity.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
-			target_entity.LocalTakeEntityAsAttachmentEx( item_entity, target_location.GetSlot() );
+			action_data.m_Player.LocalTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
 		}
 	}
 	
@@ -59,8 +58,7 @@ class ActionAttach: ActionSingleUseBase
 		
 		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
 		{
-			//target_entity.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
-			target_entity.LocalTakeEntityAsAttachmentEx( item_entity, target_location.GetSlot() );
+			action_data.m_Player.LocalTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
 		}
 	}
 }

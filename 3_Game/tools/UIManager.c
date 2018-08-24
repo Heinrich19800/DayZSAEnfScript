@@ -89,6 +89,25 @@ class UIManager
 		return false;
 	}
 	
+	//! Close all opened menus except first menu
+	bool CloseAllSubmenus()
+	{
+		UIMenuPanel menu = GetMenu();
+		
+		while (menu && menu.GetParentMenu() && menu.GetParentMenu().GetParentMenu())
+		{
+			menu = menu.GetParentMenu();
+		}
+		
+		if (menu && menu.GetParentMenu())
+		{
+			menu.Close();
+			return true;
+		}
+		
+		return false;
+	}
+	
 	//! Close menu with specific ID (see \ref MenuID)
 	bool CloseMenu(int id)
 	{

@@ -409,8 +409,9 @@ class Man extends EntityAI
 			if (GameInventory.CanForceSwapEntities(item1, item2, item2_dst))
 				code = GetHumanInventory().ForceSwapEntities(mode, item1, item2, item2_dst);
 		}
-		syncDebugPrint("[inv] (Man) SwapEntitiesImpl - cannot swap or forceswap");
 		UpdateInventoryMenu();
+    if (!code)
+      syncDebugPrint("[inv] (Man) SwapEntitiesImpl - cannot swap or forceswap");
 		return code;
 	}
 	///@} swap juncture

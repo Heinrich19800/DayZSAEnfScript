@@ -191,7 +191,11 @@ class DayZPlayerImplement extends DayZPlayer
 	#ifndef NO_GUI
 		if (show && IsPlayerSelected())
 		{
+		#ifdef PLATFORM_CONSOLE
+			GetGame().GetUIManager().ScreenFadeIn(0, "You are dead", FadeColors.DARK_RED, FadeColors.WHITE);
+		#else
 			GetGame().GetUIManager().ScreenFadeIn(0, "You are dead", FadeColors.BLACK, FadeColors.WHITE);
+		#endif
 		}
 		else
 		{

@@ -13,7 +13,10 @@ class BotStateBase
 	Bot m_Bot; /// bot that this state belongs to
 	BotStateBase m_ParentState; /// hierarchical parent state of this state (or null)
 	ref BotFSM m_FSM; /// nested state machine (or null)
+
 	void BotStateBase (Bot bot = NULL, BotStateBase parent = NULL) { m_Bot = bot; m_Owner = bot.m_Owner; m_ParentState = parent; }
+	
+	PlayerBase GetPlayerOwner() { return m_Owner; }
 
 	/**@fn		SetParentState
 	 * @brief	allows construction of hierarchical state machine

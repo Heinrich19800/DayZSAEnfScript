@@ -61,7 +61,7 @@ class RefuelTorch extends RecipeBase
 		Rag rag = Rag.Cast(ingredients[0]);
 		Torch torch = Torch.Cast(ingredients[1]);
 		
-		Rag rag_on_torch = Rag.Cast(  torch.GetInventory().FindAttachment( rag.GetInventory().GetSlotId() )  );
+		Rag rag_on_torch = Rag.Cast(  torch.GetInventory().FindAttachment( rag.GetInventory().GetSlotId(0) )  );
 		
 		if (rag_on_torch) // Check if torch already has rag with 100% quantity
 		{
@@ -79,7 +79,7 @@ class RefuelTorch extends RecipeBase
 		Rag rag = Rag.Cast(ingredients[0]);
 		Torch torch = Torch.Cast(ingredients[1]);
 		
-		Rag rag_on_torch = Rag.Cast(  torch.GetInventory().FindAttachment( rag.GetInventory().GetSlotId() )  );
+		Rag rag_on_torch = Rag.Cast(  torch.GetInventory().FindAttachment( rag.GetInventory().GetSlotId(0) )  );
 		
 		if (rag_on_torch)
 		{
