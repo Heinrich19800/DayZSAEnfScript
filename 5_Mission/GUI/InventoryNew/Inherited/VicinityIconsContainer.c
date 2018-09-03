@@ -26,7 +26,7 @@ class VicinityIconsContainer: Container
 	
 	EntityAI GetActiveItem()
 	{
-		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		return ipw.GetItem();
 	}
@@ -53,6 +53,17 @@ class VicinityIconsContainer: Container
 	{
 		EntityAI ent = GetActiveItem();
 		return ent == NULL;
+	}
+	
+	void UnfocusAll()
+	{
+		for ( int i = 0; i < m_Container.m_Body.Count(); i++ )
+		{
+			for ( int j = 0; j < ITEMS_IN_ROW; j++ )
+			{
+				m_Container.Get( i ).GetMainPanel().FindAnyWidget( "Cursor" + j ).Show( false );
+			}
+		}
 	}
 	
 	override void MoveGridCursor( int direction )
@@ -86,7 +97,8 @@ class VicinityIconsContainer: Container
 		else if( direction == Direction.DOWN )
 		{
 			m_FocusedRow++;
-			if( m_FocusedRow == Count() )
+			Print( m_Container.m_Body.Count() );
+			if( m_FocusedRow == m_Container.m_Body.Count() )
 			{
 				m_FocusedRow = 0 ;
 				left_area = LeftArea.Cast( GetParent().GetParent() );
@@ -95,9 +107,10 @@ class VicinityIconsContainer: Container
 			}				
 		}
 		
-		Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
+		Print( m_Container.Get( m_FocusedRow ) );
+		m_Container.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
 		
-		Container cnt = Get( m_FocusedRow );
+		Container cnt = m_Container.Get( m_FocusedRow );
 		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( cnt.GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
 		EntityAI focused_item =  item_preview.GetItem();
 
@@ -151,7 +164,7 @@ class VicinityIconsContainer: Container
 	
 	override void EquipItem( )
 	{
-		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		EntityAI ent = ipw.GetItem();
 		
@@ -163,7 +176,7 @@ class VicinityIconsContainer: Container
 		
 	override void TransferItem( )
 	{
-		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		EntityAI ent = ipw.GetItem();
 		if( ent )
@@ -177,7 +190,7 @@ class VicinityIconsContainer: Container
 	
 	override void Combine( )
 	{
-		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		ItemBase ent = ItemBase.Cast( ipw.GetItem() );
 		
@@ -196,19 +209,25 @@ class VicinityIconsContainer: Container
 		}
 	}
 	
+	void SelectItem()
+	{
+		EntityAI ent = GetActiveItem();
+		ItemManager.GetInstance().SetSelectedItem( ent, NULL, m_Container.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ) );
+	}
+	
 	override void Select()
 	{
-		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( 0 ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Container.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Icon" + m_FocusedColumn ).FindAnyWidget( "Render" + m_FocusedColumn ) );
 		ItemManager.GetInstance().SetSelectedVicinityItem( ipw );
 		EntityAI ent = ipw.GetItem();
 		
-		if( ItemManager.GetInstance().IsMicromanagmentMode() )
+		if( ItemManager.GetInstance().IsItemMoving() )
 		{
 			EntityAI selected_item = ItemManager.GetInstance().GetSelectedItem();
 			if( selected_item && GetGame().GetPlayer().CanDropEntity( selected_item ) )
 			{
 				GetGame().GetPlayer().PredictiveDropEntity( selected_item );
-				ItemManager.GetInstance().SetSelectedItem( NULL, NULL );
+				ItemManager.GetInstance().SetSelectedItem( NULL, NULL, NULL );
 				GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
 				return;
 			}

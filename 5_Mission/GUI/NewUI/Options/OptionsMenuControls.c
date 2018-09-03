@@ -47,28 +47,28 @@ class OptionsMenuControls extends ScriptedWidgetEventHandler
 		
 		#ifdef PLATFORM_WINDOWS
 		#ifndef PLATFORM_CONSOLE
-		m_VSensitivityOption						= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_XAXIS ) );
-		m_HSensitivityOption						= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_YAXIS ) );
+		m_VSensitivityOption						= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_YAXIS ) );
+		m_HSensitivityOption						= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_XAXIS ) );
 		m_InvertOption								= SwitchOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_YREVERSED ) );
 		#endif
 		#endif
 		
-		m_ControllerVSensitivityOption				= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_CONTROLLER_XAXIS ) );
-		m_ControllerHSensitivityOption				= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_CONTROLLER_YAXIS ) );
+		m_ControllerVSensitivityOption				= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_CONTROLLER_YAXIS ) );
+		m_ControllerHSensitivityOption				= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_CONTROLLER_XAXIS ) );
 		m_ControllerInvertOption					= SwitchOptionsAccess.Cast( m_Options.GetOptionByType( AT_CONFIG_CONTROLLER_REVERSED_LOOK ) );
 		
 		#ifdef PLATFORM_WINDOWS
 		#ifndef PLATFORM_CONSOLE
-		m_Root.FindAnyWidget( "vsensitivity_setting_option" ).SetUserID( AT_CONFIG_XAXIS );
-		m_Root.FindAnyWidget( "hsensitivity_setting_option" ).SetUserID( AT_CONFIG_YAXIS );
+		m_Root.FindAnyWidget( "vsensitivity_setting_option" ).SetUserID( AT_CONFIG_YAXIS );
+		m_Root.FindAnyWidget( "hsensitivity_setting_option" ).SetUserID( AT_CONFIG_XAXIS );
 		m_Root.FindAnyWidget( "invert_setting_option" ).SetUserID( AT_CONFIG_YREVERSED );
 		m_Keybindings.SetUserID( 777 );
 		m_Keybindings.SetHandler( this );
 		#endif
 		#endif
 		
-		m_Root.FindAnyWidget( "controller_vsensitivity_setting_option" ).SetUserID( AT_CONFIG_CONTROLLER_XAXIS );
-		m_Root.FindAnyWidget( "controller_hsensitivity_setting_option" ).SetUserID( AT_CONFIG_CONTROLLER_YAXIS );
+		m_Root.FindAnyWidget( "controller_vsensitivity_setting_option" ).SetUserID( AT_CONFIG_CONTROLLER_YAXIS );
+		m_Root.FindAnyWidget( "controller_hsensitivity_setting_option" ).SetUserID( AT_CONFIG_CONTROLLER_XAXIS );
 		m_Root.FindAnyWidget( "controller_invert_setting_option" ).SetUserID( AT_CONFIG_CONTROLLER_REVERSED_LOOK );
 
 		ref array<string> opt						= { "Disabled", "Enabled" };
@@ -267,8 +267,8 @@ class OptionsMenuControls extends ScriptedWidgetEventHandler
 	void FillTextMap()
 	{
 		m_TextMap = new map<int, ref Param2<string, string>>;
-		m_TextMap.Insert( AT_CONFIG_CONTROLLER_XAXIS, new Param2<string, string>( "Vertical Sensitivity", "Sets the turn rate of looking up and down." ) );
-		m_TextMap.Insert( AT_CONFIG_CONTROLLER_YAXIS, new Param2<string, string>( "Horizontal Sensitivity", "Sets the turn rate of looking left and right." ) );
+		m_TextMap.Insert( AT_CONFIG_CONTROLLER_YAXIS, new Param2<string, string>( "Vertical Sensitivity", "Sets the rate of looking up and down." ) );
+		m_TextMap.Insert( AT_CONFIG_CONTROLLER_XAXIS, new Param2<string, string>( "Horizontal Sensitivity", "Sets the turn rate of looking left and right." ) );
 		m_TextMap.Insert( AT_CONFIG_CONTROLLER_REVERSED_LOOK, new Param2<string, string>( "Invert Vertical View", "Inverts the input for looking up and down." ) );
 		m_TextMap.Insert( AT_CONFIG_XAXIS, new Param2<string, string>( "Vertical Sensitivity", "Sets the turn rate of looking up and down." ) );
 		m_TextMap.Insert( AT_CONFIG_YAXIS, new Param2<string, string>( "Horizontal Sensitivity", "Sets the turn rate of looking left and right." ) );

@@ -346,14 +346,14 @@ class PlayerContainer: CollapsibleContainer
 			}
 			else if ( iwca )
 			{
-				//iwca.SelectItem();
+				iwca.SelectItem();
 			}
 		}
 		else
 		{
 			ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
 			ItemBase item = ItemBase.Cast( item_preview.GetItem() );
-			ItemManager.GetInstance().SetSelectedItem( item, NULL );
+			ItemManager.GetInstance().SetSelectedItem( item, NULL, NULL );
 		}
 	}
 	
@@ -378,7 +378,7 @@ class PlayerContainer: CollapsibleContainer
 			{
 				EntityAI selected_item = ItemManager.GetInstance().GetSelectedItem();
 				GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.ATTACHMENT, selected_item );
-				ItemManager.GetInstance().SetSelectedItem( NULL, NULL );
+				ItemManager.GetInstance().SetSelectedItem( NULL, NULL, NULL );
 				m_PlayerAttachmentsContainer.Get( 0 ).GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
 			}
 			else

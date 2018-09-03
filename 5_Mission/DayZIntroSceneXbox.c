@@ -47,6 +47,10 @@ class DayZIntroSceneXbox: Managed
 		m_LastShavedSeconds = 0;
 		
 		//g_Game.m_PlayerName = "Survivor"; //default
+		if( m_MenuData.GetCharactersCount() == 0 )
+		{
+			m_LastPlayedCharacterID = -1;
+		}
 		
 		if ( m_LastPlayedCharacterID > -1 )
 		{
@@ -149,6 +153,9 @@ class DayZIntroSceneXbox: Managed
 			m_TimerDate = null;
 		}
 		
+		GetGame().ObjectDelete( m_SceneCharacter );
+		GetGame().ObjectDelete( m_SceneCamera );
+		m_MenuData.ClearCharacters();
 		Material material = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/chromaber");
 		material.SetParam("PowerX", 0.0);
 		material.SetParam("PowerY", 0.0);

@@ -96,6 +96,8 @@ class BiosUserManager
 		if( user || !OnlineServices.ErrorCaught( error ) )
 		{
 			SelectUser( user );
+			if( GetGame().GetMission() )
+				GetGame().GetMission().Reset();
 		}
 		g_Game.SelectUser();
 	}

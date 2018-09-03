@@ -361,7 +361,9 @@ class MainMenu extends UIScriptedMenu
 		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
 		{
 			g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
+			#ifndef PLATFORM_WINDOWS
 			GetGame().GetInput().ResetActiveGamepad();
+			#endif
 		}
 	}
 #endif

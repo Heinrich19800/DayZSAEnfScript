@@ -217,6 +217,15 @@ class Magazine : InventoryItemSuper
 	}
 	*/
 	
+	override bool IsCombineAll(ItemBase other_item, bool use_stack_max = false)
+	{
+		Magazine other_magazine = Magazine.Cast(other_item);
+		int free_space = this.GetAmmoMax() - this.GetAmmoCount();
+		
+		return free_space >= other_magazine.GetAmmoCount();
+	
+	}
+	
 	override void CombineItems( ItemBase other_item, bool use_stack_max = false )
 	{
 		if( !CanBeCombined(other_item) ) return;

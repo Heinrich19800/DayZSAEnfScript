@@ -1,9 +1,246 @@
 class AttRow: ClosableContainer
 {
+	ref array<ref IconsContainer> m_Ics;
+	
 	void AttRow( ContainerBase parent )
 	{
 		ClosableHeader header = ClosableHeader.Cast( m_Body.Get( 0 ) );
 		header.GetMainPanel().ClearFlags( WidgetFlags.DRAGGABLE );
+		m_Ics = new array<ref IconsContainer>();
+	}
+	
+	EntityAI GetFocusedEntity()
+	{
+		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
+		return ipw.GetItem();
+	}
+	
+	void SelectItem()
+	{
+		ItemBase item = ItemBase.Cast( GetFocusedEntity() );
+		ItemManager.GetInstance().SetSelectedItem( item, NULL, m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ) );
+	}
+	
+	void Select()
+	{
+		EntityAI prev_item = EntityAI.Cast( GetFocusedEntity() );
+		Man player = GetGame().GetPlayer();
+		
+		if( ItemManager.GetInstance().IsItemMoving() )
+		{
+			EntityAI selected_item = ItemManager.GetInstance().GetSelectedItem();
+			if( selected_item /*&& GetEntity()*/ )
+			{
+				bool can_add = m_Entity.GetInventory().CanAddEntityInCargo( selected_item );
+				//bool in_cargo = !player.GetInventory().HasEntityInInventory( selected_item ) || !m_Entity.GetInventory().HasEntityInCargo( selected_item );
+				if( can_add)
+				{
+					player.PredictiveTakeEntityToTargetAttachment(m_Entity, selected_item);
+					ItemManager.GetInstance().SetSelectedItem( NULL, NULL, NULL );
+				}
+				else
+				{
+					Icon selected_icon = ItemManager.GetInstance().GetSelectedIcon();
+					if( selected_icon )
+					{
+						selected_icon.SetActive( false );
+					}
+					Widget selected_widget = ItemManager.GetInstance().GetSelectedWidget();
+					if( selected_widget )
+					{
+						selected_widget.Show( false )
+					}
+				}
+				
+				if( m_Parent.IsInherited( PlayerContainer ) )
+				{
+					PlayerContainer player_container_parent = PlayerContainer.Cast( m_Parent );
+					player_container_parent.UnfocusPlayerAttachmentsContainer();
+				}
+			}
+		}
+		else
+		{
+			if ( prev_item )
+			{
+					EntityAI item_in_hands = GetGame().GetPlayer().GetHumanInventory().GetEntityInHands();
+					if( item_in_hands )
+					{
+						if( GameInventory.CanSwapEntities( item_in_hands, prev_item ) )
+						{
+							player.PredictiveSwapEntities( item_in_hands, prev_item );
+						}
+						else
+						{
+							player.PredictiveSwapEntities( prev_item, item_in_hands);
+						}
+					}
+					else
+					{
+						if( player.GetHumanInventory().CanAddEntityInHands( prev_item ) )
+						{
+							player.PredictiveTakeEntityToHands( prev_item );
+						}
+					}
+			}		
+		}
+	}
+	
+	void TransferItem()
+	{
+		EntityAI entity = GetFocusedEntity();
+		if( entity )
+		{
+			Weapon_Base wpn;
+			Magazine mag;
+			PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+			if( Class.CastTo(mag, entity) && Class.CastTo(wpn, mag.GetHierarchyParent()))
+			{
+				if (GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() == wpn)
+				{
+					InventoryLocation inv_loc_dst = new InventoryLocation;
+					player.GetInventory().FindFreeLocationFor( entity, FindInventoryLocationType.CARGO, inv_loc_dst );
+					player.GetWeaponManager().DetachMagazine(inv_loc_dst);
+				}
+			}
+			else
+			{
+				GetGame().GetPlayer().PredictiveTakeEntityToInventory( FindInventoryLocationType.CARGO, entity );
+			}
+		}
+	}
+	
+	void TransferItemToVicinity()
+	{
+		EntityAI item = GetFocusedEntity();
+		Weapon_Base wpn;
+		Magazine mag;
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+		if( Class.CastTo(mag, item) && Class.CastTo(wpn, mag.GetHierarchyParent()))
+		{
+			if (GetGame().GetPlayer().GetHumanInventory().GetEntityInHands() == wpn)
+			{
+				InventoryLocation next = new InventoryLocation;
+				vector m4[4];
+				Math3D.MatrixIdentity4(m4);
+				GameInventory.PrepareDropEntityPos(player, mag, m4);
+				next.SetGround(mag, m4);
+
+				player.GetWeaponManager().DetachMagazine(next);
+			}
+		}
+		else if( item && player.CanDropEntity( item ) )
+		{
+			player.PredictiveDropEntity( item );
+		}
+	}
+	
+	void SetDefaultFocus()
+	{
+		m_FocusedRow = 0;
+		m_FocusedColumn = 0;
+		if( ItemManager.GetInstance().IsMicromanagmentMode() )
+		{
+			return;
+		}
+		m_Ics.Get( 0 ).GetMainPanel().FindAnyWidget( "Cursor" + 0 ).Show( true );
+		
+		EntityAI focused_item = GetFocusedEntity();
+		if( focused_item )
+		{
+			float x, y;
+			m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+			ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+		}
+	}
+	
+	void MoveGridCursor( int direction )
+	{
+		ItemManager.GetInstance().HideTooltip();
+		UnfocusAll();
+		if( direction == Direction.UP )
+		{
+			m_FocusedRow--;
+			if( m_FocusedRow < 0 )
+			{
+				m_FocusedRow  = m_Ics.Count() - 1;
+				Container cnt = Container.Cast( m_Parent.GetParent().GetParent() );
+				if( cnt )
+					{
+						cnt.SetPreviousActive();
+					}
+					else
+					{
+						cnt = Container.Cast( m_Parent );
+						cnt.SetPreviousActive();
+					}
+				return;
+				
+			}
+	
+			int max_row = m_Ics.Get( m_FocusedRow ).GetColumnCount() - 1;
+			if( max_row < m_FocusedColumn )
+			{
+				m_FocusedColumn = max_row;
+			}
+		}
+	
+		if( direction == Direction.DOWN )
+		{
+			m_FocusedRow++;
+			if( m_FocusedRow == m_Ics.Count() )
+			{
+				m_FocusedRow = 0 ;
+				cnt = Container.Cast( m_Parent.GetParent().GetParent() );
+				if( cnt )
+				{
+					cnt.SetNextActive();
+				}
+				else
+				{
+					cnt = Container.Cast( m_Parent );
+					cnt.SetNextActive();
+				}
+				return;
+			}
+	
+			max_row = m_Ics.Get( m_FocusedRow ).GetColumnCount() - 1;
+			if( max_row < m_FocusedColumn )
+			{
+				m_FocusedColumn = max_row;
+			}
+		}
+	
+		if( direction == Direction.RIGHT )
+		{
+			m_FocusedColumn++;
+			if( m_FocusedColumn == m_Ics.Get( m_FocusedRow ).GetColumnCount() )
+			{
+				m_FocusedColumn = 0;
+				
+			}
+		}
+	
+		if( direction == Direction.LEFT )
+		{
+			m_FocusedColumn--;
+			if( m_FocusedColumn < 0 )
+			{
+				m_FocusedColumn = m_Ics.Get( m_FocusedRow ).GetColumnCount() - 1;
+				
+			}
+		}
+	
+		//Container cnt = Container.Cast( m_Body.Get( 1 ) );
+		m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
+		
+		EntityAI focused_item = GetFocusedEntity();
+		if( focused_item )
+		{
+			float x, y;
+			m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
+			ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
+		}
 	}
 	
 	override void OnDropReceivedFromHeader( Widget w, int x, int y, Widget receiver )
@@ -294,13 +531,29 @@ class AttRow: ClosableContainer
 		
 		array<string> slots = player_ghosts_slots2;
 		int count = player_ghosts_slots2.Count();
+		int number_of_rows = ( count / 7 );
+		if( count % 7 == 0 )
+		{
+			number_of_rows--;
+		}
 		
 		if( parent_m_Body_count < attachments_categories_count + 2 )
 		{
 			for ( int j = 0; j < (count/7)+1; j++ )
 			{
 				IconsContainer ic = new IconsContainer(this);
+				
+				if( j == number_of_rows && count % 7 != 0 )
+				{
+					ic.SetColumnCount( count % 7 );
+				}
+				else
+				{
+					ic.SetColumnCount( 7 );
+				}
+				
 				this.Insert(ic);
+				m_Ics.Insert( ic );
 				for(int k = 0; k < 7; k++)
 				{
 					WidgetEventHandler.GetInstance().RegisterOnDropReceived( ic.GetMainPanel().FindAnyWidget("Icon"+k),  this, "OnDropReceivedFromHeader" );

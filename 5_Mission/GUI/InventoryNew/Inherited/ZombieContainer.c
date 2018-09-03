@@ -459,7 +459,7 @@ class ZombieContainer: CollapsibleContainer
 		{
 			ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_Container.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );
 			ItemBase item = ItemBase.Cast( item_preview.GetItem() );
-			ItemManager.GetInstance().SetSelectedItem( item, NULL );
+			ItemManager.GetInstance().SetSelectedItem( item, NULL, NULL );
 		}
 	}
 }

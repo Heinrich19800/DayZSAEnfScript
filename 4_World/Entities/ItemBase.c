@@ -425,6 +425,14 @@ class ItemBase extends InventoryItem
 				ctx.Write(use_stack_max);
 				ctx.Write(-1);
 				ctx.Send();
+				
+				if( IsCombineAll(entity2, use_stack_max) )
+				{
+					InventoryLocation il = new InventoryLocation;
+					entity2.GetInventory().GetCurrentInventoryLocation(il);
+					GetGame().GetPlayer().GetInventory().AddInventoryReservation(entity2,il,5000);
+					//entity2.GetInventory().GetCurrentInventoryLocation
+				}
 			}
 		}
 		else if( !GetGame().IsMultiplayer() )
@@ -882,35 +890,44 @@ class ItemBase extends InventoryItem
 		return ( this.GetType() == other_item.GetType() );
 	}
 	
+	bool IsCombineAll(ItemBase other_item, bool use_stack_max = false)
+	{
+		return ComputeQuantityUsed(other_item,use_stack_max) == other_item.GetQuantity();
+	}
+	
+	int ComputeQuantityUsed( ItemBase other_item, bool use_stack_max = false )
+	{
+		float other_item_quantity = other_item.GetQuantity();
+		float this_free_space;
+			
+		int max_quantity;
+		int stack_max = InventorySlots.GetStackMaxForSlotId( GetInventory().GetSlotId(0) );
+		if( use_stack_max && stack_max > 0 )
+		{
+			max_quantity = stack_max;
+		}
+		else
+		{
+			max_quantity = GetQuantityMax();
+		}
+		this_free_space = max_quantity - GetQuantity();
+			
+		if( other_item_quantity > this_free_space )
+		{
+			return this_free_space;
+		}
+		else
+		{
+			return other_item_quantity;
+		}
+	}
+	
 	void CombineItems( ItemBase other_item, bool use_stack_max = false )
 	{
 		if(!CanBeCombined(other_item)) return;
 		if( !IsMagazine() )
 		{
-			float other_item_quantity = other_item.GetQuantity();
-			float this_free_space;
-			
-			int max_quantity;
-			int stack_max = InventorySlots.GetStackMaxForSlotId( GetInventory().GetSlotId(0) );
-			if( use_stack_max && stack_max > 0 )
-			{
-				max_quantity = stack_max;
-			}
-			else
-			{
-				max_quantity = GetQuantityMax();
-			}
-			this_free_space = max_quantity - GetQuantity();
-			
-			float quantity_used = 0;
-			if( other_item_quantity > this_free_space )
-			{
-				quantity_used = this_free_space;
-			}
-			else
-			{
-				quantity_used = other_item_quantity;
-			}
+			int quantity_used = ComputeQuantityUsed(other_item,use_stack_max);
 			if( quantity_used != 0 )
 			{
 				this.AddQuantity(quantity_used);

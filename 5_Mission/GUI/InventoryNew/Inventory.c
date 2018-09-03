@@ -552,7 +552,7 @@ class Inventory: ContainerBase
 			}
 			if( m_HandsArea.IsActive() )
 			{
-				//m_HandsArea.SelectItem();
+				m_HandsArea.SelectItem();
 			}
 			UpdateConsoleToolbar();
 			ItemManager.GetInstance().HideTooltip();
@@ -650,6 +650,10 @@ class Inventory: ContainerBase
 		if( GetGame().GetInput().GetActionDown( UAUITabLeft, false ) )
 		{
 			ItemManager.GetInstance().HideTooltip();
+			if( ItemManager.GetInstance().IsMicromanagmentMode() )
+			{
+				ItemManager.GetInstance().SetItemMoving( true );
+			}
 			if( m_LeftArea.IsActive() )
 			{
 				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
@@ -692,6 +696,10 @@ class Inventory: ContainerBase
 
 		if( GetGame().GetInput().GetActionDown( UAUITabRight, false ) )
 		{
+			if( ItemManager.GetInstance().IsMicromanagmentMode() )
+			{
+				ItemManager.GetInstance().SetItemMoving( true );
+			}
 			ItemManager.GetInstance().HideTooltip();
 			if( m_LeftArea.IsActive() )
 			{
@@ -859,7 +867,7 @@ class Inventory: ContainerBase
 				hud.ToggleHud( hud.GetHudState(), true );
 			}
 		}
-		ItemManager.GetInstance().SetSelectedItem( NULL, NULL );
+		ItemManager.GetInstance().SetSelectedItem( NULL, NULL, NULL );
 	}
 
 	void RefreshQuickbar()

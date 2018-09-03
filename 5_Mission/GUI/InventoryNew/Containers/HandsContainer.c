@@ -229,7 +229,14 @@ class HandsContainer: Container
 			}
 			else
 			{
-				return m_MainPanel.FindAnyWidget("Selected").IsVisible();
+				if( m_MainPanel.FindAnyWidget("Selected") )
+				{
+					return m_MainPanel.FindAnyWidget("Selected").IsVisible();
+				}
+				else
+				{
+					return m_MainPanel.FindAnyWidget("SelectedContainer").IsVisible();		
+				}
 			}
 		}
 		else
@@ -300,6 +307,13 @@ class HandsContainer: Container
 		}
 	}*/
 	
+	void SelectItem()
+	{
+		Man player = GetGame().GetPlayer();
+		EntityAI item_in_hands = player.GetHumanInventory().GetEntityInHands();
+		ItemManager.GetInstance().SetSelectedItem( item_in_hands, NULL, NULL );
+	}
+	
 	bool to_reselect;
 	EntityAI item_to_be_swap;
 	override void Select()
@@ -327,6 +341,11 @@ class HandsContainer: Container
 				if( selected_item && player.GetHumanInventory().CanAddEntityInHands( selected_item ) )
 				{
  					player.PredictiveTakeEntityToHands( selected_item );
+					Widget selected_widget = ItemManager.GetInstance().GetSelectedWidget();
+					if( selected_widget )
+					{
+						selected_widget.Show( false )
+					}
 					to_reselect = true;
 				}
 				return;

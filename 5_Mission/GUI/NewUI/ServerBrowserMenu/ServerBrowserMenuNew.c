@@ -63,11 +63,17 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
 			ImageWidget toolbar_x = layoutRoot.FindAnyWidget( "RefreshIcon" );
 			ImageWidget toolbar_y = layoutRoot.FindAnyWidget( "ResetIcon" );
+			ImageWidget toolbar_rt = layoutRoot.FindAnyWidget( "SortIcon" );
 			toolbar_a.LoadImageFile( 0, "set:playstation_buttons image:cross" );
 			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
 			toolbar_x.LoadImageFile( 0, "set:playstation_buttons image:square" );
 			toolbar_y.LoadImageFile( 0, "set:playstation_buttons image:triangle" );
+			toolbar_rt.LoadImageFile( 0, "set:playstation_buttons image:R2" );
 		#endif
+		
+		//Sort init
+		TextWidget sort_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "SortText" ) );
+		sort_text.SetText( "Sort host ASC" );
 		
 		/*
 		ref GetServersResult result = new GetServersResult;
@@ -298,6 +304,12 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		{
 			GetSelectedTab().PressY();
 		}
+		
+		if( GetGame().GetInput().GetActionDown( UAUINextDown, false ) )
+		{
+			TextWidget sort_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "SortText" ) );
+			GetSelectedTab().PressRTrigger( sort_text );
+		}		
 		
 		if( GetGame().GetInput().GetActionDown( UAUILeft, false ) )
 		{

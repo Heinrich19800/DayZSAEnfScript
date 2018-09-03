@@ -756,11 +756,36 @@ class CGame
 	}
 	
 	//! Checks if this surface is softt (it can be dig into with shovel or similar items)
-	bool IsSurfaceSoft(string surface)
+	bool IsSurfaceSoftGround(string surface)
 	{
-		if ( surface == "cp_gravel"  ||  surface == "dirt_ext"  ||  surface == "cp_dirt"  ||  surface == "cp_broadleaf_dense1"  ||  surface == "cp_broadleaf_dense2"  ||  surface == "cp_broadleaf_sparse1"  ||  surface == "cp_broadleaf_sparse2"  ||  surface == "cp_conifer_common1"  ||  surface == "cp_grass"  ||  surface == "cp_grass_tall"  ||  surface == "grass_dry_ext" )
+		const int array_elements = 16; // Sadly we don't have full API for dealing with static arrays right now, so we can't write flexible code. When we get Contains(...) method then a lot of this code can be replaced by it.
+		string compatible_surfaces[array_elements] = 	
+			{
+				"cp_gravel",
+				"dirt_ext",
+				"cp_dirt",
+				"cp_broadleaf_dense1",
+				"cp_broadleaf_dense2",
+				"cp_broadleaf_sparse1",
+				"cp_broadleaf_sparse2",
+				"cp_grass",
+				"cp_grass_tall",
+				"grass_dry_ext",
+				"cp_conifer_common1",
+				"cp_conifer_common2",
+				"cp_conifer_moss1",
+				"cp_conifer_moss2",
+				"gravel_small_ext",
+				"sand_ext"}; // Don't forget to update array_elements if you change element count!
+		
+		
+		for ( int i = 0; i < array_elements; i++ )
 		{
-			return true;
+			if ( compatible_surfaces[i] == surface )
+			{
+				return true;
+				break;
+			}
 		}
 		
 		return false;

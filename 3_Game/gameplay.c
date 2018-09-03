@@ -609,6 +609,7 @@ class Mission
 	void OnEvent(EventType eventTypeId, Param params) {}
 	void OnItemUsed(InventoryItem item, Man owner) {}	
 	void AddDummyPlayerToScheduler(Man player){}
+	void Reset(){}
 	
 	Hud GetHud()
 	{ 

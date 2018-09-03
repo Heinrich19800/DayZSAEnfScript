@@ -14,6 +14,7 @@ class ItemManager
 
 	protected EntityAI m_SelectedItem;
 	protected ref Icon m_SelectedIcon;
+	protected Widget m_SelectedWidget;
 	protected ItemPreviewWidget m_Ipw;
 	
 	protected HandsPreview m_HandsPreview;
@@ -76,11 +77,17 @@ class ItemManager
 	{
 		return m_SelectedIcon;
 	}
+	
+	Widget GetSelectedWidget()
+	{
+		return m_SelectedWidget;
+	}
 
-	void SetSelectedItem( EntityAI selected_item, Icon selected_icon )
+	void SetSelectedItem( EntityAI selected_item, Icon selected_icon, Widget selected_widget )
 	{
 		m_SelectedItem = selected_item;
 		m_SelectedIcon = selected_icon;
+		m_SelectedWidget = selected_widget;
 	}
 
 	void SetSelectedVicinityItem( ItemPreviewWidget ipw )

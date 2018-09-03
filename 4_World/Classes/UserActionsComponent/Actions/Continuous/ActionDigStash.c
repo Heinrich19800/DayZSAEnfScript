@@ -66,7 +66,7 @@ class ActionDigStash: ActionContinuousBase
 					return true;
 				}
 				
-				if ( GetGame().IsSurfaceSoft(surface_type) )
+				if ( GetGame().IsSurfaceSoftGround(surface_type) )
 				{
 					// Check slope angle
 					vector posA = position + "0.5 0 0.5";

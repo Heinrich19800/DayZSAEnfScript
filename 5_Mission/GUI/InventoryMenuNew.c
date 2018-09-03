@@ -16,9 +16,6 @@ class InventoryMenuNew extends UIScriptedMenu
 	void ~InventoryMenuNew()
 	{
 		UnlockControls();
-		MissionGameplay mission = MissionGameplay.Cast( GetGame().GetMission() );
-		if( mission )
-			mission.MoveHudForInventory( false );
 	}
 	
 	override Widget Init()
@@ -62,6 +59,11 @@ class InventoryMenuNew extends UIScriptedMenu
 			m_Inventory.OnShow();
 		LockControls();
 		SetFocus( layoutRoot );
+		MissionGameplay mission = MissionGameplay.Cast( GetGame().GetMission() );
+		if( mission )
+		{
+			mission.MoveHudForInventory( true );
+		}
 	}
 	
 	override bool OnController( Widget w, int control, int value )

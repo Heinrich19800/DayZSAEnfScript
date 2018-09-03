@@ -103,7 +103,7 @@ class ItemWithCargo: ClosableContainer
 		{
 			return;
 		}
-		ItemManager.GetInstance().SetSelectedItem( focused_item.GetObject(), focused_item );
+		ItemManager.GetInstance().SetSelectedItem( ItemBase.Cast( focused_item.GetObject() ), focused_item, NULL );
 	}
 
 	override void Select()
@@ -126,6 +126,11 @@ class ItemWithCargo: ClosableContainer
 				{
 					player.PredictiveTakeEntityToTargetCargo(m_Entity, selected_item);
 					m_CargoGrid.SetDefaultFocusAfterInitIcon();
+					Widget selected_widget1 = ItemManager.GetInstance().GetSelectedWidget();
+					if( selected_widget1 )
+					{
+						selected_widget1.Show( false )
+					}
 				}
 				else
 				{
@@ -134,6 +139,11 @@ class ItemWithCargo: ClosableContainer
 					if( selected_icon )
 					{
 						selected_icon.SetActive( false );
+					}
+					Widget selected_widget = ItemManager.GetInstance().GetSelectedWidget();
+					if( selected_widget )
+					{
+						selected_widget.Show( false )
 					}
 				}
 				

@@ -188,7 +188,8 @@ class ActionPlaceObject: ActionContinuousBase
 		if (entity_for_placing.GetInventory().GetCurrentInventoryLocation( source ))
 		{
 			destination.SetGroundEx( entity_for_placing, position, direction );
-			entity_for_placing.PredictiveTakeToDst( source, destination );
+			//entity_for_placing.PredictiveTakeToDst( source, destination );
+			action_data.m_Player.GetInventory().TakeToDst(InventoryMode.PREDICTIVE, source, destination);
 		}
 	}
 
@@ -219,7 +220,8 @@ class ActionPlaceObject: ActionContinuousBase
 			if ( entity_for_placing.GetInventory().GetCurrentInventoryLocation( source ) )
 			{
 				destination.SetGroundEx( entity_for_placing, position, direction );
-				entity_for_placing.LocalTakeToDst( source, destination );
+				//entity_for_placing.LocalTakeToDst( source, destination );
+				action_data.m_Player.GetInventory().TakeToDst(InventoryMode.LOCAL, source, destination);
 			}
 		
 			action_data.m_Player.GetHologramLocal().PlaceEntity( entity_for_placing, action_data.m_Player.GetHologramLocal().GetProjectionPosition(), action_data.m_Player.GetHologramLocal().GetProjectionOrientation() );

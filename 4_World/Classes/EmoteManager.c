@@ -788,12 +788,17 @@ class EmoteManager
 			}
 		}
 		//melee weapon suicide
-		else
+		else if (m_Player.GetItemInHands())
 		{
 			m_Callback.RegisterAnimationEvent("Death",1);
 			m_Player.SetSuicide(true);
 			m_Callback.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END2);
 			//GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(this.KillPlayer, 4000, false);
+		}
+		//unarmed "suicide" :)
+		else
+		{
+			m_Callback.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END2);
 		}
 	}
 

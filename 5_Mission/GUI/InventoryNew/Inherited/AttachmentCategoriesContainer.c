@@ -31,6 +31,11 @@ class AttachmentCategoriesContainer: CollapsibleContainer
 		}
 	}
 	
+	void SelectItem()
+	{
+		m_FocusedContainer.SelectItem();	
+	}
+	
 	/*void SetLastActive()
 	{
 		Container cont = Container.Cast( m_Body[m_Body.Count() - 1] );

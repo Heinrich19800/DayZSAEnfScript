@@ -22,6 +22,17 @@ class MissionMainMenu extends MissionBase
 		}
 	}
 	
+	void Reset()
+	{
+		#ifdef PLATFORM_CONSOLE
+			delete m_IntroSceneXbox;
+		#else
+			delete m_IntroScenePC;
+		#endif
+		
+		CreateIntroScene();
+	}
+	
 	DayZIntroScene GetIntroScenePC()
 	{
 		#ifdef PLATFORM_CONSOLE

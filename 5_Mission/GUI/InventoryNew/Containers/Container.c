@@ -111,12 +111,18 @@ class Container: ContainerBase
 			}
 			else if(this.IsInherited( AttRow ))
 			{
+				AttRow att_row = AttRow.Cast( this );
+				if( att_row )
+				{
+					att_row.SetDefaultFocus();
+				}
 			}
 			else
 			{
 				if( !ItemManager.GetInstance().IsMicromanagmentMode() )
 				{
 					m_FocusedColumn = 0;
+					m_FocusedRow = 0;
 					ContainerBase cnt = ContainerBase.Cast( m_Body.Get( 0 ) );
 					cnt.GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ).Show( true );
 					ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( cnt.GetMainPanel().FindAnyWidget( "Render" + m_FocusedColumn ) );

@@ -61,14 +61,13 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 	{
 		string data;
 		GetGame().GetProfileString( "SB_Filter_" + m_Tab.GetTabType(), data );
-		ref map<string, string> options;
+		ref map<string, string> options = new map<string, string>;
 		if( data != "" )
 		{
-			options = new map<string, string>;
-			JsonFileLoader<map<string, string>>.JsonLoadData( data, options );
+			JsonFileLoader<ref map<string, string>>.JsonLoadData( data, options );
 		}
 		
-		if( options && options.Count() > 6 )
+		if( options && options.Count() >= 6 )
 		{
 			m_PingFilter.SetStringOption( options.Get( "m_PingFilter" ) );
 			m_FavoritedFilter.SetStringOption( options.Get( "m_FavoritedFilter" ) );
@@ -77,7 +76,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 			m_FullServerFilter.SetStringOption( options.Get( "m_FullServerFilter" ) );
 			m_AcceleratedTimeFilter.SetStringOption( options.Get( "m_AcceleratedTimeFilter" ) );
 		
-			if( options.Count() > 12 )
+			if( options.Count() >= 12 )
 			{
 				#ifdef PLATFORM_WINDOWS
 					#ifndef PLATFORM_CONSOLE
@@ -118,7 +117,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 				options.Insert( "m_PublicFilter", m_PublicFilter.GetStringValue() );
 			#endif
 		#endif
-		string data = JsonFileLoader<map<string, string>>.JsonMakeData( options );
+		string data = JsonFileLoader<ref map<string, string>>.JsonMakeData( options );
 		GetGame().SetProfileString( "SB_Filter_" + m_Tab.GetTabType(), data );
 	}
 	

@@ -1240,6 +1240,8 @@ class DayZGame extends CGame
 				case DayZLoadState.JOIN_START:
 				{
 					SetLoadState( DayZLoadState.JOIN_USER_SELECT );
+					
+					OnlineServices.Init( selected_user.GetUid() );
 					GamepadCheck();
 					return;
 				}

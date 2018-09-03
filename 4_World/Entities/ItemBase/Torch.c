@@ -96,7 +96,7 @@ class Torch : ItemBase
 	
 	bool IsSurfaceSoftEnough(string surface)
 	{
-		bool is_soft_enough = GetGame().IsSurfaceSoft(surface);
+		bool is_soft_enough = GetGame().IsSurfaceSoftGround(surface);
 		
 		if (!is_soft_enough)
 		{

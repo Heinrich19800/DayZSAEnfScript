@@ -120,6 +120,7 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 		m_ShowHUDSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.HUD ), false );
 		m_ShowCrosshairSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.CROSSHAIR ), false );
 		m_FOVSelector.SetValue( m_FOVOption.ReadValue(), false );
+		g_Game.SetUserFOV( m_FOVOption.ReadValue() );
 		
 		#ifdef PLATFORM_WINDOWS
 		m_ShowQuickbarSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.QUICKBAR ), false );

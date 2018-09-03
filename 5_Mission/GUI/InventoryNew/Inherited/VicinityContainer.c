@@ -74,7 +74,7 @@ class VicinityContainer: CollapsibleContainer
 		}
 		else
 		{
-			//m_VicinityIconsContainer.SelectItem();
+			m_VicinityIconsContainer.SelectItem();
 		}
 	}
 

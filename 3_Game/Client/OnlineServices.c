@@ -419,9 +419,9 @@ class OnlineServices
 	static void AutoConnectToEmptyServer()
 	{
 		GetClientServices();
-		if( m_ClientServices )
+		if( m_ClientServices && m_AutoConnectTries == 0 )
 		{
-			m_AutoConnectTries = 0;
+			m_AutoConnectTries = 1;
 			ref GetFirstServerWithEmptySlotInput input = new GetFirstServerWithEmptySlotInput;
 			input.SetOfficial( true );
 			m_ClientServices.GetLobbyService().GetFirstServerWithEmptySlot( input );
@@ -455,11 +455,12 @@ class OnlineServices
 			if( result )
 			{
 				g_Game.ConnectFromServerBrowser( result.m_HostIp, result.m_HostPort );
+				m_AutoConnectTries = 0;
 				return;
 			}
 		}
 		
-		if( m_AutoConnectTries < 2 )
+		if( m_AutoConnectTries < 3 )
 		{
 			m_AutoConnectTries++;
 			ref GetFirstServerWithEmptySlotInput input = new GetFirstServerWithEmptySlotInput;
@@ -474,8 +475,12 @@ class OnlineServices
 	
 	static bool IsGameTrial( bool sim )
 	{
+		#ifdef PLATFORM_XBOX
+		#ifndef PLATFORM_WINDOWS
 		if( m_TrialService )
 			return m_TrialService.IsGameTrial( sim );
+		#endif
+		#endif
 		return false;
 	}
 }

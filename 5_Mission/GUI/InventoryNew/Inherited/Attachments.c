@@ -22,7 +22,7 @@ class Attachments
 	void SelectItem()
 	{
 		ItemBase item = ItemBase.Cast( GetFocusedEntity() );
-		ItemManager.GetInstance().SetSelectedItem( item, NULL );
+		ItemManager.GetInstance().SetSelectedItem( item, NULL, m_Ics.Get( m_FocusedRow ).GetMainPanel().FindAnyWidget( "Cursor" + m_FocusedColumn ) );
 	}
 	
 	bool IsItemActive()
@@ -107,11 +107,12 @@ class Attachments
 			EntityAI selected_item = ItemManager.GetInstance().GetSelectedItem();
 			if( selected_item /*&& GetEntity()*/ )
 			{
-				bool can_add = m_Entity.GetInventory().CanAddEntityInCargo( selected_item );
-				bool in_cargo = !player.GetInventory().HasEntityInInventory( selected_item ) || !m_Entity.GetInventory().HasEntityInCargo( selected_item );
-				if( can_add && in_cargo )
+				bool can_add = m_Entity.GetInventory().CanAddAttachment( selected_item );
+				//bool in_cargo = !player.GetInventory().HasEntityInInventory( selected_item ) || !m_Entity.GetInventory().HasEntityInCargo( selected_item );
+				if( can_add)
 				{
-					player.PredictiveTakeEntityToTargetCargo(m_Entity, selected_item);
+					player.PredictiveTakeEntityToTargetAttachment(m_Entity, selected_item);
+					ItemManager.GetInstance().SetSelectedItem( NULL, NULL, NULL );
 				}
 				else
 				{
@@ -119,6 +120,11 @@ class Attachments
 					if( selected_icon )
 					{
 						selected_icon.SetActive( false );
+					}
+					Widget selected_widget = ItemManager.GetInstance().GetSelectedWidget();
+					if( selected_widget )
+					{
+						selected_widget.Show( false )
 					}
 				}
 				

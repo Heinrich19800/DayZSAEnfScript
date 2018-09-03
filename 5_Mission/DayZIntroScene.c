@@ -87,6 +87,7 @@ class DayZIntroScene: Managed
 		}
 		World w = g_Game.GetWorld();
 		m_data = g_Game.GetMenuData();
+		m_data.ClearCharacters();
 		m_data.LoadCharacters();
 		
 		//g_Game.m_PlayerName = "Survivor"; //default

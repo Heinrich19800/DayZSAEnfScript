@@ -85,6 +85,11 @@ class HandsArea: ContainerBase
 	{
 		m_HandsContainer.EquipItem();
 	}
+	
+	void SelectItem()
+	{
+		m_HandsContainer.SelectItem();
+	}
 
 	void Select()
 	{

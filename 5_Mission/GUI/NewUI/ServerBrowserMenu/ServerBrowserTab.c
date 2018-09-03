@@ -35,6 +35,9 @@ class ServerBrowserPage
 	
 	void Hide()
 	{
+		if (!m_Root)
+			return;
+		
 		m_Root.Show( false );
 	}
 	
@@ -123,8 +126,11 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void ~ServerBrowserTab()
 	{
-		m_Filters.SaveFilters();
-		delete m_Root;
+		if (m_Filters)
+			m_Filters.SaveFilters();
+		
+		if (m_Root)
+			delete m_Root;
 	}
 	
 	override bool OnClick( Widget w, int x, int y, int button )
@@ -240,6 +246,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	void ServerListFocus( bool focus, bool favorite )
 	{
 		m_SelectedPanel = SelectedPanel.BROWSER;
+		
+		if (!m_Menu)
+			return;
+		
 		m_Menu.ServerListFocus( focus, favorite );
 	}
 	
@@ -286,6 +296,9 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void PressY()
 	{
+		if(m_Menu.IsRefreshing() )
+			return;
+
 		switch( m_SelectedPanel )
 		{
 			case SelectedPanel.BROWSER:
@@ -322,6 +335,53 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	void Down()
 	{
 		
+	}
+	
+	int m_sort_choice = 0;
+	void PressRTrigger( TextWidget sort_text )
+	{
+		if( m_Menu.IsRefreshing() )
+			return;
+
+		switch( m_sort_choice )
+		{
+			case 0: 
+					m_SortType = ESortType.HOST;
+					m_SortOrder = ESortOrder.ASCENDING; 
+					//Print("Sort host ASC"); 
+					sort_text.SetText( "Sort host DESC" );
+					break;
+			case 1: 
+					m_SortType = ESortType.HOST;
+					m_SortOrder = ESortOrder.DESCENDING; 
+					//Print("Sort host DESC"); 
+					sort_text.SetText( "Sort population ASC" ); 
+					break;
+
+			case 2: 
+					m_SortType = ESortType.SLOTS;
+					m_SortOrder = ESortOrder.ASCENDING; 
+					//Print("Sort population ASC"); 
+					sort_text.SetText( "Sort population DESC" ); 
+					break;
+			case 3: 
+					m_SortType = ESortType.SLOTS;
+					m_SortOrder = ESortOrder.DESCENDING; 
+					//Print("Sort population DESC");
+					sort_text.SetText( "Sort host ASC" ); 
+					break;
+		}
+		
+		m_sort_choice++;
+		
+		//reset
+		if ( m_sort_choice > 3 )
+		{
+			m_sort_choice = 0;
+		}
+		
+		//RefreshList
+		RefreshList();
 	}
 	
 	void GetNextEntry()
@@ -469,6 +529,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			}
 		#endif
 		m_SelectedServer = server;
+		
+		if (!m_Menu)
+			return;
+		
 		m_Menu.SelectServer( server );
 	}
 	
@@ -507,7 +571,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	}
 	
 	bool PassFilter( GetServersResultRow result )
-	{
+	{	
+		if (!m_Menu || !m_Menu.IsRefreshing())
+			return false;
+		
 		bool is_fav = m_Menu.IsFavorited( result.m_Id );
 		bool is_vis = g_Game.IsVisited( result.m_HostIp, result.m_HostPort );
 		
@@ -549,6 +616,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 						m_TotalLoadedServers++;
 						m_LoadingText.SetText( "Loaded " + m_TotalLoadedServers + "/" + m_TotalServers + " servers" );
 					}
+					
+					if( !m_Menu || !m_Menu.IsRefreshing() )
+						return;
+					
 					if( index % 10 == 0 )
 					{
 						Sleep( 0.01 );
@@ -565,8 +636,15 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 				Sleep( 0.1 );
 			}
 			if( m_EntryWidgets.Count() > 0 )
-				m_EntryWidgets.Get(0).Focus();
+			{
+				if (m_EntryWidgets.Get(0))
+					m_EntryWidgets.Get(0).Focus();
+			}
 		}
+		
+		if (!m_Menu)
+			return;
+		
 		m_Menu.SetRefreshing( false );
 	}
 	
@@ -605,6 +683,12 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void Connect( ServerBrowserEntry server )
 	{
+		if (!m_Menu)
+			return;
+		
+		if (m_Menu.IsRefreshing())
+			return;
+		
 		m_SelectedServer = server;
 		m_Menu.Connect( server );
 	}
@@ -648,7 +732,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			}
 			case ESortType.POPULATION:
 			{
-				return "name";
+				return "currentNumberPlayers";
 			}
 			case ESortType.SLOTS:
 			{

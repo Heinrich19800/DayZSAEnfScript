@@ -23,7 +23,7 @@ class Icon: ContainerBase
 		}
 		m_WhiteBackgrounds = new array<Widget>;
 		m_Pos = new array<ref Pos>;
-		ItemManager.GetInstance().SetSelectedItem( NULL, NULL );
+		ItemManager.GetInstance().SetSelectedItem( NULL, NULL, NULL );
 		
 		SetActive( false );
 	}
