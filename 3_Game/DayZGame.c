@@ -265,8 +265,8 @@ class LoginQueueMenu extends UIScriptedMenu
 	void LeaveConnectQueue()
 	{
 #ifdef PLATFORM_CONSOLE
-		GetDayZGame().SetGameState( DayZGameState.MAIN_MENU );
-		GetDayZGame().SetLoadState( DayZLoadState.MAIN_MENU_START );
+		g_Game.SetGameState( DayZGameState.MAIN_MENU );
+		g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
 #endif		
 		g_Game.GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().DisconnectSessionForce);
 	}

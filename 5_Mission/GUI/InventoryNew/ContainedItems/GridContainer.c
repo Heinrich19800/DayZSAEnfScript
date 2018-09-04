@@ -34,21 +34,27 @@ class GridContainer: ContainerBase
 		for ( int i = 0; i < m_MaxColumns; i++ )
 		{
 			//GetMainPanel().FindAnyWidget( "Cursor" + i ).Show( false );
-			
-			Entity entity = m_Entity.GetInventory().GetCargo().FindEntityInCargoOn( m_NumberRow, i );
-			if ( entity )
+			#ifdef PLATFORM_WINDOWS
+			CargoGrid grid = CargoGrid.Cast(m_Entity.GetInventory().GetCargo());
+			if (grid)
 			{
-				Icon icon = m_ParentContainer.GetIcon( entity.GetID() );
 				
-				if ( icon )
+				Entity entity = grid.FindEntityInCargoOn( m_NumberRow, i );
+				if ( entity )
 				{
-					icon.SetActive( false );
+					Icon icon = m_ParentContainer.GetIcon( entity.GetID() );
+					
+					if ( icon )
+					{
+						icon.SetActive( false );
+					}
+				}
+				else
+				{
+					GetMainPanel().FindAnyWidget( "Cursor" + i ).Show( false );
 				}
 			}
-			else
-			{
-				GetMainPanel().FindAnyWidget( "Cursor" + i ).Show( false );
-			}
+			#endif
 		}
 		
 		m_NumberColumnFocused = 0;
@@ -61,57 +67,75 @@ class GridContainer: ContainerBase
 		//GetMainPanel().FindAnyWidget( "Cursor" + column ).Show( true );
 		
 		// Show selector
-		Entity focused_item_new = m_Entity.GetInventory().GetCargo().FindEntityInCargoOn( m_NumberRow, m_NumberColumnFocused );
-		if ( focused_item_new )
+		#ifdef PLATFORM_WINDOWS
+		CargoGrid grid = CargoGrid.Cast(m_Entity.GetInventory().GetCargo());
+		if (grid)
 		{
-			Icon icon = m_ParentContainer.GetIcon( focused_item_new.GetID() );
-			
-			if ( icon )
+			Entity focused_item_new = grid.FindEntityInCargoOn( m_NumberRow, m_NumberColumnFocused );
+			if ( focused_item_new )
 			{
-				icon.SetActive( true );
-			}			
+				Icon icon = m_ParentContainer.GetIcon( focused_item_new.GetID() );
+				
+				if ( icon )
+				{
+					icon.SetActive( true );
+				}			
+			}
+			else
+			{
+				GetMainPanel().FindAnyWidget( "Cursor" + column ).Show( true );
+			}
 		}
-		else
-		{
-			GetMainPanel().FindAnyWidget( "Cursor" + column ).Show( true );
-		}
+		#endif
 	}
 	
 	bool GetIconSize(int row, int column, out int width, out int height)
 	{
-		Entity focused_item_new = m_Entity.GetInventory().GetCargo().FindEntityInCargoOn( row, column );
-		if ( focused_item_new )
+		#ifdef PLATFORM_WINDOWS
+		CargoGrid grid = CargoGrid.Cast(m_Entity.GetInventory().GetCargo());
+		if (grid)
 		{
-			Icon icon = m_ParentContainer.GetIcon( focused_item_new.GetID() );
-			
-			if ( icon )
+			Entity focused_item_new = grid.FindEntityInCargoOn( row, column );
+			if ( focused_item_new )
 			{
-				width = icon.m_sizeX;
-				height = icon.m_sizeY;
+				Icon icon = m_ParentContainer.GetIcon( focused_item_new.GetID() );
 				
-				return true;
+				if ( icon )
+				{
+					width = icon.m_sizeX;
+					height = icon.m_sizeY;
+					
+					return true;
+				}
 			}
 		}
+		#endif
 		
 		return false;
 	}
 	
 	bool GetIconPosition(int row, int column, out int x, out int y)
 	{
-		Entity focused_item_new = m_Entity.GetInventory().GetCargo().FindEntityInCargoOn( row, column );
-		if ( focused_item_new )
+		#ifdef PLATFORM_WINDOWS
+		CargoGrid grid = CargoGrid.Cast(m_Entity.GetInventory().GetCargo());
+		if (grid)
 		{
-			Icon icon = m_ParentContainer.GetIcon( focused_item_new.GetID() );
-			
-			if ( icon )
+			Entity focused_item_new = grid.FindEntityInCargoOn( row, column );
+			if ( focused_item_new )
 			{
-				x = icon.m_posX;
-				y = icon.m_posY;
+				Icon icon = m_ParentContainer.GetIcon( focused_item_new.GetID() );
 				
-				return true;
+				if ( icon )
+				{
+					x = icon.m_posX;
+					y = icon.m_posY;
+					
+					return true;
+				}
 			}
+			
 		}
-		
+		#endif
 		return false;
 	}
 	

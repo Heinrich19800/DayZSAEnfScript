@@ -194,8 +194,8 @@ class Input
 			if( state != DayZLoadState.MAIN_MENU_START && state != DayZLoadState.MAIN_MENU_USER_SELECT )
 			{
 				g_Game.CreateGamepadDisconnectMenu();
-				IdentifyGamepad( GamepadButton.A );
 			}
+			IdentifyGamepad( GamepadButton.A );
 		}
 	}
 	//! callback that is fired when identification was requested

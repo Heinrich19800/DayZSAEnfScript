@@ -12,7 +12,7 @@ class Rangefinder extends ItemOptics
 	
 	void SetPlayer(PlayerBase player)
 	{
-		m_Player = player
+		m_Player = player;
 	}
 	
 	PlayerBase GetPlayer()

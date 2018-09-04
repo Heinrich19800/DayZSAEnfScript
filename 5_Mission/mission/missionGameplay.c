@@ -257,7 +257,7 @@ class MissionGameplay extends MissionBase
 		//Quick Reload Weapon
 		if ( !menu && input.GetActionDown( UAQuickReload, false ) )
 		{
-			if ( !GetGame().IsInventoryOpen() && !playerPB.GetActionManager().FindActionTarget().GetObject() )
+			if ( !GetGame().IsInventoryOpen() && playerPB && !playerPB.GetActionManager().FindActionTarget().GetObject() )
 			{
 				EntityAI entity_hands = playerPB.GetHumanInventory().GetEntityInHands();
 				

@@ -71,9 +71,11 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			toolbar_rt.LoadImageFile( 0, "set:playstation_buttons image:R2" );
 		#endif
 		
-		//Sort init
-		TextWidget sort_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "SortText" ) );
-		sort_text.SetText( "Sort host ASC" );
+		#ifdef PLATFORM_CONSOLE
+			//Sort init
+			TextWidget sort_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "SortText" ) );
+			sort_text.SetText( "Sort host ASC" );
+		#endif
 		
 		/*
 		ref GetServersResult result = new GetServersResult;
@@ -187,6 +189,9 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			else if ( m_Favorites.Find( uid ) >= 0 )
 			{
 				m_Favorites.RemoveItem( uid );
+				m_OfficialTab.Unfavorite( uid );
+				m_CommunityTab.Unfavorite( uid );
+				m_LANTab.Unfavorite( uid );
 			}
 		}
 	}
@@ -278,7 +283,6 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	
 	override void Update( float timeslice )
 	{
-		super.Update( timeslice );
 		if( GetGame().GetInput().GetActionDown( UAUITabLeft, false ) )
 		{
 			m_Tabber.PreviousTab();
@@ -307,8 +311,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		
 		if( GetGame().GetInput().GetActionDown( UAUINextDown, false ) )
 		{
-			TextWidget sort_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "SortText" ) );
-			GetSelectedTab().PressRTrigger( sort_text );
+			
 		}		
 		
 		if( GetGame().GetInput().GetActionDown( UAUILeft, false ) )
@@ -332,6 +335,8 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		}
 		
 		GetSelectedTab().Update( timeslice );
+		
+		super.Update( timeslice );
 	}
 	
 	bool IsFocusable( Widget w )
@@ -431,6 +436,12 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	{
 		SetFocus( w );
 		
+		ButtonWidget button = ButtonWidget.Cast( w );
+		if( button && button != m_Play )
+		{
+			button.SetTextColor( ARGB( 255, 200, 0, 0 ) );
+		}
+		
 		TextWidget text		= TextWidget.Cast(w.FindWidget( w.GetName() + "_text" ) );
 		TextWidget text2	= TextWidget.Cast(w.FindWidget( w.GetName() + "_text_1" ) );
 		ImageWidget image	= ImageWidget.Cast( w.FindWidget( w.GetName() + "_image" ) );
@@ -456,6 +467,12 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		#ifdef PLATFORM_WINDOWS
 		SetFocus( null );
 		#endif
+		
+		ButtonWidget button = ButtonWidget.Cast( w );
+		if( button && button != m_Play )
+		{
+			button.SetTextColor( ARGB( 255, 255, 255, 255 ) );
+		}
 		
 		TextWidget text		= TextWidget.Cast(w.FindWidget( w.GetName() + "_text" ) );
 		TextWidget text2	= TextWidget.Cast(w.FindWidget( w.GetName() + "_text_1" ) );

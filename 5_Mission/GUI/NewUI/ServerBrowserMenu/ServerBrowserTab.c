@@ -58,7 +58,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	 ref map<int, ref GetServersResultRowArray>	m_Entries;
 	
 	 ref array<ref ServerBrowserPage>				m_Pages;
-	 ref array<ref ServerBrowserEntry>				m_EntryWidgets;
+	 ref map<string, ref ServerBrowserEntry>				m_EntryWidgets;
 
 	protected ref ServerBrowserFilterContainer				m_Filters;
 	
@@ -78,7 +78,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	protected int											m_LastLoadedPage;
 	protected int											m_TotalPages;
 	
-	protected int											m_CurrentSelectedServer;
+	protected string										m_CurrentSelectedServer;
 	protected int											m_CurrentLoadedPage;
 	protected ref GetServersInput							m_CurrentFilterInput;
 	
@@ -107,7 +107,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		
 		m_Entries				= new map<int, ref GetServersResultRowArray>;
 		m_Pages					= new array<ref ServerBrowserPage>;
-		m_EntryWidgets			= new array<ref ServerBrowserEntry>;
+		m_EntryWidgets			= new map<string, ref ServerBrowserEntry>;
 		m_Menu					= menu;
 		m_TabType				= type;
 		
@@ -231,9 +231,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void Focus()
 	{
-		if( m_EntryWidgets.Count() > m_CurrentSelectedServer )
+		if( m_EntryWidgets.Contains( m_CurrentSelectedServer ) )
 		{
 			m_EntryWidgets.Get( m_CurrentSelectedServer ).Focus();
+			ScrollToEntry( m_EntryWidgets.Get( m_CurrentSelectedServer ) );
 		}
 	}
 	
@@ -335,53 +336,6 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	void Down()
 	{
 		
-	}
-	
-	int m_sort_choice = 0;
-	void PressRTrigger( TextWidget sort_text )
-	{
-		if( m_Menu.IsRefreshing() )
-			return;
-
-		switch( m_sort_choice )
-		{
-			case 0: 
-					m_SortType = ESortType.HOST;
-					m_SortOrder = ESortOrder.ASCENDING; 
-					//Print("Sort host ASC"); 
-					sort_text.SetText( "Sort host DESC" );
-					break;
-			case 1: 
-					m_SortType = ESortType.HOST;
-					m_SortOrder = ESortOrder.DESCENDING; 
-					//Print("Sort host DESC"); 
-					sort_text.SetText( "Sort population ASC" ); 
-					break;
-
-			case 2: 
-					m_SortType = ESortType.SLOTS;
-					m_SortOrder = ESortOrder.ASCENDING; 
-					//Print("Sort population ASC"); 
-					sort_text.SetText( "Sort population DESC" ); 
-					break;
-			case 3: 
-					m_SortType = ESortType.SLOTS;
-					m_SortOrder = ESortOrder.DESCENDING; 
-					//Print("Sort population DESC");
-					sort_text.SetText( "Sort host ASC" ); 
-					break;
-		}
-		
-		m_sort_choice++;
-		
-		//reset
-		if ( m_sort_choice > 3 )
-		{
-			m_sort_choice = 0;
-		}
-		
-		//RefreshList
-		RefreshList();
 	}
 	
 	void GetNextEntry()
@@ -500,22 +454,11 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void SelectServer( ServerBrowserEntry server )
 	{
-		#ifdef PLATFORM_CONSOLE
-			if( m_EntryWidgets.Find( m_SelectedServer ) == 0 && m_EntryWidgets.Find( server ) != 1 )
+		//#ifdef PLATFORM_CONSOLE
+			if( m_SelectedServer && m_EntryWidgets.Contains( m_SelectedServer.GetServerID() ) )
 			{
 				//m_ServerListScroller.VScrollToPos01( 1 );
 				//m_SelectedServer = m_EntryWidgets.Get( m_EntryWidgets.Count() - 1 );
-				//m_Menu.SelectServer( m_SelectedServer );
-				//m_SelectedServer.Select( false );
-				m_SelectedServer.Darken( m_SelectedServer.GetRoot(), 0, 0 );
-				m_SelectedServer.Select( false );
-				m_SelectedServer.ServerListFocus( true );
-				return;
-			}
-			else if( m_EntryWidgets.Find( m_SelectedServer ) == m_EntryWidgets.Count() - 1 && m_EntryWidgets.Find( server ) != m_EntryWidgets.Count() - 2 )
-			{
-				//m_ServerListScroller.VScrollToPos01( 0 );
-				//m_SelectedServer = m_EntryWidgets.Get( 0 );
 				//m_Menu.SelectServer( m_SelectedServer );
 				//m_SelectedServer.Select( false );
 				m_SelectedServer.Darken( m_SelectedServer.GetRoot(), 0, 0 );
@@ -527,7 +470,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			{
 				ScrollToEntry( server );
 			}
-		#endif
+		//#endif
 		m_SelectedServer = server;
 		
 		if (!m_Menu)
@@ -611,7 +554,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 						ref ServerBrowserEntry entry = new ServerBrowserEntry( m_ServerList.FindAnyWidget( "page_" + i ), index, this );
 						entry.FillInfo( result );
 						entry.SetFavorite( m_Menu.IsFavorited( result.m_Id ) );
-						m_EntryWidgets.Insert( entry );
+						m_EntryWidgets.Insert( result.m_Id, entry );
 						index++;
 						m_TotalLoadedServers++;
 						m_LoadingText.SetText( "Loaded " + m_TotalLoadedServers + "/" + m_TotalServers + " servers" );
@@ -637,8 +580,8 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			}
 			if( m_EntryWidgets.Count() > 0 )
 			{
-				if (m_EntryWidgets.Get(0))
-					m_EntryWidgets.Get(0).Focus();
+				if (m_EntryWidgets.GetElement(0))
+					m_EntryWidgets.GetElement(0).Focus();
 			}
 		}
 		
@@ -695,27 +638,42 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void SelectHostSort()
 	{
-		SetSort( ESortType.HOST );
+		ESortOrder order;
+		if( m_SortType == ESortType.HOST )
+			order = !m_SortOrder;
+		SetSort( ESortType.HOST, order );
 	}
 	
 	void SelectTimeSort()
 	{
-		SetSort( ESortType.TIME );
+		ESortOrder order;
+		if( m_SortType == ESortType.TIME )
+			order = !m_SortOrder;
+		SetSort( ESortType.TIME, order );
 	}
 	
 	void SelectPopulationSort()
 	{
-		SetSort( ESortType.POPULATION );
+		ESortOrder order;
+		if( m_SortType == ESortType.POPULATION )
+			order = !m_SortOrder;
+		SetSort( ESortType.POPULATION, order );
 	}
 	
 	void SelectSlotSort()
 	{
-		SetSort( ESortType.SLOTS );
+		ESortOrder order;
+		if( m_SortType == ESortType.SLOTS )
+			order = !m_SortOrder;
+		SetSort( ESortType.SLOTS, order );
 	}
 	
 	void SelectPingSort()
 	{
-		SetSort( ESortType.PING );
+		ESortOrder order;
+		if( m_SortType == ESortType.PING )
+			order = !m_SortOrder;
+		SetSort( ESortType.PING, order );
 	}
 	
 	string GetSortOption()
@@ -746,35 +704,33 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		return "";
 	}
 	
-	void SetSort( ESortType type )
+	void SetSort( ESortType type, ESortOrder order )
 	{
-		if( m_SortType == type )
-		{
-			m_SortOrder = !m_SortOrder;
-		}
-		else
-		{
-			m_SortType = type;
-			m_SortOrder = ESortOrder.DESCENDING;
-		}
+		m_SortOrder = order;
 		
 		m_Root.FindAnyWidget( "host_sort" ).Show( false );
-		m_Root.FindAnyWidget( "time_sort" ).Show( false );
 		m_Root.FindAnyWidget( "population_sort" ).Show( false );
 		m_Root.FindAnyWidget( "slots_sort" ).Show( false );
+		
+		#ifdef PLATFORM_WINDOWS
+		m_Root.FindAnyWidget( "time_sort" ).Show( false );
 		m_Root.FindAnyWidget( "ping_sort" ).Show( false );
+		#endif
 		
 		TextWidget root;
 		root = TextWidget.Cast( m_Root.FindAnyWidget( "host_label" ) );
-		root.SetColor( ARGBF( 1, 1, 1, 1 ) );
-		root = TextWidget.Cast( m_Root.FindAnyWidget( "time_label" ) );
 		root.SetColor( ARGBF( 1, 1, 1, 1 ) );
 		root = TextWidget.Cast( m_Root.FindAnyWidget( "population_label" ) );
 		root.SetColor( ARGBF( 1, 1, 1, 1 ) );
 		root = TextWidget.Cast( m_Root.FindAnyWidget( "slots_label" ) );
 		root.SetColor( ARGBF( 1, 1, 1, 1 ) );
+		
+		#ifdef PLATFORM_WINDOWS
 		root = TextWidget.Cast( m_Root.FindAnyWidget( "ping_label" ) );
 		root.SetColor( ARGBF( 1, 1, 1, 1 ) );
+		root = TextWidget.Cast( m_Root.FindAnyWidget( "time_label" ) );
+		root.SetColor( ARGBF( 1, 1, 1, 1 ) );
+		#endif
 		
 		string r_name;
 		string w_name;
@@ -824,6 +780,15 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	void SetFavorite( string uid, bool favorite )
 	{
 		m_Menu.SetFavorite( uid, favorite );
+	}
+	
+	void Unfavorite( string uid )
+	{
+		ServerBrowserEntry entry;
+		if( m_EntryWidgets.Find( uid, entry ) )
+		{
+			entry.SetFavorite( false );
+		}
 	}
 	
 	TabType GetTabType()

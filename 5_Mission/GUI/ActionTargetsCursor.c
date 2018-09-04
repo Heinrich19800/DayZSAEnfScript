@@ -228,7 +228,7 @@ class ActionTargetsCursor extends ObjectFollower
 		GetTarget();
 		GetActions();
 
-		if(m_Target && (m_Interact || m_Single || m_Continuous) && m_AM.GetRunningAction() == null && !GetGame().IsInventoryOpen())
+		if(m_Target && ((m_Interact || m_Single || m_Continuous) && m_AM.GetRunningAction() == null) && GetGame().GetUIManager().GetMenu() == null)
 		{
 			//! cursor with fixed position (environment interaction mainly)
 			if ( m_Target.GetObject() == null && m_Interact)
@@ -280,7 +280,7 @@ class ActionTargetsCursor extends ObjectFollower
 						BuildFixedCursor();
 						m_Root.Show(true);
 						m_FixedOnPosition = false;
-						return;					
+						return;
 					}
 				}
 			}

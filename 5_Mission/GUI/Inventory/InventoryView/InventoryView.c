@@ -829,7 +829,15 @@ class InventoryView: InventoryViewBase
 
 		int cargo_index = FindCargoIndex(grid);
 		// use cargo index here
-		if (cargo_index != INDEX_NOT_FOUND)	return InventoryItem.Cast( m_cargos.Get(cargo_index).FindEntityInCargoOn(row, col) );
+		if (cargo_index != INDEX_NOT_FOUND)
+		{
+			#ifdef PLATFORM_WINDOWS
+			CargoGrid cargo_grid = CargoGrid.Cast(m_cargos.Get(cargo_index));
+			if (cargo_grid)
+				return InventoryItem.Cast( cargo_grid.FindEntityInCargoOn(row, col) );
+			#endif
+			return null;
+		}
 
 		EntityAI entity = m_attachment_grids.GetKeyByValue( grid );
 		if ( entity ) return InventoryItem.Cast( entity );

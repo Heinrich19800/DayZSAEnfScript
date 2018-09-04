@@ -3,6 +3,8 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 	protected EditBoxWidget					m_SearchByName;
 	protected EditBoxWidget					m_SearchByIP;
 			ref OptionSelectorMultistate	m_CharacterAliveFilter;
+			ref OptionSelectorMultistate	m_SortingFilter;
+			ref OptionSelectorMultistate	m_RegionFilter;
 			ref OptionSelectorMultistate	m_PingFilter;
 			ref OptionSelector				m_FavoritedFilter;
 			ref OptionSelector				m_FriendsPlayingFilter;
@@ -23,12 +25,15 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		m_Tab = parent;
 		
 		ref array<string> character_name_options ={ "Disabled", player_name };
+		ref array<string> region_options = { "All", "Americas", "Europe", "Asia" };
+		ref array<string> sort_options = { "Name - Descending", "Name - Ascending", "Population - Descending", "Population - Ascending" };
 		ref array<string> ping_options = { "Disabled", "<30", "<50", "<100", "<200", "<300", "<500" };
 		ref array<string> three_options = { "Disabled", "Show", "Hide" };
 		
 		m_SearchByName				= EditBoxWidget.Cast( root.FindAnyWidget( "search_name_setting_option" ) );
 		m_SearchByIP				= EditBoxWidget.Cast( root.FindAnyWidget( "search_ip_setting_option" ) );
 		
+		m_RegionFilter				= new OptionSelectorMultistate( root.FindAnyWidget( "region_setting_option" ), 0, this, false, region_options );
 		m_PingFilter				= new OptionSelectorMultistate( root.FindAnyWidget( "ping_setting_option" ), 0, this, false, ping_options );
 		m_FavoritedFilter			= new OptionSelector( root.FindAnyWidget( "favorites_setting_option" ), 0, this, false );
 		m_FriendsPlayingFilter		= new OptionSelector( root.FindAnyWidget( "friends_setting_option" ), 0, this, false );
@@ -39,6 +44,11 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		m_PingFilter.Disable();
 		m_FriendsPlayingFilter.Disable();
 		m_AcceleratedTimeFilter.Disable();
+		
+		#ifdef PLATFORM_CONSOLE
+			m_SortingFilter			= new OptionSelectorMultistate( root.FindAnyWidget( "sort_setting_option" ), 0, this, false, sort_options );
+			m_SortingFilter.m_OptionChanged.Insert( OnSortChanged );
+		#endif
 		
 		#ifdef PLATFORM_WINDOWS
 			#ifndef PLATFORM_CONSOLE
@@ -75,7 +85,11 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 			m_PreviouslyPlayedFilter.SetStringOption( options.Get( "m_PreviouslyPlayedFilter" ) );
 			m_FullServerFilter.SetStringOption( options.Get( "m_FullServerFilter" ) );
 			m_AcceleratedTimeFilter.SetStringOption( options.Get( "m_AcceleratedTimeFilter" ) );
-		
+			
+			#ifdef PLATFORM_CONSOLE
+				m_SortingFilter.SetStringOption( options.Get( "m_SortingFilter" ) );
+			#endif
+			
 			if( options.Count() >= 12 )
 			{
 				#ifdef PLATFORM_WINDOWS
@@ -105,6 +119,10 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		options.Insert( "m_FullServerFilter", m_FullServerFilter.GetStringValue() );
 		options.Insert( "m_AcceleratedTimeFilter", m_AcceleratedTimeFilter.GetStringValue() );
 		
+		#ifdef PLATFORM_CONSOLE
+			options.Insert( "m_SortingFilter", m_SortingFilter.GetStringValue() );
+		#endif
+		
 		#ifdef PLATFORM_WINDOWS
 			#ifndef PLATFORM_CONSOLE
 				options.Insert( "m_SearchByName", m_SearchByName.GetText() );
@@ -130,8 +148,13 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		m_FullServerFilter.Reset();
 		m_AcceleratedTimeFilter.Reset();
 		
+		#ifdef PLATFORM_CONSOLE
+			m_SortingFilter.Reset();
+		#endif
+		
 		#ifdef PLATFORM_WINDOWS
 			#ifndef PLATFORM_CONSOLE
+				
 				m_SearchByName.SetText( "" );
 				m_SearchByIP.SetText( "" );
 				m_CharacterAliveFilter.Reset();
@@ -142,6 +165,33 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 				m_PublicFilter.Reset();
 			#endif
 		#endif
+	}
+	
+	void OnSortChanged( int value )
+	{
+		switch( value )
+		{
+			case 0:
+			{
+				m_Tab.SetSort( ESortType.HOST, ESortOrder.DESCENDING );
+				break;
+			}
+			case 1:
+			{
+				m_Tab.SetSort( ESortType.HOST, ESortOrder.ASCENDING );
+				break;
+			}
+			case 2:
+			{
+				m_Tab.SetSort( ESortType.SLOTS, ESortOrder.DESCENDING );
+				break;
+			}
+			case 3:
+			{
+				m_Tab.SetSort( ESortType.SLOTS, ESortOrder.ASCENDING );
+				break;
+			}
+		}
 	}
 	
 	override bool OnFocus( Widget w, int x, int y )
@@ -173,7 +223,12 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 				input.SetNameFilter( name_text );
 			}
 		}
-		
+		#ifdef PLATFORM_XBOX
+		if( m_RegionFilter.IsSet() )
+		{
+			input.SetRegionIdFilter( m_RegionFilter.GetValue() );
+		}
+		#endif
 		if( m_PingFilter.IsSet() )
 		{
 			//Character filter

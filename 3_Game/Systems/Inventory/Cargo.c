@@ -39,11 +39,6 @@ class CargoBase : Managed
 	 **/
 	proto void GetItemSize (int index, out int w, out int h);
 
-	/**@fn			FindEntityInCargoOn
-	 * @return		get item at coordinates (row, col). col is 0 on xbox.
-	 **/
-	proto native EntityAI FindEntityInCargoOn (int row, int col);
-
 	/**@fn			FindEntityInCargo
 	 * @return		find internal index of the entity in cargo or -1 if not found
 	 **/
@@ -56,35 +51,43 @@ class CargoBase : Managed
 	 * @brief		condition EntityAI::CanReceiveItemIntoCargo for Cargo.
 	 * @return		true if cargo can be added, false otherwise
 	 **/
-	bool CanReceiveItemIntoCargo (EntityAI cargo) { return true; }
+	bool CanReceiveItemIntoCargo (EntityAI item) { return true; }
 };
+
 
 #ifdef PLATFORM_CONSOLE
-class CargoList : CargoBase
-{
-	/**@fn			GetMaxWeight
-	 * @return		maximum weight that the cargo can hold
-	 **/
-	proto native int GetMaxWeight ();
-
-	/**@fn			GetTotalWeight
-	 * @brief		sums weight of all items in cargo and adds weight of item if item != null
-	 * @return		sum of weights plus weight of item (if !null)
-	 **/
-	proto native int GetTotalWeight (EntityAI item);
-	
-	/**@fn			CanReceiveItemIntoCargo
-	 * @return		true if adding item does not exceed GetMaxWeight, false otherwise
-	 **/
-	override bool CanReceiveItemIntoCargo (EntityAI cargo)
+	class CargoList : CargoBase
 	{
-		int with_item = GetTotalWeight(cargo);
-		int max = GetMaxWeight();
-		return with_item <= max;
-	}
-};
+		/**@fn			GetMaxWeight
+		 * @return		maximum weight that the cargo can hold
+		 **/
+		proto native int GetMaxWeight ();
+	
+		/**@fn			GetTotalWeight
+		 * @brief		sums weight of all items in cargo and adds weight of item if item != null
+		 * @return		sum of weights plus weight of item (if !null)
+		 **/
+		proto native int GetTotalWeight (EntityAI item);
+
+		/**@fn			CanFitItemIntoCargo
+		 * @return		true if adding item does not exceed GetMaxWeight, false otherwise
+		 **/		
+		proto native bool CanFitItemIntoCargo (EntityAI cargo);
+	
+		/**@fn			CanReceiveItemIntoCargo
+		 * @return		true if adding item does not exceed GetMaxWeight, false otherwise
+		 **/
+		override bool CanReceiveItemIntoCargo (EntityAI item)
+		{
+			return CanFitItemIntoCargo(item);
+		}
+	};
 #else
 	class CargoGrid : CargoBase
 	{
+		/**@fn			FindEntityInCargoOn
+		 * @return		get item at coordinates (row, col). col is 0 on xbox.
+		 **/
+		proto native EntityAI FindEntityInCargoOn (int row, int col);
 	};
 #endif
