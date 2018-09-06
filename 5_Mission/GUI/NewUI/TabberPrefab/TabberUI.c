@@ -182,14 +182,17 @@ class TabberUI extends ScriptedWidgetEventHandler
 			next_index = 0;
 		}
 		
-		DeselectTabControl( m_SelectedIndex );
-		DeselectTabPanel( m_SelectedIndex );
+		if( m_SelectedIndex != next_index )
+		{
+			DeselectTabControl( m_SelectedIndex );
+			DeselectTabPanel( m_SelectedIndex );
+				
+			SelectTabControl( next_index );
+			SelectTabPanel( next_index );
 			
-		SelectTabControl( next_index );
-		SelectTabPanel( next_index );
-		
-		m_SelectedIndex = next_index;
-		m_OnTabSwitch.Invoke( m_SelectedIndex );
+			m_SelectedIndex = next_index;
+			m_OnTabSwitch.Invoke( m_SelectedIndex );
+		}
 	}
 	
 	void PreviousTab()
@@ -200,14 +203,17 @@ class TabberUI extends ScriptedWidgetEventHandler
 			next_index = m_TabControls.Count() - 1;
 		}
 		
-		DeselectTabControl( m_SelectedIndex );
-		DeselectTabPanel( m_SelectedIndex );
+		if( m_SelectedIndex != next_index )
+		{
+			DeselectTabControl( m_SelectedIndex );
+			DeselectTabPanel( m_SelectedIndex );
+				
+			SelectTabControl( next_index );
+			SelectTabPanel( next_index );
 			
-		SelectTabControl( next_index );
-		SelectTabPanel( next_index );
-		
-		m_SelectedIndex = next_index;
-		m_OnTabSwitch.Invoke( m_SelectedIndex );
+			m_SelectedIndex = next_index;
+			m_OnTabSwitch.Invoke( m_SelectedIndex );
+		}
 	}
 	
 	int GetSelectedIndex()

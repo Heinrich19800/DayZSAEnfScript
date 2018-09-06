@@ -129,7 +129,7 @@ class ItemWithCargo: ClosableContainer
 					Widget selected_widget1 = ItemManager.GetInstance().GetSelectedWidget();
 					if( selected_widget1 )
 					{
-						selected_widget1.Show( false )
+						selected_widget1.Show( false );
 					}
 				}
 				else
@@ -143,7 +143,7 @@ class ItemWithCargo: ClosableContainer
 					Widget selected_widget = ItemManager.GetInstance().GetSelectedWidget();
 					if( selected_widget )
 					{
-						selected_widget.Show( false )
+						selected_widget.Show( false );
 					}
 				}
 				

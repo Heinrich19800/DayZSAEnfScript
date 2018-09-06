@@ -178,18 +178,20 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	override bool OnFocusLost( Widget w, int x, int y )
 	{
-		if( IsFocusable( w ) )
-		{
-			Lighten( w, null, x, y );
-		}
-#ifdef PLATFORM_CONSOLE
+		#ifdef PLATFORM_CONSOLE
 		if( w == m_Root )
 		{
 			Deselect();
 			ServerListFocus( false );
-			return true;
 		}
-#endif
+		#endif
+		
+		if( IsFocusable( w ) )
+		{
+			Lighten( w, null, x, y );
+		}
+		
+		return true;
 		return false;
 	}
 	
@@ -395,10 +397,12 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		//if( !m_Selected )
 		{
 			if( notify )
+			{
 				m_Tab.SelectServer( this );
+			}
 			m_Selected = true;
 			#ifdef PLATFROM_XBOX
-				m_Root.SetColor( ARGBF( m_Root.GetAlpha(), 0.3, 0.3, 0.3 ) );
+				m_Root.SetColor( 1, 0.3, 0.3, 0.3 ) );
 			#endif
 		}
 	}

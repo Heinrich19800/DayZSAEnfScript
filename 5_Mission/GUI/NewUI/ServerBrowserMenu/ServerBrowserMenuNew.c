@@ -182,16 +182,29 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	{
 		if( m_Favorites )
 		{
-			if( favorite && m_Favorites.Find( uid ) < 0 && m_Favorites.Count() < MAX_FAVORITES )
+			if( favorite && m_Favorites.Find( uid ) < 0 )
 			{
-				m_Favorites.Insert( uid );
+				if( m_Favorites.Count() < MAX_FAVORITES )
+					m_Favorites.Insert( uid );
+				else
+				{
+					m_OfficialTab.Unfavorite( m_Favorites.Get( 0 ) );
+					#ifndef PLATFORM_CONSOLE
+					m_CommunityTab.Unfavorite( m_Favorites.Get( 0 ) );
+					m_LANTab.Unfavorite( m_Favorites.Get( 0 ) );
+					#endif
+					m_Favorites.Remove( 0 );
+					m_Favorites.Insert( uid );
+				}
 			}
 			else if ( m_Favorites.Find( uid ) >= 0 )
 			{
 				m_Favorites.RemoveItem( uid );
 				m_OfficialTab.Unfavorite( uid );
+				#ifndef PLATFORM_CONSOLE
 				m_CommunityTab.Unfavorite( uid );
 				m_LANTab.Unfavorite( uid );
+				#endif
 			}
 		}
 	}

@@ -6,7 +6,7 @@ class Container: ContainerBase
 	protected AutoHeightSpacer m_SpacerBody;
 	
 	const int ITEMS_IN_ROW = 7;
-
+	
 	void Container( ContainerBase parent )
 	{
 		m_Body = new array<ref ContainerBase>;

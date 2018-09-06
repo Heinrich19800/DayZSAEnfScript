@@ -3,6 +3,8 @@ class TitleScreenMenu extends UIScriptedMenu
 {
 	void TitleScreenMenu()
 	{
+		g_Game.SetGameState( DayZGameState.MAIN_MENU );
+		g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
 	}
 	
 	void ~TitleScreenMenu()

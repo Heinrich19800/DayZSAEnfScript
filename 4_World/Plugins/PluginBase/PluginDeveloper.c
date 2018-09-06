@@ -336,44 +336,47 @@ class PluginDeveloper extends PluginBase
 	 **/
 	EntityAI SpawnEntityInInventory (PlayerBase player, string item_name, float health, float quantity)
 	{
-		if ( GetGame().IsServer() )
-		{		
-			InventoryLocation il = new InventoryLocation;
-			if (player.GetInventory().FindFirstFreeLocationForNewEntity(item_name, FindInventoryLocationType.ANY, il))
-			{
-				Weapon_Base wpn = Weapon_Base.Cast(il.GetParent());
-				bool is_mag = il.GetSlot() == InventorySlots.MAGAZINE || il.GetSlot() == InventorySlots.MAGAZINE2 || il.GetSlot() == InventorySlots.MAGAZINE3;
-				if (wpn && is_mag)
+		if( player )
+		{
+			if ( GetGame().IsServer() )
+			{		
+				InventoryLocation il = new InventoryLocation;
+				if (player.GetInventory().FindFirstFreeLocationForNewEntity(item_name, FindInventoryLocationType.ANY, il))
 				{
-					vector pos = player.GetPosition();
-					EntityAI eai_gnd = SpawnEntityOnGroundPos(player, item_name, health, quantity, pos);
-					Magazine mag_gnd = Magazine.Cast(eai_gnd);
-					if (mag_gnd && player.GetWeaponManager().CanAttachMagazine(wpn, mag_gnd))
+					Weapon_Base wpn = Weapon_Base.Cast(il.GetParent());
+					bool is_mag = il.GetSlot() == InventorySlots.MAGAZINE || il.GetSlot() == InventorySlots.MAGAZINE2 || il.GetSlot() == InventorySlots.MAGAZINE3;
+					if (wpn && is_mag)
 					{
-						player.GetWeaponManager().AttachMagazine(mag_gnd);
+						vector pos = player.GetPosition();
+						EntityAI eai_gnd = SpawnEntityOnGroundPos(player, item_name, health, quantity, pos);
+						Magazine mag_gnd = Magazine.Cast(eai_gnd);
+						if (mag_gnd && player.GetWeaponManager().CanAttachMagazine(wpn, mag_gnd))
+						{
+							player.GetWeaponManager().AttachMagazine(mag_gnd);
+						}
+						return eai_gnd;
 					}
-					return eai_gnd;
+					else
+					{
+						EntityAI eai = GetGame().SpawnEntity(item_name, il);
+						if ( eai && eai.IsInherited(ItemBase) )
+						{
+							ItemBase i = ItemBase.Cast( eai );
+							SetupSpawnedItem(i, health, quantity);
+						}
+						return eai;
+					}
 				}
 				else
-				{
-					EntityAI eai = GetGame().SpawnEntity(item_name, il);
-					if ( eai && eai.IsInherited(ItemBase) )
-					{
-						ItemBase i = ItemBase.Cast( eai );
-						SetupSpawnedItem(i, health, quantity);
-					}
-					return eai;
-				}
+					OnSpawnErrorReport(item_name);
+				return NULL;
 			}
 			else
-				OnSpawnErrorReport(item_name);
-			return NULL;
-		}
-		else
-		{		
-			// Client -> Server Spawning: Client Side
-			ref Param3<string, float, float> params = new Param3<string, float, float>(item_name, health, quantity);
-			player.RPCSingleParam(ERPCs.DEV_RPC_SPAWN_ITEM_IN_INVENTORY, params, true);
+			{		
+				// Client -> Server Spawning: Client Side
+				ref Param3<string, float, float> params = new Param3<string, float, float>(item_name, health, quantity);
+				player.RPCSingleParam(ERPCs.DEV_RPC_SPAWN_ITEM_IN_INVENTORY, params, true);
+			}
 		}
 		return NULL;
 	}

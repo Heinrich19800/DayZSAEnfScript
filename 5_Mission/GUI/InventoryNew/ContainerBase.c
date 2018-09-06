@@ -53,6 +53,14 @@ class ContainerBase: ScriptedWidgetEventHandler
 		}
 	}
 	
+	ContainerBase GetRoot()
+	{
+		if( m_Parent )
+			return m_Parent.GetRoot();
+		else
+			return this;
+	}
+	
 	void UpdateInterval() {}
 
 	void SetLayoutName() {}

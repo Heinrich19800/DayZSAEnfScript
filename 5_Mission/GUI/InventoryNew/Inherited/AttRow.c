@@ -48,7 +48,7 @@ class AttRow: ClosableContainer
 					Widget selected_widget = ItemManager.GetInstance().GetSelectedWidget();
 					if( selected_widget )
 					{
-						selected_widget.Show( false )
+						selected_widget.Show( false );
 					}
 				}
 				

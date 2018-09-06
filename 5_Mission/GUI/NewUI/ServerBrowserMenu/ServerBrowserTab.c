@@ -454,23 +454,22 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void SelectServer( ServerBrowserEntry server )
 	{
-		//#ifdef PLATFORM_CONSOLE
+		/*
+		#ifdef PLATFORM_CONSOLE
 			if( m_SelectedServer && m_EntryWidgets.Contains( m_SelectedServer.GetServerID() ) )
 			{
-				//m_ServerListScroller.VScrollToPos01( 1 );
-				//m_SelectedServer = m_EntryWidgets.Get( m_EntryWidgets.Count() - 1 );
-				//m_Menu.SelectServer( m_SelectedServer );
+				//m_SelectedServer.Lighten( m_SelectedServer.GetRoot(), server.GetRoot(), 0, 0 );
 				//m_SelectedServer.Select( false );
-				m_SelectedServer.Darken( m_SelectedServer.GetRoot(), 0, 0 );
-				m_SelectedServer.Select( false );
-				m_SelectedServer.ServerListFocus( true );
+				//m_SelectedServer.ServerListFocus( true );
 				return;
 			}
 			else
 			{
 				ScrollToEntry( server );
 			}
-		//#endif
+		#endif
+		*/
+		ScrollToEntry( server );
 		m_SelectedServer = server;
 		
 		if (!m_Menu)
@@ -568,8 +567,11 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 						Sleep( 0.01 );
 					}
 				}
+				
+				m_ServerList.FindAnyWidget( "page_" + i ).Update();
 				if( i > 2 )
 					m_Pages.Get( i - 1 ).Hide();
+				m_ServerList.Update();
 				i++;
 			}
 			else
@@ -609,6 +611,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 					for( int i = m_CurrentLoadedPage - 4; i >= 0; i-- )
 						m_Pages.Get( i ).Hide();
 				}
+				m_ServerList.Update();
 			}
 			
 			if( pos <= prev_page_pos )
@@ -620,6 +623,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 					if( m_CurrentLoadedPage < m_TotalPages - 2 )
 						m_Pages.Get( m_CurrentLoadedPage + 2 ).Hide();
 				}
+				m_ServerList.Update();
 			}
 		}
 	}
@@ -706,16 +710,16 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void SetSort( ESortType type, ESortOrder order )
 	{
+		m_SortType	= type;
 		m_SortOrder = order;
-		
+
+		#ifdef PLATFORM_WINDOWS
 		m_Root.FindAnyWidget( "host_sort" ).Show( false );
 		m_Root.FindAnyWidget( "population_sort" ).Show( false );
 		m_Root.FindAnyWidget( "slots_sort" ).Show( false );
 		
-		#ifdef PLATFORM_WINDOWS
 		m_Root.FindAnyWidget( "time_sort" ).Show( false );
 		m_Root.FindAnyWidget( "ping_sort" ).Show( false );
-		#endif
 		
 		TextWidget root;
 		root = TextWidget.Cast( m_Root.FindAnyWidget( "host_label" ) );
@@ -725,12 +729,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		root = TextWidget.Cast( m_Root.FindAnyWidget( "slots_label" ) );
 		root.SetColor( ARGBF( 1, 1, 1, 1 ) );
 		
-		#ifdef PLATFORM_WINDOWS
 		root = TextWidget.Cast( m_Root.FindAnyWidget( "ping_label" ) );
 		root.SetColor( ARGBF( 1, 1, 1, 1 ) );
 		root = TextWidget.Cast( m_Root.FindAnyWidget( "time_label" ) );
 		root.SetColor( ARGBF( 1, 1, 1, 1 ) );
-		#endif
 		
 		string r_name;
 		string w_name;
@@ -775,6 +777,8 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		m_Root.FindAnyWidget( w_name ).Show( true );
 		m_Root.FindAnyWidget( w_name + "_dsc" ).Show( !m_SortOrder );
 		m_Root.FindAnyWidget( w_name + "_asc" ).Show( m_SortOrder );
+		
+		#endif
 	}
 	
 	void SetFavorite( string uid, bool favorite )

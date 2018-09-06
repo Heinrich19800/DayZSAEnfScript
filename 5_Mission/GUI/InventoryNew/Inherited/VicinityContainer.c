@@ -742,7 +742,9 @@ class VicinityContainer: CollapsibleContainer
 			
 			if(m_ShowedItemIcons.Count() < m_OldShowedItemIconsCount )
 			{
-				Inventory.Cast(m_Parent.m_Parent).UpdateConsoleToolbar();	
+				Inventory in = Inventory.Cast( GetRoot() );
+				if( in )
+					in.UpdateConsoleToolbar();	
 			}
 		}
 	}
