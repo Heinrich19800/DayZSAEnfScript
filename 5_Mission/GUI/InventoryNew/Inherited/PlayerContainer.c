@@ -1022,7 +1022,9 @@ class PlayerContainer: CollapsibleContainer
 				name2.Replace( "PanelWidget", "GhostSlot" );
 				ipw.GetParent().GetParent().FindAnyWidget( name2 ).Show( true );
 				ipw.SetItem( NULL );
-				Inventory.Cast( GetRoot() ).UpdateConsoleToolbar();
+				Inventory in = Inventory.Cast( GetRoot() );
+				if( in )
+					in.UpdateConsoleToolbar();
 				name2.Replace( "GhostSlot", "ItemSize" );
 				TextWidget tw1 = TextWidget.Cast( ipw.GetParent().GetParent().FindAnyWidget( name2 ) );
 				tw1.SetText( "" );

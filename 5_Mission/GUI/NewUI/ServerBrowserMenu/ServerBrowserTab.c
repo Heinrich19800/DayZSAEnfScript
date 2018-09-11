@@ -580,16 +580,24 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 					return;
 				Sleep( 0.1 );
 			}
-			if( m_EntryWidgets.Count() > 0 )
+		}
+		
+		if( m_EntryWidgets.Count() > 0 )
+		{
+			if( m_Entries.Count() > 0 )
 			{
-				if (m_EntryWidgets.GetElement(0))
-					m_EntryWidgets.GetElement(0).Focus();
+				GetServersResultRowArray res = m_Entries.GetElement( 0 );
+				if( res && res.Count() > 0 )
+					m_EntryWidgets.Get( res.Get( 0 ).m_Id ).Focus();
 			}
+		}
+		else
+		{
+			m_Filters.Focus();
 		}
 		
 		if (!m_Menu)
 			return;
-		
 		m_Menu.SetRefreshing( false );
 	}
 	

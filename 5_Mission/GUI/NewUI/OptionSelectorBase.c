@@ -59,7 +59,7 @@ class OptionSelectorBase extends ScriptedWidgetEventHandler
 		{
 			Darken( w, x, y );
 			if( m_ParentClass )
-				m_ParentClass.OnFocus( w, -1, y );
+				m_ParentClass.OnFocus( m_Root.GetParent(), -1, y );
 			return true;
 		}
 		return false;
@@ -75,6 +75,17 @@ class OptionSelectorBase extends ScriptedWidgetEventHandler
 			return true;
 		}
 		return false;
+	}
+	
+	void Focus()
+	{
+		#ifdef PLATFORM_CONSOLE
+			SetFocus( m_Parent );
+		#else
+		#ifdef PLATFORM_WINDOWS
+			SetFocus( m_Root );
+		#endif
+		#endif
 	}
 	
 	void Enable()

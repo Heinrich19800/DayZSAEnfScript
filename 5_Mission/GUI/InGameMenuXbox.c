@@ -224,6 +224,7 @@ class InGameMenuXbox extends UIScriptedMenu
 		#endif
 			layoutRoot.FindAnyWidget( "play_panel_root" ).Show( false );
 			layoutRoot.FindAnyWidget( "dayz_logo" ).Show( false );
+			layoutRoot.FindAnyWidget( "Select" ).Show( false );
 			m_ServerInfoPanel.FocusFirst();
 			return true;
 		case 117:

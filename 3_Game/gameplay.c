@@ -491,7 +491,9 @@ enum EventType
 	//! params: \ref SetFreeCameraEventParams
 	SetFreeCameraEventTypeID,
 	//! params: \ref MPConnectionLostEventParams
-	MPConnectionLostEventTypeID
+	MPConnectionLostEventTypeID,
+	//! no params
+	ConnectingAbortEventTypeID
 	
 	//possible in engine events not accessable from script
 	//ReloadShadersEvent

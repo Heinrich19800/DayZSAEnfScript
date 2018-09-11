@@ -71,10 +71,10 @@ class Inventory: ContainerBase
 		m_Quickbar.UpdateItems( m_QuickbarWidget );
 #endif			
 		
-		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "LeftPanel" ),  this, "OnLeftPanelDropReceived" );
-		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "LeftPanel" ),  this, "DraggingOverLeftPanel" );
-		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "RightPanel" ),  this, "OnRightPanelDropReceived" );
-		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "RightPanel" ),  this, "DraggingOverRightPanel" );
+		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "LeftBackground" ),  this, "OnLeftPanelDropReceived" );
+		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "LeftBackground" ),  this, "DraggingOverLeftPanel" );
+		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "RightBackground" ),  this, "OnRightPanelDropReceived" );
+		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "RightBackground" ),  this, "DraggingOverRightPanel" );
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "CharacterPanel" ),  this, "OnCenterPanelDropReceived" );
 		WidgetEventHandler.GetInstance().RegisterOnDraggingOver( GetMainPanel().FindAnyWidget( "CharacterPanel" ),  this, "DraggingOverCenterPanel" );
 		WidgetEventHandler.GetInstance().RegisterOnDropReceived( GetMainPanel().FindAnyWidget( "HandsPanel" ),  this, "OnHandsPanelDropReceived" );

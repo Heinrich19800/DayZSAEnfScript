@@ -207,14 +207,14 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 	void FillTextMap()
 	{
 		m_TextMap = new map<int, ref Param2<string, string>>;
-		m_TextMap.Insert( AT_OPTIONS_FIELD_OF_VIEW, new Param2<string, string>( "Field of View", "Sets the players field of view, between 60 and 110 degrees." ) );
-		m_TextMap.Insert( 1, new Param2<string, string>( "Show HUD", "Toggles whether the HUD should be visible at any time. Does not affect the quickbar." ) );
-		m_TextMap.Insert( 2, new Param2<string, string>( "Show Crosshair", "Toggles the visibility of the crosshair." ) );
+		m_TextMap.Insert( AT_OPTIONS_FIELD_OF_VIEW, new Param2<string, string>( "Field of View", "#options_game_field_of_view_desc" ) );
+		m_TextMap.Insert( 1, new Param2<string, string>( "Show HUD", "#options_game_show_HUD_desc" ) );
+		m_TextMap.Insert( 2, new Param2<string, string>( "Show Crosshair", "#options_game_show_crosshair_desc" ) );
 		#ifdef PLATFORM_WINDOWS
-		m_TextMap.Insert( 3, new Param2<string, string>( "Show Quickbar", "Toggles the default visibility state of the quickbar." ) );
+		m_TextMap.Insert( 3, new Param2<string, string>( "Show Quickbar", "#options_game_show_quickbar_desc" ) );
 		#else
 		#ifdef PLATFORM_CONSOLE
-		m_TextMap.Insert( AT_OPTIONS_BRIGHT_SLIDER, new Param2<string, string>( "Brightness", "Overall image brightness. Helps with game visibility in adverse lighting conditions." ) );
+		m_TextMap.Insert( AT_OPTIONS_BRIGHT_SLIDER, new Param2<string, string>( "Brightness", "#options_video_brightness_desc" ) );
 		#endif
 		#endif
 	}

@@ -49,7 +49,7 @@ class ActionAttachPowerSourceToPanel: ActionSingleUseBase
 		
 		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
 		{
-			target_entity.ServerTakeEntityAsAttachmentEx( item_entity, target_location.GetSlot() );
+			action_data.m_Player.ServerTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
 		}
 	}
 	

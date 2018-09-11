@@ -147,9 +147,9 @@ class OptionsMenuSounds extends ScriptedWidgetEventHandler
 	void FillTextMap()
 	{
 		m_TextMap = new map<int, ref Param2<string, string>>;
-		m_TextMap.Insert( AT_OPTIONS_MASTER_VOLUME, new Param2<string, string>( "Master Volume", "Sets the volume level for all in-game sounds." ) );
-		m_TextMap.Insert( AT_OPTIONS_EFFECTS_SLIDER, new Param2<string, string>( "Effects Volume", "Sets the volume level for in-game effects, such as weapon effects, footsteps and other sounds produced by the world." ) );
-		m_TextMap.Insert( AT_OPTIONS_VON_SLIDER, new Param2<string, string>( "VoIP Volume", "Sets the volume level for incoming voice communication from other players." ) );
+		m_TextMap.Insert( AT_OPTIONS_MASTER_VOLUME, new Param2<string, string>( "Master Volume", "#options_sound_master_volume_desc" ) );
+		m_TextMap.Insert( AT_OPTIONS_EFFECTS_SLIDER, new Param2<string, string>( "Effects Volume", "#options_sound_effects_volume_desc" ) );
+		m_TextMap.Insert( AT_OPTIONS_VON_SLIDER, new Param2<string, string>( "VoIP Volume", "#options_sound_VOIP_volume_desc" ) );
 		m_TextMap.Insert( AT_OPTIONS_MUSIC_SLIDER, new Param2<string, string>( "Music Volume", "Sets the volume level for any music in the game." ) );
 	}
 }

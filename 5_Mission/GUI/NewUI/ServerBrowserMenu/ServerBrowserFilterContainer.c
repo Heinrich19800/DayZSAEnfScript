@@ -26,7 +26,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		
 		ref array<string> character_name_options ={ "Disabled", player_name };
 		ref array<string> region_options = { "All", "Americas", "Europe", "Asia" };
-		ref array<string> sort_options = { "Name - Descending", "Name - Ascending", "Population - Descending", "Population - Ascending" };
+		ref array<string> sort_options = { "Name - Descending", "Name - Ascending", "Slots - Descending", "Slots - Ascending" };
 		ref array<string> ping_options = { "Disabled", "<30", "<50", "<100", "<200", "<300", "<500" };
 		ref array<string> three_options = { "Disabled", "Show", "Hide" };
 		
@@ -192,6 +192,17 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 				break;
 			}
 		}
+	}
+	
+	void Focus()
+	{
+		#ifdef PLATFORM_CONSOLE
+			m_SortingFilter.Focus();
+		#else
+		#ifdef PLATFORM_WINDOWS
+			SetFocus( m_SearchByName );
+		#endif
+		#endif
 	}
 	
 	override bool OnFocus( Widget w, int x, int y )

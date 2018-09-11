@@ -107,6 +107,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		m_OfficialTab.m_Loading = true;
 		m_OfficialTab.OnLoadServersAsync( result, EBiosError.OK, "" );
 		*/
+		
 		PPEffects.SetBlurMenu( 0.5 );
 		return layoutRoot;
 	}

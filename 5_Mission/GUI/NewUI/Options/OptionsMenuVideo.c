@@ -437,23 +437,23 @@ class OptionsMenuVideo extends ScriptedWidgetEventHandler
 	void FillTextMap()
 	{
 		m_TextMap = new map<int, ref Param2<string, string>>;
-		m_TextMap.Insert( AT_QUALITY_PREFERENCE, new Param2<string, string>( "Quality", "Select predefined video quality preset, or set a custom one.\nSelect overall video quality from predefined presets of following settings, or set a custom one." ) );
-		//m_TextMap.Insert( , new Param2<string, string>( "Display Mode", "Fullscreen mode makes the game to cover whole display in exclusive access. In windowed mode the game behaves like typical window application with frame around. When windowed mode is set and the resolution is selected to native display resolution, the game is in fullscreen borderless mode covering full screen but without exclusive access." ) );
-		m_TextMap.Insert( AT_OPTIONS_RESOLUTION, new Param2<string, string>( "Resolution", "Amount of pixels on screen. Higher means better image quality at the expense of frame rate. Available resolutions are derived from monitor native resolution and its aspect ratio. Using highest resolution available in windowed display mode result in fullscreen borderless window." ) );
-		m_TextMap.Insert( AT_OPTIONS_BRIGHT_SLIDER, new Param2<string, string>( "Brightness", "Overall image brightness. To see the game world better when it's dark while your screen is being shined on by outside source of light." ) );
-		m_TextMap.Insert( AT_VSYNC_VALUE, new Param2<string, string>( "V-Sync", "Removes the unwanted vertical tearing effect at the expense of frame rate." ) );
-		m_TextMap.Insert( AT_HDR_DETAIL, new Param2<string, string>( "Color Depth", "Image computation mode, in 8 bits, 10 bits or 16 bits, higher means better quality but with possible higher performance price.\nLow - 8-bit\nMedium - 10-bit\nHigh - 16-bit" ) );
-		m_TextMap.Insert( AT_OBJECTS_DETAIL, new Param2<string, string>( "Object Detail", "Sets the level of detail threshold on all 3D models." ) );
-		m_TextMap.Insert( AT_OPTIONS_TERRAIN, new Param2<string, string>( "Terrain Detail", "Resolution of textures." ) );
-		m_TextMap.Insert( AT_TEXTURE_DETAIL, new Param2<string, string>( "Texture Detail", "Quality of clouds." ) );
-		m_TextMap.Insert( AT_OPTIONS_SW_VALUE, new Param2<string, string>( "Clouds Detail", "Quality of shadows." ) );
-		m_TextMap.Insert( AT_SHADOW_DETAIL, new Param2<string, string>( "Shadow Detail", "Quality of shadows." ) );
-		m_TextMap.Insert( AT_ANISO_DETAIL, new Param2<string, string>( "Textures Filtering", "Increases texture quality under sharp angles while also reducing unwanted noise patterns.\nLow - Trilinear\nMedium - 4x Anisotropic\nHigh - 16x Anisotropic" ) );
-		//m_TextMap.Insert( , new Param2<string, string>( "Terrain Surface Detail", "" ) );
-		m_TextMap.Insert( AT_OPTIONS_FXAA_VALUE, new Param2<string, string>( "Anti-aliasing Post Process", "Increases sharpness of all edges while also reducing noise and unwanted rasterization effect. Expect heavy GPU performance hit with this on high settings!\nLow - FXAA Medium\nMedium - FXAA High\nHigh - SMAA Medium\nExtreme - SMAA High" ) );
-		m_TextMap.Insert( AT_FSAA_DETAIL, new Param2<string, string>( "Anti-aliasing Hardware", "Edge smoothing, supported by video hardware. Very performance and memory intensive!\nLow - 2x MSAA\nMedium - 4x MSAA\nHigh - 8x MSAA" ) );
-		m_TextMap.Insert( AT_ATOC_DETAIL, new Param2<string, string>( "Foliage Smoothing", "Edge smoothing of foliage by ATOC (alpha to overlay coverage), HW antialiasing must be enabled to support this technique." ) );
-		m_TextMap.Insert( AT_AMBIENT_OCCLUSION, new Param2<string, string>( "Ambient Occlusion", "Shading and rendering technique used to calculate how exposed each point in a scene is to ambient lighting. Helps objects to stand out better from their background.\nLow - SSAO Medium\nMedium - SSAO High\nHigh - HBAO Medium\nExtreme - HBAO High" ) );
-		m_TextMap.Insert( AT_POSTPROCESS_EFFECTS, new Param2<string, string>( "Post Process Quality", "Sets the quality of Postprocess effects." ) );
+		m_TextMap.Insert( AT_QUALITY_PREFERENCE, new Param2<string, string>( "Quality", "#options_video_quality_desc" ) );
+		//m_TextMap.Insert( , new Param2<string, string>( "Display Mode", "#options_video_display_mode_desc" ) );
+		m_TextMap.Insert( AT_OPTIONS_RESOLUTION, new Param2<string, string>( "Resolution", "#options_video_resolution_desc" ) );
+		m_TextMap.Insert( AT_OPTIONS_BRIGHT_SLIDER, new Param2<string, string>( "Brightness", "#options_video_brightness_desc" ) );
+		m_TextMap.Insert( AT_VSYNC_VALUE, new Param2<string, string>( "V-Sync", "#options_video_V-sync_desc" ) );
+		m_TextMap.Insert( AT_HDR_DETAIL, new Param2<string, string>( "Color Depth", "#options_video_color_depth_desc" ) );
+		m_TextMap.Insert( AT_OBJECTS_DETAIL, new Param2<string, string>( "Object Detail", "#options_video_object_detail_desc" ) );
+		m_TextMap.Insert( AT_OPTIONS_TERRAIN, new Param2<string, string>( "Terrain Detail", "#options_video_terrain_detail_desc" ) );
+		m_TextMap.Insert( AT_TEXTURE_DETAIL, new Param2<string, string>( "Texture Detail", "#options_video_texture_detail_desc" ) );
+		m_TextMap.Insert( AT_OPTIONS_SW_VALUE, new Param2<string, string>( "Clouds Detail", "#options_video_clouds_detail_desc" ) );
+		m_TextMap.Insert( AT_SHADOW_DETAIL, new Param2<string, string>( "Shadow Detail", "#options_video_shadow_detail_desc" ) );
+		m_TextMap.Insert( AT_ANISO_DETAIL, new Param2<string, string>( "Textures Filtering", "#options_video_texture_filtering_desc" ) );
+		//m_TextMap.Insert( , new Param2<string, string>( "Terrain Surface Detail", "#options_video_terrain_surface_detail_desc" ) );
+		m_TextMap.Insert( AT_OPTIONS_FXAA_VALUE, new Param2<string, string>( "Anti-aliasing Post Process", "#options_video_anti-aliasing_desc" ) );
+		m_TextMap.Insert( AT_FSAA_DETAIL, new Param2<string, string>( "Anti-aliasing Hardware", "#options_video_anti-aliasing_hardware_desc" ) );
+		m_TextMap.Insert( AT_ATOC_DETAIL, new Param2<string, string>( "Foliage Smoothing", "#options_video_foliage_smoothing_desc" ) );
+		m_TextMap.Insert( AT_AMBIENT_OCCLUSION, new Param2<string, string>( "Ambient Occlusion", "#options_video_ambient_occlusion_desc" ) );
+		m_TextMap.Insert( AT_POSTPROCESS_EFFECTS, new Param2<string, string>( "Post Process Quality", "#options_video_post_process_desc" ) );
 	}
 }

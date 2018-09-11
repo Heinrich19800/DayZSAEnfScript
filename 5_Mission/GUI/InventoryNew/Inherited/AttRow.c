@@ -269,11 +269,10 @@ class AttRow: ClosableContainer
 			receiver_item = ItemBase.Cast( receiver_iw.GetItem() );
 		}
 		ItemBase item = ItemBase.Cast( iw.GetItem() );
-		
+		int stack_max;
 		if( m_Entity.GetInventory().CanAddAttachmentEx( item, receiver.GetUserID() ) )
 		{
-			item.SplitIntoStackMaxClient( m_Entity, receiver.GetUserID() );
-			int stack_max = InventorySlots.GetStackMaxForSlotId( receiver.GetUserID() );
+			stack_max = InventorySlots.GetStackMaxForSlotId( receiver.GetUserID() );
 			float quantity = item.GetQuantity();
 			if( stack_max == 0 || stack_max >= quantity || !item.CanBeSplit() )
 			{
@@ -583,19 +582,25 @@ class AttRow: ClosableContainer
 			
 			GetGame().ConfigGetText(path + " name", slot_name);
 			int slot_id = InventorySlots.GetSlotIdFromString( slot_name );
-			
-			ItemPreviewWidget item_preview2 = ItemPreviewWidget.Cast( this.Get((j/7)+1).GetMainPanel().FindAnyWidget("Icon"+j%7).FindAnyWidget("Render"+j%7) );
-			ImageWidget image_widget2 = ImageWidget.Cast( item_preview2.GetParent().GetParent().FindAnyWidget("GhostSlot"+j%7) );
+			int id = j%7;
+			ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( this.Get((j/7)+1).GetMainPanel().FindAnyWidget("Icon"+id) );
+			ItemPreviewWidget item_preview2 = ItemPreviewWidget.Cast( item_preview.FindAnyWidget("Render"+id) );
+			ImageWidget image_widget2 = ImageWidget.Cast( item_preview.FindAnyWidget("GhostSlot"+id) );
+			Widget temp_widget = item_preview2.FindAnyWidget("Temperature"+id);
 			item_preview2.GetParent().Show( true );
 			if(!entity.GetInventory())
-			return;
+				return;
 			if(entity.GetInventory().FindAttachment(slot_id) == NULL)
 			{
 				image_widget2.Show(true);
+				if( temp_widget )
+					temp_widget.Show(false);
 			}
 			else
 			{
 				image_widget2.Show(false);
+				if( temp_widget )
+					temp_widget.Show(true);
 			}
 			
 			image_widget2.SetUserID( slot_id );
@@ -682,14 +687,14 @@ class AttRow: ClosableContainer
 			
 			if(entity.GetInventory().FindAttachment(slot_id) != NULL)
 			{
-				ImageWidget image_widget3 = ImageWidget.Cast( item_preview2.GetParent().FindAnyWidget("OutOfReach"+j%7) );
-				if ( image_widget3 && AttchmentsOutOfReach.IsAttachmentReachable(entity, slot_name) )
+				ImageWidget image_widget4 = ImageWidget.Cast( item_preview2.GetParent().FindAnyWidget("OutOfReach"+j%7) );
+				if ( image_widget4 && AttchmentsOutOfReach.IsAttachmentReachable(entity, slot_name) )
 				{
-					image_widget3.Show(false);
+					image_widget4.Show(false);
 				}
-				else if ( image_widget3 )
+				else if ( image_widget4 )
 				{
-					image_widget3.Show(true);
+					image_widget4.Show(true);
 				}
 			}
 		}

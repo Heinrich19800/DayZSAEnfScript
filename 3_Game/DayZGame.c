@@ -246,7 +246,7 @@ class LoginQueueMenu extends UIScriptedMenu
 		
 		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
 		{
-			GetDayZGame().m_loginQueue.LeaveConnectQueue();
+			LeaveConnectQueue();
 		}
 	}
 	
@@ -267,7 +267,7 @@ class LoginQueueMenu extends UIScriptedMenu
 #ifdef PLATFORM_CONSOLE
 		g_Game.SetGameState( DayZGameState.MAIN_MENU );
 		g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
-#endif		
+#endif
 		g_Game.GetCallQueue(CALL_CATEGORY_SYSTEM).Call(GetGame().DisconnectSessionForce);
 	}
 	
@@ -842,12 +842,7 @@ class DayZGame extends CGame
 			ChatMessageEventParams chat_params;
 			if (Class.CastTo(chat_params, params))
 			{
-			#ifndef NO_GUI
-				if (GetUIManager().ScreenFadeVisible() && (chat_params.param1 == CCSystem || chat_params.param1 == CCStatus))
-				{
-					GetUIManager().ScreenFadeIn(0, chat_params.param3, FadeColors.BLACK, FadeColors.WHITE);
-				}
-			#endif
+				
 			}
 			break;
 	
@@ -882,6 +877,9 @@ class DayZGame extends CGame
 				m_loading.HideTitle();
 				m_loading.SetError(error);
 			}
+			break;
+		case ConnectingAbortEventTypeID:
+			g_Game.SetGameState(DayZGameState.MAIN_MENU);
 			break;
 		}
 	
