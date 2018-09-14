@@ -79,6 +79,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		
 		if( options && options.Count() >= 6 )
 		{
+			m_RegionFilter.SetStringOption( options.Get( "m_RegionFilter" ) );
 			m_PingFilter.SetStringOption( options.Get( "m_PingFilter" ) );
 			m_FavoritedFilter.SetStringOption( options.Get( "m_FavoritedFilter" ) );
 			m_FriendsPlayingFilter.SetStringOption( options.Get( "m_FriendsPlayingFilter" ) );
@@ -112,6 +113,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 	{
 		ref map<string, string> options = new map<string, string>;
 		
+		options.Insert( "m_RegionFilter", m_RegionFilter.GetStringValue() );
 		options.Insert( "m_PingFilter", m_PingFilter.GetStringValue() );
 		options.Insert( "m_FavoritedFilter", m_FavoritedFilter.GetStringValue() );
 		options.Insert( "m_FriendsPlayingFilter", m_FriendsPlayingFilter.GetStringValue() );
@@ -141,6 +143,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 	
 	void ResetFilters()
 	{
+		m_RegionFilter.Reset();
 		m_PingFilter.Reset();
 		m_FavoritedFilter.Reset();
 		m_FriendsPlayingFilter.Reset();

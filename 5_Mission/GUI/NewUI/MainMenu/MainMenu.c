@@ -30,6 +30,13 @@ class MainMenu extends UIScriptedMenu
 	protected Widget				m_NewsSec2;
 	protected Widget				m_PrevCharacter;
 	protected Widget				m_NextCharacter;
+	
+	protected Widget				m_LastPlayedTooltip;
+	protected Widget				m_LastPlayedTooltipLabel;
+	protected TextWidget			m_LastPlayedTooltipIP;
+	protected TextWidget			m_LastPlayedTooltipPort;
+	
+	protected ref WidgetFadeTimer	m_LastPlayedTooltipTimer;
 
 	override Widget Init()
 	{
@@ -53,7 +60,14 @@ class MainMenu extends UIScriptedMenu
 
 		m_Version					= TextWidget.Cast( layoutRoot.FindAnyWidget( "version" ) );
 		m_CharacterRotationFrame	= layoutRoot.FindAnyWidget( "character_rotation_frame" );
-			
+		
+		m_LastPlayedTooltip			= layoutRoot.FindAnyWidget( "last_server_info" );
+		m_LastPlayedTooltipLabel	= m_LastPlayedTooltip.FindAnyWidget( "last_server_info_label" );
+		m_LastPlayedTooltipIP		= TextWidget.Cast( m_LastPlayedTooltip.FindAnyWidget( "last_server_info_ip" ) );
+		m_LastPlayedTooltipPort		= TextWidget.Cast( m_LastPlayedTooltip.FindAnyWidget( "last_server_info_port" ) );
+		
+		m_LastPlayedTooltipTimer	= new WidgetFadeTimer();
+		
 		m_Newsfeed					= new MainMenuNewsfeed( layoutRoot.FindAnyWidget( "news_feed_root" ) );
 		m_Stats						= new MainMenuStats( layoutRoot.FindAnyWidget( "character_stats_root" ) );
 		
@@ -64,7 +78,6 @@ class MainMenu extends UIScriptedMenu
 		m_ScenePC					= m_Mission.GetIntroScenePC();
 #endif
 		m_Mission.ResetIntroCamera();
-		
 		
 		m_PlayerName				= TextWidget.Cast( layoutRoot.FindAnyWidget("character_name_text") );
 		
@@ -265,6 +278,19 @@ class MainMenu extends UIScriptedMenu
 	
 	override bool OnMouseEnter( Widget w, int x, int y )
 	{
+		#ifdef PLATFORM_WINDOWS
+		if( w == m_Play )
+		{
+			string ip;
+			int port;
+			if( g_Game.GetLastVisitedServer( ip, port ) )
+			{
+				m_LastPlayedTooltipIP.SetText( "Server IP: " + ip );
+				m_LastPlayedTooltipPort.SetText( "Server port: " + port.ToString() );
+				m_LastPlayedTooltipTimer.FadeIn( m_LastPlayedTooltip, 0.3, true );
+			}
+		}
+		#endif
 		if( IsFocusable( w ) )
 		{
 			ColorRed( w );
@@ -275,6 +301,12 @@ class MainMenu extends UIScriptedMenu
 	
 	override bool OnMouseLeave( Widget w, Widget enterW, int x, int y )
 	{
+		#ifdef PLATFORM_WINDOWS
+		if( w == m_Play )
+		{
+			m_LastPlayedTooltipTimer.FadeOut( m_LastPlayedTooltip, 5, true );
+		}
+		#endif
 		if( IsFocusable( w ) )
 		{
 			ColorWhite( w, enterW );

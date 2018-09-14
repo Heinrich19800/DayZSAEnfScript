@@ -131,10 +131,12 @@ class OnlineServices
 	{
 		if( !ErrorCaught( error ) )
 		{
-			m_ServersAsyncInvoker.Invoke( result_list, error, "" );
+			m_ServersAsyncInvoker.Invoke( result_list, error, response );
 		}
 		else
-			Print( response );
+		{
+			m_ServersAsyncInvoker.Invoke( null, error, "" );
+		}
 	}
 	
 	static void LoadFriends()

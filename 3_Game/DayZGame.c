@@ -878,9 +878,6 @@ class DayZGame extends CGame
 				m_loading.SetError(error);
 			}
 			break;
-		case ConnectingAbortEventTypeID:
-			g_Game.SetGameState(DayZGameState.MAIN_MENU);
-			break;
 		}
 	
 		Mission mission = GetMission();

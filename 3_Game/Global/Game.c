@@ -152,14 +152,14 @@ class CGame
 	*/
 	proto native int		ConnectLastSession( UIScriptedMenu parent , int selectedCharacter = -1 );
 	/**
-  \brief Disconnects from current multiplayer session, leave world empty for using last mission world
+  \brief Disconnects from current multiplayer session
 	*/
-	proto native void		DisconnectSession(string world = "");
+	proto native void		DisconnectSession();
 	
 	/**
-  \brief Forces disconnect from current multiplayer session even if not yet in the game, leave world empty for using last mission world
+  \brief Forces disconnect from current multiplayer session even if not yet in the game
 	*/
-	proto native void 		DisconnectSessionForce(string world = "");
+	proto native void 		DisconnectSessionForce();
 
 	// profile functions
 	/**

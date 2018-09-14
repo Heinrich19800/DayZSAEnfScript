@@ -525,14 +525,6 @@ class WidgetFadeTimer extends TimerBase
 			else
 			{
 				m_widget.SetAlpha( m_alpha - timeDiff );
-				Widget child = m_widget.GetChildren();
-				while( child )
-				{
-					float alphaChild = child.GetAlpha();
-					float progressChild = Math.Max( 0.0, ( 2.0 * alphaChild - timeDiff ) );
-					child.SetAlpha( alphaChild - progressChild );
-					child = child.GetChildren();
-				}
 			}
 		}
 	}

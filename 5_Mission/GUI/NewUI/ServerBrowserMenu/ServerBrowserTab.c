@@ -480,10 +480,18 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void OnLoadServersAsync( ref GetServersResult result_list, EBiosError error, string response )
 	{
-		if( result_list.m_Pages == 0 )
+		if( !result_list || result_list.m_Pages == 0 )
 		{
 			m_Menu.SetRefreshing( false );
+			string text = "Unable to get servers, ";
+			if( !result_list )
+				text += ( "Error code: " + error );
+			else
+				text += "there are no servers available with your current filter settings."
+			m_LoadingText.SetText( text );
+			return;
 		}
+		
 		if( result_list.m_Page == 1 )
 		{
 			m_TotalPages = result_list.m_Pages;

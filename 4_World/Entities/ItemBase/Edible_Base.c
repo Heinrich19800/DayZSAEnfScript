@@ -45,7 +45,7 @@ class Edible_Base extends ItemBase
 		
 		//Material index
 		ctx.Write( GetFoodStage().GetMaterialIndex() );
-				
+
 		//Modifiers
 		//size
 		int modifiers_size = 0;
@@ -54,6 +54,7 @@ class Edible_Base extends ItemBase
 			modifiers_size = GetFoodStage().GetModifiers().Count();
 		}
 		ctx.Write( modifiers_size );
+
 		//data
 		for ( int j = 0; j < modifiers_size; j++ )
 		{
@@ -88,7 +89,11 @@ class Edible_Base extends ItemBase
 		//Modifiers
 		//count
 		int modifiers_size = 0;
-		ctx.Read( modifiers_size );		
+		ctx.Read( modifiers_size );	
+		
+		
+		//clear modifiers when inserting loaded data
+		GetFoodStage().GetModifiers().Clear();
 		//data
 		for ( int j = 0; j < modifiers_size; j++ )
 		{
