@@ -739,7 +739,7 @@ class MissionGameplay extends MissionBase
 		{
 			if( inv_open )
 			{
-				hud.GetHudPanelWidget().SetPos( 0, -0.09 );
+				hud.GetHudPanelWidget().SetPos( 0, -0.1 );
 			}
 			else
 			{

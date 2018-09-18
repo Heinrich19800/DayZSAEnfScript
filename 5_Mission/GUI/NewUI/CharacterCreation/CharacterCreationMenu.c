@@ -20,8 +20,15 @@ class CharacterCreationMenu extends UIScriptedMenu
 	{
 		MissionMainMenu mission = MissionMainMenu.Cast( GetGame().GetMission() );
 		
-		m_Scene = mission.GetIntroScenePC();
-		m_Scene.ResetIntroCamera();
+		#ifdef PLATFORM_CONSOLE
+			//m_SceneXbox = mission.GetIntroSceneXbox();
+			//m_SceneXbox.ResetIntroCamera();
+		#else
+		#ifdef PLATFORM_WINDOWS
+			m_Scene = mission.GetIntroScenePC();
+			m_Scene.ResetIntroCamera();
+		#endif
+		#endif
 	}
 	
 	override Widget Init()

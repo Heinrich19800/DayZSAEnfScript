@@ -151,6 +151,9 @@ class MissionBase extends Mission
 			menu = new CharacterCreationMenu;
 			break;
 		case MENU_OPTIONS:
+#ifdef NEW_UI
+			menu = new OptionsMenuNew;
+#else
 #ifdef PLATFORM_CONSOLE
 			menu = new OptionsMenuNew;
 #else
@@ -158,6 +161,7 @@ class MissionBase extends Mission
 			menu = new OptionsMenuNew;
 #else
 			menu = new OptionsMenu;
+#endif
 #endif
 #endif
 			break;

@@ -15,6 +15,7 @@ class MainMenu extends UIScriptedMenu
 	protected Widget				m_Play;
 	protected ButtonWidget			m_ChooseServer;
 	protected ButtonWidget			m_CustomizeCharacter;
+	protected ButtonWidget			m_Options;
 	protected ButtonWidget			m_PlayVideo;
 	protected ButtonWidget			m_Tutorials;
 	protected Widget				m_StatButton;
@@ -45,6 +46,7 @@ class MainMenu extends UIScriptedMenu
 		m_Play						= layoutRoot.FindAnyWidget( "play" );
 		m_ChooseServer				= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "choose_server" ) );
 		m_CustomizeCharacter		= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "customize_character" ) );
+		m_Options					= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "options" ) );
 		m_PlayVideo					= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "play_video" ) );
 		m_Tutorials					= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "tutorials" ) );
 		m_StatButton				= layoutRoot.FindAnyWidget( "stat_button" );
@@ -87,14 +89,12 @@ class MainMenu extends UIScriptedMenu
 			layoutRoot.FindAnyWidget( "settings_panel_root" ).Show( false );
 			layoutRoot.FindAnyWidget( "toolbar_bg" ).Show( true );
 			layoutRoot.FindAnyWidget( "character" ).Show( false );
-			
-			m_Tutorials.Show( true );
 			m_CustomizeCharacter.Show( false );
+			m_Tutorials.Show( true );
+			m_Options.Show( true );
 		#endif
 		#ifdef PLATFORM_XBOX
-			m_CustomizeCharacter.Show( true );
 			m_ChooseServer.SetText( "CONTROLS" );
-			m_CustomizeCharacter.SetText( "OPTIONS" );
 			m_PlayVideo.Show( true );
 		#endif
 		
@@ -205,11 +205,12 @@ class MainMenu extends UIScriptedMenu
 			}
 			else if ( w == m_CustomizeCharacter )
 			{
-				#ifdef PLATFORM_CONSOLE
-					OpenSettings();
-				#else
-					CustomizeCharacter();
-				#endif
+				CustomizeCharacter();
+				return true;
+			}
+			else if ( w == m_Options || w == m_SettingsButton )
+			{
+				OpenSettings();
 				return true;
 			}
 			else if ( w == m_StatButton )
@@ -220,11 +221,6 @@ class MainMenu extends UIScriptedMenu
 			else if ( w == m_MessageButton )
 			{
 				OpenMessages();
-				return true;
-			}
-			else if ( w == m_SettingsButton )
-			{
-				OpenSettings();
 				return true;
 			}
 			else if ( w == m_Exit )
@@ -339,7 +335,7 @@ class MainMenu extends UIScriptedMenu
 	{
 		if( w == m_Play || w == m_ChooseServer || w == m_CustomizeCharacter || w == m_StatButton || w == m_MessageButton || w == m_SettingsButton );
 			return true;
-		if( w == m_Exit || w == m_NewsFeedOpen || w == m_NewsFeedClose || m_PlayVideo );
+		if( w == m_Exit || w == m_NewsFeedOpen || w == m_NewsFeedClose || w == m_PlayVideo || w == m_Options );
 			return true;
 		if( w == m_CharacterStatsOpen || w == m_CharacterStatsClose || w == m_NewsMain || w == m_NewsSec1 || w == m_NewsSec2 || w == m_PrevCharacter || w == m_NextCharacter );
 			return true;

@@ -17,6 +17,9 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 	protected ref OptionSelectorMultistate	m_ShowHUDSelector;
 	protected ref OptionSelectorMultistate	m_ShowCrosshairSelector;
 	protected ref OptionSelectorMultistate	m_ShowQuickbarSelector;
+	protected ref OptionSelectorMultistate	m_ShowGameSelector;
+	protected ref OptionSelectorMultistate	m_ShowAdminSelector;
+	protected ref OptionSelectorMultistate	m_ShowPlayerSelector;
 	
 	protected GameOptions					m_Options;
 	protected OptionsMenuNew				m_Menu;
@@ -45,6 +48,9 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 		m_Root.FindAnyWidget( "fov_setting_option" ).SetUserID( AT_OPTIONS_FIELD_OF_VIEW );
 		m_Root.FindAnyWidget( "hud_setting_option" ).SetUserID( 1 );
 		m_Root.FindAnyWidget( "crosshair_setting_option" ).SetUserID( 2 );
+		m_Root.FindAnyWidget( "game_setting_option" ).SetUserID( 3 );
+		m_Root.FindAnyWidget( "admin_setting_option" ).SetUserID( 4 );
+		m_Root.FindAnyWidget( "player_setting_option" ).SetUserID( 5 );
 		
 		#ifdef PLATFORM_CONSOLE
 		m_Root.FindAnyWidget( "brightness_setting_option" ).SetUserID( AT_OPTIONS_BRIGHT_SLIDER );
@@ -57,14 +63,21 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 		FillTextMap();
 		
 		ref array<string> opt		= { "Disabled", "Enabled" };
+		ref array<string> opt2		= { "Show", "Hide" };
 		
 		m_FOVSelector				= new OptionSelectorSlider( m_Root.FindAnyWidget( "fov_setting_option" ), m_FOVOption.ReadValue(), this, false, m_FOVOption.GetMin(), m_FOVOption.GetMax() );
 		m_ShowHUDSelector			= new OptionSelectorMultistate( m_Root.FindAnyWidget( "hud_setting_option" ), g_Game.GetProfileOption( EDayZProfilesOptions.HUD ), this, false, opt );
 		m_ShowCrosshairSelector		= new OptionSelectorMultistate( m_Root.FindAnyWidget( "crosshair_setting_option" ), g_Game.GetProfileOption( EDayZProfilesOptions.CROSSHAIR ), this, false, opt );
+		m_ShowGameSelector			= new OptionSelectorMultistate( m_Root.FindAnyWidget( "game_setting_option" ), g_Game.GetProfileOption( EDayZProfilesOptions.GAME_MESSAGES ), this, false, opt2 );
+		m_ShowAdminSelector			= new OptionSelectorMultistate( m_Root.FindAnyWidget( "admin_setting_option" ), g_Game.GetProfileOption( EDayZProfilesOptions.ADMIN_MESSAGES ), this, false, opt2 );
+		m_ShowPlayerSelector		= new OptionSelectorMultistate( m_Root.FindAnyWidget( "player_setting_option" ), g_Game.GetProfileOption( EDayZProfilesOptions.PLAYER_MESSAGES ), this, false, opt2 );
 		
 		m_FOVSelector.m_OptionChanged.Insert( UpdateFOVOption );
 		m_ShowHUDSelector.m_OptionChanged.Insert( UpdateHUDOption );
 		m_ShowCrosshairSelector.m_OptionChanged.Insert( UpdateCrosshairOption );
+		m_ShowGameSelector.m_OptionChanged.Insert( UpdateGameOption );
+		m_ShowAdminSelector.m_OptionChanged.Insert( UpdateAdminOption );
+		m_ShowPlayerSelector.m_OptionChanged.Insert( UpdatePlayerOption );
 		
 		#ifdef PLATFORM_CONSOLE
 			m_BrightnessOption		= NumericOptionsAccess.Cast( m_Options.GetOptionByType( AT_OPTIONS_BRIGHT_SLIDER ) );
@@ -87,10 +100,14 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 	
 	bool IsChanged()
 	{
+		bool universal = ( m_ShowHUDSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.HUD ) || m_ShowCrosshairSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.CROSSHAIR ) );
+		universal = universal || ( m_ShowGameSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.GAME_MESSAGES ) || m_ShowAdminSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.ADMIN_MESSAGES ) );
+		universal = universal || m_ShowPlayerSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.PLAYER_MESSAGES );
+		
 		#ifdef PLATFORM_CONSOLE
-		return ( m_ShowHUDSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.HUD ) || m_ShowCrosshairSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.CROSSHAIR ) );
+		return universal;
 		#else
-		return ( m_ShowHUDSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.HUD ) || m_ShowCrosshairSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.CROSSHAIR ) || m_ShowQuickbarSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.QUICKBAR ) );
+		return ( universal || m_ShowQuickbarSelector.GetValue() != g_Game.GetProfileOption( EDayZProfilesOptions.QUICKBAR ) );
 		#endif
 	}
 	
@@ -100,6 +117,9 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 		
 		g_Game.SetProfileOption( EDayZProfilesOptions.HUD, m_ShowHUDSelector.GetValue() );
 		g_Game.SetProfileOption( EDayZProfilesOptions.CROSSHAIR, m_ShowCrosshairSelector.GetValue() );
+		g_Game.SetProfileOption( EDayZProfilesOptions.GAME_MESSAGES, m_ShowGameSelector.GetValue() );
+		g_Game.SetProfileOption( EDayZProfilesOptions.ADMIN_MESSAGES, m_ShowAdminSelector.GetValue() );
+		g_Game.SetProfileOption( EDayZProfilesOptions.PLAYER_MESSAGES, m_ShowPlayerSelector.GetValue() );
 		
 		#ifdef PLATFORM_WINDOWS
 			g_Game.SetProfileOption( EDayZProfilesOptions.QUICKBAR, m_ShowQuickbarSelector.GetValue() );
@@ -120,6 +140,11 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 		m_ShowHUDSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.HUD ), false );
 		m_ShowCrosshairSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.CROSSHAIR ), false );
 		m_FOVSelector.SetValue( m_FOVOption.ReadValue(), false );
+		
+		m_ShowGameSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.GAME_MESSAGES ), false );
+		m_ShowAdminSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.ADMIN_MESSAGES ), false );
+		m_ShowPlayerSelector.SetValue( g_Game.GetProfileOption( EDayZProfilesOptions.PLAYER_MESSAGES ), false );
+		
 		g_Game.SetUserFOV( m_FOVOption.ReadValue() );
 		
 		#ifdef PLATFORM_WINDOWS
@@ -159,6 +184,21 @@ class OptionsMenuGame extends ScriptedWidgetEventHandler
 	}
 	
 	void UpdateQuickbarOption( int new_index )
+	{
+		m_Menu.OnChanged();
+	}
+	
+	void UpdateGameOption( int new_index )
+	{
+		m_Menu.OnChanged();
+	}
+	
+	void UpdateAdminOption( int new_index )
+	{
+		m_Menu.OnChanged();
+	}
+	
+	void UpdatePlayerOption( int new_index )
 	{
 		m_Menu.OnChanged();
 	}

@@ -487,7 +487,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			if( !result_list )
 				text += ( "Error code: " + error );
 			else
-				text += "there are no servers available with your current filter settings."
+				text += "there are no servers available with your current filter settings.";
 			m_LoadingText.SetText( text );
 			return;
 		}

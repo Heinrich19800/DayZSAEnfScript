@@ -2349,18 +2349,21 @@ class CfgSlots
 		name="magazine";
 		displayName="magazine";
 		ghostIcon="magazine";
+		autoAttach=0;
 	};
 	class Slot_magazine2
 	{
 		name="magazine2";
 		displayName="magazine2";
 		ghostIcon="magazine2";
+		autoAttach=0;
 	};
 	class Slot_magazine3
 	{
 		name="magazine3";
 		displayName="magazine3";
 		ghostIcon="magazine3";
+		autoAttach=0;
 	};
 	class Slot_Driver
 	{
@@ -2631,6 +2634,7 @@ class CfgSlots
 		name="magazineFakeWeapon";
 		displayName="magazineFakeWeapon";
 		ghostIcon="magazinefakeweapon";
+		autoAttach=0;
 	};
 	class Slot_tripWireAttachment
 	{

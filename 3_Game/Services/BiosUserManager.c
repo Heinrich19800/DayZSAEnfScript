@@ -74,7 +74,7 @@ class BiosUserManager
 	
 	//! Informs the engine about the current selected user.
 	/*!
-		Muset be called to ensure proper authentication etc.
+		Must be called to ensure proper authentication etc.
 	
 		@param user the user to select.
 	*/
@@ -85,6 +85,22 @@ class BiosUserManager
 		@return BiosUser the selected user. May be NULL.
 	*/
 	proto native BiosUser GetSelectedUser();
+	
+	//! Call async function to get database ID
+	/*!
+		@return EBiosError indicating if the async operation is pending. If active user is not set, then return NOT_FOUND
+	*/
+	proto native EBiosError GetUserDatabaseIdAsync();
+	
+	//! Callback function.
+	/*!
+		@param dbID user database ID. If something went wrong, then it is empty string.
+		@param error indicating correct state.
+	*/
+	void OnUserDatabaseId(string dbID, EBiosError error)
+	{
+		Print("OnUserDatabaseId() dbID: " + dbID);	// remove me
+	}
 	
 	//! Callback function.
 	/*!

@@ -469,6 +469,9 @@ const string GLOBAL_CHAT_MSG 	= "global_chat_msg";
 const string DIRECT_CHAT_MSG	= "direct_chat_msg";
 const string VEHICLE_CHAT_MSG 	= "vehicle_chat_msg";
 const string RADIO_CHAT_MSG 	= "radio_chat_msg";	
+const string GAME_CHAT_MSG 		= "game_chat_msg";	
+const string ADMIN_CHAT_MSG 	= "admin_chat_msg";	
+const string PLAYER_CHAT_MSG 	= "player_chat_msg";	
 /** @}*/
 
 /**

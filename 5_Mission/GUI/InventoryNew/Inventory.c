@@ -91,11 +91,7 @@ class Inventory: ContainerBase
 		
 				//console inventory toolbar
 				m_ConsoleToolbar = GetMainPanel().FindAnyWidget( "ConsoleToolbar" );
-				if ( !m_ConsoleToolbar ) 
-				{
-					m_ConsoleToolbar = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/inventory_new/console_inventory_toolbar.layout", GetMainPanel() );
-					m_ConsoleToolbar.SetPos( 0, 0 );
-				}
+				m_ConsoleToolbar.Show( true );
 				UpdateConsoleToolbar();
 		#endif
 	}
