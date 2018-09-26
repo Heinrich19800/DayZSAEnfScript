@@ -1,4 +1,4 @@
-// This recipe addes fuel to torch
+// This recipe adds fuel to torch
 
 class RefuelTorch extends RecipeBase
 {	
@@ -60,6 +60,9 @@ class RefuelTorch extends RecipeBase
 	{
 		Rag rag = Rag.Cast(ingredients[0]);
 		Torch torch = Torch.Cast(ingredients[1]);
+		
+		if (!rag  ||  torch)
+			return false;
 		
 		Rag rag_on_torch = Rag.Cast(  torch.GetInventory().FindAttachment( rag.GetInventory().GetSlotId(0) )  );
 		

@@ -141,6 +141,10 @@ class OptionsMenuControls extends ScriptedWidgetEventHandler
 				int sx, sy;
 				float lines = m_DetailsText.GetContentHeight();
 				m_DetailsText.SetSize( 1, lines );
+				
+				m_DetailsText.Update();
+				m_DetailsLabel.Update();
+				m_DetailsRoot.Update();
 				return true;
 			}
 			

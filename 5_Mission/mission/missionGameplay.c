@@ -631,10 +631,6 @@ class MissionGameplay extends MissionBase
 			Print( "ChatMessageEventTypeID: " );
 			Print( ChatMessageEventTypeID );
 			ChatMessageEventParams chat_params = ChatMessageEventParams.Cast( params );
-			if (chat_params.param1 == CCSystem && GetProfileValueBool(SYSTEM_CHAT_MSG, true) == false) break;
-			if (chat_params.param1 == CCGlobal && GetProfileValueBool(GLOBAL_CHAT_MSG, true) == false) break;
-			if (chat_params.param1 == CCItemTransmitter && GetProfileValueBool(RADIO_CHAT_MSG, true) == false) break;
-			if (chat_params.param1 == CCDirect && GetProfileValueBool(DIRECT_CHAT_MSG, true) == false) break;
 			
 			if (m_life_state == EPlayerStates.ALIVE)
 			{

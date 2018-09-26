@@ -263,11 +263,11 @@ class InGameMenuXbox extends UIScriptedMenu
 		{
 			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(player.ShowDeadScreen, DayZPlayerImplement.DEAD_SCREEN_DELAY, false, false);
 		}
+		GetGame().GetUIManager().CloseAll();
 		
 		GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RespawnPlayer);
 		
-		MissionGameplay missionGP = MissionGameplay.Cast(GetGame().GetMission());
-		missionGP.DestroyAllMenus();
+		GetGame().GetUIManager().CloseAll();
 		//---------------------------------------------------
 		GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().GetMission().Continue);
 	}

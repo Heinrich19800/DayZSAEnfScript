@@ -450,6 +450,8 @@ class CGame
 	proto native void 	BeginOptionsVideo();
 	proto native void 	EndOptionsVideo();
 	
+	proto native void	AdminLog(string text);
+	
 	// entity functions
 	/**
 	\brief Preload objects with certain type in certain distance from camera.
