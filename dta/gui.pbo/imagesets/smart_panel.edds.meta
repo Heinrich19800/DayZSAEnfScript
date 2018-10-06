@@ -1,0 +1,14 @@
+MetaFileClass  {
+ Name "{8677E112267FCA73}Gui/imagesets/smart_panel.edds"
+ Author "cimo"
+ ChangeDate -1888836877
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "smart_panel.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

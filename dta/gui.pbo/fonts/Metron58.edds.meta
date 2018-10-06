@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{5FDFD98CB34D18E2}Gui/fonts/Metron58.edds"
+ Author "fido"
+ ChangeDate -2104712663
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "Metron58.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

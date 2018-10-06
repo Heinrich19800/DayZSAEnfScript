@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{5EF8B444387F2409}Gui/textures/hud.edds"
+ Author "inv269"
+ ChangeDate -1758780144
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "hud.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{EADD873328B0B387}Gui/imagesets/GUI_back_alpha.edds"
+ Author "inv897"
+ ChangeDate -661412821
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "GUI_back_alpha.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{0A1C8CDD1389C1A2}Gui/imagesets/rover_imageset.edds"
+ Author "inv1562"
+ ChangeDate 1818436857
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "rover_imageset.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

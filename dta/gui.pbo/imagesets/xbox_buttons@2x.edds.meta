@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{6ECA90DA4935E814}Gui/imagesets/xbox_buttons@2x.tga"
+ Author "inv3672"
+ ChangeDate 1511236850
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "xbox_buttons@2x.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

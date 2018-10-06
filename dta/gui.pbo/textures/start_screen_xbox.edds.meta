@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{C6664A343B163333}Gui/textures/start_screen_xbox.edds"
+ Author "inv1251"
+ ChangeDate 37938268
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "start_screen_xbox.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

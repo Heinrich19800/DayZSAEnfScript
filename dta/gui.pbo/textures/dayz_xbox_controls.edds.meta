@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{F12419054D147408}Gui/textures/dayz_xbox_controls.tga"
+ Author "inv3672"
+ ChangeDate 440116349
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "dayz_xbox_controls.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

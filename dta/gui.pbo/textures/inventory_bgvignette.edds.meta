@@ -1,0 +1,17 @@
+MetaFileClass {
+ Name "{0E6B3EF816E67499}Gui/textures/inventory_bgvignette.tga"
+ Author "inv3672"
+ ChangeDate 1555768508
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "inventory_bgvignette.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

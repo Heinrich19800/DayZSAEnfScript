@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{1AA48F19AA1F2384}Gui/imagesets/playstation_buttons.edds"
+ Author "inv1251"
+ ChangeDate -1991547853
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "playstation_buttons.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

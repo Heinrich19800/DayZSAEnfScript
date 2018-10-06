@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{68AE58E5E99FB598}Gui/textures/left_pane_full_ca.edds"
+ Author "fido"
+ ChangeDate -534519255
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "left_pane_full_ca.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

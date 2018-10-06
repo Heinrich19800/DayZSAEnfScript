@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{275BCAD1ECD5BBCF}Gui/fonts/MetronBook-Bold28.edds"
+ Author "fido"
+ ChangeDate -2037603799
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "MetronBook-Bold28.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{393BF215C0C82078}Gui/fonts/MetronLight22.fnt"
+ Author "inv3672"
+ ChangeDate -603265858
+ Configurations {
+  FNTResourceClass PC {
+  }
+  FNTResourceClass XBOX_ONE : PC {
+  }
+  FNTResourceClass PS4 : PC {
+  }
+  FNTResourceClass LINUX : PC {
+  }
+ }
+}

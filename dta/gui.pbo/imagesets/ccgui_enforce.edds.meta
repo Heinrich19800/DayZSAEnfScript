@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{52DDD34979EE96E}Gui/imagesets/ccgui_enforce.edds"
+ Author "fido"
+ ChangeDate -420781527
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "ccgui_enforce.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

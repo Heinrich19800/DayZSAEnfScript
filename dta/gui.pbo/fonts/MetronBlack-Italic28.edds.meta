@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{429F18A54524AF5D}Gui/fonts/MetronBlack-Italic28.edds"
+ Author "fido"
+ ChangeDate -2104712663
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "MetronBlack-Italic28.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

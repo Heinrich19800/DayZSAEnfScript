@@ -1,0 +1,14 @@
+MetaFileClass  {
+ Name "{00021F55AF578D77}Gui/imagesets/dayz_inventory.tga"
+ Author "janosik"
+ ChangeDate 1050911504
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "dayz_inventory.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

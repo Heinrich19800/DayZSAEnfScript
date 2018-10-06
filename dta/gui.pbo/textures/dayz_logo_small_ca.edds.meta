@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{7EC9681964DCC2E}Gui/textures/dayz_logo_small_ca.edds"
+ Author "fido"
+ ChangeDate -1406934487
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "dayz_logo_small_ca.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

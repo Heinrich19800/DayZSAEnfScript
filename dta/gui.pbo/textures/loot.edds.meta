@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{E91CFCBC73537488}Gui/textures/loot.edds"
+ Author "inv269"
+ ChangeDate -986520306
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "loot.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

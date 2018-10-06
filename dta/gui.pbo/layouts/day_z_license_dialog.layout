@@ -1,0 +1,87 @@
+WindowWidgetClass LicenseDialogRoot {
+ clipchildren 0
+ position 0 12
+ size 576 232
+ halign center_ref
+ valign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ priority 4000
+ style rover_sim_black_2
+ {
+  TextWidgetClass Caption {
+   clipchildren 0
+   color 1 0.4941 0.2392 0.702
+   position 0.5 16
+   size 543 24
+   halign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "CAPTION"
+   "text color" 1 1 1 1
+   "exact text" 1
+   "text halign" center
+   "text valign" center
+  }
+  MultilineTextWidgetClass Text {
+   color 1 1 1 1
+   position 16 48
+   size 544 112
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "TEXT"
+   "exact text" 1
+   "text halign" center
+   "text valign" center
+   wrap 1
+  }
+  ButtonWidgetClass bAgree {
+   visible 1
+   position 16 16
+   size 136 48
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   userID 1
+   style Default
+   text "#server_browser_agree"
+   text_proportion 0.8
+  }
+  ButtonWidgetClass bDisagree {
+   visible 1
+   position 160 16
+   size 136 48
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   userID 2
+   style Default
+   text "#server_browser_disagree"
+   text_proportion 0.8
+  }
+  ButtonWidgetClass bLicense {
+   visible 1
+   position 424 16
+   size 136 48
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   userID 6
+   style Default
+   text "#server_browser_license"
+   text_proportion 0.8
+  }
+ }
+}

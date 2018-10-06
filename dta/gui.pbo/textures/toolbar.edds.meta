@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{69620D716468134B}Gui/textures/toolbar.tga"
+ Author "inv3672"
+ ChangeDate 1112712463
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "toolbar.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{57CDFDC623217149}Gui/imagesets/selection.edds"
+ Author "inv269"
+ ChangeDate -381492039
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "selection.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

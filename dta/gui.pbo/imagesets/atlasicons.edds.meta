@@ -1,0 +1,14 @@
+MetaFileClass  {
+ Name "{0885D487256089E9}Gui/imagesets/atlasicons.edds"
+ Author "strapko"
+ ChangeDate 1876599570
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "atlasicons.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

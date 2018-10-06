@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{4EAC8FD8E3AFA4}Gui/fonts/AmorSerifPro-Bold14.edds"
+ Author "fido"
+ ChangeDate -226188759
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "AmorSerifPro-Bold14.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

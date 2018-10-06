@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{8CC5531F7A593B80}Gui/textures/dayz_ps4_controls.edds"
+ Author "inv1251"
+ ChangeDate 646587446
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "dayz_ps4_controls.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

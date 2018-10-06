@@ -1,0 +1,136 @@
+FrameWidgetClass InventoryView {
+ ignorepointer 1
+ color 1 1 0 1
+ size 0.98 208
+ halign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 1
+ scriptclass "AutoHeightSpacer"
+ {
+  PanelWidgetClass Top {
+   position 0 0
+   size 1 4
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   style blank
+  }
+  PanelWidgetClass HeaderBar {
+   visible 1
+   ignorepointer 1
+   color 0.549 0.549 0.549 0
+   size 1 208
+   halign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   style rover_sim_colorable
+   {
+    PanelWidgetClass HeaderBg {
+     color 1 1 1 0
+     size 1 1
+     halign center_ref
+     valign center_ref
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     style rover_sim_colorable
+     {
+      PanelWidgetClass HeaderBg0 {
+       color 0.549 0.549 0.549 0.7843
+       position 1 0
+       size 1 1
+       halign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 0
+       style rover_sim_colorable
+       {
+        TextWidgetClass Header {
+         ignorepointer 1
+         color 0.3922 0.3922 0.3922 1
+         position 0 8
+         size 0.95 0.1
+         halign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 0
+         vexactsize 0
+         style Light
+         text "HANDS EMPTY"
+         "exact text" 1
+         "text valign" center
+        }
+       }
+      }
+     }
+    }
+    FrameWidgetClass ImageFrame {
+     visible 0
+     clipchildren 0
+     inheritalpha 1
+     position 0 35
+     size 1 173
+     hexactpos 0
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     {
+      PanelWidgetClass Background {
+       inheritalpha 0
+       ignorepointer 1
+       color 0.549 0.549 0.549 0.1961
+       position 0 0
+       size 1 208
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       style blank
+      }
+      FrameWidgetClass Grid {
+       visible 0
+       inheritalpha 0
+       color 1 1 1 0
+       size 400 50
+       valign bottom_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       scriptclass "InventoryGridIcon"
+       {
+        ScriptParamsClass {
+         ItemsHorizontal 1
+         ItemsVertical 1
+         DebugOutput 0
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  PanelWidgetClass Bottom {
+   position 0 0
+   size 1 4
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 1
+   style blank
+  }
+ }
+ {
+  ScriptParamsClass {
+   AlignChilds 1
+   MinHeight 10
+  }
+ }
+}

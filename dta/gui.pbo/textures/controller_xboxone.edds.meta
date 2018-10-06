@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{1D599221D74CCBEF}Gui/textures/controller_xboxone.edds"
+ Author "inv269"
+ ChangeDate 1774904494
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "controller_xboxone.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

@@ -1,0 +1,18 @@
+FrameWidgetClass Grid {
+ inheritalpha 0
+ ignorepointer 0
+ size 262 106
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ scriptclass "InventoryGrid"
+ {
+  ScriptParamsClass {
+   Gap 2
+   ItemsHorizontal 5
+   ItemsVertical 2
+   DebugOutput 0
+  }
+ }
+}

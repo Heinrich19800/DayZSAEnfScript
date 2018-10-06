@@ -1,0 +1,18 @@
+TextWidgetClass ChatItemTextWidget {
+ clipchildren 0
+ position 112 80
+ size 1104 26
+ valign top
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ text "Item created test"
+ font "gui/fonts/sdf_MetronLight24"
+ "outline size" 1
+ "outline color" 0 0 0 0.3922
+ "shadow size" 4
+ "shadow color" 0 0 0 1
+ "exact text" 0
+ "text valign" center
+}

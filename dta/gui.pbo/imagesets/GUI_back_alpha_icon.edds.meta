@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{8E3502EAD256EE84}Gui/imagesets/GUI_back_alpha_icon.tga"
+ Author "inv298"
+ ChangeDate 574334039
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "GUI_back_alpha_icon.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

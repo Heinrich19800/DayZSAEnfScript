@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{7D05909C38F93300}Gui/textures/test.edds"
+ Author "inv3672"
+ ChangeDate -1651268426
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "test.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

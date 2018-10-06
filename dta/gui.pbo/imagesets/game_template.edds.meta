@@ -1,0 +1,14 @@
+MetaFileClass {
+ Name "{DD84CC4F1E2885C}gui/imagesets/game_template.edds"
+ Author "ander"
+ ChangeDate -2072878708
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "game_template.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

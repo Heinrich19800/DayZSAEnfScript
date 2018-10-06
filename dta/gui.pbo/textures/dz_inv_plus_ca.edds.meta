@@ -1,0 +1,14 @@
+MetaFileClass  {
+ Name "{B13BBDAC74B91485}Gui/textures/dz_inv_plus_ca.edds"
+ Author "strapko"
+ ChangeDate 707994386
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "dz_inv_plus_ca.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{C139E49FD0ECAF9E}Gui/imagesets/dayz_gui@2x.tga"
+ Author "inv3672"
+ ChangeDate 708060417
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "dayz_gui@2x.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

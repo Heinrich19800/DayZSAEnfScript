@@ -1,0 +1,260 @@
+FrameWidgetClass ContainerWidget {
+ clipchildren 0
+ color 0.7843 0.7843 0.7843 1
+ position 0 0
+ size 1 1
+ halign center_ref
+ valign center_ref
+ hexactpos 0
+ vexactpos 0
+ hexactsize 0
+ vexactsize 0
+ priority 50
+ {
+  WindowWidgetClass WindowWidget {
+   color 1 0.7843 1 1
+   position 0 0
+   size 1 1
+   halign center_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 0
+   vexactsize 0
+   style rover_sim_black
+   {
+    PanelWidgetClass Background {
+     clipchildren 0
+     color 0.4471 0.4471 0.4471 0.7843
+     position 0 0
+     size 1 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+     draggable 0
+     style rover_sim_colorable
+    }
+    PanelWidgetClass BackPanelWidget {
+     visible 1
+     color 0.4706 0.4706 0.4706 0.4706
+     size 0.9 0.9
+     halign center_ref
+     valign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     style rover_sim_black
+     {
+      PanelWidgetClass InventoryInfoPanelWidget {
+       visible 1
+       color 0.4706 0.4706 0.4706 0.4706
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style rover_sim_black
+       {
+        MultilineTextWidgetClass ItemDescWidget {
+         position 0.0101 0.10141
+         size 0.28198 0.28335
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         priority 100
+         text "A box of large kitchen matches. Contains 250 matches. Store in dry place and keep away from children."
+         "exact text" 1
+         wrap 1
+        }
+        ImageWidgetClass ItemDamageWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         color 0.6667 0.6667 1 0.7843
+         position 0.0101 0.058
+         size 0.15 0.03
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemDamageWidget {
+           visible 1
+           inheritalpha 0
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           style Normal
+           text "Badly Damaged"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        ImageWidgetClass ItemWetnessWidgetBackground {
+         visible 1
+         clipchildren 0
+         inheritalpha 0
+         ignorepointer 1
+         position 0.17 0.058
+         size 0.15 0.03
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         image0 "set:dayz_gui image:ColorableBar"
+         mode blend
+         "src alpha" 0
+         filter 1
+         {
+          TextWidgetClass ItemWetnessWidget {
+           visible 1
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           style Normal
+           text "Soaking Wet"
+           "text color" 1 1 1 1
+           "exact text" 1
+           "text halign" center
+           "text valign" center
+          }
+         }
+        }
+        TextWidgetClass ItemWeightWidget {
+         color 0.7294 0.7294 0.7294 1
+         position 0.33 0.058
+         size 0.15 0.03
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style Normal
+         text "around 2kg"
+         "text color" 1 1 1 1
+         "exact text" 1
+         "text valign" center
+        }
+        TextWidgetClass ItemQuantityWidget {
+         color 0.6706 0.6706 0.6706 1
+         position 0.49 0.058
+         size 0.15 0.03
+         hexactpos 0
+         vexactpos 0
+         hexactsize 0
+         vexactsize 0
+         style Normal
+         text "0% remaining"
+         "text color" 1 1 1 1
+         "exact text" 1
+         "text valign" center
+        }
+       }
+      }
+      FrameWidgetClass ItemFrameWidget {
+       position 0 0.10061
+       size 0.97976 0.88295
+       halign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+      }
+      PanelWidgetClass ItemNameBackground {
+       clipchildren 0
+       color 0.2353 0.2353 0.2353 0.7843
+       position 0 0
+       size 1 0.045
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 0
+       draggable 0
+       style rover_sim_colorable
+      }
+      TextWidgetClass ItemNameWidget {
+       position 0 0
+       size 1 0.045
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       style Normal
+       text "Bullet Tuna"
+       font "gui/fonts/MetronBook22"
+       "text offset" 10 0
+       "exact text" 1
+       "text valign" center
+      }
+      TextWidgetClass DebugTextWidget {
+       visible 0
+       color 0.6706 0.6706 0.6706 1
+       position 0.0101 0.37705
+       size 0.55556 0.06557
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       text "0% remaining"
+       "text color" 1 1 1 1
+       "exact text" 1
+      }
+     }
+    }
+    ButtonWidgetClass BackBtn1 {
+     visible 1
+     position 0.05 0.05
+     size 0.04 0.04
+     halign right_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     fixaspect fixwidth
+     userID 2
+     style Default
+     text_offset 1 1
+     text_halign center
+     "text color" 1 1 1 1
+     "disabled text color" 0.3373 0.3373 0.3373 1
+     {
+      ImageWidgetClass IconClose {
+       ignorepointer 1
+       size 1 1
+       halign right_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       fixaspect fixwidth
+       image0 "set:dayz_gui image:Close"
+       mode blend
+       "src alpha" 1
+       "no wrap" 1
+       filter 1
+       nocache 0
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{1FB3E228846EE1}Gui/fonts/etelkatextpro12.edds"
+ Author "fido"
+ ChangeDate -192634327
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "etelkatextpro12.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

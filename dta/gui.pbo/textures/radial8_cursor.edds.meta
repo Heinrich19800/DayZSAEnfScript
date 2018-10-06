@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{609FA84439FC4A66}Gui/textures/radial8_cursor.edds"
+ Author "inv1251"
+ ChangeDate 1165091901
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "radial8_cursor.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

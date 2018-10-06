@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{D04B1074A5317A0E}Gui/imagesets/dayz_crosshairs.edds"
+ Author "inv1906"
+ ChangeDate 139125913
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "dayz_crosshairs.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

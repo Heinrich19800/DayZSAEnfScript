@@ -1,0 +1,605 @@
+FrameWidgetClass CharacterMenuWindowClipper {
+ position 0 0
+ size 1 1
+ halign center_ref
+ valign center_ref
+ scaled 1
+ priority 50
+ {
+  ButtonWidgetClass BackBtn1 {
+   visible 1
+   position 145 60
+   size 300 50
+   halign right_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   scaled 1
+   priority 3
+   userID 2
+   style MainMenu
+   text "BACK"
+   text_offset 1 1
+   text_proportion 0.7
+   text_halign center
+   font "gui/fonts/sdf_MetronBook72"
+   "text color" 1 1 1 1
+   "disabled text color" 0.3373 0.3373 0.3373 1
+  }
+  ButtonWidgetClass BackBtn2 {
+   visible 1
+   position 145 210
+   size 300 50
+   halign right_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   scaled 1
+   priority 3
+   userID 1
+   style MainMenu
+   text "QUICK START"
+   text_offset 1 1
+   text_proportion 0.7
+   text_halign center
+   font "gui/fonts/sdf_MetronBook72"
+   "text color" 1 1 1 1
+   "disabled text color" 0.3373 0.3373 0.3373 1
+  }
+  ButtonWidgetClass BackBtn3 {
+   visible 1
+   position 145 135
+   size 300 50
+   halign right_ref
+   valign bottom_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   scaled 1
+   priority 3
+   userID 5
+   style MainMenu
+   text "RANDOM"
+   text_offset 1 1
+   text_proportion 0.7
+   text_halign center
+   font "gui/fonts/sdf_MetronBook72"
+   "text color" 1 1 1 1
+   "disabled text color" 0.3373 0.3373 0.3373 1
+  }
+  PanelWidgetClass CharacterPanel {
+   visible 1
+   disabled 0
+   clipchildren 0
+   inheritalpha 0
+   ignorepointer 0
+   keepsafezone 0
+   position 0 -25
+   size 0.772 0.84461
+   halign center_ref
+   valign center_ref
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   scaled 1
+   scriptclass ""
+   style blank
+   {
+    PanelWidgetClass GenderButtonWidgetBackdrop {
+     clipchildren 1
+     ignorepointer 0
+     color 0 0 0 1
+     position 0 0.033
+     size 70 70
+     halign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 1
+     vexactsize 1
+     scaled 1
+     priority 2
+     style rover_sim_colorable
+     {
+      ButtonWidgetClass GenderButtonWidget {
+       clipchildren 1
+       inheritalpha 0
+       ignorepointer 0
+       color 0 0 0 1
+       position 0 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 2
+       style MainMenu
+       text "*"
+       text_proportion 0
+       font "gui/fonts/sdf_MetronBook24"
+       switch normal
+      }
+     }
+    }
+    WindowWidgetClass SkinNextButtonWidgetBackdrop {
+     clipchildren 1
+     ignorepointer 0
+     position 0.27 0.25
+     size 64 64
+     halign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 1
+     vexactsize 1
+     scaled 1
+     priority 1
+     style Default
+     font "gui/fonts/Metron22"
+     {
+      ButtonWidgetClass SkinNextButtonWidget {
+       clipchildren 1
+       ignorepointer 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       style MainMenu
+       font "gui/fonts/Metron22"
+       switch normal
+       {
+        ImageWidgetClass SkinNextImage {
+         clipchildren 1
+         inheritalpha 0
+         ignorepointer 1
+         position 0 0
+         rotation 0 0 180
+         size 42 64
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 1
+         vexactsize 1
+         image0 "set:dayz_gui image:arrow_right"
+         mode blend
+         "src alpha" 1
+         "no wrap" 1
+         "flip u" 1
+         "flip v" 0
+         filter 1
+        }
+       }
+      }
+     }
+    }
+    WindowWidgetClass TopNextButtonWidgetBackdrop {
+     clipchildren 1
+     ignorepointer 0
+     position 0.27 0.45
+     size 64 64
+     halign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 1
+     vexactsize 1
+     scaled 1
+     priority 1
+     style Default
+     font "gui/fonts/Metron22"
+     {
+      ButtonWidgetClass TopNextButtonWidget {
+       clipchildren 1
+       ignorepointer 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       style MainMenu
+       font "gui/fonts/Metron22"
+       switch normal
+       {
+        ImageWidgetClass TopNextImage {
+         clipchildren 1
+         inheritalpha 0
+         ignorepointer 1
+         position 0 0
+         rotation 0 0 180
+         size 42 64
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 1
+         vexactsize 1
+         scaled 1
+         image0 "set:dayz_gui image:arrow_right"
+         mode blend
+         "src alpha" 1
+         "no wrap" 1
+         "flip u" 1
+         "flip v" 0
+         filter 1
+        }
+       }
+      }
+     }
+    }
+    WindowWidgetClass PantsNextButtonWidgetBackdrop {
+     clipchildren 1
+     ignorepointer 0
+     position 0.27 0.65
+     size 64 64
+     halign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 1
+     vexactsize 1
+     scaled 1
+     priority 1
+     style Default
+     font "gui/fonts/Metron22"
+     {
+      ButtonWidgetClass PantsNextButtonWidget {
+       clipchildren 1
+       ignorepointer 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       style MainMenu
+       font "gui/fonts/Metron22"
+       switch normal
+       {
+        ImageWidgetClass PantsNextImage {
+         clipchildren 1
+         inheritalpha 0
+         ignorepointer 1
+         position 0 0
+         rotation 0 0 180
+         size 42 64
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 1
+         vexactsize 1
+         image0 "set:dayz_gui image:arrow_right"
+         mode blend
+         "src alpha" 1
+         "no wrap" 1
+         "flip u" 1
+         "flip v" 0
+         filter 1
+        }
+       }
+      }
+     }
+    }
+    WindowWidgetClass ShoesNextButtonWidgetBackdrop {
+     clipchildren 1
+     ignorepointer 0
+     position 0.27 0.85
+     size 64 64
+     halign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 1
+     vexactsize 1
+     scaled 1
+     priority 1
+     style Default
+     font "gui/fonts/Metron22"
+     {
+      ButtonWidgetClass ShoesNextButtonWidget {
+       clipchildren 1
+       ignorepointer 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       style MainMenu
+       font "gui/fonts/Metron22"
+       switch normal
+       {
+        ImageWidgetClass ShoesNextImage {
+         clipchildren 1
+         inheritalpha 0
+         ignorepointer 1
+         position 0 0
+         rotation 0 0 180
+         size 42 64
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 1
+         vexactsize 1
+         image0 "set:dayz_gui image:arrow_right"
+         mode blend
+         "src alpha" 1
+         "no wrap" 1
+         "flip u" 1
+         "flip v" 0
+         filter 1
+        }
+       }
+      }
+     }
+    }
+    WindowWidgetClass SkinPreviousButtonWidgetBackdrop {
+     visible 1
+     clipchildren 1
+     ignorepointer 0
+     position -0.27 0.25
+     size 64 64
+     halign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 1
+     vexactsize 1
+     scaled 1
+     priority 1
+     style Default
+     font "gui/fonts/Metron22"
+     {
+      ButtonWidgetClass SkinPreviousButtonWidget {
+       clipchildren 1
+       ignorepointer 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       style MainMenu
+       font "gui/fonts/Metron22"
+       switch normal
+       {
+        ImageWidgetClass SkinPreviousImage {
+         clipchildren 1
+         inheritalpha 0
+         ignorepointer 1
+         position 0 0
+         rotation 0 0 0
+         size 42 64
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 1
+         vexactsize 1
+         image0 "set:dayz_gui image:arrow_left"
+         mode blend
+         "src alpha" 1
+         "no wrap" 1
+         "flip u" 0
+         "flip v" 0
+         filter 1
+        }
+       }
+      }
+     }
+    }
+    WindowWidgetClass TopPreviousButtonWidgetBackdrop {
+     clipchildren 1
+     ignorepointer 0
+     position -0.27 0.45
+     size 64 64
+     halign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 1
+     vexactsize 1
+     scaled 1
+     priority 1
+     style Default
+     "title visible" 0
+     font "gui/fonts/Metron22"
+     {
+      ButtonWidgetClass TopPreviousButtonWidget {
+       clipchildren 1
+       ignorepointer 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       style MainMenu
+       font "gui/fonts/Metron22"
+       switch normal
+       {
+        ImageWidgetClass TopPreviousImage {
+         clipchildren 1
+         inheritalpha 0
+         ignorepointer 1
+         position 0 0
+         rotation 0 0 0
+         size 42 64
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 1
+         vexactsize 1
+         scaled 1
+         image0 "set:dayz_gui image:arrow_left"
+         mode blend
+         "src alpha" 1
+         "no wrap" 1
+         "flip u" 0
+         "flip v" 0
+         filter 1
+        }
+       }
+      }
+     }
+    }
+    WindowWidgetClass PantsPreviousButtonWidgetBackdrop {
+     clipchildren 1
+     inheritalpha 0
+     ignorepointer 0
+     position -0.27 0.65
+     size 64 64
+     halign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 1
+     vexactsize 1
+     scaled 1
+     priority 1
+     style Default
+     font "gui/fonts/Metron22"
+     {
+      ButtonWidgetClass PantsPreviousButtonWidget {
+       clipchildren 1
+       ignorepointer 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       style MainMenu
+       font "gui/fonts/Metron22"
+       switch normal
+       {
+        ImageWidgetClass PantsPreviousImage {
+         visible 1
+         clipchildren 1
+         inheritalpha 0
+         ignorepointer 1
+         position 0 0
+         size 42 64
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 1
+         vexactsize 1
+         image0 "set:dayz_gui image:arrow_left"
+         mode blend
+         "src alpha" 1
+         "no wrap" 1
+         "flip u" 0
+         "flip v" 0
+         filter 1
+        }
+       }
+      }
+     }
+    }
+    WindowWidgetClass ShoesPreviousButtonWidgetBackdrop {
+     visible 1
+     clipchildren 1
+     ignorepointer 0
+     position -0.27 0.85
+     size 64 64
+     halign center_ref
+     hexactpos 0
+     vexactpos 0
+     hexactsize 1
+     vexactsize 1
+     scaled 1
+     priority 1
+     style Default
+     font "gui/fonts/Metron22"
+     {
+      ButtonWidgetClass ShoesPreviousButtonWidget {
+       clipchildren 1
+       ignorepointer 0
+       size 1 1
+       halign center_ref
+       valign center_ref
+       hexactpos 0
+       vexactpos 0
+       hexactsize 0
+       vexactsize 0
+       priority 1
+       style MainMenu
+       font "gui/fonts/Metron22"
+       switch normal
+       {
+        ImageWidgetClass ShoesPreviousImage {
+         clipchildren 1
+         inheritalpha 0
+         ignorepointer 1
+         position 0 0
+         rotation 0 0 0
+         size 42 64
+         halign center_ref
+         valign center_ref
+         hexactpos 0
+         vexactpos 0
+         hexactsize 1
+         vexactsize 1
+         image0 "set:dayz_gui image:arrow_left"
+         mode blend
+         "src alpha" 1
+         "no wrap" 1
+         "flip u" 0
+         "flip v" 0
+         filter 1
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+  FrameWidgetClass CharacterRotationFrame {
+   position 0 0.034
+   size 550 700
+   halign center_ref
+   valign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 1
+   vexactsize 1
+   scaled 1
+   priority 1
+  }
+  EditBoxWidgetClass CharacterNameEdit {
+   position 0 0.88
+   size 300 50
+   halign center_ref
+   hexactpos 0
+   vexactpos 0
+   hexactsize 1
+   vexactsize 1
+   scaled 1
+   style ServerBrowser
+   text "Char Name"
+   font "gui/fonts/sdf_MetronBook24"
+  }
+ }
+}

@@ -1,0 +1,16 @@
+MetaFileClass  {
+ Name "{0461FCCE6DAAE08A}Gui/textures/SerratedBlack1.edds"
+ Author "soska"
+ ChangeDate 2004050808
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "SerratedBlack1.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

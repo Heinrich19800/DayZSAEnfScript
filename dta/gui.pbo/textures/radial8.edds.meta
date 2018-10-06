@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{F150456F37AF9CA2}Gui/textures/radial8.tga"
+ Author "inv1251"
+ ChangeDate 1445110846
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "radial8.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

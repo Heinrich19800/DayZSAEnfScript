@@ -1,0 +1,14 @@
+WrapSpacerWidgetClass page_x {
+ ignorepointer 1
+ position 0 0
+ size 1 0
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 1
+ "no focus" 1
+ "Ignore invisible" 0
+ Padding 0
+ Margin 0
+ "Size To Content V" 1
+}

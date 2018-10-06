@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{179DADA775A5CB4}Gui/fonts/Metron-Bold58.edds"
+ Author "fido"
+ ChangeDate -2138267095
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "Metron-Bold58.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{DDFE50FB35D3B037}Gui/fonts/sdf_MetronLight30.edds"
+ Author "inv3672"
+ ChangeDate 944530703
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "sdf_MetronLight30.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

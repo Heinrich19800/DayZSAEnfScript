@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{865822BF8AD4B6B}Gui/fonts/MetronLight14.edds"
+ Author "fido"
+ ChangeDate -1970494935
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "MetronLight14.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

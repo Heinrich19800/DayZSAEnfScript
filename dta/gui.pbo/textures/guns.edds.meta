@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{075BCF0FA3D90218}Gui/textures/guns.edds"
+ Author "inv269"
+ ChangeDate -1053629170
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "guns.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+  TGAResourceClass LINUX : PC {
+  }
+ }
+}

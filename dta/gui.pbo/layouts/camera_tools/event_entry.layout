@@ -1,0 +1,51 @@
+ButtonWidgetClass event_root {
+ color 0.1569 0.1569 0.1569 0
+ position 0 0
+ size 1 30
+ hexactpos 1
+ vexactpos 1
+ hexactsize 0
+ vexactsize 1
+ style Colorable
+ "no focus" 1
+ {
+  GridSpacerWidgetClass spacer {
+   position 0 0
+   size 1 1
+   hexactpos 1
+   vexactpos 1
+   hexactsize 0
+   vexactsize 0
+   Padding 0
+   Margin 0
+   "Size To Content H" 1
+   Rows 1
+   {
+    TextWidgetClass event_id {
+     position 0 0
+     size 60 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+    }
+    EditBoxWidgetClass event_time_edit {
+     position 0 0
+     size 0.5 0.5
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+    }
+    EditBoxWidgetClass event_type_edit {
+     position 0 0
+     size 0.5 0.5
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 0
+    }
+   }
+  }
+ }
+}

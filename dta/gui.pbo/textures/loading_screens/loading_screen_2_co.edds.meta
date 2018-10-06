@@ -1,0 +1,15 @@
+MetaFileClass {
+ Name "{84BE5F7442BD4B}Gui/textures/loading_screens/loading_screen_2_co.edds"
+ Author "fido"
+ ChangeDate -1629773271
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "loading_screen_2_co.tga"
+   GenerateMips 0
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}

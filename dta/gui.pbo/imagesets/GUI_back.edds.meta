@@ -1,0 +1,14 @@
+MetaFileClass  {
+ Name "{DAA636C623B11C5E}Gui/imagesets/GUI_back.edds"
+ Author "strapko"
+ ChangeDate 726983440
+ Configurations {
+  TGAResourceClass PC {
+   SourceFile "GUI_back.tga"
+  }
+  TGAResourceClass XBOX_ONE : PC {
+  }
+  TGAResourceClass PS4 : PC {
+  }
+ }
+}
