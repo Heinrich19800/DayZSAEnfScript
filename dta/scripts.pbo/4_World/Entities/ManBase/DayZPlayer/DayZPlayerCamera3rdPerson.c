@@ -160,6 +160,59 @@ class DayZPlayerCamera3rdPersonErc extends DayZPlayerCamera3rdPerson
 
 
 // *************************************************************************************
+// ! DayZPlayerCamera3rdPersonJump - 3rd person jump
+// *************************************************************************************
+class DayZPlayerCamera3rdPersonJump extends DayZPlayerCamera3rdPersonErc
+{
+	void DayZPlayerCamera3rdPersonJump(DayZPlayer pPlayer, HumanInputController pInput)
+	{
+		Print("new camera: DayZPlayerCamera3rdPersonJump");
+		
+		//! runtime config
+		m_fDelay			= 0.15;
+		m_fDamping			= 0.25;
+		
+		//! runtime values
+		m_fJumpStartY		= pPlayer.GetOrigin()[1];
+		m_fJumpOffset		= 0;
+		m_fDelayTimer		= 0;		
+	}
+	
+	//	
+	override void 		OnUpdate(float pDt, out DayZPlayerCameraResult pOutResult)
+	{
+		super.OnUpdate(pDt, pOutResult);
+
+		float yPos = m_pPlayer.GetOrigin()[1];
+		float yDiff = yPos - m_fJumpStartY;
+		
+		if( m_fDelayTimer < m_fDelay )
+		{
+			m_fDelayTimer += pDt;
+			m_fJumpOffset = yDiff;
+		}
+		else
+		{
+			m_fJumpOffset = Math.SmoothCD(m_fJumpOffset, -(m_fDamping * yDiff), m_jumpOffsetVelocity, 0.3, 1000, pDt);
+		}
+		
+		float newY = pOutResult.m_CameraTM[3][1] - m_fJumpOffset;
+		pOutResult.m_CameraTM[3][1] = newY;		
+	}
+
+	//! runtime config
+	float m_fDelay;
+	float m_fDamping;
+
+	//! runtime values
+	float m_fDelayTimer;
+	float m_fJumpStartY;
+	float m_fJumpOffset;
+	float m_jumpOffsetVelocity[1];	
+}
+
+
+// *************************************************************************************
 // ! DayZPlayerCamera3rdPersonErc - 3rd person erected sprint
 // *************************************************************************************
 class DayZPlayerCamera3rdPersonErcSpr extends DayZPlayerCamera3rdPersonErc
@@ -469,21 +522,5 @@ class DayZPlayerCamera3rdPersonProneRaised extends DayZPlayerCamera3rdPersonPron
 		m_CameraOffsetMS	= "0.0 0.4 0.0";
 		m_CameraOffsetLS	= "0.0 0.2 0.0";
 		m_fShoulderWidth	= 0.5;
-	}
-}
-
-// *************************************************************************************
-// ! DayZPlayerCamera3rdPersonVehicle - 3rd person in vehicle (generic)
-// *************************************************************************************
-class DayZPlayerCamera3rdPersonVehicle extends DayZPlayerCamera3rdPerson
-{
-	void DayZPlayerCamera3rdPersonVehicle (DayZPlayer pPlayer, HumanInputController pInput)
-	{
-		Print("new camera: DayZPlayerCamera3rdPersonVehicle");
-		
-		m_fDistance 		= 4.0;
-		m_CameraOffsetMS	= "0.0 0.7 0.0";
-		m_CameraOffsetLS	= "0.0 0.3 0.0";
-		m_fShoulderWidth	= 0.0;
 	}
 }

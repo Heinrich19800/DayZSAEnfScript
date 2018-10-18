@@ -1,3 +1,10 @@
+enum CarDoorState
+{
+	DOORS_MISSING,
+	DOORS_OPEN,
+	DOORS_CLOSED
+}
+
 /*!
 	Base script class for all motorized wheeled vehicles.
 */
@@ -12,27 +19,43 @@ class CarScript extends Car
 	protected float m_BrakeAmmount;
 	
 	//!
+	protected float m_EngineHealth;
 	protected float m_RadiatorHealth;
 	protected float m_FuelTankHealth;
 
+	protected bool m_EngineSmoke;
 
 	void CarScript()
 	{
 		Init();
 	}
-	
+
 	override void Init()
 	{
 		super.Init();
-		SetEventMask(EntityEvent.POSTSIMULATE);
+		SetEventMask(/*EntityEvent.CONTACT |*/ EntityEvent.POSTSIMULATE);
 
 		m_Time = 0;
 
 		// sets max health for all components at init
+		m_EngineHealth = 1;
 		m_RadiatorHealth = 1;
 		m_FuelTankHealth = 1;
-	}
 
+		m_EngineSmoke = false;
+	}
+/*
+	here we should handle the damage dealt in OnContact event, but maybe we will react even in that event 
+	override void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos)
+	{
+		Print("CarScript>>> EEHitBy");
+		Print( dmgZone );
+		Print( damageResult );
+		Print( source );
+		Print( component );
+		Print( damageResult.GetDamage("", "health") );
+	}
+*/
 	override void EOnPostSimulate(IEntity other, float timeSlice)
 	{
 		m_Time += timeSlice;
@@ -54,6 +77,74 @@ class CarScript extends Car
 			{
 			}
 		}
+	}
+
+	//override void EOnContact( IEntity other, Contact extra )
+	//{
+	//	//Print(" contact impulse = " + extra.Impulse);
+	//	//Print(" index of component of this car = " + extra.Index2);
+	//}
+	void OnContact( string zoneName, vector localPos, IEntity other, Contact data )
+	{
+
+		//Print(zoneName);
+
+		switch( zoneName )
+		{
+			case "dmgZone_lightsLF":
+				//Print("dmgZone_lightsLF");
+			break;
+			
+			case "dmgZone_lightsRF":
+				//Print("dmgZone_lightsRF");
+			break;
+			
+			default:
+				if ( GetGame().IsServer() || !GetGame().IsMultiplayer() )
+				{
+					if ( data.Impulse > 500 )
+					{
+						//Print("Velkej Impulse - give some dmg");
+						//DecreaseHealth("Engine", "Health", 400.0);
+
+						float dmg = data.Impulse * 0.095;
+						Print( zoneName );
+						Print( dmg );
+/*					
+						if ( dmg > 1000 )
+						{
+							for( int i =0; i < CrewSize(); i++ )
+							{
+								Human crew = CrewMember( m_nextSeatIdx );
+								if ( crew )
+								{
+									crew. ProcessDirectDamage( 3, null, zoneName, "EnviroDmg", "0 0 0", dmg );	
+								}
+							}
+						}
+*/			
+					
+						ProcessDirectDamage( 3, null, zoneName, "EnviroDmg", "0 0 0", dmg );
+
+						//DecreaseHealth( zoneName, "Health", dmg);
+					}
+				}
+			break;
+		}
+
+
+
+		//Print(zoneName);
+		//Print(other);
+		
+		//Print( data.Impulse);
+		//float		RelativeNormalVelocityBefore;
+		//float		RelativeNormalVelocityAfter;
+		//Print( data.Normal);
+		//Print( data.Position);
+		//vector		RelativeVelocityBefore;
+		//vector		RelativeVelocityAfter;
+
 	}
 
 	/*!
@@ -110,10 +201,36 @@ class CarScript extends Car
 	{
 		// todo :: check if the battery is plugged-in
 		//         check if we have enough power to start the engine
+/*
+		if ( GetHealth01("engine", "") <= 0 )
+		{
+			if ( !m_EngineSmoke )
+			{
+				Print("Smoke");
+				EffVehicleSmoke engSmk = new EffEngineSmoke();
+				SEffectManager.PlayOnObject(engSmk, this, "0 0.95 1.25" );
+				// Particle is now playing on oject 'this'
+	
+	
+	
+	
+				// Set particle to light smoke (this is default state after play)
+				//engSmk.SetParticleStateLight();
+	
+				// Set particle to heavy smoke
+				engSmk.SetParticleStateHeavy();
+	
+				// If needed, you can set the particle to anything you want.
+				//engSmk.SetParticleState( int state );
+				return true;
+			}
 
-		//if ( GetHealth01("engine", "") <= 0 )
-		//	return false;
+			EffVehicleSmoke exhkSmk = new EffExhaustSmoke();
+			SEffectManager.PlayOnObject(exhkSmk, this, "0.670 0.57 -2.05" );
+			exhkSmk.SetParticleStateLight();
 
+		}
+*/
 		//if ( GetFluidFraction(CarFluid.FUEL) <= 0 )
 		//	return false;
 
@@ -171,9 +288,29 @@ class CarScript extends Car
 		if ( GetGame().IsMultiplayer() && GetGame().IsServer() )
 		{
 			m_RadiatorHealth = GetHealth01("radiator", "");
+			
+			m_EngineHealth = GetHealth01("engine", "");
 		}
+/*
+		if ( GetGame().IsMultiplayer() && GetGame().IsServer() )
+		{
+			m_EngineHealth = GetHealth01("engine", "");
+			Print("tst Car Script");
+			Print(m_EngineHealth);
+		}
+*/
 	}
 	
+	string GetAnimSourceFromSelection( string selection )
+	{
+		return "";
+	}
+	
+	int GetCrewIndex( string selection )
+	{
+		return -1;
+	}
+
 	bool IsVitalCarBattery()
 	{
 		return true;
@@ -203,6 +340,11 @@ class CarScript extends Car
 	override int Get3rdPersonCameraType()
 	{
 		return DayZPlayerCameras.DAYZCAMERA_3RD_VEHICLE;
+
 	}
 
+	int GetCarDoorsState( string slotType )
+	{
+		return -1;
+	}
 };

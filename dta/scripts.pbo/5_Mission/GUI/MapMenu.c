@@ -9,6 +9,13 @@ class MapMenu extends UIScriptedMenu
 	{
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_map.layout");
 		
+		/*MapWidget m = MapWidget.Cast(layoutRoot.FindAnyWidget("Map"));
+		if (m)
+		{
+			m.AddUserMark("2681 4.7 1751", "Lalal", ARGB(255,255,0,0), "\\dz\\gear\\navigation\\data\\map_tree_ca.paa");
+			m.AddUserMark("2683 4.7 1851", "Lala2", ARGB(255,0,255,0), "\\dz\\gear\\navigation\\data\\map_bunker_ca.paa");
+			m.AddUserMark("2670 4.7 1651", "Lala3", ARGB(255,0,0,255), "\\dz\\gear\\navigation\\data\\map_busstop_ca.paa");
+		}*/
 		return layoutRoot;
 	}
 
@@ -29,6 +36,9 @@ class MapMenu extends UIScriptedMenu
 	void CloseMap()
 	{
 		PlayerBase player = PlayerBase.Cast(g_Game.GetPlayer());
+		if (!player || !player.m_hac)
+			return;
+		
 		ScriptInputUserData ctx = new ScriptInputUserData;
 		//player.m_MapOpen = false;
 		player.m_hac.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END);

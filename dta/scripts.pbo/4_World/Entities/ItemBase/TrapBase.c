@@ -76,8 +76,10 @@ class TrapBase extends ItemBase
 		}
 	}
 	
-	void ~TrapBase()
+	override void EEDelete(EntityAI parent)
 	{
+		super.EEDelete(parent);
+		
 		//GetGame() can be sometimes NULL when turning off server
 		if ( GetGame() && m_TrapTrigger )
 		{
@@ -136,7 +138,7 @@ class TrapBase extends ItemBase
 	}
 
 	// trap cannot be taken when is activated
-	bool IsTakeable()
+	override bool IsTakeable()
 	{
 		if ( m_IsInProgress == false && !IsActive() )
 		{

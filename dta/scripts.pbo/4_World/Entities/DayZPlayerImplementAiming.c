@@ -27,7 +27,7 @@ class DayZPlayerImplementAiming
 	protected bool	m_AimNoiseAllowed = true;	
 	protected bool	m_ProceduralRecoilEnabled = true;	
 	protected ref RecoilBase m_CurrentRecoil;
-	
+	protected int m_ShakeCount;
 	protected float m_SwayWeight;
 	protected float m_MaxVelocity;
 
@@ -69,7 +69,10 @@ class DayZPlayerImplementAiming
 		float breathing_offset_y;
 		
 		float noise_offset_x;
-		float noise_offset_y;
+		float noise_offset_y;		
+		
+		float shake_offset_x;
+		float shake_offset_y;
 		
 		float recoil_offset_mouse_x;
 		float recoil_offset_mouse_y;
@@ -78,23 +81,21 @@ class DayZPlayerImplementAiming
 		float recoil_offset_hands_y;
 		
 	
-		if( m_PlayerPb.IsRaised() )
+		float player_stamina = m_PlayerPb.GetStaminaHandler().GetStaminaNormalized();
+		float speed = ((1.0 - player_stamina) * 4.0) + 1.0;
+		if( m_PlayerPb.IsHoldingBreath() )
 		{
-			float player_stamina = m_PlayerPb.GetStaminaHandler().GetStaminaNormalized();
-			float speed = ((1.0 - player_stamina) * 4.0) + 1.0;
-			if( m_PlayerPb.IsHoldingBreath() )
-			{
-				speed *= 0.1;
-			}
-			m_TotalTime += pDt * speed;
-			m_SwayWeight = CalculateAimingNoiseWeight(	stance_index, player_stamina, m_PlayerPb.m_CameraSwayModifier );
-			
-
-			
-			//! get sway
-			ApplyBreathingPattern(breathing_offset_x, breathing_offset_y, 3.0, m_TotalTime, m_SwayWeight);
-			ApplyHorizontalNoise(noise_offset_x, noise_offset_y, 0.2, 0.5, 3.0, speed, 3 * m_SwayWeight, pDt);
+			speed *= 0.1;
 		}
+		m_TotalTime += pDt * speed;
+		m_SwayWeight = CalculateAimingNoiseWeight(	stance_index, player_stamina, m_PlayerPb.m_CameraSwayModifier );
+		
+
+		
+		//! get sway
+		ApplyBreathingPattern(breathing_offset_x, breathing_offset_y, 3.0, m_TotalTime, m_SwayWeight);
+		ApplyHorizontalNoise(noise_offset_x, noise_offset_y, 0.2, 0.5, 3.0, speed, 3 * m_SwayWeight, pDt);
+		//ApplyShakes(shake_offset_x, shake_offset_y, 1);
 		
 		//! get recoil
 		if( m_CurrentRecoil )
@@ -103,13 +104,13 @@ class DayZPlayerImplementAiming
 		}
 		
 		//! cam offset
-		pModel.m_fAimXCamOffset = breathing_offset_x + noise_offset_x ;
-		pModel.m_fAimYCamOffset	= breathing_offset_y + noise_offset_y;
+		pModel.m_fAimXCamOffset = breathing_offset_x + noise_offset_x;// + shake_offset_x;
+		pModel.m_fAimYCamOffset	= breathing_offset_y + noise_offset_y;// + shake_offset_y;
 
 		
 		//! hands offset
-		pModel.m_fAimXHandsOffset = breathing_offset_x + noise_offset_x + recoil_offset_hands_x;
-		pModel.m_fAimYHandsOffset = breathing_offset_y + noise_offset_y + recoil_offset_hands_y;
+		pModel.m_fAimXHandsOffset = breathing_offset_x + noise_offset_x + recoil_offset_hands_x + shake_offset_x;
+		pModel.m_fAimYHandsOffset = breathing_offset_y + noise_offset_y + recoil_offset_hands_y + shake_offset_y;
 
 		//! clamp aim ranges 
 		if (stance_index == DayZPlayerConstants.STANCEIDX_RAISEDPRONE)
@@ -146,6 +147,19 @@ class DayZPlayerImplementAiming
 		*/
 		m_HorizontalNoise = Math.SmoothCD( m_HorizontalNoise, m_HorizontalTargetValue, m_HorizontalNoiseVelocity, smooth_time, m_MaxVelocity * velocity_modifier, pDt);
 		x_axis = (m_HorizontalNoise - 1) * weight;
+	}
+	
+	protected void ApplyShakes(out float x_axis, out float y_axis, float weight)
+	{
+		m_ShakeCount++;
+		if(m_ShakeCount % 4 == 0)
+		{
+			m_ShakeCount = 0;
+			float modifier = Math.RandomFloatInclusive(0.1,0.4);
+			x_axis = modifier * weight * (( Math.RandomFloat01() * 2) - 1);
+			y_axis = modifier * weight * ((Math.RandomFloat01() * 2) - 1);
+			//PrintString("x>" + x_axis.ToString()+", y:" + y_axis.ToString());
+		}
 	}
 
 	protected float CalculateAimingNoiseWeight(int stance_index, float current_stamina, float camera_sway_modifier)

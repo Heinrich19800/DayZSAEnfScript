@@ -14,7 +14,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	protected ref ServerBrowserTab	m_CommunityTab;
 	protected ref ServerBrowserTab	m_LANTab;
 	
-	protected bool					m_IsRefreshing;
+	protected TabType				m_IsRefreshing = TabType.NONE;
 	protected ref TStringArray		m_Favorites;
 	protected ServerBrowserEntry	m_SelectedServer;
 	
@@ -46,10 +46,12 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		
 		string version;
 		GetGame().GetVersion( version );
-		if( version != "" )
-			m_Version.SetText( "#main_menu_version" + " " + version );
-		else
-			m_Version.Show( false );
+		#ifdef PLATFORM_CONSOLE
+			version = "#main_menu_version" + " " + version + " (" + g_Game.GetDatabaseID() + ")";
+		#else
+			version = "#main_menu_version" + " " + version;
+		#endif
+		m_Version.SetText( version );
 		
 		OnlineServices.m_ServersAsyncInvoker.Insert( OnLoadServersAsync );
 		m_Tabber.m_OnTabSwitch.Insert( OnTabSwitch );
@@ -57,18 +59,17 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		LoadData();
 		
 		m_OfficialTab.RefreshList();
+		//m_OfficialTab.LoadFakeData( 300 );
 		
 		#ifdef PLATFORM_PS4
 			ImageWidget toolbar_a = layoutRoot.FindAnyWidget( "ConnectIcon" );
 			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
 			ImageWidget toolbar_x = layoutRoot.FindAnyWidget( "RefreshIcon" );
 			ImageWidget toolbar_y = layoutRoot.FindAnyWidget( "ResetIcon" );
-			ImageWidget toolbar_rt = layoutRoot.FindAnyWidget( "SortIcon" );
 			toolbar_a.LoadImageFile( 0, "set:playstation_buttons image:cross" );
 			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
 			toolbar_x.LoadImageFile( 0, "set:playstation_buttons image:square" );
 			toolbar_y.LoadImageFile( 0, "set:playstation_buttons image:triangle" );
-			toolbar_rt.LoadImageFile( 0, "set:playstation_buttons image:R2" );
 		#endif
 		
 		#ifdef PLATFORM_CONSOLE
@@ -76,37 +77,6 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			TextWidget sort_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "SortText" ) );
 			sort_text.SetText( "Sort host ASC" );
 		#endif
-		
-		/*
-		ref GetServersResult result = new GetServersResult;
-		
-		result.m_Page = 1;
-		result.m_Pages = 1;
-		result.m_Results = new GetServersResultRowArray;
-		
-		for( int i = 0; i < 50; i++ )
-		{
-			ref GetServersResultRow row = new GetServersResultRow;
-			row.m_Id = "id" + i.ToString();
-			row.m_Name = "Server " + i.ToString();
-			row.m_Official = true;
-			row.m_MaxPlayers = 10;
-			row.m_MinPlayers = 0;
-			row.m_CurrentNumberPlayers = 0;
-			
-			result.m_Results.Insert( row );
-		}
-		SetRefreshing( true );
-		m_OfficialTab.m_Initialized = true;
-		m_OfficialTab.m_BegunLoading = false;
-		
-		m_OfficialTab.m_Entries.Clear();
-		m_OfficialTab.m_Pages.Clear();
-		m_OfficialTab.m_EntryWidgets.Clear();
-		
-		m_OfficialTab.m_Loading = true;
-		m_OfficialTab.OnLoadServersAsync( result, EBiosError.OK, "" );
-		*/
 		
 		PPEffects.SetBlurMenu( 0.5 );
 		return layoutRoot;
@@ -168,7 +138,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		m_IsRefreshing = refreshing;
 	}
 
-	bool IsRefreshing()
+	TabType IsRefreshing()
 	{
 		return m_IsRefreshing;
 	}
@@ -237,17 +207,17 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		
 		if( focus )
 		{
-			con_text.SetText( "Connect" );
+			con_text.SetText( "#server_browser_menu_connect" );
 			
 			float x, y;
 			res_text.GetSize( x, y );
 			if( favorite )
 			{
-				res_text.SetText( "Unfavorite" );
+				res_text.SetText( "#server_browser_menu_unfavorite" );
 			}
 			else
 			{
-				res_text.SetText( "Favorite" );
+				res_text.SetText( "#server_browser_menu_favorite" );
 			}
 		}
 		#endif
@@ -311,7 +281,6 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			m_Tabber.PreviousTab();
 		}
 		
-		//RIGHT BUMPER - TAB RIGHT
 		if( GetGame().GetInput().GetActionDown( UAUITabRight, false ) )
 		{
 			m_Tabber.NextTab();
@@ -409,6 +378,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	
 	void CustomizeCharacter()
 	{
+		PPEffects.SetBlurMenu( 0.0 );
 		EnterScriptedMenu(MENU_CHARACTER);
 	}
 	
@@ -444,6 +414,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	
 	void OnTabSwitch()
 	{
+		SetRefreshing( -1 );
 		if( GetSelectedTab().IsNotInitialized() )
 			GetSelectedTab().RefreshList();
 		GetSelectedTab().Focus();

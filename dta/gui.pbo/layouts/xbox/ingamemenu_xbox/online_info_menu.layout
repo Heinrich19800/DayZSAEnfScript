@@ -16,7 +16,7 @@ FrameWidgetClass OnlineInfo {
    hexactsize 0
    vexactsize 1
    style Normal
-   text "ONLINE"
+   text "#layout_xbox_ingame_menu_online"
    font "gui/fonts/sdf_MetronBook72"
    "text color" 0.8157 0.1255 0.7843 1
    "exact text" 0

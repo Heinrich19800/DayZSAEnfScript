@@ -2,7 +2,8 @@ enum TabType
 {
 	OFFICIAL,
 	COMMUNITY,
-	LAN
+	LAN,
+	NONE
 }
 
 enum SelectedPanel
@@ -55,10 +56,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	protected ScrollWidget									m_ServerListScroller;
 	protected Widget										m_ServerList;
 	
-	 ref map<int, ref GetServersResultRowArray>	m_Entries;
+	protected ref map<int, ref GetServersResultRowArray>	m_Entries;
 	
-	 ref array<ref ServerBrowserPage>				m_Pages;
-	 ref map<string, ref ServerBrowserEntry>				m_EntryWidgets;
+	protected ref array<ref ServerBrowserPage>				m_Pages;
+	protected ref map<string, ref ServerBrowserEntry>		m_EntryWidgets;
 
 	protected ref ServerBrowserFilterContainer				m_Filters;
 	
@@ -70,9 +71,9 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	protected ESortOrder									m_SortOrder;
 	
 	protected SelectedPanel									m_SelectedPanel;
-	 bool											m_Initialized;
-	 bool											m_BegunLoading;
-	 bool											m_Loading;
+	protected bool											m_Initialized;
+	protected bool											m_BegunLoading;
+	protected bool											m_Loading;
 	protected int											m_TotalServers;
 	protected int											m_TotalLoadedServers;
 	protected int											m_LastLoadedPage;
@@ -121,6 +122,8 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		m_PingSort				= m_Root.FindAnyWidget( "server_list_content_header_ping" );
 		m_LoadingText			= TextWidget.Cast( m_Root.FindAnyWidget( "loading_servers_info" ) );
 		
+		SelectHostSort();
+		
 		m_Root.SetHandler( this );
 	}
 	
@@ -131,6 +134,39 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		
 		if (m_Root)
 			delete m_Root;
+	}
+	
+	void LoadFakeData( int entries )
+	{
+		ref GetServersResult result = new GetServersResult;
+		
+		result.m_Page = 1;
+		result.m_Pages = 1;
+		result.m_Results = new GetServersResultRowArray;
+		
+		for( int i = 0; i < entries; i++ )
+		{
+			ref GetServersResultRow row = new GetServersResultRow;
+			row.m_Id = "#server_browser_tab_id" + i.ToString();
+			row.m_Name = "#server_browser_tab_server" + i.ToString();
+			row.m_Official = true;
+			row.m_MaxPlayers = 10;
+			row.m_MinPlayers = 0;
+			row.m_CurrentNumberPlayers = 0;
+			
+			result.m_Results.Insert( row );
+		}
+		
+		m_Menu.SetRefreshing( m_TabType );
+		m_Initialized = true;
+		m_BegunLoading = false;
+		
+		m_Entries.Clear();
+		m_Pages.Clear();
+		m_EntryWidgets.Clear();
+		
+		m_Loading = true;
+		OnLoadServersAsync( result, EBiosError.OK, "" );
 	}
 	
 	override bool OnClick( Widget w, int x, int y, int button )
@@ -298,13 +334,13 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void PressX()
 	{
-		if( !m_Menu.IsRefreshing() )
+		if( !m_Menu.IsRefreshing() != m_TabType )
 			RefreshList();
 	}
 	
 	void PressY()
 	{
-		if(m_Menu.IsRefreshing() )
+		if( m_Menu.IsRefreshing() == TabType.NONE )
 			return;
 
 		switch( m_SelectedPanel )
@@ -337,12 +373,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void Up()
 	{
-		
 	}
 	
 	void Down()
 	{
-		
 	}
 	
 	void GetNextEntry()
@@ -359,7 +393,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			if( sibling )
 				SetFocus( focused.GetSibling() );
 			else
-				SetFocus( focused.GetParent().GetChildren() );
+				SetFocus( focused.GetParent().GetSibling().GetChildren() );
 		}
 	}
 	
@@ -409,7 +443,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void RefreshList()
 	{
-		m_Menu.SetRefreshing( true );
+		m_Menu.SetRefreshing( m_TabType );
 		m_Initialized = true;
 		m_BegunLoading = false;
 		m_LastLoadedPage = 0;
@@ -461,22 +495,9 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void SelectServer( ServerBrowserEntry server )
 	{
-		/*
 		#ifdef PLATFORM_CONSOLE
-			if( m_SelectedServer && m_EntryWidgets.Contains( m_SelectedServer.GetServerID() ) )
-			{
-				//m_SelectedServer.Lighten( m_SelectedServer.GetRoot(), server.GetRoot(), 0, 0 );
-				//m_SelectedServer.Select( false );
-				//m_SelectedServer.ServerListFocus( true );
-				return;
-			}
-			else
-			{
-				ScrollToEntry( server );
-			}
-		#endif
-		*/
 		ScrollToEntry( server );
+		#endif
 		m_SelectedServer = server;
 		
 		if (!m_Menu)
@@ -487,14 +508,14 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void OnLoadServersAsync( ref GetServersResult result_list, EBiosError error, string response )
 	{
-		if( !result_list || result_list.m_Pages == 0 )
+		if( m_Menu.IsRefreshing() != m_TabType || !result_list || result_list.m_Pages == 0 )
 		{
-			m_Menu.SetRefreshing( false );
-			string text = "Unable to get servers, ";
+			m_Menu.SetRefreshing( TabType.NONE );
+			string text = "#server_browser_tab_unable_to_get_server";
 			if( !result_list )
 				text += ( "Error code: " + error );
 			else
-				text += "there are no servers available with your current filter settings.";
+				text += "#server_browser_tab_no_servers_with_filter";
 			m_LoadingText.SetText( text );
 			#ifdef PLATFORM_XBOX
 				m_Filters.Focus();
@@ -510,7 +531,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			{
 				m_Pages.Insert( new ServerBrowserPage( i, m_ServerList ) );
 			}
-			m_LoadingText.SetText( "Loaded " + m_TotalLoadedServers + "/" + m_TotalServers + " servers" );
+			m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_TotalLoadedServers + "/" + m_TotalServers + " " +  "#server_browser_servers_desc" );
 		}
 		
 		m_LastLoadedPage = result_list.m_Page;
@@ -532,7 +553,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	bool PassFilter( GetServersResultRow result )
 	{	
-		if (!m_Menu || !m_Menu.IsRefreshing())
+		if ( !m_Menu || m_Menu.IsRefreshing() != m_TabType )
 			return false;
 		
 		bool is_fav = m_Menu.IsFavorited( result.m_Id );
@@ -558,7 +579,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		
 		for( int i = start_page; i <= end_page; i )
 		{
-			if( !m_Menu || !m_Menu.IsRefreshing() )
+			if( !m_Menu || m_Menu.IsRefreshing() != m_TabType )
 				return;
 			ref GetServersResultRowArray results = m_Entries.Get( i );
 			int index;
@@ -574,10 +595,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 						m_EntryWidgets.Insert( result.m_Id, entry );
 						index++;
 						m_TotalLoadedServers++;
-						m_LoadingText.SetText( "Loaded " + m_TotalLoadedServers + "/" + m_TotalServers + " servers" );
+						m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_TotalLoadedServers + "/" + m_TotalServers + " " + "#server_browser_servers_desc" );
 					}
 					
-					if( !m_Menu || !m_Menu.IsRefreshing() )
+					if( !m_Menu || m_Menu.IsRefreshing() != m_TabType )
 						return;
 					
 					if( index % 10 == 0 )
@@ -611,13 +632,13 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		}
 		else
 		{
-			m_LoadingText.SetText( "Unable to get servers, there are no servers available with your current filter settings." );
+			m_LoadingText.SetText( "#server_browser_unable_with_filter" );
 			m_Filters.Focus();
 		}
 		
 		if (!m_Menu)
 			return;
-		m_Menu.SetRefreshing( false );
+		m_Menu.SetRefreshing( TabType.NONE );
 	}
 	
 	void Update( float timeslice )
@@ -657,10 +678,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void Connect( ServerBrowserEntry server )
 	{
-		if (!m_Menu)
+		if ( !m_Menu )
 			return;
 		
-		if (m_Menu.IsRefreshing())
+		if ( m_Menu.IsRefreshing() != m_TabType )
 			return;
 		
 		m_SelectedServer = server;

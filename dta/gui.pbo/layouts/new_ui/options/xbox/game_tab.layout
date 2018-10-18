@@ -147,7 +147,7 @@ FrameWidgetClass game_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "FIELD OF VIEW"
+                 text "#layout_options_xbox_fow"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -229,7 +229,7 @@ FrameWidgetClass game_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "BRIGHTNESS"
+                 text "#STR_game_tab_root_game_settings_scroll_game_settings_root_camera_settings_root_camera_settings_content_brightness_button_brightness_setting_brightness_setting_panel_brightness_button_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -376,7 +376,7 @@ FrameWidgetClass game_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "SHOW HUD"
+                 text "#layout_options_xbox_show_hud"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -455,7 +455,7 @@ FrameWidgetClass game_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "SHOW CROSSHAIR"
+                 text "#layout_options_xbox_show_crosshair"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -495,7 +495,7 @@ FrameWidgetClass game_tab_root {
        }
       }
       WrapSpacerWidgetClass chat_settings_root {
-       visible 0
+       visible 1
        ignorepointer 1
        position 0 0
        size 1 473
@@ -602,7 +602,7 @@ FrameWidgetClass game_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "GAME MESSAGES"
+                 text "#layout_options_xbox_game_messages"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -681,7 +681,7 @@ FrameWidgetClass game_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "ADMIN MESSAGES"
+                 text "#layout_options_xbox_admin_mes"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -760,7 +760,7 @@ FrameWidgetClass game_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "PLAYER MESSAGES"
+                 text "#layout_options_xbox_player_messages"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0

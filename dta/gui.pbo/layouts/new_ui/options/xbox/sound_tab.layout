@@ -107,7 +107,6 @@ FrameWidgetClass sound_tab_root {
            vexactpos 1
            hexactsize 0
            vexactsize 1
-           userID 42
            style Colorable
            "no focus" 0
            "next up" "music_button"
@@ -145,7 +144,7 @@ FrameWidgetClass sound_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "MASTER VOLUME"
+                 text "#STR_sound_tab_root_sound_settings_scroll_sound_settings_root_volume_settings_root_volume_settings_content_master_button_master_setting_master_setting_panel_master_button_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -186,7 +185,6 @@ FrameWidgetClass sound_tab_root {
            vexactpos 1
            hexactsize 0
            vexactsize 1
-           userID 42
            style Colorable
            "no focus" 0
            "next up" "master_button"
@@ -224,7 +222,7 @@ FrameWidgetClass sound_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "EFFECTS VOLUME"
+                 text "#STR_sound_tab_root_sound_settings_scroll_sound_settings_root_volume_settings_root_volume_settings_content_effects_button_effects_setting_effects_setting_panel_effects_button_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -265,7 +263,6 @@ FrameWidgetClass sound_tab_root {
            vexactpos 1
            hexactsize 0
            vexactsize 1
-           userID 42
            style Colorable
            "no focus" 0
            "next up" "effects_button"
@@ -303,7 +300,7 @@ FrameWidgetClass sound_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "VOIP VOLUME"
+                 text "#STR_sound_tab_root_sound_settings_scroll_sound_settings_root_volume_settings_root_volume_settings_content_voip_button_voip_setting_voip_setting_panel_voip_button_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -382,7 +379,7 @@ FrameWidgetClass sound_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "MUSIC VOLUME"
+                 text "#STR_sound_tab_root_sound_settings_scroll_sound_settings_root_volume_settings_root_volume_settings_content_music_button_music_setting_music_setting_panel_music_button_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0

@@ -168,7 +168,6 @@ class OnlineServices
 	static void OnUserProfileAsync(EBiosError error)
 	{
 		ErrorCaught( error );
-		LoadPermissions( ClientData.GetSimplePlayerList() );
 	}
 	
 	static void OnFriendsAsync( ref BiosFriendInfoArray friend_list, EBiosError error )
@@ -334,7 +333,7 @@ class OnlineServices
 			else
 			{
 				g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
-				g_Game.SelectUser();
+				g_Game.GamepadCheck();
 			}
 		}
 	}
@@ -458,6 +457,10 @@ class OnlineServices
 				g_Game.ConnectFromServerBrowser( result.m_HostIp, result.m_HostPort );
 				m_AutoConnectTries = 0;
 				return;
+			}
+			else
+			{
+				GetGame().GetUIManager().ShowDialog( "SERVERS UNAVALIABLE", "#str_xbox_authentification_fail", 232, DBT_OK, DBB_NONE, DMT_INFO, GetGame().GetUIManager().GetMenu() );
 			}
 		}
 		

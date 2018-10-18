@@ -1,4 +1,4 @@
-class Light extends ItemBase
+class Light extends Building
 {
 	ref Timer m_DeleteTimer;
 	

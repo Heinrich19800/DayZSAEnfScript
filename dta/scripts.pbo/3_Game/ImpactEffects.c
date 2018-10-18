@@ -13,6 +13,9 @@ class ImpactMaterials
 	static int 							m_LastRegisteredMaterial = 0;
 	
 	// Surface effects. Register all materials here!
+	static int PLASTIC	 					= RegisterSurface("Hit_Plastic");
+	static int SAND 						= RegisterSurface("Hit_Sand");
+	static int TEXTILE 						= RegisterSurface("Hit_Textile");
 	static int CONCRETE 					= RegisterSurface("Hit_Concrete");
 	static int GRAVEL 						= RegisterSurface("Hit_Gravel");
 	static int DIRT 						= RegisterSurface("Hit_Dirt");

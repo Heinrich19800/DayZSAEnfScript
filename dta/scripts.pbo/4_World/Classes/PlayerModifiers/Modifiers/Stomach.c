@@ -1,4 +1,4 @@
-class Stomach: ModifierBase
+class StomachMdfr: ModifierBase
 {
 	override void Init()
 	{

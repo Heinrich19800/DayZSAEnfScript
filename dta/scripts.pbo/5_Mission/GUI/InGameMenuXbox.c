@@ -4,8 +4,6 @@ class InGameMenuXbox extends UIScriptedMenu
 	
 	protected Widget						m_OnlineMenu;
 	
-	protected TextWidget					m_Version;
-	
 	protected ButtonWidget					m_ContinueButton;
 	protected ButtonWidget					m_ExitButton;
 	protected ButtonWidget					m_RestartButton;
@@ -13,6 +11,8 @@ class InGameMenuXbox extends UIScriptedMenu
 	protected ButtonWidget					m_ControlsButton;
 	protected ButtonWidget					m_OnlineButton;
 	protected ButtonWidget					m_TutorialsButton;
+	
+	protected TextWidget					m_Version;
 	
 	const int 								BUTTON_XBOX_CONTROLS = 201;
 	
@@ -31,7 +31,7 @@ class InGameMenuXbox extends UIScriptedMenu
 			IngameHud hud = IngameHud.Cast( mission.GetHud() );
 			if ( hud )
 			{
-				hud.ToggleHud( g_Game.GetProfileOption( EDayZProfilesOptions.HUD ), true );
+				hud.ToggleHud( true, true );
 			}
 		}
 		PPEffects.SetBlurMenu( 0 );
@@ -52,11 +52,6 @@ class InGameMenuXbox extends UIScriptedMenu
 		m_OnlineButton		= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "onlinebtn" ) );
 		m_TutorialsButton	= ButtonWidget.Cast( layoutRoot.FindAnyWidget( "tutorialsbtn" ) );
 		m_Version			= TextWidget.Cast( layoutRoot.FindAnyWidget( "version" ) );
-		
-		#ifdef PLATFORM_PS4
-		m_ControlsButton.Show( false );
-		m_OnlineButton.Show( false );
-		#endif
 		
 		string version;
 		GetGame().GetVersion( version );
@@ -86,9 +81,7 @@ class InGameMenuXbox extends UIScriptedMenu
 		
 		if( GetGame().IsMultiplayer() )
 		{
-			#ifdef PLATFORM_XBOX
 			m_OnlineButton.Show( true );
-			#endif
 			
 			m_ServerInfoPanel = new PlayerListScriptedWidget( m_OnlineMenu.FindAnyWidget( "ServerInfoPanel" ), "SERVER PLAYERS" );
 			
@@ -97,10 +90,6 @@ class InGameMenuXbox extends UIScriptedMenu
 			
 			m_ServerInfoPanel.Reload( ClientData.m_PlayerList );
 			m_ServerInfoPanel.ReloadLocal( OnlineServices.GetMuteList() );
-			
-			#ifndef PLATFORM_WINDOWS // if app is not on Windows with -XBOX parameter
-				ClientData.m_OnlineServices.LoadPermissions( ClientData.GetSimplePlayerList() );
-			#endif
 			
 			TextWidget mute_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "Mute" ).FindAnyWidget( "MuteText" ) );
 			
@@ -210,22 +199,17 @@ class InGameMenuXbox extends UIScriptedMenu
 			GetGame().GetUIManager().ShowDialog("EXIT", "Are you sure you want to exit?", IDC_INT_EXIT, DBT_YESNO, DBB_YES, DMT_QUESTION, NULL);
 			return true;
 		case IDC_INT_RETRY:
-			if ( GetGame().IsMultiplayer() )
+			if ( !GetGame().IsMultiplayer() )
 			{
-				Respawn();
-				
-				return true;
+				GetGame().GetUIManager().ShowDialog("#main_menu_restart", "Are you sure you want to restart?", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 			}
 			else
 			{
-				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RestartMission);
+				GetGame().GetUIManager().ShowDialog("#main_menu_respawn", "#main_menu_respawn_question", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 			}
-			
 			return true;
 		case IDC_MAIN_ONLINE:
-		#ifndef PLATFORM_PS4
 			m_OnlineMenu.Show( true );
-		#endif
 			layoutRoot.FindAnyWidget( "play_panel_root" ).Show( false );
 			layoutRoot.FindAnyWidget( "dayz_logo" ).Show( false );
 			layoutRoot.FindAnyWidget( "Select" ).Show( false );
@@ -234,6 +218,7 @@ class InGameMenuXbox extends UIScriptedMenu
 		case 117:
 			EnterScriptedMenu(MENU_TUTORIAL);
 			return true;
+		break;
 		}
 
 		return false;
@@ -248,30 +233,42 @@ class InGameMenuXbox extends UIScriptedMenu
 			GetGame().GetMission().AbortMission();
 			g_Game.CancelQueueTime();	
 			
-			return true;		
+			return true;	
+		
 		}
 		else if ( code == IDC_INT_EXIT && result == DBB_NO )
 		{
 			g_Game.CancelQueueTime();
 		}
+		else if ( code == IDC_INT_RETRY && result == DBB_YES )
+		{
+			if ( GetGame().IsMultiplayer() )
+			{
+				GetGame().GetUIManager().CloseAll();
+				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RespawnPlayer);
+				//turns off dead screen, hides HUD for countdown
+				//---------------------------------------------------
+				PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+				if(player)
+				{
+					GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(player.ShowDeadScreen, DayZPlayerImplement.DEAD_SCREEN_DELAY, false, false);
+				}
+				
+				GetGame().GetUIManager().CloseAll();
+				//---------------------------------------------------
+				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().GetMission().Continue);
+				
+				return true;
+			}
+			else
+			{
+				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RestartMission);
+			}
+			
+			return true;
+		}
 		
 		return false;
-	}
-	
-	void Respawn()
-	{
-		//turns off dead screen, hides HUD for countdown
-		//---------------------------------------------------
-		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
-		if(player)
-		{
-			GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(player.ShowDeadScreen, DayZPlayerImplement.DEAD_SCREEN_DELAY, false, false);
-		}
-		GetGame().GetUIManager().CloseAll();
-		
-		GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RespawnPlayer);
-		//---------------------------------------------------
-		GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().GetMission().Continue);
 	}
 	
 	bool IsLocalPlayer( string uid )

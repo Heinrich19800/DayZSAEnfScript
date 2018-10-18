@@ -4,17 +4,31 @@ class TransmitterBase extends ItemTransmitter
 	//Sounds
 	const string SOUND_RADIO_START_NOISE 	= "radioStartNoise";
 	
+	// --- SYSTEM EVENTS
+	override void OnStoreSave( ParamsWriteContext ctx )
+	{   
+		super.OnStoreSave( ctx );
+		
+		//store tuned frequency
+		ctx.Write( GetTunedFrequencyIndex() );
+	}
+	
+	override void OnStoreLoad( ParamsReadContext ctx )
+	{
+		super.OnStoreLoad( ctx );
+		
+		//load and set tuned frequency
+		int tuned_frequency_idx;
+		ctx.Read( tuned_frequency_idx );
+		SetFrequencyByIndex( tuned_frequency_idx );
+	}	
+		
+	
 	override bool IsTransmitter()
 	{
 		return true;
 	}
 	
-	//--- COMMON
-	bool CanOperate()
-	{
-		return GetCompEM().IsSwitchedOn();	
-	}
-
 	//--- ACTIONS
 	void SetNextFrequency( PlayerBase player = NULL )
 	{
@@ -34,7 +48,7 @@ class TransmitterBase extends ItemTransmitter
 			return NULL;
 		}
 		
-		return player.m_HUD;
+		return player.m_Hud;
 	}
 	
 	void DisplayRadioInfo( string message, PlayerBase player )
@@ -55,6 +69,14 @@ class TransmitterBase extends ItemTransmitter
 	//--- POWER EVENTS
 	override void OnSwitchOn()
 	{
+		if ( !GetCompEM().CanWork() )
+		{
+			GetCompEM().SwitchOff();
+		}
+	}	
+	
+	override void OnWorkStart()
+	{
 		//turn on broadcasting/receiving
 		EnableBroadcast ( true );
 		EnableReceive ( true );
@@ -64,18 +86,15 @@ class TransmitterBase extends ItemTransmitter
 		SoundRadioStartNoise();
 	}
 
-	override void OnSwitchOff()
-	{
-		//turn off broadcasting/receiving
-		EnableBroadcast ( false );
-		EnableReceive ( false );	
-		SwitchOn ( false );	
-	}
-
 	override void OnWorkStop()
 	{
-		//turn off device
+		//auto switch off (EM)
 		GetCompEM().SwitchOff();
+		
+		//turn off broadcasting/receiving
+		EnableBroadcast ( false );
+		EnableReceive ( false );
+		SwitchOn ( false );
 	}
 	
 	//--- SOUNDS

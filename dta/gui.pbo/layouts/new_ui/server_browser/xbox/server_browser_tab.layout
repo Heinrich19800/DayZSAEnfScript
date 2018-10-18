@@ -120,6 +120,7 @@ FrameWidgetClass server_browser_tab_root {
            vexactsize 0
            {
             TextWidgetClass host_label {
+             clipchildren 0
              ignorepointer 1
              size 1 0.6
              valign center_ref
@@ -215,6 +216,7 @@ FrameWidgetClass server_browser_tab_root {
          vexactsize 0
          {
           TextWidgetClass population_label {
+           clipchildren 0
            ignorepointer 1
            size 120 0.6
            valign center_ref
@@ -242,6 +244,7 @@ FrameWidgetClass server_browser_tab_root {
          vexactsize 0
          {
           TextWidgetClass slots_label {
+           clipchildren 0
            ignorepointer 1
            size 60 0.6
            valign center_ref
@@ -458,7 +461,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "SORTING"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_sort_button_sort_setting_sort_setting_panel_sort_button_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -535,7 +538,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "REGION"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_region_button_region_setting_region_setting_panel_region_button_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -613,7 +616,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "PING"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_ping_button_ping_setting_ping_setting_panel_ping_button_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -690,7 +693,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "FAVORITED"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_favorites_button_favorites_setting_favorites_setting_panel_favorites_button_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -768,7 +771,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "FRIENDS PLAYING"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_friends_button_friends_setting_friends_setting_panel_friends_button_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -845,7 +848,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "PREVIOUSLY PLAYED"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_prev_played_button_prev_played_setting_prev_played_setting_panel_prev_played_button_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -922,7 +925,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "FULL SERVER"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_full_server_button_full_server_setting_full_server_setting_panel_full_server_button_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1001,7 +1004,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "ACCELERATED TIME"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_accelerated_time_button_accelerated_time_setting_accelerated_time_setting_panel_accelerated_time_button_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0

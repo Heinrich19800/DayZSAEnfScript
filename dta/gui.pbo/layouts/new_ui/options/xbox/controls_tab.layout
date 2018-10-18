@@ -145,7 +145,7 @@ FrameWidgetClass controls_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "INVERT VERTICAL VIEW"
+                 text "#layout_xbox_controls_ivnert_vertical"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -186,7 +186,6 @@ FrameWidgetClass controls_tab_root {
            vexactpos 1
            hexactsize 0
            vexactsize 1
-           userID 42
            style Colorable
            "no focus" 0
            "next up" "invert_button"
@@ -224,7 +223,7 @@ FrameWidgetClass controls_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "VERTICAL SENSITIVITY"
+                 text "#layout_xbox_controls_sensitivity_ver"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -266,7 +265,6 @@ FrameWidgetClass controls_tab_root {
            vexactpos 1
            hexactsize 0
            vexactsize 1
-           userID 42
            style Colorable
            "no focus" 0
            "next up" "vsensitivity_button"
@@ -304,7 +302,7 @@ FrameWidgetClass controls_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "HORIZONTAL SENSITIVITY"
+                 text "#layout_xbox_controls_sensitivity_hor"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0

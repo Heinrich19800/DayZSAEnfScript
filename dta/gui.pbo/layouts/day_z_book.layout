@@ -160,7 +160,7 @@ FrameWidgetClass ContainerWidget {
      vexactsize 0
      userID 102
      style Default
-     text "Prev"
+     text "#layout_day_z_book_next"
     }
     ButtonWidgetClass NextButton {
      visible 1
@@ -174,7 +174,7 @@ FrameWidgetClass ContainerWidget {
      vexactsize 0
      userID 103
      style Default
-     text "Next"
+     text "#layout_day_z_book_next"
     }
    }
   }

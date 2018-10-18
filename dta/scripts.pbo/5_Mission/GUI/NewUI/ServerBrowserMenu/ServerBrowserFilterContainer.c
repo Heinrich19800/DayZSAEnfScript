@@ -24,11 +24,11 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		GetGame().GetPlayerName( player_name );
 		m_Tab = parent;
 		
-		ref array<string> character_name_options ={ "Disabled", player_name };
-		ref array<string> region_options = { "All", "Americas", "Europe", "Asia" };
-		ref array<string> sort_options = { "Name - Descending", "Name - Ascending", "Slots - Descending", "Slots - Ascending" };
-		ref array<string> ping_options = { "Disabled", "<30", "<50", "<100", "<200", "<300", "<500" };
-		ref array<string> three_options = { "Disabled", "Show", "Hide" };
+		ref array<string> character_name_options ={ "#server_browser_disabled", player_name };
+		ref array<string> region_options = { "#server_browser_all", "#server_browser_americas", "#server_browser_europe", "#server_browser_asia" };
+		ref array<string> sort_options = { "#server_browser_name_descending", "server_browser_name_ascending", "#server_browser_slots_descending", "#server_browser_slots_ascending" };
+		ref array<string> ping_options = { "#server_browser_disabled", "<30", "<50", "<100", "<200", "<300", "<500" };
+		ref array<string> three_options = { "#server_browser_disabled", "#server_browser_show", "#server_browser_hide" };
 		
 		m_SearchByName				= EditBoxWidget.Cast( root.FindAnyWidget( "search_name_setting_option" ) );
 		m_SearchByIP				= EditBoxWidget.Cast( root.FindAnyWidget( "search_ip_setting_option" ) );

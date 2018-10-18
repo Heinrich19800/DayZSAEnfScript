@@ -93,11 +93,14 @@ class Liquid
 		
 	}
 
-	static void FillContainerEnviro(ItemBase container, int liquid_type, float amount)
+	static void FillContainerEnviro(ItemBase container, int liquid_type, float amount, bool inject_agents = false)
 	{
 		FillContainer(container,liquid_type,amount);
-		PluginTransmissionAgents plugin = PluginTransmissionAgents.Cast(GetPlugin(PluginTransmissionAgents));
-		plugin.TransmitAgents(NULL, container, AGT_WATER_POND, amount);
+		if(inject_agents)
+		{
+			PluginTransmissionAgents plugin = PluginTransmissionAgents.Cast(GetPlugin(PluginTransmissionAgents));
+			plugin.TransmitAgents(NULL, container, AGT_WATER_POND, amount);
+		}
 	}
 	
 	static bool CanFillContainer(ItemBase container, int liquid_type)

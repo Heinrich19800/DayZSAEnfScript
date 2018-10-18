@@ -9,6 +9,7 @@ PanelWidgetClass closable_header_root {
  hexactsize 0
  vexactsize 1
  fixaspect inside
+ priority 1
  draggable 1
  scriptclass ""
  style blank
@@ -26,7 +27,7 @@ PanelWidgetClass closable_header_root {
    priority 8
    style blank
    {
-    RichTextWidgetClass TextWidget0 {
+    TextWidgetClass TextWidget0 {
      ignorepointer 1
      position 0 0
      size 0.85 0.6
@@ -36,12 +37,14 @@ PanelWidgetClass closable_header_root {
      vexactpos 1
      hexactsize 0
      vexactsize 0
-     style DayZNormal
-     text "CLOSABLE CONTAINER"
+     style Light
+     text "#layout_xbox_closable_header"
+     font "gui/fonts/sdf_MetronBook24"
      "text offset" 10 0
      "exact text" 1
+     "exact text size" 24
+     "text halign" center
      "text valign" center
-     wrap 1
     }
     PanelWidgetClass Dropzone {
      ignorepointer 1
@@ -105,7 +108,7 @@ PanelWidgetClass closable_header_root {
      priority 150
      draggable 0
     }
-    RichTextWidgetClass CargoCount {
+    TextWidgetClass CargoCount {
      visible 0
      ignorepointer 1
      position 0 0
@@ -116,12 +119,11 @@ PanelWidgetClass closable_header_root {
      vexactpos 0
      hexactsize 0
      vexactsize 0
-     style DayZNormal
+     style Light
      text "10/50"
      "text offset" 10 0
      "exact text" 1
      "text valign" center
-     wrap 1
     }
    }
   }

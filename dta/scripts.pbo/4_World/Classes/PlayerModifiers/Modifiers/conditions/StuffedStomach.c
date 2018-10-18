@@ -1,4 +1,4 @@
-class StuffedStomach: ModifierBase
+class StuffedStomachMdfr: ModifierBase
 {
 	protected const int	 	STUFFED_TRESHOLD 			= 1000;
 	override void Init()
@@ -31,7 +31,7 @@ class StuffedStomach: ModifierBase
 	{
 		if( player.GetNotifiersManager() )
 		{
-			player.GetNotifiersManager().AttachByType(NTF_STUFFED);
+			player.GetNotifiersManager().AttachByType(eNotifiers.NTF_STUFFED);
 		}
 	}
 
@@ -39,7 +39,7 @@ class StuffedStomach: ModifierBase
 	{
 		if( player.GetNotifiersManager() )
 		{
-			player.GetNotifiersManager().DetachByType(NTF_STUFFED);
+			player.GetNotifiersManager().DetachByType(eNotifiers.NTF_STUFFED);
 		}
 	}
 

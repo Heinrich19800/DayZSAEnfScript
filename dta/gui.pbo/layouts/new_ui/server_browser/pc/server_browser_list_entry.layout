@@ -33,7 +33,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
    Rows 1
    {
     FrameWidgetClass favorite_button {
-     ignorepointer 1
+     ignorepointer 0
      position 0 0
      size 30 30
      hexactpos 1
@@ -332,7 +332,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "Shard:"
+         text "#STR_server_browser_list_entry_root_detailed_info_detail_info_panel_shard_shard_label0"
          font "gui/fonts/sdf_MetronBook24"
          "italic text" 0
          "bold text" 0
@@ -347,7 +347,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "Private"
+         text "#STR_server_browser_list_entry_root_detailed_info_detail_info_panel_shard_shard_text0"
          font "gui/fonts/sdf_MetronBook24"
          "text offset" 8 0
          "exact text" 0
@@ -373,7 +373,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "Character Alive:"
+         text "#STR_server_browser_list_entry_root_detailed_info_detail_info_panel_character_alive_character_alive_label0"
          font "gui/fonts/sdf_MetronBook24"
          "italic text" 0
          "bold text" 0
@@ -415,7 +415,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "Steam Friends:"
+         text "#STR_server_browser_list_entry_root_detailed_info_detail_info_panel_steam_friends_steam_friends_label0"
          font "gui/fonts/sdf_MetronBook24"
          "italic text" 0
          "bold text" 0
@@ -457,7 +457,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "Mode:"
+         text "#STR_server_browser_list_entry_root_detailed_info_detail_info_panel_mode_mode_label0"
          font "gui/fonts/sdf_MetronBook24"
          "italic text" 0
          "bold text" 0
@@ -472,7 +472,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "1st/3rd Person"
+         text "#STR_server_browser_list_entry_root_detailed_info_detail_info_panel_mode_mode_text0"
          font "gui/fonts/sdf_MetronBook24"
          "text offset" 8 0
          "bold text" 0
@@ -499,7 +499,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "Battleye:"
+         text "#STR_server_browser_list_entry_root_detailed_info_detail_info_panel_battlleye_battlleye_label0"
          font "gui/fonts/sdf_MetronBook24"
          "italic text" 0
          "bold text" 0
@@ -515,7 +515,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "ON"
+         text "#STR_server_browser_list_entry_root_detailed_info_detail_info_panel_battlleye_battlleye_text0"
          font "gui/fonts/sdf_MetronBook24"
          "text color" 0 1 0.251 1
          "text offset" 8 0
@@ -543,7 +543,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          vexactpos 0
          hexactsize 0
          vexactsize 0
-         text "IP:"
+         text "#STR_server_browser_list_entry_root_detailed_info_detail_info_panel_ip_ip_label0"
          font "gui/fonts/sdf_MetronBook24"
          "italic text" 0
          "bold text" 0

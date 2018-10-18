@@ -1,5 +1,6 @@
 PanelWidgetClass closable_header_root {
  clipchildren 0
+ ignorepointer 0
  color 0.1882 0.1882 0.1882 1
  position 0 0
  size 1 42
@@ -9,11 +10,12 @@ PanelWidgetClass closable_header_root {
  hexactsize 0
  vexactsize 1
  fixaspect inside
+ priority 1
  draggable 1
  scriptclass ""
- style blank
  {
-  PanelWidgetClass PanelWidget {
+  FrameWidgetClass PanelWidget {
+   clipchildren 0
    ignorepointer 1
    color 0.298 0.298 0.298 1
    position 0 0
@@ -24,7 +26,6 @@ PanelWidgetClass closable_header_root {
    hexactsize 0
    vexactsize 0
    priority 8
-   style blank
    {
     ImageWidgetClass collapse_button {
      visible 1
@@ -43,7 +44,7 @@ PanelWidgetClass closable_header_root {
      mode additive
      "src alpha" 1
     }
-    RichTextWidgetClass TextWidget0 {
+    TextWidgetClass TextWidget0 {
      ignorepointer 1
      position 0 0
      size 0.85 0.6
@@ -53,12 +54,13 @@ PanelWidgetClass closable_header_root {
      vexactpos 1
      hexactsize 0
      vexactsize 0
-     style DayZNormal
+     style Normal
      text "CLOSABLE CONTAINER"
+     font "gui/fonts/sdf_MetronLight24"
      "text offset" 10 0
      "exact text" 1
+     "exact text size" 20
      "text valign" center
-     wrap 1
     }
     PanelWidgetClass Dropzone {
      ignorepointer 1
@@ -73,6 +75,7 @@ PanelWidgetClass closable_header_root {
     ImageWidgetClass electricity {
      visible 0
      clipchildren 0
+     ignorepointer 1
      color 0.6235 0.6235 0.6235 1
      position 62 0
      size 42 42
@@ -93,6 +96,7 @@ PanelWidgetClass closable_header_root {
       ImageWidgetClass electricity_can_work {
        visible 0
        clipchildren 0
+       ignorepointer 1
        color 0.9569 0.898 0.1451 1
        size 1 1
        halign center_ref
@@ -122,38 +126,45 @@ PanelWidgetClass closable_header_root {
      priority 150
      draggable 0
     }
-    RichTextWidgetClass CargoCount {
+    TextWidgetClass CargoCount {
      visible 0
+     clipchildren 0
      ignorepointer 1
      position 100 0
-     size 0.05 0.6
+     size 0.05 1
      halign right_ref
      valign center_ref
      hexactpos 1
      vexactpos 1
      hexactsize 0
      vexactsize 0
-     style DayZNormal
+     style Normal
      text "10/50"
-     "text offset" 10 0
+     font "gui/fonts/sdf_MetronLight24"
      "exact text" 1
+     "exact text size" 20
+     text_proportion 0.5
+     "size to text h" 1
+     "size to text v" 0
      "text valign" center
-     wrap 1
     }
    }
   }
   ItemPreviewWidgetClass Drag_Render {
    visible 0
    clipchildren 0
+   ignorepointer 1
    position 0 0
    size 0 0
    hexactpos 1
    vexactpos 1
    hexactsize 1
    vexactsize 1
+   draggable 0
    {
     SmartPanelWidgetClass Color {
      clipchildren 0
+     ignorepointer 1
      color 0.298 0.298 0.298 1
      position 0 0
      size 1 1

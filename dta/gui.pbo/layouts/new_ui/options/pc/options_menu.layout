@@ -108,7 +108,7 @@ FrameWidgetClass settings_menu_root {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "GAME"
+             text "#STR_settings_menu_root_Tabber_TabControls_TabBar_Tab_Control_Container_Tab_Control_0_Tab_Control_0_Title0"
              font "gui/fonts/sdf_MetronLight72"
              "text halign" center
              "text valign" center
@@ -164,7 +164,7 @@ FrameWidgetClass settings_menu_root {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "SOUND"
+             text "#STR_settings_menu_root_Tabber_TabControls_TabBar_Tab_Control_Container_Tab_Control_1_Tab_Control_1_Title0"
              font "gui/fonts/sdf_MetronLight72"
              "text halign" center
              "text valign" center
@@ -220,7 +220,7 @@ FrameWidgetClass settings_menu_root {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "VIDEO"
+             text "#STR_settings_menu_root_Tabber_TabControls_TabBar_Tab_Control_Container_Tab_Control_2_Tab_Control_2_Title0"
              font "gui/fonts/sdf_MetronLight72"
              "text halign" center
              "text valign" center
@@ -276,7 +276,7 @@ FrameWidgetClass settings_menu_root {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "CONTROLS"
+             text "#STR_settings_menu_root_Tabber_TabControls_TabBar_Tab_Control_Container_Tab_Control_3_Tab_Control_3_Title0"
              font "gui/fonts/sdf_MetronLight72"
              "text halign" center
              "text valign" center
@@ -414,7 +414,7 @@ FrameWidgetClass settings_menu_root {
    vexactsize 1
    priority 1
    style Normal
-   text "SETTINGS"
+   text "#STR_settings_menu_root_SettingsTextWidget0"
    font "gui/fonts/sdf_MetronLight72"
    "text color" 0.8157 0.1255 0.7843 1
    "exact text" 0
@@ -476,7 +476,7 @@ FrameWidgetClass settings_menu_root {
        "no focus" 0
        "next up" "back"
        "next down" "reset"
-       text "APPLY"
+       text "#STR_settings_menu_root_play_panel_root_bottom_apply0"
        text_proportion 0.8
        font "gui/fonts/sdf_MetronLight72"
        switch normal
@@ -500,7 +500,7 @@ FrameWidgetClass settings_menu_root {
      content_valign bottom
      {
       ButtonWidgetClass back {
-       color 0.7843 0 0 1
+       color 0.0392 0.0392 0.0392 1
        position 0 88
        size 1 38
        halign center_ref
@@ -513,7 +513,7 @@ FrameWidgetClass settings_menu_root {
        "no focus" 0
        "next up" "reset"
        "next down" "apply"
-       text "BACK"
+       text "#STR_settings_menu_root_play_panel_root_top_back0"
        text_proportion 0.6
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -521,7 +521,7 @@ FrameWidgetClass settings_menu_root {
       ButtonWidgetClass reset {
        disabled 1
        ignorepointer 1
-       color 0.7843 0 0 1
+       color 0.0392 0.0392 0.0392 1
        position 0 130
        size 1 38
        halign center_ref
@@ -536,7 +536,7 @@ FrameWidgetClass settings_menu_root {
        "next right" ""
        "next up" "apply"
        "next down" "back"
-       text "RESET"
+       text "#STR_settings_menu_root_play_panel_root_top_reset0"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -617,6 +617,8 @@ FrameWidgetClass settings_menu_root {
      vexactsize 1
      font "gui/fonts/sdf_MetronLight24"
      "exact text" 1
+     "exact text size" 30
+     "size to text h" 0
      "size to text v" 1
      wrap 1
      "condense whitespace" 1

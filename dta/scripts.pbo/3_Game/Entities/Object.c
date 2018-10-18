@@ -49,7 +49,6 @@ class Object extends IEntity
 	*/
 	void Explode(string ammoType = "")
 	{
-		
 		if (ammoType == "")
 			ammoType = this.ConfigGetString("ammoType");
 		
@@ -61,7 +60,7 @@ class Object extends IEntity
 			DamageSystem.ExplosionDamage(Class.Cast(this), NULL, ammoType, GetPosition());
 		}
 		
-		if ( !GetGame().IsMultiplayer()  ||  GetGame().IsServer() )
+		/*if ( !GetGame().IsMultiplayer()  ||  GetGame().IsServer() )
 		{
 			string path = "cfgAmmo " + ammoType + " particle";
 			string particle_path;
@@ -73,19 +72,19 @@ class Object extends IEntity
 			{
 				Particle.Play(particle_ID, GetPosition());
 			}
-		}
+		}*/
 		
 		GetGame().ObjectDelete(this);
 	}
 	
-	//! returns action component name by given component index
-	proto native string GetActionComponentName(int componentIndex);
+	//! returns action component name by given component index, 'geometry' can be "fire" or "view" (default "" for mixed/legacy mode)
+	proto native string GetActionComponentName(int componentIndex, string geometry = "");
 
-	//! returns action component name list by given component index
-	proto native void GetActionComponentNameList(int componentIndex, TStringArray nameList);
+	//! returns action component name list by given component index, 'geometry' can be "fire" or "view" (default "" for mixed/legacy mode)
+	proto native void GetActionComponentNameList(int componentIndex, TStringArray nameList, string geometry = "");
 	
-	//! return true if selection containts action component
-	proto native bool IsActionComponentPartOfSelection(int componentIndex, string selectionName);
+	//! return true if selection containts action component, 'geometry' can be "fire" or "view" (default "" for mixed/legacy mode)
+	proto native bool IsActionComponentPartOfSelection(int componentIndex, string selectionName, string geometry = "");
 	
 	//! Flag to determine this object is marked to be deleted soon
 	proto native bool ToDelete();
@@ -245,7 +244,14 @@ class Object extends IEntity
 	
 	proto native int GetMemoryPointIndex(string memoryPointName);
 	proto native vector GetMemoryPointPos(string memoryPointName);
+	proto native vector GetMemoryPointPosByIndex(int pointIndex);
 
+	//! Called when tree is chopped down.
+	void OnTreeCutDown( EntityAI cutting_tool )
+	{
+		
+	}
+	
 	//! Get config class of object
 	string GetType()
 	{
@@ -725,10 +731,17 @@ class Object extends IEntity
 		return GetGame().CreateSoundOnObject(this, sound_name, range, true, create_local);
 	}
 	
-	void PlayFallingPlantSound()
-	{
-	}
-	
 	void PostAreaDamageActions() {}
 	void PreAreaDamageActions() {}
+	
+	
+	void SpawnDamageDealtEffect() { }
+	
+	bool HasNetworkID()
+	{
+		int lo = 0;
+		int hi = 0;
+		GetNetworkID(lo, hi);
+		return lo | hi;
+	}
 };

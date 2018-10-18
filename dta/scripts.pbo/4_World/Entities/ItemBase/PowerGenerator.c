@@ -8,6 +8,8 @@ class PowerGenerator extends ItemBase
 	static const string			START_SOUND = "powerGeneratorTurnOn";
 	static const string			LOOP_SOUND = "powerGeneratorLoop";
 	static const string			STOP_SOUND = "powerGeneratorTurnOff";
+	static const string 		SPARKPLUG_ATTACH_SOUND = "sparkplug_attach_SoundSet";
+	static const string 		SPARKPLUG_DETACH_SOUND = "sparkplug_detach_SoundSet";
 	
 	SoundOnVehicle 				m_SoundLoopEntity;
 	ref Timer 					m_SoundLoopStartTimer;
@@ -159,6 +161,11 @@ class PowerGenerator extends ItemBase
 		{
 			ShowSelection("sparkplug_installed");
 			m_SparkPlug = item_IB;
+			
+			if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
+			{
+				SEffectManager.PlaySound(SPARKPLUG_ATTACH_SOUND, GetPosition() );
+			}
 		}
 	}
 	
@@ -173,6 +180,11 @@ class PowerGenerator extends ItemBase
 			HideSelection("sparkplug_installed");
 			m_SparkPlug = NULL;
 			GetCompEM().SwitchOff();
+			
+			if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
+			{
+				SEffectManager.PlaySound(SPARKPLUG_DETACH_SOUND, GetPosition() );
+			}
 		}
 	}
 	

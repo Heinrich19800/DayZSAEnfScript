@@ -28,10 +28,12 @@ class KeybindingsMenu extends UIScriptedMenu
 		
 		string version;
 		GetGame().GetVersion( version );
-		if( version != "" )
-			m_Version.SetText( "#main_menu_version" + " " + version );
-		else
-			m_Version.Show( false );
+		#ifdef PLATFORM_CONSOLE
+			version = "#main_menu_version" + " " + version + " (" + g_Game.GetDatabaseID() + ")";
+		#else
+			version = "#main_menu_version" + " " + version;
+		#endif
+		m_Version.SetText( version );
 
 		#ifdef PLATFORM_PS4
 			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
@@ -78,7 +80,7 @@ class KeybindingsMenu extends UIScriptedMenu
 		bool changed = false;
 
 		if( changed )
-			g_Game.GetUIManager().ShowDialog("#main_menu_configure", "You have unsaved changes in the configuration. Would you like to discard them?", 1337, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
+			g_Game.GetUIManager().ShowDialog("#main_menu_configure", "#main_menu_configure_desc", 1337, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
 		else
 		{
 			GetGame().GetUIManager().Back();

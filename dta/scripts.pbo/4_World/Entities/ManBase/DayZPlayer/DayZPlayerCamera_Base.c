@@ -183,7 +183,7 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 		PPEffects.SetBlurOptics(0);
 	}
 	
-	float GetCurrentPitch()
+	override float GetCurrentPitch()
 	{
 		return m_CurrentCameraPitch;
 	}

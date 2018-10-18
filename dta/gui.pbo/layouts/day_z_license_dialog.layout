@@ -21,7 +21,7 @@ WindowWidgetClass LicenseDialogRoot {
    vexactpos 1
    hexactsize 1
    vexactsize 1
-   text "CAPTION"
+   text "#layout_license_dialog_cation"
    "text color" 1 1 1 1
    "exact text" 1
    "text halign" center
@@ -35,7 +35,7 @@ WindowWidgetClass LicenseDialogRoot {
    vexactpos 1
    hexactsize 1
    vexactsize 1
-   text "TEXT"
+   text "#layout_license_dialog_text"
    "exact text" 1
    "text halign" center
    "text valign" center

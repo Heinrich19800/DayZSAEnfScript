@@ -1,7 +1,7 @@
 
 class LogoutMenu extends UIScriptedMenu
 {	
-	private TextWidget m_logoutTimetext;
+	private TextWidget m_LogoutTimetext;
 	private ButtonWidget m_bLogoutNow;
 	private ButtonWidget m_bCancel;
 	private int m_iTime;
@@ -21,7 +21,7 @@ class LogoutMenu extends UIScriptedMenu
 	{
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_logout_dialog.layout");
 		
-		m_logoutTimetext = TextWidget.Cast( layoutRoot.FindAnyWidget("logoutTimeText") );
+		m_LogoutTimetext = TextWidget.Cast( layoutRoot.FindAnyWidget("logoutTimeText") );
 		m_bLogoutNow = ButtonWidget.Cast( layoutRoot.FindAnyWidget("bLogoutNow") );
 		m_bCancel = ButtonWidget.Cast( layoutRoot.FindAnyWidget("bCancel") );
 
@@ -83,13 +83,13 @@ class LogoutMenu extends UIScriptedMenu
 	
 	void SetTimeLoading()
 	{
-		m_logoutTimetext.SetText(" ");
+		m_LogoutTimetext.SetText(" ");
 	}
 	
 	void SetTime(int time)
 	{
 		m_iTime = time;
-		m_logoutTimetext.SetText(m_iTime.ToString());
+		m_LogoutTimetext.SetText(m_iTime.ToString());
 	}
 	
 	void UpdateTime()
@@ -97,7 +97,7 @@ class LogoutMenu extends UIScriptedMenu
 		if (m_iTime > 0)
 		{
 			m_iTime -= 1;
-			m_logoutTimetext.SetText(m_iTime.ToString());	
+			m_LogoutTimetext.SetText(m_iTime.ToString());	
 		}
 		else
 		{

@@ -389,17 +389,18 @@ class CfgWorlds
 					sunAngle=-18;
 					sunOrMoon=0;
 					diffuse[]={0.1,0.18000001,0.30000001};
-					diffuseCloud[]={0.1,0.18000001,0.30000001};
+					diffuseCloud[]={0,0,0};
 					ambient[]={0.016000001,0.031599998,0.048};
-					ambientCloud[]={0.016000001,0.031599998,0.048};
+					ambientCloud[]={0,0,0};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
 					bidirect[]={0,0,0};
 					bidirectCloud[]={0,0,0};
-					sky[]={0.012,0.012,0.028999999};
+					sky[]={0.017999999,0.028000001,0.043000001};
 					skyAroundSun[]={0.017999999,0.028000001,0.043000001};
-					desiredLuminanceCoef=0.1;
-					desiredLuminanceCoefCloud=0.1;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoefCloud=-0.15000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -423,8 +424,9 @@ class CfgWorlds
 					bidirectCloud[]={0,0,0};
 					sky[]={0.035999998,0.056000002,0.086999997};
 					skyAroundSun[]={0.035999998,0.056000002,0.086999997};
-					desiredLuminanceCoef=0.15000001;
-					desiredLuminanceCoefCloud=0.15000001;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoefCloud=-0.15000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -448,8 +450,9 @@ class CfgWorlds
 					bidirectCloud[]={0,0,0};
 					sky[]={0.035999998,0.056000002,0.086999997};
 					skyAroundSun[]={0.1011,0.1063,0.092600003};
-					desiredLuminanceCoef=0.15000001;
-					desiredLuminanceCoefCloud=0.15000001;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoefCloud=-0.15000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -473,8 +476,9 @@ class CfgWorlds
 					bidirectCloud[]={0,0,0};
 					sky[]={0.1,0.14,0.22};
 					skyAroundSun[]={0.3035,0.31900001,0.278};
-					desiredLuminanceCoef=0.2;
-					desiredLuminanceCoefCloud=0.2;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoefCloud=-0.15000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -498,8 +502,9 @@ class CfgWorlds
 					bidirectCloud[]={0,0,0};
 					sky[]={0.15000001,0.20999999,0.34};
 					skyAroundSun[]={0.60390002,0.54110003,0.45089999};
-					desiredLuminanceCoef=0.2;
-					desiredLuminanceCoefCloud=0.2;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoefCloud=-0.15000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -523,8 +528,9 @@ class CfgWorlds
 					bidirectCloud[]={0,0,0};
 					sky[]={0.15000001,0.20999999,0.34};
 					skyAroundSun[]={0.8039,0.54110003,0.45089999};
-					desiredLuminanceCoef=0.25;
-					desiredLuminanceCoefCloud=0.25;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoefCloud=-0.15000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -556,8 +562,9 @@ class CfgWorlds
 						{0.8039,0.54110003,0.45089999},
 						0.80000001
 					};
-					desiredLuminanceCoef=0.25;
-					desiredLuminanceCoefCloud=0.25;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.1;
+					desiredLuminanceCoefCloud=-0.1;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -589,8 +596,9 @@ class CfgWorlds
 						{0.93900001,0.54110003,0.2509},
 						1.8
 					};
-					desiredLuminanceCoef=0.25;
-					desiredLuminanceCoefCloud=0.25;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.050000001;
+					desiredLuminanceCoefCloud=-0.050000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -638,8 +646,9 @@ class CfgWorlds
 						{0.93900001,0.54110003,0.2509},
 						3.0999999
 					};
-					desiredLuminanceCoef=0.25;
-					desiredLuminanceCoefCloud=0.25;
+					filmGrainIntensity=0.1;
+					desiredLuminanceCoef=0.050000001;
+					desiredLuminanceCoefCloud=0.050000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -665,13 +674,13 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.2,0.23,0.40000001},
-						3.5
+						{0.2,0.23,0.44999999},
+						4.5
 					};
 					ambientCloud[]=
 					{
-						{0.2,0.23,0.40000001},
-						3.5
+						{0.2,0.23,0.44999999},
+						4.5
 					};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
@@ -687,8 +696,9 @@ class CfgWorlds
 						{1.239,0.4411,0.2509},
 						5.0999999
 					};
-					desiredLuminanceCoef=0.25;
-					desiredLuminanceCoefCloud=0.25;
+					filmGrainIntensity=0.1;
+					desiredLuminanceCoef=0.1;
+					desiredLuminanceCoefCloud=0.1;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -714,13 +724,13 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.2,0.23,0.40000001},
-						6.5
+						{0.2,0.23,0.44999999},
+						7.1999998
 					};
 					ambientCloud[]=
 					{
-						{0.2,0.23,0.40000001},
-						6.5
+						{0.2,0.23,0.44999999},
+						7.1999998
 					};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
@@ -729,15 +739,16 @@ class CfgWorlds
 					sky[]=
 					{
 						{1.2,0.63999999,1},
-						6.6999998
+						5.6999998
 					};
 					skyAroundSun[]=
 					{
 						{3.5,1.64,1},
-						7.6999998
+						6.6999998
 					};
-					desiredLuminanceCoef=0.57999998;
-					desiredLuminanceCoefCloud=0.57999998;
+					filmGrainIntensity=0.025;
+					desiredLuminanceCoef=0.44999999;
+					desiredLuminanceCoefCloud=0.44999999;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -763,13 +774,13 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.2,0.23,0.40000001},
-						8
+						{0.2,0.23,0.44999999},
+						8.1999998
 					};
 					ambientCloud[]=
 					{
-						{0.2,0.23,0.40000001},
-						8
+						{0.2,0.23,0.44999999},
+						8.1999998
 					};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
@@ -778,13 +789,14 @@ class CfgWorlds
 					sky[]=
 					{
 						{0.5,0.63999999,1},
-						9
+						8
 					};
 					skyAroundSun[]=
 					{
 						{2.2,1.24,1},
-						10.2
+						9.1999998
 					};
+					filmGrainIntensity=0;
 					desiredLuminanceCoef=0.62;
 					desiredLuminanceCoefCloud=0.62;
 					luminanceRectCoef=0;
@@ -812,13 +824,13 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.38299999,0.57999998,0.85799998},
-						9.8000002
+						{0.12,0.18000001,0.37},
+						10.2
 					};
 					ambientCloud[]=
 					{
-						{0.38299999,0.57999998,0.85799998},
-						9.8000002
+						{0.12,0.18000001,0.37},
+						10.2
 					};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
@@ -834,8 +846,9 @@ class CfgWorlds
 						{1.2,0.67400002,0.294},
 						11
 					};
-					desiredLuminanceCoef=0.63999999;
-					desiredLuminanceCoefCloud=0.63999999;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.62;
+					desiredLuminanceCoefCloud=0.62;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -861,12 +874,12 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.38299999,0.57999998,0.85799998},
+						{0.12,0.18000001,0.34},
 						10.6
 					};
 					ambientCloud[]=
 					{
-						{0.38299999,0.57999998,0.85799998},
+						{0.12,0.18000001,0.34},
 						10.6
 					};
 					groundReflection[]={0,0,0};
@@ -883,8 +896,9 @@ class CfgWorlds
 						{1,0.87400001,0.49399999},
 						11.4
 					};
-					desiredLuminanceCoef=0.66000003;
-					desiredLuminanceCoefCloud=0.66000003;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.62;
+					desiredLuminanceCoefCloud=0.62;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -910,12 +924,12 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.12,0.18000001,0.28},
+						{0.12,0.18000001,0.31999999},
 						10.8
 					};
 					ambientCloud[]=
 					{
-						{0.12,0.18000001,0.28},
+						{0.12,0.18000001,0.31999999},
 						10.8
 					};
 					groundReflection[]={0,0,0};
@@ -932,8 +946,9 @@ class CfgWorlds
 						{1,1,1},
 						11.8
 					};
-					desiredLuminanceCoef=0.68000001;
-					desiredLuminanceCoefCloud=0.68000001;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.63999999;
+					desiredLuminanceCoefCloud=0.63999999;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -959,12 +974,12 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.2,0.27000001,0.31999999},
+						{0.2,0.27000001,0.37},
 						11
 					};
 					ambientCloud[]=
 					{
-						{0.2,0.27000001,0.31999999},
+						{0.2,0.27000001,0.37},
 						11
 					};
 					groundReflection[]={0,0,0};
@@ -981,8 +996,9 @@ class CfgWorlds
 						{1,1,1},
 						12.5
 					};
-					desiredLuminanceCoef=0.69999999;
-					desiredLuminanceCoefCloud=0.69999999;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.66000003;
+					desiredLuminanceCoefCloud=0.66000003;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1008,12 +1024,12 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.2,0.27000001,0.31999999},
+						{0.2,0.27000001,0.37},
 						11.8
 					};
 					ambientCloud[]=
 					{
-						{0.2,0.27000001,0.31999999},
+						{0.2,0.27000001,0.37},
 						11.8
 					};
 					groundReflection[]={0,0,0};
@@ -1030,8 +1046,9 @@ class CfgWorlds
 						{1,1,1},
 						13
 					};
-					desiredLuminanceCoef=0.69999999;
-					desiredLuminanceCoefCloud=0.69999999;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.68000001;
+					desiredLuminanceCoefCloud=0.68000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1047,24 +1064,17 @@ class CfgWorlds
 					sunOrMoon=0;
 					diffuse[]={0,0,0};
 					diffuseCloud[]={0,0,0};
-					ambient[]=
-					{
-						{0.035999998,0.057,0.085000001},
-						2
-					};
-					ambientCloud[]=
-					{
-						{0.035999998,0.057,0.085000001},
-						2
-					};
+					ambient[]={0.035999998,0.057,0.085000001};
+					ambientCloud[]={0.035999998,0.057,0.085000001};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
 					bidirect[]={0,0,0};
 					bidirectCloud[]={0,0,0};
 					sky[]={0.012,0.012,0.012};
 					skyAroundSun[]={0.012,0.012,0.012};
-					desiredLuminanceCoef=0.050000001;
-					desiredLuminanceCoefCloud=0.050000001;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoefCloud=-0.15000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1078,26 +1088,19 @@ class CfgWorlds
 					overcast=0.89999998;
 					sunAngle=-17;
 					sunOrMoon=0.5;
-					diffuse[]={0.0040000002,0.0078999996,0.012};
-					diffuseCloud[]={0.0040000002,0.0078999996,0.012};
-					ambient[]=
-					{
-						{0.0040000002,0.0078999996,0.012},
-						2
-					};
-					ambientCloud[]=
-					{
-						{0.0040000002,0.0078999996,0.012},
-						2
-					};
+					diffuse[]={0.035999998,0.057,0.085000001};
+					diffuseCloud[]={0,0,0};
+					ambient[]={0.035999998,0.057,0.085000001};
+					ambientCloud[]={0,0,0};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
 					bidirect[]={0,0,0};
 					bidirectCloud[]={0,0,0};
 					sky[]={0.035999998,0.056000002,0.086999997};
 					skyAroundSun[]={0.035999998,0.056000002,0.086999997};
-					desiredLuminanceCoef=0.1;
-					desiredLuminanceCoefCloud=0.1;
+					filmGrainIntensity=0.125;
+					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoefCloud=-0.15000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1111,26 +1114,19 @@ class CfgWorlds
 					overcast=0.89999998;
 					sunAngle=-12;
 					sunOrMoon=1;
-					diffuse[]={0.0040000002,0.0078999996,0.012};
-					diffuseCloud[]={0.0040000002,0.0078999996,0.012};
-					ambient[]=
-					{
-						{0.0040000002,0.0078999996,0.012},
-						2
-					};
-					ambientCloud[]=
-					{
-						{0.0040000002,0.0078999996,0.012},
-						2
-					};
+					diffuse[]={0.035999998,0.057,0.085000001};
+					diffuseCloud[]={0,0,0};
+					ambient[]={0.035999998,0.057,0.085000001};
+					ambientCloud[]={0,0,0};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
 					bidirect[]={0,0,0};
 					bidirectCloud[]={0,0,0};
 					sky[]={0.035999998,0.056000002,0.086999997};
 					skyAroundSun[]={0.1011,0.1063,0.092600003};
-					desiredLuminanceCoef=0.15000001;
-					desiredLuminanceCoefCloud=0.15000001;
+					filmGrainIntensity=0.1;
+					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoefCloud=-0.15000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1145,25 +1141,18 @@ class CfgWorlds
 					sunAngle=-6;
 					sunOrMoon=1;
 					diffuse[]={0.017999999,0.017999999,0.017999999};
-					diffuseCloud[]={0.017999999,0.017999999,0.017999999};
-					ambient[]=
-					{
-						{0.1,0.18000001,0.28999999},
-						2
-					};
-					ambientCloud[]=
-					{
-						{0.1,0.18000001,0.28999999},
-						2
-					};
+					diffuseCloud[]={0,0,0};
+					ambient[]={0.1,0.18000001,0.28999999};
+					ambientCloud[]={0,0,0};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
 					bidirect[]={0,0,0};
 					bidirectCloud[]={0,0,0};
 					sky[]={0.1,0.14,0.22};
 					skyAroundSun[]={0.1,0.14,0.22};
-					desiredLuminanceCoef=0.25;
-					desiredLuminanceCoefCloud=0.25;
+					filmGrainIntensity=0.050000001;
+					desiredLuminanceCoef=-0.1;
+					desiredLuminanceCoefCloud=-0.1;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1203,8 +1192,9 @@ class CfgWorlds
 						{0.1,0.14,0.22},
 						2.799
 					};
-					desiredLuminanceCoef=0.34999999;
-					desiredLuminanceCoefCloud=0.34999999;
+					filmGrainIntensity=0.050000001;
+					desiredLuminanceCoef=-0.050000001;
+					desiredLuminanceCoefCloud=-0.050000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1252,8 +1242,9 @@ class CfgWorlds
 						{0.1,0.14,0.22},
 						4.7989998
 					};
-					desiredLuminanceCoef=0.55000001;
-					desiredLuminanceCoefCloud=0.55000001;
+					filmGrainIntensity=0.025;
+					desiredLuminanceCoef=0.30000001;
+					desiredLuminanceCoefCloud=0.30000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1301,8 +1292,9 @@ class CfgWorlds
 						{0.1,0.18000001,0.28999999},
 						7.7989998
 					};
-					desiredLuminanceCoef=0.55000001;
-					desiredLuminanceCoefCloud=0.55000001;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.40000001;
+					desiredLuminanceCoefCloud=0.40000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1350,8 +1342,9 @@ class CfgWorlds
 						{0.2,0.36000001,0.57999998},
 						8.8000002
 					};
-					desiredLuminanceCoef=0.55000001;
-					desiredLuminanceCoefCloud=0.55000001;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.44999999;
+					desiredLuminanceCoefCloud=0.44999999;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1399,8 +1392,9 @@ class CfgWorlds
 						{0.40000001,0.72000003,1},
 						9.8000002
 					};
-					desiredLuminanceCoef=0.55000001;
-					desiredLuminanceCoefCloud=0.55000001;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.47;
+					desiredLuminanceCoefCloud=0.47;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1448,8 +1442,9 @@ class CfgWorlds
 						{1,1,1},
 						11.8
 					};
-					desiredLuminanceCoef=0.55000001;
-					desiredLuminanceCoefCloud=0.55000001;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.51999998;
+					desiredLuminanceCoefCloud=0.51999998;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1497,8 +1492,9 @@ class CfgWorlds
 						{1,1,1},
 						13.8
 					};
-					desiredLuminanceCoef=0.60000002;
-					desiredLuminanceCoefCloud=0.60000002;
+					filmGrainIntensity=0;
+					desiredLuminanceCoef=0.55000001;
+					desiredLuminanceCoefCloud=0.55000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -1652,7 +1648,7 @@ class CfgWorlds
 		sunObject="DZ\Data\data\sun.p3d";
 		rainbowObject="DZ\Data\data\rainbow.p3d";
 		moonObject="DZ\Data\data\moon.p3d";
-		starsIntensity=0.0080000004;
+		starsIntensity=0.011;
 		hazeDistCoef=0;
 		hazeFogCoef=1;
 		satelliteNormalBlendStart=100;
@@ -2243,1271 +2239,6 @@ class cfgLiquidDefinitions
 		};
 	};
 };
-class CfgSlots
-{
-	class Slot_Shoulder
-	{
-		name="Shoulder";
-		displayName="Shoulder";
-		ghostIcon="shoulder";
-	};
-	class Slot_Melee
-	{
-		name="Melee";
-		displayName="Melee";
-		ghostIcon="melee";
-	};
-	class Slot_Bow
-	{
-		name="Bow";
-		displayName="Bow";
-		ghostIcon="bow";
-	};
-	class Slot_Headgear
-	{
-		name="Headgear";
-		displayName="Headgear";
-		ghostIcon="headgear";
-		boneName="Head";
-	};
-	class Slot_Mask
-	{
-		name="Mask";
-		displayName="Mask";
-		ghostIcon="mask";
-	};
-	class Slot_Eyewear
-	{
-		name="Eyewear";
-		displayName="Eyewear";
-		ghostIcon="eyewear";
-	};
-	class Slot_Hands
-	{
-		name="Hands";
-		displayName="Hands";
-		ghostIcon="hands";
-		boneName="RightHand";
-	};
-	class Slot_LeftHand
-	{
-		name="LeftHand";
-		displayName="LH";
-		ghostIcon="hands";
-		boneName="LeftHand";
-	};
-	class Slot_Gloves
-	{
-		name="Gloves";
-		displayName="Gloves";
-		ghostIcon="gloves";
-	};
-	class Slot_Armband
-	{
-		name="Armband";
-		displayName="Armband";
-		ghostIcon="armband";
-	};
-	class Slot_Vest
-	{
-		name="Vest";
-		displayName="Vest";
-		ghostIcon="vest";
-	};
-	class Slot_Body
-	{
-		name="Body";
-		displayName="Body";
-		ghostIcon="body";
-	};
-	class Slot_Back
-	{
-		name="Back";
-		displayName="Back";
-		ghostIcon="back";
-	};
-	class Slot_Hips
-	{
-		name="Hips";
-		displayName="Hips";
-		ghostIcon="hips";
-	};
-	class Slot_Legs
-	{
-		name="Legs";
-		displayName="Legs";
-		ghostIcon="legs";
-	};
-	class Slot_Feet
-	{
-		name="Feet";
-		displayName="Feet";
-		ghostIcon="feet";
-	};
-	class Slot_magazine
-	{
-		name="magazine";
-		displayName="magazine";
-		ghostIcon="magazine";
-		autoAttach=0;
-	};
-	class Slot_magazine2
-	{
-		name="magazine2";
-		displayName="magazine2";
-		ghostIcon="magazine2";
-		autoAttach=0;
-	};
-	class Slot_magazine3
-	{
-		name="magazine3";
-		displayName="magazine3";
-		ghostIcon="magazine3";
-		autoAttach=0;
-	};
-	class Slot_Driver
-	{
-		name="Driver";
-		displayName="Driver";
-		ghostIcon="doors";
-	};
-	class Slot_Cargo
-	{
-		name="Cargo";
-		displayName="Cargo";
-		ghostIcon="missing";
-	};
-	class Slot_Muzzle1
-	{
-		name="Muzzle1";
-		displayName="Muzzle1";
-		ghostIcon="muzzle";
-	};
-	class Slot_Muzzle2
-	{
-		name="Muzzle2";
-		displayName="Muzzle2";
-		ghostIcon="muzzle";
-	};
-	class Slot_Muzzle3
-	{
-		name="Muzzle3";
-		displayName="Muzzle3";
-		ghostIcon="muzzle";
-	};
-	class Slot_Vest_Holster
-	{
-		name="VestHolster";
-		displayName="VestHolster";
-		ghostIcon="muzzle";
-	};
-	class Slot_Vest_Pouch
-	{
-		name="VestPouch";
-		displayName="VestPouch";
-		ghostIcon="muzzle";
-	};
-	class Slot_pistolFlashlight
-	{
-		name="pistolFlashlight";
-		displayName="pistolFlashlight";
-		ghostIcon="weaponflashlight";
-	};
-	class Slot_pistolMuzzle
-	{
-		name="pistolMuzzle";
-		displayName="pistolMuzzle";
-		ghostIcon="supressor";
-	};
-	class Slot_pistolOptics
-	{
-		name="pistolOptics";
-		displayName="pistolOptics";
-		ghostIcon="weaponoptics";
-	};
-	class Slot_weaponBayonet
-	{
-		name="weaponBayonet";
-		displayName="weaponBayonet";
-		ghostIcon="bayonet";
-	};
-	class Slot_weaponBayonetAK
-	{
-		name="weaponBayonetAK";
-		displayName="weaponBayonetAK";
-		ghostIcon="bayonetak";
-	};
-	class Slot_weaponBayonetMosin
-	{
-		name="weaponBayonetMosin";
-		displayName="weaponBayonetMosin";
-		ghostIcon="bayonetmosin";
-	};
-	class Slot_weaponBayonetSKS
-	{
-		name="weaponBayonetSKS";
-		displayName="weaponBayonetSKS";
-		ghostIcon="bayonet";
-	};
-	class Slot_weaponButtstockAK
-	{
-		name="weaponButtstockAK";
-		displayName="weaponButtstockAK";
-		ghostIcon="buttstock";
-	};
-	class Slot_weaponButtstockFal
-	{
-		name="weaponButtstockFal";
-		displayName="weaponButtstockFal";
-		ghostIcon="buttstock";
-	};
-	class Slot_weaponButtstockM4
-	{
-		name="weaponButtstockM4";
-		displayName="weaponButtstockM4";
-		ghostIcon="buttstockm4";
-	};
-	class Slot_weaponButtstockMP5
-	{
-		name="weaponButtstockMP5";
-		displayName="weaponButtstockMP5";
-		ghostIcon="buttstock";
-	};
-	class Slot_weaponButtstockRed9
-	{
-		name="weaponButtstockRed9";
-		displayName="weaponButtstockRed9";
-		ghostIcon="buttstock";
-	};
-	class Slot_weaponButtstockSaiga
-	{
-		name="weaponButtstockSaiga";
-		displayName="weaponButtstockSaiga";
-		ghostIcon="buttstock";
-	};
-	class Slot_weaponHandguardAK
-	{
-		name="weaponHandguardAK";
-		displayName="weaponHandguardAK";
-		ghostIcon="handguard";
-	};
-	class Slot_weaponHandguardM4
-	{
-		name="weaponHandguardM4";
-		displayName="weaponHandguardM4";
-		ghostIcon="handguard";
-	};
-	class Slot_weaponHandguardMP5
-	{
-		name="weaponHandguardMP5";
-		displayName="weaponHandguardMP5";
-		ghostIcon="handguard";
-	};
-	class Slot_weaponHandguardM249
-	{
-		name="weaponHandguardM249";
-		displayName="weaponHandguardM249";
-		ghostIcon="handguard";
-	};
-	class Slot_weaponMuzzle
-	{
-		name="weaponMuzzle";
-		displayName="weaponMuzzle";
-		ghostIcon="weaponmuzzle";
-	};
-	class Slot_weaponMuzzleAK
-	{
-		name="weaponMuzzleAK";
-		displayName="weaponMuzzleAK";
-		ghostIcon="weaponmuzzleak";
-	};
-	class Slot_weaponMuzzleM4
-	{
-		name="weaponMuzzleM4";
-		displayName="weaponMuzzleM4";
-		ghostIcon="weaponmuzzlem4";
-	};
-	class Slot_weaponMuzzleMP5
-	{
-		name="weaponMuzzleMP5";
-		displayName="weaponMuzzleMP5";
-		ghostIcon="weaponmuzzlemp5";
-	};
-	class Slot_weaponMuzzleMosin
-	{
-		name="weaponMuzzleMosin";
-		displayName="weaponMuzzleMosin";
-		ghostIcon="weaponmuzzlemosin";
-	};
-	class Slot_weaponUngerSlugM4
-	{
-		name="weaponUnderSlugM4";
-		displayName="weaponUnderSlugM4";
-		ghostIcon="weaponunderslungm4";
-	};
-	class Slot_weaponUngerSlugAK
-	{
-		name="weaponUnderSlugAK";
-		displayName="weaponUnderSlugAK";
-		ghostIcon="weaponunderslungak";
-	};
-	class Slot_weaponBarrelAug
-	{
-		name="weaponBarrelAug";
-		displayName="weaponBarrelAug";
-		ghostIcon="weaponmuzzleaug";
-	};
-	class Slot_weaponOptics
-	{
-		name="weaponOptics";
-		displayName="weaponOptics";
-		ghostIcon="weaponoptics";
-	};
-	class Slot_weaponOpticsAcog
-	{
-		name="weaponOpticsAcog";
-		displayName="optic_acog";
-		ghostIcon="opticacog";
-	};
-	class Slot_weaponOpticsAK
-	{
-		name="weaponOpticsAK";
-		displayName="weaponOpticsAK";
-		ghostIcon="weaponoptics";
-	};
-	class Slot_weaponOpticsCrossbow
-	{
-		name="weaponOpticsCrossbow";
-		displayName="weaponOpticsCrossbow";
-		ghostIcon="weaponoptics";
-	};
-	class Slot_weaponOpticsHunting
-	{
-		name="weaponOpticsHunting";
-		displayName="weaponOpticsHunting";
-		ghostIcon="weaponoptics";
-	};
-	class Slot_weaponOpticsLRS
-	{
-		name="weaponOpticsLRS";
-		displayName="weaponOpticsLRS";
-		ghostIcon="weaponoptics";
-	};
-	class Slot_weaponOpticsMosin
-	{
-		name="weaponOpticsMosin";
-		displayName="weaponOpticsMosin";
-		ghostIcon="weaponoptics";
-	};
-	class Slot_weaponBipod
-	{
-		name="weaponBipod";
-		displayName="weaponBipod";
-		ghostIcon="bipod";
-	};
-	class Slot_weaponBipodM249
-	{
-		name="Slot_weaponBipodM249";
-		displayName="Slot_weaponBipodM249";
-		ghostIcon="bipod";
-	};
-	class Slot_weaponFlashlight
-	{
-		name="weaponFlashlight";
-		displayName="weaponFlashlight";
-		ghostIcon="weaponflashlight";
-	};
-	class Slot_suppressor
-	{
-		name="suppressorImpro";
-		displayName="Suppressor";
-		ghostIcon="supressor";
-	};
-	class Slot_weaponWrap
-	{
-		name="weaponWrap";
-		displayName="weaponWrap";
-		ghostIcon="weaponwrap";
-	};
-	class Slot_magazineFakeWeapon
-	{
-		name="magazineFakeWeapon";
-		displayName="magazineFakeWeapon";
-		ghostIcon="magazinefakeweapon";
-		autoAttach=0;
-	};
-	class Slot_tripWireAttachment
-	{
-		name="tripWireAttachment";
-		displayName="tripWireAttachment";
-		ghostIcon="tripwireattachment";
-	};
-	class Slot_BatteryD
-	{
-		name="BatteryD";
-		displayName="BatteryD";
-		ghostIcon="batteryd";
-	};
-	class Slot_MetalWire
-	{
-		name="MetalWire";
-		displayName="MetalWire";
-		ghostIcon="metalwire";
-	};
-	class Slot_Book
-	{
-		name="Book";
-		displayName="Book";
-		ghostIcon="book";
-	};
-	class Slot_ButaneTorchCanister
-	{
-		name="ButaneTorchCanister";
-		displayName="ButaneTorchCanister";
-		ghostIcon="butanetorchcanister";
-	};
-	class Slot_CableReel
-	{
-		name="CableReel";
-		displayName="CableReel";
-		ghostIcon="cablereel";
-	};
-	class Slot_CamoNet
-	{
-		name="CamoNet";
-		displayName="CamoNet";
-		ghostIcon="camonet";
-	};
-	class Slot_CookingBase
-	{
-		name="CookingBase";
-		displayName="CookingBase";
-		ghostIcon="cookingbase";
-	};
-	class Slot_CookingEquipment
-	{
-		name="CookingEquipment";
-		displayName="CookingEquipment";
-		ghostIcon="cookingequipment";
-	};
-	class Slot_CookingTripod
-	{
-		name="CookingTripod";
-		displayName="CookingTripod";
-		ghostIcon="cookingtripod";
-	};
-	class Slot_DBHelmetMouth
-	{
-		name="DBHelmetMouth";
-		displayName="DBHelmetMouth";
-		ghostIcon="dbhelmetmouth";
-	};
-	class Slot_DBHelmetVisor
-	{
-		name="DBHelmetVisor";
-		displayName="DBHelmetVisor";
-		ghostIcon="dbhelmetvisor";
-	};
-	class Slot_Firewood
-	{
-		name="Firewood";
-		displayName="Firewood";
-		ghostIcon="firewood";
-		stackMax=6;
-	};
-	class Slot_GasCanister
-	{
-		name="GasCanister";
-		displayName="GasCanister";
-		ghostIcon="gascanister";
-	};
-	class Slot_Glass
-	{
-		name="Glass";
-		displayName="Glass";
-		ghostIcon="glass";
-	};
-	class Slot_Hook
-	{
-		name="Hook";
-		displayName="Hook";
-		ghostIcon="hook";
-	};
-	class Slot_Ingredient
-	{
-		name="Ingredient";
-		displayName="Ingredient";
-		ghostIcon="ingredient";
-	};
-	class Slot_Knife
-	{
-		name="Knife";
-		displayName="Knife";
-		ghostIcon="knife";
-	};
-	class Slot_Lights
-	{
-		name="Lights";
-		displayName="Lights";
-		ghostIcon="lights";
-	};
-	class Slot_MedicalBandage
-	{
-		name="MedicalBandage";
-		displayName="MedicalBandage";
-		ghostIcon="medicalbandage";
-	};
-	class Slot_Paper
-	{
-		name="Paper";
-		displayName="Paper";
-		ghostIcon="paper";
-	};
-	class Slot_Pistol
-	{
-		name="Pistol";
-		displayName="Pistol";
-		ghostIcon="pistol";
-	};
-	class Slot_Rags
-	{
-		name="Rags";
-		displayName="Rags";
-		ghostIcon="rags";
-	};
-	class Slot_Stones
-	{
-		name="Stones";
-		displayName="Stones";
-		ghostIcon="stones";
-	};
-	class Slot_WoodenStick
-	{
-		name="WoodenStick";
-		displayName="WoodenStick";
-		ghostIcon="woodenstick";
-		stackMax=4;
-	};
-	class Slot_bait
-	{
-		name="Bait";
-		displayName="Bait";
-		ghostIcon="bait";
-	};
-	class Slot_matchinside
-	{
-		name="matchinside";
-		displayName="matchinside";
-		ghostIcon="matchinside";
-	};
-	class Slot_BerryB
-	{
-		name="BerryB";
-		displayName="BerryB";
-		ghostIcon="berry";
-	};
-	class Slot_BerryR
-	{
-		name="BerryR";
-		displayName="BerryR";
-		ghostIcon="berry";
-	};
-	class Slot_BirchBark
-	{
-		name="BirchBark";
-		displayName="BirchBark";
-		ghostIcon="bark";
-	};
-	class Slot_OakBark
-	{
-		name="OakBark";
-		displayName="OakBark";
-		ghostIcon="bark";
-	};
-	class Slot_Plant
-	{
-		name="Plant";
-		displayName="Plant";
-		ghostIcon="plant";
-	};
-	class Slot_Disinfectant
-	{
-		name="Disinfectant";
-		displayName="Disinfectant";
-		ghostIcon="disinfectant";
-	};
-	class Slot_Guts
-	{
-		name="Guts";
-		displayName="Guts";
-		ghostIcon="guts";
-	};
-	class Slot_Lime
-	{
-		name="Lime";
-		displayName="Lime";
-		ghostIcon="lime";
-	};
-	class Slot_SeedBase_1
-	{
-		name="SeedBase_1";
-		displayName="SeedBase_1";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_2
-	{
-		name="SeedBase_2";
-		displayName="SeedBase_2";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_3
-	{
-		name="SeedBase_3";
-		displayName="SeedBase_3";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_4
-	{
-		name="SeedBase_4";
-		displayName="SeedBase_4";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_5
-	{
-		name="SeedBase_5";
-		displayName="SeedBase_5";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_6
-	{
-		name="SeedBase_6";
-		displayName="SeedBase_6";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_7
-	{
-		name="SeedBase_7";
-		displayName="SeedBase_7";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_8
-	{
-		name="SeedBase_8";
-		displayName="SeedBase_8";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_9
-	{
-		name="SeedBase_9";
-		displayName="SeedBase_9";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_10
-	{
-		name="SeedBase_10";
-		displayName="SeedBase_10";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_11
-	{
-		name="SeedBase_11";
-		displayName="SeedBase_11";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_12
-	{
-		name="SeedBase_12";
-		displayName="SeedBase_12";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_SeedBase_13
-	{
-		name="SeedBase_13";
-		displayName="SeedBase_13";
-		ghostIcon="seedbase";
-		stackMax=1;
-	};
-	class Slot_GlowPlug
-	{
-		name="GlowPlug";
-		displayName="GlowPlug";
-		ghostIcon="glowplug";
-	};
-	class Slot_SparkPlug
-	{
-		name="SparkPlug";
-		displayName="SparkPlug";
-		ghostIcon="sparkplug";
-	};
-	class Slot_EngineBelt
-	{
-		name="EngineBelt";
-		displayName="EngineBelt";
-		ghostIcon="enginebelt";
-	};
-	class Slot_CarBattery
-	{
-		name="CarBattery";
-		displayName="CarBattery";
-		ghostIcon="carbattery";
-	};
-	class Slot_TruckBattery
-	{
-		name="TruckBattery";
-		displayName="TruckBattery";
-		ghostIcon="carbattery";
-	};
-	class Slot_LightBulb
-	{
-		name="LightBulb";
-		displayName="LightBulb";
-		ghostIcon="lightbulb";
-	};
-	class Slot_TruckRadiator
-	{
-		name="TruckRadiator";
-		displayName="TruckRadiator";
-		ghostIcon="radiator";
-	};
-	class Slot_CarRadiator
-	{
-		name="CarRadiator";
-		displayName="CarRadiator";
-		ghostIcon="radiator";
-	};
-	class Slot_V3SWheel_1_1
-	{
-		name="V3SWheel_1_1";
-		displayName="Front Left V3S Wheel";
-		selection="wheel_1_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_V3SWheel_1_2
-	{
-		name="V3SWheel_1_2";
-		displayName="Back Left V3S Wheel";
-		selection="wheel_1_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_V3SWheel_1_3
-	{
-		name="V3SWheel_1_3";
-		displayName="Middle Right V3S Wheel";
-		selection="wheel_1_3_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_V3SWheel_2_1
-	{
-		name="V3SWheel_2_1";
-		displayName="Front Right V3S Wheel";
-		selection="wheel_2_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_V3SWheel_2_2
-	{
-		name="V3SWheel_2_2";
-		displayName="Back Right V3S Wheel";
-		selection="wheel_2_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_V3SWheel_2_3
-	{
-		name="V3SWheel_2_3";
-		displayName="Middle Right V3S Wheel";
-		selection="wheel_2_3_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_V3SWheel_Spare_1
-	{
-		name="V3SWheel_Spare_1";
-		displayName="Spare Left V3S Wheel";
-		selection="wheel_spare_1";
-		ghostIcon="wheel";
-	};
-	class Slot_V3SWheel_Spare_2
-	{
-		name="V3SWheel_Spare_2";
-		displayName="Spare Right V3S Wheel";
-		selection="wheel_spare_2";
-		ghostIcon="wheel";
-	};
-	class Slot_V3SHood
-	{
-		name="V3SHood";
-		displayName="V3SHood";
-		ghostIcon="hood";
-	};
-	class Slot_V3SDriverDoors
-	{
-		name="V3SDriverDoors";
-		displayName="V3SDriverDoors";
-		ghostIcon="doorfront";
-	};
-	class Slot_V3SCoDriverDoors
-	{
-		name="V3SCoDriverDoors";
-		displayName="V3SCoDriverDoors";
-		ghostIcon="doorfront";
-	};
-	class Slot_NivaWheel_1_1
-	{
-		name="NivaWheel_1_1";
-		displayName="Front Left Niva Wheel";
-		selection="wheel_1_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_NivaWheel_1_2
-	{
-		name="NivaWheel_1_2";
-		displayName="Front Right Niva Wheel";
-		selection="wheel_1_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_NivaWheel_2_1
-	{
-		name="NivaWheel_2_1";
-		displayName="Front Left Niva Wheel";
-		selection="wheel_2_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_NivaWheel_2_2
-	{
-		name="NivaWheel_2_2";
-		displayName="Front Right Niva Wheel";
-		selection="wheel_2_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_NivaWheel_Spare_1
-	{
-		name="NivaWheel_Spare_1";
-		displayName="Spare Niva Wheel";
-		selection="wheel_spare_1";
-		ghostIcon="wheel";
-	};
-	class Slot_NivaHood
-	{
-		name="NivaHood";
-		displayName="NivaHood";
-		ghostIcon="hood";
-	};
-	class Slot_NivaTrunk
-	{
-		name="NivaTrunk";
-		displayName="NivaTrunk";
-		ghostIcon="trunk";
-	};
-	class Slot_NivaDriverDoors
-	{
-		name="NivaDriverDoors";
-		displayName="NivaDriverDoors";
-		ghostIcon="doorfront";
-	};
-	class Slot_NivaCoDriverDoors
-	{
-		name="NivaCoDriverDoors";
-		displayName="NivaCoDriverDoors";
-		ghostIcon="doorfront";
-	};
-	class Slot_CivSedanWheel_1_1
-	{
-		name="CivSedanWheel_1_1";
-		displayName="Front Left CivSedan Wheel";
-		selection="wheel_1_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_CivSedanWheel_1_2
-	{
-		name="CivSedanWheel_1_2";
-		displayName="Front Right CivSedan Wheel";
-		selection="wheel_1_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_CivSedanWheel_2_1
-	{
-		name="CivSedanWheel_2_1";
-		displayName="Front Left CivSedan Wheel";
-		selection="wheel_2_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_CivSedanWheel_2_2
-	{
-		name="CivSedanWheel_2_2";
-		displayName="Front Right CivSedan Wheel";
-		selection="wheel_2_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_CivSedanHood
-	{
-		name="CivSedanHood";
-		displayName="CivSedanHood";
-		ghostIcon="hood";
-	};
-	class Slot_CivSedanTrunk
-	{
-		name="CivSedanTrunk";
-		displayName="CivSedanTrunk";
-		ghostIcon="trunk";
-	};
-	class Slot_CivSedanDriverDoors
-	{
-		name="CivSedanDriverDoors";
-		displayName="CivSedanDriverDoors";
-		ghostIcon="doorfront";
-	};
-	class Slot_CivSedanCoDriverDoors
-	{
-		name="CivSedanCoDriverDoors";
-		displayName="CivSedanCoDriverDoors";
-		ghostIcon="doorfront";
-	};
-	class Slot_CivSedanCargo1Doors
-	{
-		name="CivSedanCargo1Doors";
-		displayName="CivSedanCargo1Doors";
-		ghostIcon="doorrear";
-	};
-	class Slot_CivSedanCargo2Doors
-	{
-		name="CivSedanCargo2Doors";
-		displayName="CivSedanCargo2Doors";
-		ghostIcon="doorrear";
-	};
-	class Slot_CivVanWheel_1_1
-	{
-		name="CivVanWheel_1_1";
-		displayName="Front Left CivVan Wheel";
-		selection="wheel_1_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_CivVanWheel_1_2
-	{
-		name="CivVanWheel_1_2";
-		displayName="Front Right CivVan Wheel";
-		selection="wheel_1_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_CivVanWheel_2_1
-	{
-		name="CivVanWheel_2_1";
-		displayName="Front Left CivVan Wheel";
-		selection="wheel_2_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_CivVanWheel_2_2
-	{
-		name="CivVanWheel_2_2";
-		displayName="Front Right CivVan Wheel";
-		selection="wheel_2_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_CivVanDriverDoors
-	{
-		name="CivVanDriverDoors";
-		displayName="CivVanDriverDoors";
-		ghostIcon="doorfront";
-	};
-	class Slot_CivVanCoDriverDoors
-	{
-		name="CivVanCoDriverDoors";
-		displayName="CivVanCoDriverDoors";
-		ghostIcon="doorfront";
-	};
-	class Slot_CivVanCargo1Doors
-	{
-		name="CivVanCargo1Doors";
-		displayName="CivVanCargo1Doors";
-		ghostIcon="doorrear";
-	};
-	class Slot_CivVanTrunkUp
-	{
-		name="CivVanTrunkUp";
-		displayName="CivVanTrunkUp";
-		ghostIcon="trunk";
-	};
-	class Slot_CivVanCargoDown
-	{
-		name="CivVanTrunkDown";
-		displayName="CivVanTrunkDown";
-		ghostIcon="doorrear";
-	};
-	class Slot_BusWheel_1_1
-	{
-		name="BusWheel_1_1";
-		displayName="Front Left Bus Wheel";
-		selection="wheel_1_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_BusWheel_1_2
-	{
-		name="BusWheel_1_2";
-		displayName="Front Right Bus Wheel";
-		selection="wheel_1_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_BusWheel_2_1
-	{
-		name="BusWheel_2_1";
-		displayName="Front Left Bus Wheel";
-		selection="wheel_2_1_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_BusWheel_2_2
-	{
-		name="BusWheel_2_2";
-		displayName="Front Right Bus Wheel";
-		selection="wheel_2_2_hide";
-		ghostIcon="wheel";
-	};
-	class Slot_BusHood
-	{
-		name="BusHood";
-		displayName="BusHood";
-		ghostIcon="hood";
-	};
-	class Slot_BusLeftDoors_1
-	{
-		name="BusLeftDoors_1";
-		displayName="BusLeftDoors";
-		selection="BusLeftDoors_1";
-		ghostIcon="busdoor";
-	};
-	class Slot_BusLeftDoors_2
-	{
-		name="BusLeftDoors_2";
-		displayName="BusLeftDoors";
-		selection="BusLeftDoors_2";
-		ghostIcon="busdoor";
-	};
-	class Slot_BusLeftDoors_3
-	{
-		name="BusLeftDoors_3";
-		displayName="BusLeftDoors";
-		selection="BusLeftDoors_3";
-		ghostIcon="busdoor";
-	};
-	class Slot_BusRightDoors_1
-	{
-		name="BusRightDoors_1";
-		displayName="BusRightDoors";
-		selection="BusRightDoors_1";
-		ghostIcon="busdoor";
-	};
-	class Slot_BusRightDoors_2
-	{
-		name="BusRightDoors_2";
-		displayName="BusRightDoors";
-		selection="BusRightDoors_2";
-		ghostIcon="busdoor";
-	};
-	class Slot_BusRightDoors_3
-	{
-		name="BusRightDoors_3";
-		displayName="BusRightDoors";
-		selection="BusRightDoors_3";
-		ghostIcon="busdoor";
-	};
-	class Slot_W_BarbWire_1_L
-	{
-		name="W_BarbWire_1_L";
-		displayName="Left-side barbed wire";
-		selection="level_1_barb_wire_l";
-		ghostIcon="barbedwire";
-	};
-	class Slot_W_BarbWire_1_R
-	{
-		name="W_BarbWire_1_R";
-		displayName="Right-side barbed wire";
-		selection="level_1_barb_wire_r";
-		ghostIcon="barbedwire";
-	};
-	class Slot_W_BarbWire_1_F
-	{
-		name="W_BarbWire_1_F";
-		displayName="Front-side barbed wire";
-		selection="level_1_barb_wire_f";
-		ghostIcon="barbedwire";
-	};
-	class Slot_W_CamoNet_1_L
-	{
-		name="W_CamoNet_1_L";
-		displayName="Left-side camo net";
-		selection="level_1_camonet_l";
-		ghostIcon="camonet";
-	};
-	class Slot_W_CamoNet_1_R
-	{
-		name="W_CamoNet_1_R";
-		displayName="Right-side camo net";
-		selection="level_1_camonet_r";
-		ghostIcon="camonet";
-	};
-	class Slot_W_CamoNet_1_F
-	{
-		name="W_CamoNet_1_F";
-		displayName="Front-side camo net";
-		selection="level_1_camonet_f";
-		ghostIcon="camonet";
-	};
-	class Slot_W_CamoNet_2_L
-	{
-		name="W_CamoNet_2_L";
-		displayName="Left-side camo net";
-		selection="level_2_camonet_l";
-		ghostIcon="camonet";
-	};
-	class Slot_W_CamoNet_2_R
-	{
-		name="W_CamoNet_2_R";
-		displayName="Right-side camo net";
-		selection="level_2_camonet_r";
-		ghostIcon="camonet";
-	};
-	class Slot_W_CamoNet_2_F
-	{
-		name="W_CamoNet_2_F";
-		displayName="Front-side camo net";
-		selection="level_2_camonet_f";
-		ghostIcon="camonet";
-	};
-	class Slot_W_CamoNet_3_L
-	{
-		name="W_CamoNet_3_L";
-		displayName="Left-side camo net";
-		selection="level_3_camonet_l";
-		ghostIcon="camonet";
-	};
-	class Slot_W_CamoNet_3_R
-	{
-		name="W_CamoNet_3_R";
-		displayName="Right-side camo net";
-		selection="level_3_camonet_r";
-		ghostIcon="camonet";
-	};
-	class Slot_W_CamoNet_3_F
-	{
-		name="W_CamoNet_3_F";
-		displayName="Front-side camo net";
-		selection="level_3_camonet_f";
-		ghostIcon="camonet";
-	};
-	class Slot_W_Lights_1_L
-	{
-		name="W_Lights_1_L";
-		displayName="Left-side chrismass lights";
-		selection="level_1_ligths_l";
-		ghostIcon="lights";
-	};
-	class Slot_W_Lights_1_R
-	{
-		name="W_Lights_1_R";
-		displayName="Right-side chrismass lights";
-		selection="level_1_ligths_r";
-		ghostIcon="lights";
-	};
-	class Slot_W_Lights_1_F
-	{
-		name="W_Lights_1_F";
-		displayName="Front-side chrismass lights";
-		selection="level_1_ligths_f";
-		ghostIcon="lights";
-	};
-	class Slot_W_Lights_2_L
-	{
-		name="W_Lights_2_L";
-		displayName="Left-side chrismass lights";
-		selection="level_2_ligths_l";
-		ghostIcon="lights";
-	};
-	class Slot_W_Lights_2_R
-	{
-		name="W_Lights_2_R";
-		displayName="Right-side chrismass lights";
-		selection="level_2_ligths_r";
-		ghostIcon="lights";
-	};
-	class Slot_W_Lights_2_F
-	{
-		name="W_Lights_2_F";
-		displayName="Front-side chrismass lights";
-		selection="level_2_ligths_f";
-		ghostIcon="lights";
-	};
-	class Slot_W_Lights_3_L
-	{
-		name="W_Lights_3_L";
-		displayName="Left-side chrismass lights";
-		selection="level_3_ligths_l";
-		ghostIcon="lights";
-	};
-	class Slot_W_Lights_3_R
-	{
-		name="W_Lights_3_R";
-		displayName="Right-side chrismass lights";
-		selection="level_3_ligths_r";
-		ghostIcon="lights";
-	};
-	class Slot_W_Lights_3_F
-	{
-		name="W_Lights_3_F";
-		displayName="Front-side chrismass lights";
-		selection="level_3_ligths_f";
-		ghostIcon="lights";
-	};
-	class Slot_NailsG_Down
-	{
-		name="NailsG_Down";
-		displayName="Nails";
-		selection="nailsG_Down";
-		ghostIcon="nails";
-	};
-	class Slot_NailsG_UP
-	{
-		name="NailsG_Up";
-		displayName="Nails";
-		selection="nailsG_Up";
-		ghostIcon="nails";
-	};
-	class Slot_PlanksG_Down
-	{
-		name="PlanksG_Down";
-		displayName="WoodenPlanks";
-		selection="planksG_Down";
-		ghostIcon="planks";
-	};
-	class Slot_PlanksG_Up
-	{
-		name="PlanksG_Up";
-		displayName="WoodenPlanks";
-		selection="planksG_Up";
-		ghostIcon="planks";
-	};
-	class Slot_PlatesG_Down
-	{
-		name="PlatesG_Down";
-		displayName="MetalPlates";
-		selection="platesG_Down";
-		ghostIcon="plates";
-	};
-	class Slot_PlatesG_Up
-	{
-		name="PlatesG_Up";
-		displayName="MetalPlates";
-		selection="platesG_Up";
-		ghostIcon="plates";
-	};
-};
 class CfgMods
 {
 	class DayZ
@@ -4030,6 +2761,7 @@ class CfgVehicles
 		physLayer="item_small";
 		storageCategory=1;
 		weight=1000;
+		heavyItem=0;
 		itemSize[]={1,1};
 		baseAttachments[]={};
 		attachments[]={};
@@ -4108,7 +2840,7 @@ class CfgVehicles
 		model="\DZ\data\lightpoint.p3d";
 		ammoType="Explosion_NonLethal";
 	};
-	class Light: Inventory_Base
+	class Light: HouseNoDestruct
 	{
 		scope=2;
 		model="\DZ\data\lightpoint.p3d";
@@ -4236,6 +2968,7 @@ class CfgVehicles
 		model="\DZ\gear\books\Book_kniga.p3d";
 		inventorySlot="Book";
 		itemSize[]={1,2};
+		absorbency=0.89999998;
 		lootCategory="Books";
 		lootTag[]=
 		{
@@ -4248,16 +2981,6 @@ class CfgVehicles
 		hiddenSelectionsTextures[]=
 		{
 			"dz\gear\books\data\book_kniga_co.paa"
-		};
-		class Damage
-		{
-			tex[]={};
-			mat[]=
-			{
-				"DZ\gear\books\data\book.rvmat",
-				"DZ\gear\books\data\book_damage.rvmat",
-				"DZ\gear\books\data\book_destruct.rvmat"
-			};
 		};
 	};
 	class FishingRod_Base: Inventory_Base
@@ -4339,6 +3062,12 @@ class CfgVehicles
 				initPhase=0;
 			};
 		};
+	};
+	class SurrenderDummyItem: Inventory_Base
+	{
+		scope=1;
+		model="\DZ\data\lightpoint.p3d";
+		weight=1;
 	};
 	class Thing;
 	class ThingEffectLight;
@@ -4444,6 +3173,11 @@ class CfgVehicles
 	{
 		model="\dz\data\cr_leaf3.p3d";
 		displayName="Internal: FxUSWindLeaf3";
+	};
+	class TestObject: Inventory_Base
+	{
+		scope=2;
+		model="\DZ\gear\drinks\SodaCan.p3d";
 	};
 };
 class CfgNonAIVehicles
@@ -5619,9 +4353,10 @@ class cfgWeapons
 		rotationFlags=17;
 		cursor="aimGunGhost";
 		cursorAim="aimPistol";
-		SingleUseActions[]={558,559};
+		SingleUseActions[]={558,559,579,580};
 		itemSize[]={6,3};
 		spawnDamageRange[]={0,0.60000002};
+		damagePerShot=0.1;
 		barrelArmor=400;
 		unjamTime[]={6,10};
 		autoReload=0;
@@ -5765,6 +4500,10 @@ class cfgWeapons
 				};
 			};
 		};
+		class Reliability
+		{
+			ChanceToJam[]={0,0.0099999998,0.029999999,0.1,1};
+		};
 	};
 	class Shotgun_Base: Rifle_Base
 	{
@@ -5790,8 +4529,9 @@ class cfgWeapons
 		cursor="aimGunGhost";
 		cursorAim="aimPistol";
 		type=1;
-		SingleUseActions[]={558,559};
+		SingleUseActions[]={558,559,579,580};
 		itemSize[]={4,2};
+		damagePerShot=0.1;
 		barrelArmor=400;
 		unjamTime[]={6,10};
 		autoReload=0;
@@ -5931,6 +4671,10 @@ class cfgWeapons
 					healthLabels[]={1,0.69999999,0.5,0.30000001,0};
 				};
 			};
+		};
+		class Reliability
+		{
+			ChanceToJam[]={0,0.0099999998,0.029999999,0.1,1};
 		};
 	};
 	class Archery_Base: RifleCore

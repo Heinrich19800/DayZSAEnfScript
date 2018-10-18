@@ -323,7 +323,7 @@ FrameWidgetClass ServerBrowserRoot {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Connect"
+         text "#STR_ServerBrowserRoot_toolbar_bg_ConsoleToolbar_Connect_ConnectText0"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -380,7 +380,7 @@ FrameWidgetClass ServerBrowserRoot {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Refresh Servers"
+         text "#STR_ServerBrowserRoot_toolbar_bg_ConsoleToolbar_Refresh_RefreshText0"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -436,7 +436,7 @@ FrameWidgetClass ServerBrowserRoot {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Reset Filters"
+         text "#STR_ServerBrowserRoot_toolbar_bg_ConsoleToolbar_Reset_ResetText0"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -490,7 +490,7 @@ FrameWidgetClass ServerBrowserRoot {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Back"
+         text "#STR_ServerBrowserRoot_toolbar_bg_ConsoleToolbar_Back_BackText0"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -548,7 +548,7 @@ FrameWidgetClass ServerBrowserRoot {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Sort host ASC"
+         text "#STR_ServerBrowserRoot_toolbar_bg_ConsoleToolbar_Sort_SortText0"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center

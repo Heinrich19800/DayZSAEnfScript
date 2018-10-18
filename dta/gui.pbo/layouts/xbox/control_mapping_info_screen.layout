@@ -244,6 +244,7 @@ PanelWidgetClass rootFrame {
    {
     GridSpacerWidgetClass PanelWidget0 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0
      size 300 80
@@ -251,6 +252,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -273,6 +275,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -281,6 +285,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget1 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.1
      size 300 80
@@ -288,6 +293,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -306,10 +312,12 @@ PanelWidgetClass rootFrame {
        vexactpos 1
        hexactsize 1
        vexactsize 1
-       text "Lorem Ipsum is simply dummy text of the printing and typesetting Lorem Ipsum is simply dummy text of the printing and typesetting "
+       text "Lorem Ipsum is simply dummy text of the printing and typesetting "
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -318,6 +326,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget2 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.2
      size 300 80
@@ -325,6 +334,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -347,6 +357,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -355,6 +367,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget3 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.3
      size 300 80
@@ -362,6 +375,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -384,6 +398,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -392,6 +408,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget4 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.4
      size 300 80
@@ -399,6 +416,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -421,6 +439,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -429,6 +449,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget5 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.5
      size 300 80
@@ -436,6 +457,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -458,6 +480,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -466,6 +490,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget6 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.6
      size 300 80
@@ -473,6 +498,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -495,6 +521,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -503,6 +531,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget7 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.7
      size 300 80
@@ -510,6 +539,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -532,6 +562,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -540,6 +572,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget8 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.8
      size 300 80
@@ -547,6 +580,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -569,6 +603,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -577,6 +613,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget9 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.9
      size 300 80
@@ -584,6 +621,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -606,6 +644,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -626,6 +666,7 @@ PanelWidgetClass rootFrame {
    {
     GridSpacerWidgetClass PanelWidget10 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0
      size 300 80
@@ -633,6 +674,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -655,6 +697,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -663,6 +707,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget11 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.1
      size 300 80
@@ -670,6 +715,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -692,6 +738,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -700,6 +748,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget12 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.2
      size 300 80
@@ -707,6 +756,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -729,6 +779,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -737,6 +789,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget13 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.3
      size 300 80
@@ -744,6 +797,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -766,6 +820,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -774,6 +830,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget14 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.4
      size 300 80
@@ -781,6 +838,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -803,6 +861,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -811,6 +871,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget15 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.5
      size 300 80
@@ -818,6 +879,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -840,6 +902,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -848,6 +912,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget16 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.6
      size 300 80
@@ -855,6 +920,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -877,6 +943,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -885,6 +953,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget17 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.7
      size 300 80
@@ -892,6 +961,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -914,6 +984,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -922,6 +994,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget18 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.8
      size 300 80
@@ -929,6 +1002,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -951,6 +1025,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -959,6 +1035,7 @@ PanelWidgetClass rootFrame {
     }
     GridSpacerWidgetClass PanelWidget19 {
      visible 0
+     clipchildren 1
      color 0 0 0 0.8627
      position 0 0.9
      size 300 80
@@ -966,6 +1043,7 @@ PanelWidgetClass rootFrame {
      vexactpos 0
      hexactsize 1
      vexactsize 1
+     scaled 1
      style Colorable
      Padding 0
      Margin 10
@@ -988,6 +1066,8 @@ PanelWidgetClass rootFrame {
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 1
        "exact text size" 24
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
        wrap 1
@@ -1478,7 +1558,7 @@ PanelWidgetClass rootFrame {
    vexactsize 1
    priority 1
    style Normal
-   text "CONTROLS"
+   text "#STR_rootFrame_OptionsTextWidget0"
    font "gui/fonts/sdf_MetronLight72"
    "text color" 0.8157 0.1255 0.7843 1
    "exact text" 0

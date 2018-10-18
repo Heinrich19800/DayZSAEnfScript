@@ -1,29 +1,77 @@
 class Watchtower extends BaseBuildingBase
 {	
+	typename ATTACHMENT_BARBED_WIRE			= BarbedWire;
+	typename ATTACHMENT_CAMONET 			= CamoNet;
+	
 	void Watchtower()
 	{
-		// Electric watchtower functionality is WIP!
-		
-		m_DmgTrgLocalPos				= { "0 0.50 2.6" , "-2.6 0.50 0" , "2.6 0.50 0" }; // {"<right> <up> <forward>", "<right> <up> <forward>", "<right> <up> <forward>"} model coordinates
-		m_DmgTrgLocalDir 				= {0, -90, 90};
-		
-		//init construction base parts
-		m_BaseParts = new array<string>;
-		m_BaseParts.Insert( "level_1_base" );
+		CONSTRUCTION_KIT		= "WatchtowerKit";
 	}
-	
-	void ~Watchtower()
-	{
-	}
-	
-	// --- ATTACHMENTS
+
+	//TODO
+	//Temporary solution to missing slot_id parameter in CanReceiveAttachment() method
 	override void EEItemAttached ( EntityAI item, string slot_name )
 	{
 		super.EEItemAttached ( item, slot_name );
+		
+		//drop materials if they are not supported by selected floor (or roof)
+		//level 2
+		if ( slot_name.Contains( "Material_L2" ) )
+		{
+			if ( !GetConstruction().IsPartConstructed( "level_1_roof" ) )
+			{
+				//drop item on ground
+				if ( GetGame().IsMultiplayer() )
+				{
+					GetInventory().DropEntity( InventoryMode.PREDICTIVE, this, item );
+				}
+				else
+				{
+					GetInventory().DropEntity( InventoryMode.LOCAL, this, item );
+				}
+			}
+		}
+		//level 3
+		else if ( slot_name.Contains( "Material_L3" ) )
+		{
+			if ( !GetConstruction().IsPartConstructed( "level_2_roof" ) )
+			{
+				//drop item on ground
+				if ( GetGame().IsMultiplayer() )
+				{
+					GetInventory().DropEntity( InventoryMode.PREDICTIVE, this, item );
+				}
+				else
+				{
+					GetInventory().DropEntity( InventoryMode.LOCAL, this, item );
+				}
+			}			
+		}
 	}
 	
-	override void EEItemDetached ( EntityAI item, string slot_name )
+	//--- ATTACHMENT & CONDITIONS
+	override bool CanReceiveAttachment( EntityAI attachment )
 	{
-		super.EEItemDetached ( item, slot_name );
+		if ( attachment.Type() == ATTACHMENT_BARBED_WIRE || attachment.Type() == ATTACHMENT_CAMONET )
+		{
+			if ( !HasBase() )
+			{
+				return false;
+			}
+		}
+			
+		return true;
+	}	
+	
+	//TODO - add proper direction conditions to IsFacingBack and IsFacingFront
+	//--- ACTION CONDITIONS
+	override bool IsFacingFront( PlayerBase player )
+	{
+		return true;
+	}
+	
+	override bool IsFacingBack( PlayerBase player )
+	{
+		return true;
 	}
 }

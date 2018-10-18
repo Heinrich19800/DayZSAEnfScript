@@ -81,7 +81,7 @@ FrameWidgetClass main_menu_root {
        hexactsize 1
        vexactsize 1
        style Normal
-       text "NEWS FEED"
+       text "#layout_main_menu_main_news_header"
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 0
        "text halign" center
@@ -157,7 +157,7 @@ FrameWidgetClass main_menu_root {
          hexactsize 0
          vexactsize 1
          style Normal
-         text "0.63 Experimental Update"
+         text "#layout_main_menu_main_news_text"
          font "gui/fonts/sdf_MetronLight24"
          "text offset" 5 0
          "exact text" 0
@@ -174,7 +174,7 @@ FrameWidgetClass main_menu_root {
          hexactsize 0
          vexactsize 1
          style Normal
-         text "Click to read more about the update"
+         text "#layout_main_menu_main_text"
          font "gui/fonts/sdf_MetronLight24"
          "text offset" 5 0
          "exact text" 0
@@ -239,7 +239,7 @@ FrameWidgetClass main_menu_root {
          hexactsize 0
          vexactsize 1
          style Normal
-         text "Read Reports"
+         text "#layout_main_menu_main_news_sec1_text"
          font "gui/fonts/sdf_MetronLight24"
          "text offset" 5 0
          "exact text" 0
@@ -306,7 +306,7 @@ FrameWidgetClass main_menu_root {
          hexactsize 0
          vexactsize 1
          style Normal
-         text "Send Feedback"
+         text "#layout_main_menu_main_news_sec1_text"
          font "gui/fonts/sdf_MetronLight24"
          "text offset" 5 0
          "exact text" 0
@@ -352,7 +352,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 1
            vexactsize 0
            userID 150
-           text "Feedback"
+           text "#layout_main_menu_feedback"
            font "gui/fonts/sdf_MetronLight24"
            "exact text" 0
            "text valign" center
@@ -402,7 +402,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 1
            vexactsize 0
            userID 151
-           text "DayZ forums"
+           text "#layout_main_menu_forums"
            font "gui/fonts/sdf_MetronLight24"
            "exact text" 0
            "text valign" center
@@ -498,7 +498,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 1
            vexactsize 0
            userID 153
-           text "DayZDevTeam"
+           text "#layout_main_menu_youtube"
            font "gui/fonts/sdf_MetronLight24"
            "exact text" 0
            "text valign" center
@@ -595,7 +595,7 @@ FrameWidgetClass main_menu_root {
        hexactsize 1
        vexactsize 1
        style Normal
-       text "NEWS FEED"
+       text "#layout_xbox_maing_header_newsfeed"
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 0
        "text halign" center
@@ -685,7 +685,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style Normal
-           text "DayZ Game Preview"
+           text "#layout_xbox_main_text_title_0"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 5 0
            "exact text" 0
@@ -702,7 +702,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style DayZNormal
-           text "Welcome to DayZ Survivors! You have only one goal now: to survive for as long as possible!"
+           text "#layout_xbox_main_news_1"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 20 0
            "exact text" 1
@@ -720,7 +720,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style Normal
-           text "Features & Content"
+           text "#layout_xbox_main_text_title_1"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 5 0
            "exact text" 1
@@ -737,7 +737,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style DayZNormal
-           text "This Game Preview is still missing some features and content planned for the full release of DayZ. Read more at www.dayz.com"
+           text "#layout_xbox_main_news_2"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 20 0
            "exact text" 1
@@ -755,7 +755,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style Normal
-           text "How to report feedback"
+           text "#layout_xbox_main_text_title_2"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 5 0
            "exact text" 1
@@ -772,7 +772,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style DayZNormal
-           text "Please report any issues and bugs to feedback.dayz.com! Details on how to best report feedback can be found at forums.dayz.com"
+           text "#layout_xbox_main_news_3"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 20 0
            "exact text" 1
@@ -856,7 +856,7 @@ FrameWidgetClass main_menu_root {
        hexactsize 1
        vexactsize 1
        style Normal
-       text "NEWS FEED"
+       text "layout_xbox_trial_main_header_newsfeed_text1"
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 0
        "text halign" center
@@ -946,7 +946,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style Normal
-           text "DayZ Game Preview Trial"
+           text "#layout_xbox_trial_main_text_title_4"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 5 0
            "exact text" 0
@@ -963,7 +963,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style DayZNormal
-           text "Welcome to DayZ Survivors! You have one hour to test your survival skills. Don't forget to talk to other players before shooting!"
+           text "#layout_xbox_trial_main_text_5"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 20 0
            "exact text" 1
@@ -981,7 +981,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style Normal
-           text "Trial gameplay experience"
+           text "#layout_xbox_trial_main_text_title_5"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 5 0
            "exact text" 1
@@ -998,7 +998,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style DayZNormal
-           text "In the trial, we've already provided you with basic starting gear, and players spawn closer to each other than usual."
+           text "#layout_xbox_trial_main_text_6"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 20 0
            "exact text" 1
@@ -1016,7 +1016,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style Normal
-           text "Game in development"
+           text "#layout_xbox_trial_main_text_title_6"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 5 0
            "exact text" 1
@@ -1033,7 +1033,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style DayZNormal
-           text "Please remember this is a Game Preview - there will be bugs, and the game is still rough around the edges. Please report any issues to feedback.dayz.com."
+           text "#layout_xbox_trial_main_text_7"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 20 0
            "exact text" 1
@@ -1051,7 +1051,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style Normal
-           text "Death in preview trial"
+           text "#layout_xbox_trial_main_text_title_7"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 5 0
            "exact text" 1
@@ -1068,7 +1068,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 0
            vexactsize 1
            style DayZNormal
-           text "DayZ is a permadeath game - when you die, you lose everything and start over. In the trial version, you spawn with some starting gear, but your progress is not saved when you disconnect from a server."
+           text "#layout_xbox_trial_main_text_8"
            font "gui/fonts/sdf_MetronLight24"
            "text offset" 20 0
            "exact text" 1
@@ -1142,7 +1142,7 @@ FrameWidgetClass main_menu_root {
        hexactsize 1
        vexactsize 1
        style Normal
-       text "CHARACTER STATS"
+       text "#layout_main_menu_char_stats"
        font "gui/fonts/sdf_MetronBook72"
        "exact text" 0
        "text halign" center
@@ -1393,29 +1393,7 @@ FrameWidgetClass main_menu_root {
        "next right" "news_main"
        "next up" "tutorials"
        "next down" "options"
-       text "CUSTOMIZE CHARACTER"
-       text_proportion 0.55
-       font "gui/fonts/sdf_MetronLight24"
-       switch normal
-      }
-      ButtonWidgetClass options {
-       visible 0
-       color 0.0392 0.0392 0.0392 1
-       position 0 0
-       size 1 38
-       halign center_ref
-       valign bottom_ref
-       hexactpos 1
-       vexactpos 1
-       hexactsize 0
-       vexactsize 1
-       style DayZDefaultButtonSides
-       "no focus" 0
-       "next left" "news_main"
-       "next right" "news_main"
-       "next up" "customize_character"
-       "next down" "choose_server"
-       text "OPTIONS"
+       text "#layout_main_menu_customize_char"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -1434,7 +1412,7 @@ FrameWidgetClass main_menu_root {
        "no focus" 0
        "next left" "news_main"
        "next right" "news_main"
-       "next up" "options"
+       "next up" "customize_character"
        "next down" "play"
        text "#main_menu_change_server"
        text_proportion 0.55
@@ -1470,7 +1448,7 @@ FrameWidgetClass main_menu_root {
      hexactsize 0
      vexactsize 0
      priority 3
-     text "name"
+     text "#STR_main_menu_root_character_name_xbox_background_character_name_xbox0"
      font "gui/fonts/sdf_MetronLight24"
      "exact text" 0
      text_proportion 0.55
@@ -1713,7 +1691,6 @@ FrameWidgetClass main_menu_root {
    }
   }
   FrameWidgetClass character_rotation_frame {
-   position 0 0
    size 0.3 1
    halign center_ref
    valign center_ref
@@ -1854,7 +1831,7 @@ FrameWidgetClass main_menu_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Select"
+         text "#layout_xbox_main_menu_toolbar_select"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -1906,7 +1883,7 @@ FrameWidgetClass main_menu_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Back"
+         text "#layout_xbox_main_menu_toolbar_back"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -1942,7 +1919,7 @@ FrameWidgetClass main_menu_root {
      vexactpos 1
      hexactsize 0
      vexactsize 1
-     text "Last played server info"
+     text "#layout_main_menu_last_server"
      font "gui/fonts/sdf_MetronLight24"
      "text offset" 10 0
      "exact text" 1

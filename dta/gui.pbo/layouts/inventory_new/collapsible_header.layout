@@ -8,7 +8,6 @@ PanelWidgetClass height_wrapper {
  hexactsize 0
  vexactsize 1
  fixaspect inside
- priority 8
  style rover_sim_colorable
  {
   SmartPanelWidgetClass widget {
@@ -73,7 +72,7 @@ PanelWidgetClass height_wrapper {
       }
      }
     }
-    RichTextWidgetClass TextWidget0 {
+    TextWidgetClass TextWidget0 {
      position 0 0
      size 1 0.6
      halign center_ref
@@ -82,12 +81,15 @@ PanelWidgetClass height_wrapper {
      vexactpos 1
      hexactsize 0
      vexactsize 0
-     style DayZNormal
-     text "COLLAPSIBLE CONTAINER"
+     style Light
+     text "#layout_collapsible_header"
+     font "gui/fonts/sdf_MetronLight72"
      "exact text" 1
+     "exact text size" 24
+     "size to text h" 0
+     "size to text v" 0
      "text halign" center
      "text valign" center
-     wrap 1
     }
     PanelWidgetClass Dropzone {
      position 0 0

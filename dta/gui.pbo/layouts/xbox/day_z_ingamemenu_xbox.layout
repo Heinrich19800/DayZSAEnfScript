@@ -105,7 +105,7 @@ FrameWidgetClass FrameWidget {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Select"
+         text "#layout_xbox_ingame_menu_select"
          font "gui/fonts/sdf_MetronBook24"
          "text valign" center
         }
@@ -159,7 +159,7 @@ FrameWidgetClass FrameWidget {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Mute"
+         text "#layout_xbox_ingame_menu_mute"
          font "gui/fonts/sdf_MetronBook24"
          "text valign" center
         }
@@ -212,7 +212,7 @@ FrameWidgetClass FrameWidget {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Open Gamercard"
+         text "#layout_xbox_ingame_menu_gamecard"
          font "gui/fonts/sdf_MetronBook24"
          "text valign" center
         }
@@ -263,7 +263,7 @@ FrameWidgetClass FrameWidget {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Return To Game"
+         text "#layout_xbox_ingame_menu_back"
          font "gui/fonts/sdf_MetronBook24"
          "text valign" center
         }
@@ -417,7 +417,7 @@ FrameWidgetClass FrameWidget {
        "next right" ""
        "next up" "restartbtn"
        "next down" "controlsbtn"
-       text "OPTIONS"
+       text "#layout_xbox_ingame_menu_options"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -440,7 +440,7 @@ FrameWidgetClass FrameWidget {
        "next right" ""
        "next up" "optionsbtn"
        "next down" "onlinebtn"
-       text "CONTROLS"
+       text "#layout_xbox_ingame_menu_controls"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -463,7 +463,7 @@ FrameWidgetClass FrameWidget {
        "next right" ""
        "next up" "controlsbtn"
        "next down" "tutorialsbtn"
-       text "ONLINE"
+       text "#layout_xbox_ingame_menu_online"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal

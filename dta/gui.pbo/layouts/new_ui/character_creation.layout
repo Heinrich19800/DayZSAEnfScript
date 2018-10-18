@@ -47,7 +47,7 @@ FrameWidgetClass character_creation_root {
        hexactsize 1
        vexactsize 0
        style Normal
-       text "CHARACTER"
+       text "#layout_character_creation_character"
        font "gui/fonts/sdf_MetronBook72"
        "exact text" 0
        "text halign" center
@@ -115,7 +115,7 @@ FrameWidgetClass character_creation_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "NAME"
+             text "#layout_character_creation_name"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -206,7 +206,7 @@ FrameWidgetClass character_creation_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "GENDER"
+             text "#layout_character_creation_gender"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -283,7 +283,7 @@ FrameWidgetClass character_creation_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "HEAD"
+             text "#layout_character_creation_head"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -360,7 +360,7 @@ FrameWidgetClass character_creation_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "TOP"
+             text "#layout_character_creation_top"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -437,7 +437,7 @@ FrameWidgetClass character_creation_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "BOTTOM"
+             text "#layout_character_creation_bottom"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -514,7 +514,7 @@ FrameWidgetClass character_creation_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "SHOES"
+             text "#layout_character_creation_shoes"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -629,7 +629,7 @@ FrameWidgetClass character_creation_root {
        "next right" ""
        "next up" "back"
        "next down" "randomize_character"
-       text "APPLY"
+       text "#layout_character_creation_apply"
        text_proportion 0.8
        font "gui/fonts/sdf_MetronLight72"
        switch normal
@@ -653,7 +653,7 @@ FrameWidgetClass character_creation_root {
      content_valign bottom
      {
       ButtonWidgetClass back {
-       color 0.7843 0 0 1
+       color 0.0392 0.0392 0.0392 1
        position 0 0
        size 1 38
        halign center_ref
@@ -668,13 +668,13 @@ FrameWidgetClass character_creation_root {
        "next right" ""
        "next up" "randomize_character"
        "next down" "apply"
-       text "BACK"
+       text "#layout_character_creation_back"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal
       }
       ButtonWidgetClass randomize_character {
-       color 0.7843 0 0 1
+       color 0.0392 0.0392 0.0392 1
        position 0 0
        size 1 38
        halign center_ref
@@ -689,7 +689,7 @@ FrameWidgetClass character_creation_root {
        "next right" ""
        "next up" "apply"
        "next down" "back"
-       text "RANDOMIZE CHARACTER"
+       text "#layout_character_creation_randomize"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -697,7 +697,7 @@ FrameWidgetClass character_creation_root {
       PanelWidgetClass character {
        visible 0
        ignorepointer 0
-       color 0.7843 0 0 1
+       color 0.0392 0.0392 0.0392 1
        position 0 0
        size 1 38
        halign center_ref
@@ -733,7 +733,7 @@ FrameWidgetClass character_creation_root {
    vexactsize 1
    priority 1
    style Normal
-   text "CHARACTER CREATION"
+   text "#layout_character_creation_character_creation"
    font "gui/fonts/sdf_MetronLight72"
    "text color" 0.8157 0.1255 0.7843 1
    "exact text" 0
@@ -824,7 +824,7 @@ FrameWidgetClass character_creation_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Select"
+         text "#layout_character_creation_toolbar_select"
          font "gui/fonts/sdf_MetronBook24"
          "text halign" center
          "text valign" center
@@ -881,7 +881,7 @@ FrameWidgetClass character_creation_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Randomize"
+         text "#layout_character_creation_toolbar_randomize"
          font "gui/fonts/sdf_MetronBook24"
          "text halign" center
          "text valign" center
@@ -937,7 +937,7 @@ FrameWidgetClass character_creation_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "New Character"
+         text "#layout_character_creation_toolbar_new"
          font "gui/fonts/sdf_MetronBook24"
          "text halign" center
          "text valign" center
@@ -991,7 +991,7 @@ FrameWidgetClass character_creation_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Back"
+         text "#layout_character_creation_toolbar_back"
          font "gui/fonts/sdf_MetronBook24"
          "text halign" center
          "text valign" center

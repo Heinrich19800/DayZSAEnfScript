@@ -20,15 +20,40 @@ class BarbedWire extends ItemBase
 	
 	private bool m_TriggerActive;
 	private bool m_IsPlaced;
+	private bool m_IsMounted;
 	
 	void BarbedWire()
 	{
 		m_SparkEvent 	= new Timer( CALL_CATEGORY_GAMEPLAY );
 		m_TriggerActive = false;
 		m_IsPlaced 		= false;
+		
+		//synchronized variables
+		RegisterNetSyncVariableInt( "m_IsMounted" );		
 	}
 	
 	void ~BarbedWire() {}
+	
+	bool IsMounted()
+	{
+		return m_IsMounted;
+	}
+	
+	void SetMountedState( bool is_mounted )
+	{
+		m_IsMounted = is_mounted;
+		
+		Synchronize();
+	}
+
+	// --- SYNCHRONIZATION
+	void Synchronize()
+	{
+		if ( GetGame().IsServer() )
+		{
+			SetSynchDirty();
+		}
+	}	
 	
 	override void OnWorkStart()
 	{
@@ -43,6 +68,11 @@ class BarbedWire extends ItemBase
 		}
 	}
 
+	override string GetDeploySoundset()
+	{
+		return "barbedwire_deploy_SoundSet";
+	}	
+	
 	override void OnWorkStop()
 	{
 		SoundBuzzLoopStop();

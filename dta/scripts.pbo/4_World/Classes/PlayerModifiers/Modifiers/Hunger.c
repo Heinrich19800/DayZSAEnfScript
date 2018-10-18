@@ -1,4 +1,4 @@
-class Hunger: ModifierBase
+class HungerMdfr: ModifierBase
 {
 	protected float	m_EnergyDelta;
 	protected float	m_LastEnergyLevel;

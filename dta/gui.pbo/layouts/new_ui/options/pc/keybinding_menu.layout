@@ -104,7 +104,7 @@ FrameWidgetClass keybindings_root {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "General"
+             text "#layout_pc_keybinding_menu_general"
              font "gui/fonts/sdf_MetronLight72"
              "exact text" 0
              "text halign" center
@@ -160,7 +160,7 @@ FrameWidgetClass keybindings_root {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "Character"
+             text "#layout_pc_keybinding_menu_character"
              font "gui/fonts/sdf_MetronLight72"
              "exact text" 0
              "text halign" center
@@ -216,7 +216,7 @@ FrameWidgetClass keybindings_root {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "Vehicle"
+             text "#layout_pc_keybinding_menu_vehicle"
              font "gui/fonts/sdf_MetronLight72"
              "exact text" 0
              "text halign" center
@@ -272,7 +272,7 @@ FrameWidgetClass keybindings_root {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "Aircraft"
+             text "#layout_pc_keybinding_menu_aircraft"
              font "gui/fonts/sdf_MetronLight72"
              "exact text" 0
              "text halign" center
@@ -431,7 +431,7 @@ FrameWidgetClass keybindings_root {
    vexactsize 1
    priority 1
    style Normal
-   text "KEYBINDINGS"
+   text "#layout_keybinding_desc"
    font "gui/fonts/sdf_MetronLight72"
    "text color" 0.8157 0.1255 0.7843 1
    "exact text" 0
@@ -493,7 +493,7 @@ FrameWidgetClass keybindings_root {
        "no focus" 0
        "next up" "back"
        "next down" "reset"
-       text "APPLY"
+       text "#layout_pc_keybinding_apply"
        text_proportion 0.8
        font "gui/fonts/sdf_MetronLight72"
        switch normal
@@ -517,7 +517,7 @@ FrameWidgetClass keybindings_root {
      content_valign bottom
      {
       ButtonWidgetClass back {
-       color 0.7843 0 0 1
+       color 0.0392 0.0392 0.0392 1
        position 0 88
        size 1 38
        halign center_ref
@@ -530,7 +530,7 @@ FrameWidgetClass keybindings_root {
        "no focus" 0
        "next up" "reset"
        "next down" "apply"
-       text "BACK"
+       text "#layout_pc_keybinding_play_pannel_back"
        text_proportion 0.6
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -538,7 +538,7 @@ FrameWidgetClass keybindings_root {
       ButtonWidgetClass reset {
        disabled 1
        ignorepointer 1
-       color 0.7843 0 0 1
+       color 0.0392 0.0392 0.0392 1
        position 0 130
        size 1 38
        halign center_ref
@@ -553,7 +553,7 @@ FrameWidgetClass keybindings_root {
        "next right" ""
        "next up" "apply"
        "next down" "back"
-       text "RESET"
+       text "#layout_pc_keybinding_play_pannel_reset"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -561,7 +561,7 @@ FrameWidgetClass keybindings_root {
       PanelWidgetClass character {
        visible 0
        ignorepointer 0
-       color 0.7843 0 0 1
+       color 0.0392 0.0392 0.0392 1
        position 0 172
        size 1 38
        halign center_ref

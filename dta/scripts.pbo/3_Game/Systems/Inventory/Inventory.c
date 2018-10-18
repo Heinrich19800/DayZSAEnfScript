@@ -91,7 +91,7 @@ class GameInventory
 	/**@fn		GetSlotIdCount
 	 * @return	number of slots this item can belong to
 	 **/
-	proto native int GetSlotsIdCount ();
+	proto native int GetSlotIdCount ();
 	/**@fn		GetAttachmentSlotId
 	 * @param	index		index of the slot for attachment (@see GetAttachmentSlotsCount)
 	 * @return	slot for attachment
@@ -247,6 +247,13 @@ class GameInventory
 	 * @return true if can be added, false otherwise
 	 **/
 	static proto native bool LocationCanAddEntity (notnull InventoryLocation inv_loc);
+	
+	/**
+	 * @fn		LocationTestAddEntity
+	 * @brief	test if the entity contained in inv_loc.m_item can be added to ground/attachment/cargo/hands/...
+	 * @return true if can be added, false otherwise
+	 **/
+	static proto native bool LocationTestAddEntity (notnull InventoryLocation inv_loc, bool do_resevation_check, bool do_item_check, bool do_occupancy_test, bool do_script_check);
 	/**
 	 * @fn		LocationCanRemoveEntity
 	 * @brief	queries if the entity contained in inv_loc.m_item can be removed from ground/attachment/cargo/hands/...
@@ -448,8 +455,10 @@ class GameInventory
 	///@{ reservations
 	const int c_InventoryReservationTimeoutMS = 15000;
 	static proto native bool AddInventoryReservation (EntityAI item, InventoryLocation dst, int timeout_ms);
+	static proto native bool ExtendInventoryReservation (EntityAI item, InventoryLocation dst, int timeout_ms);
 	static proto native bool ClearInventoryReservation (EntityAI item, InventoryLocation dst);
 	static proto native bool HasInventoryReservation (EntityAI item, InventoryLocation dst);
+	static proto native bool GetInventoryReservationCount (EntityAI item, InventoryLocation dst);
 	///@} reservations
 
 	///@{ locks
@@ -461,8 +470,10 @@ class GameInventory
 
 	proto native void LockInventory (int lockType);
 	proto native void UnlockInventory (int lockType);
+	proto native int GetScriptLockCount ();
 	proto native bool IsInventoryUnlocked ();
 	proto native bool IsInventoryLocked ();
+	proto native bool IsInventoryLockedForLockType (int lockType);
 	proto native bool SetSlotLock (int slot, bool locked);
 	proto native bool GetSlotLock (int slot);
 	///@} locks
@@ -505,35 +516,10 @@ class GameInventory
 			}
 		}
 	}
-
+	
 	void EEDelete (EntityAI parent)
 	{
-		Man man = Man.Cast(parent);
 		EntityAI item = GetInventoryOwner();
-		InventoryLocation loc = new InventoryLocation;
-		if (GetCurrentInventoryLocation(loc))
-		{
-			if (loc.GetType() == InventoryLocationType.HANDS)
-			{
-				if (man)
-				{
-					if (item)
-					{
-						Print("Inventory::EEDelete - Man-parent=" + parent + " item=" + item);
-						man.GetHumanInventory().OnEntityInHandsDestroyed(item);
-					}
-					else
-					{
-						Error("Inventory::EEDelete - Man-parent=" + parent + " item=NULL");
-					}
-				}
-				else
-				{
-					Error("Inventory::EEDelete - item is in hands, but Man-parent=" + parent + " is NULL, item=" + item);
-				}
-			}
-		}
-
 		if (parent)
 			parent.GetInventory().ClearInventoryReservation(item, null);
 	}

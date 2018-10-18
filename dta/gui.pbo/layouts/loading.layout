@@ -27,7 +27,7 @@ FrameWidgetClass LoadingFrame {
      size 0.7438 0.06
      halign center_ref
      valign bottom_ref
-     text "Loading text..."
+     text "#layout_loading_loadingtext"
      "exact text" 1
      "text halign" center
      "text valign" center

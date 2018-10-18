@@ -117,23 +117,12 @@ FrameWidgetClass HudDebugFrameWidget {
     }
     TextWidgetClass txt_Clipboard {
      position 204 8
-     size 315 19
+     size 495 19
      hexactpos 1
      vexactpos 1
      hexactsize 1
      vexactsize 1
      text "Clipboard:"
-     "exact text" 1
-     "text valign" center
-    }
-    TextWidgetClass txt_GodMode {
-     position 534 8
-     size 152 19
-     hexactpos 1
-     vexactpos 1
-     hexactsize 1
-     vexactsize 1
-     text "God mode: DISABLED"
      "exact text" 1
      "text valign" center
     }

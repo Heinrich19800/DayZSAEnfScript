@@ -44,7 +44,7 @@ FrameWidgetClass server_browser_tab_root {
        vexactpos 1
        hexactsize 0
        vexactsize 0
-       text "SERVER LIST"
+       text "#STR_server_browser_tab_root_server_list_root_server_list_header_server_list_header_text0"
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 0
        "exact text size" 24
@@ -119,6 +119,7 @@ FrameWidgetClass server_browser_tab_root {
            vexactsize 0
            {
             TextWidgetClass host_label {
+             clipchildren 0
              ignorepointer 1
              size 1 0.55
              valign center_ref
@@ -126,7 +127,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "Host"
+             text "#STR_server_browser_tab_root_server_list_root_server_list_content_root_basic_infoserver_list_content_header_server_list_content_header_host_host_label_panel_host_label0"
              font "gui/fonts/sdf_MetronLight24"
              "exact text" 0
              "exact text size" 18
@@ -187,6 +188,7 @@ FrameWidgetClass server_browser_tab_root {
          vexactsize 0
          {
           TextWidgetClass time_label {
+           clipchildren 0
            ignorepointer 1
            size 60 0.55
            valign center_ref
@@ -194,7 +196,7 @@ FrameWidgetClass server_browser_tab_root {
            vexactpos 1
            hexactsize 1
            vexactsize 0
-           text "Time"
+           text "#STR_server_browser_tab_root_server_list_root_server_list_content_root_basic_infoserver_list_content_header_server_list_content_header_time_time_label0"
            font "gui/fonts/sdf_MetronLight24"
            "exact text" 0
            "exact text size" 18
@@ -254,6 +256,7 @@ FrameWidgetClass server_browser_tab_root {
          vexactsize 0
          {
           TextWidgetClass population_label {
+           clipchildren 0
            ignorepointer 1
            size 120 0.55
            valign center_ref
@@ -261,7 +264,7 @@ FrameWidgetClass server_browser_tab_root {
            vexactpos 1
            hexactsize 1
            vexactsize 0
-           text "Population"
+           text "#STR_server_browser_tab_root_server_list_root_server_list_content_root_basic_infoserver_list_content_header_server_list_content_header_population_population_label0"
            font "gui/fonts/sdf_MetronLight24"
            "exact text" 0
            "exact text size" 18
@@ -321,6 +324,7 @@ FrameWidgetClass server_browser_tab_root {
          vexactsize 0
          {
           TextWidgetClass slots_label {
+           clipchildren 0
            ignorepointer 1
            size 60 0.55
            valign center_ref
@@ -328,7 +332,7 @@ FrameWidgetClass server_browser_tab_root {
            vexactpos 1
            hexactsize 1
            vexactsize 0
-           text "Slots"
+           text "#STR_server_browser_tab_root_server_list_root_server_list_content_root_basic_infoserver_list_content_header_server_list_content_header_slots_slots_label0"
            font "gui/fonts/sdf_MetronLight24"
            "exact text" 0
            "exact text size" 18
@@ -388,6 +392,7 @@ FrameWidgetClass server_browser_tab_root {
          vexactsize 0
          {
           TextWidgetClass ping_label {
+           clipchildren 0
            ignorepointer 1
            size 60 0.55
            valign center_ref
@@ -395,7 +400,7 @@ FrameWidgetClass server_browser_tab_root {
            vexactpos 1
            hexactsize 1
            vexactsize 0
-           text "Ping"
+           text "#STR_server_browser_tab_root_server_list_root_server_list_content_root_basic_infoserver_list_content_header_server_list_content_header_ping_ping_label0"
            font "gui/fonts/sdf_MetronLight24"
            "exact text" 0
            "exact text size" 18
@@ -548,7 +553,7 @@ FrameWidgetClass server_browser_tab_root {
        vexactpos 1
        hexactsize 0
        vexactsize 0
-       text "FILTERS"
+       text "#STR_server_browser_tab_root_filters_root_filters_header_filters_header_text0"
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 0
        "exact text size" 24
@@ -613,7 +618,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "SEARCH BY NAME"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_search_name_setting_container_search_name_setting_search_name_setting_panel_search_name_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -702,7 +707,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "SEARCH BY IP"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_search_ip_setting_container_search_ip_setting_search_ip_setting_panel_search_ip_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -791,7 +796,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "CHARACTER ALIVE"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_restrict_char_setting_container_restrict_char_setting_restrict_char_setting_panel_restrict_char_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -868,7 +873,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "REGION"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_region_setting_container_region_setting_region_setting_panel_region_button_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -943,7 +948,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "PING"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_ping_setting_container_ping_setting_ping_setting_panel_ping_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1018,7 +1023,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "FAVORITED"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_favorites_setting_container_favorites_setting_favorites_setting_panel_favorites_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1093,7 +1098,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "FRIENDS PLAYING"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_friends_setting_container_friends_setting_friends_setting_panel_friends_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1168,7 +1173,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "BATTLEYE PROTECTED"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_battleye_setting_container_battleye_setting_battleye_setting_panel_battleye_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1243,7 +1248,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "PASSWORDED"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_password_setting_container_password_setting_password_setting_panel_password_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1318,7 +1323,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "PREVIOUSLY PLAYED"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_prev_played_setting_container_prev_played_setting_prev_played_setting_panel_prev_played_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1393,7 +1398,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "PROPER VERSION MATCH"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_ver_match_setting_container_ver_match_setting_ver_match_setting_panel_ver_match_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1468,7 +1473,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "FULL SERVER"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_full_server_setting_container_full_server_setting_full_server_setting_panel_full_server_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1543,7 +1548,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "THIRD PERSON"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_tps_setting_container_tps_setting_tps_setting_panel_tps_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1618,7 +1623,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "PUBLIC"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_public_setting_container_public_setting_public_setting_panel_public_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1693,7 +1698,7 @@ FrameWidgetClass server_browser_tab_root {
              vexactpos 1
              hexactsize 0
              vexactsize 0
-             text "ACCELERATED TIME"
+             text "#STR_server_browser_tab_root_filters_root_filters_content_accelerated_time_setting_container_accelerated_time_setting_accelerated_time_setting_panel_accelerated_time_setting_label0"
              font "gui/fonts/sdf_MetronLight24"
              "text offset" 8 0
              "exact text" 0
@@ -1737,7 +1742,7 @@ FrameWidgetClass server_browser_tab_root {
        hexactsize 0
        vexactsize 1
        style Empty
-       text "REFRESH SERVER LIST"
+       text "#STR_server_browser_tab_root_filters_root_filters_content_refresh_list_button0"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
       }
@@ -1750,7 +1755,7 @@ FrameWidgetClass server_browser_tab_root {
        hexactsize 0
        vexactsize 1
        style Empty
-       text "APPLY FILTER"
+       text "#STR_server_browser_tab_root_filters_root_filters_content_apply_filter_button0"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
       }

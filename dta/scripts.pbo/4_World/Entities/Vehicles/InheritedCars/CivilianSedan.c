@@ -98,12 +98,12 @@ class CivilianSedan extends CarScript
 				{	
 					if ( carDoor.GetAnimationPhase("DoorsSource") > 0.5)
 					{
-						newValue = newValue + 0.25;
+						newValue = newValue + 0.7;
 					}
 				}
 				else
 				{
-					newValue = newValue + 0.25;
+					newValue = newValue + 0.7;
 				}
 
 				//-----
@@ -113,12 +113,12 @@ class CivilianSedan extends CarScript
 				{	
 					if ( carDoor.GetAnimationPhase("DoorsSource") > 0.5)
 					{
-						newValue = newValue + 0.25;
+						newValue = newValue + 0.7;
 					}
 				}
 				else
 				{
-					newValue = newValue + 0.25;
+					newValue = newValue + 0.7;
 				}
 			
 				//-----
@@ -127,12 +127,12 @@ class CivilianSedan extends CarScript
 				{	
 					if ( carDoor.GetAnimationPhase("DoorsSource") > 0.5)
 					{
-						newValue = newValue + 0.25;
+						newValue = newValue + 0.7;
 					}
 				}
 				else
 				{
-					newValue = newValue + 0.25;
+					newValue = newValue + 0.7;
 				}
 
 				//-----
@@ -141,14 +141,17 @@ class CivilianSedan extends CarScript
 				{	
 					if ( carDoor.GetAnimationPhase("DoorsSource") > 0.5)
 					{
-						newValue = newValue + 0.25;
+						newValue = newValue + 0.7;
 					}
 				}
 				else
 				{
-					newValue = newValue + 0.25;
+					newValue = newValue + 0.7;
 				}
 
+				if ( newValue > 1 )
+					newValue = 1;
+			
 				return newValue;
 			break;
 		}

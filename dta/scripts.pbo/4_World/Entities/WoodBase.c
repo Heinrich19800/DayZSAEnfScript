@@ -11,7 +11,7 @@ class WoodBase extends Plant
 		{
 			if ( item && item.KindOf("Knife") )
 			{
-				return 10;
+				return 1000; //HOTFIX "infinite" bark
 			}
 			else if ( item && item.KindOf("Axe") )
 			{

@@ -42,7 +42,7 @@ FrameWidgetClass wgt_pnl_load_mission {
        hexactsize 0
        vexactsize 0
        style Normal
-       text "Mission Loader"
+       text "#STR_wgt_pnl_load_mission_wgt_missions_main_panel_wgt_missions_panel_title_bgt_missions_title0"
        font "gui/fonts/AmorSerifPro-Bold"
        "exact text" 0
        "text halign" center
@@ -84,7 +84,7 @@ FrameWidgetClass wgt_pnl_load_mission {
        hexactsize 0
        vexactsize 0
        style Default
-       text "Play Mission"
+       text "#STR_wgt_pnl_load_mission_wgt_missions_main_panel_wgt_pnl_missions_wgt_btn_mission_play0"
        text_offset 5 0
        text_proportion 0.75
        "text color" 0.8157 0.8157 0.8157 1
@@ -104,7 +104,7 @@ FrameWidgetClass wgt_pnl_load_mission {
      hexactsize 0
      vexactsize 0
      style Default
-     text "Close"
+     text "#STR_wgt_pnl_load_mission_wgt_missions_main_panel_wgt_btn_mission_close0"
      text_offset 5 0
      text_proportion 0.75
      "text color" 0.8157 0.8157 0.8157 1

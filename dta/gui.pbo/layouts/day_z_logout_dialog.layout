@@ -69,7 +69,7 @@ WindowWidgetClass LogoutDialogRoot {
      vexactpos 1
      hexactsize 1
      vexactsize 1
-     text "text"
+     text "#layout_logout_dialog_text"
      font "gui/fonts/sdf_MetronLight24"
      "exact text" 0
      "exact text size" 22
@@ -90,7 +90,7 @@ WindowWidgetClass LogoutDialogRoot {
      hexactsize 1
      vexactsize 1
      style Bold
-     text "Seconds until logout"
+     text "#layout_logout_dialog_until_logout"
      font "gui/fonts/sdf_MetronBook72"
      "text color" 1 1 1 1
      "exact text" 0

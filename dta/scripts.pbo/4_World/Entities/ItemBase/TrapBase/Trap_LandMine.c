@@ -22,6 +22,11 @@ class LandMineTrap extends TrapBase
 		return true;
 	}
 	
+	override string GetDeploySoundset()
+	{
+		return "landmine_deploy_SoundSet";
+	}
+	
 	override void StartActivate( PlayerBase player )
 	{
 		super.StartActivate( player );

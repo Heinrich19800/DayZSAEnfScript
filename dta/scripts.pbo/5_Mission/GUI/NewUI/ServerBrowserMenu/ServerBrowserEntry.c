@@ -238,15 +238,15 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		string pop_text;
 		float pop_percentage = population / slots;
 		if( population == 0 )
-			pop_text	= "Empty";
+			pop_text	= "#server_browser_entry_empty";
 		else if( pop_percentage < 0.33 )
-			pop_text	= "Low (" + population.ToString() + ")" ;
+			pop_text	= "#server_browser_entry_low" + population.ToString() + ")" ;
 		else if( pop_percentage < 0.66 )
-			pop_text	= "Medium (" + population.ToString() + ")" ;
+			pop_text	= "#server_browser_entry_medium" + population.ToString() + ")" ;
 		else if( pop_percentage != 1 )
-			pop_text	= "High (" + population.ToString() + ")" ;
+			pop_text	= "#server_browser_entry_high" + population.ToString() + ")" ;
 		else
-			pop_text	= "Full";
+			pop_text	= "#server_browser_entry_full";
 		*/
 		m_ServerPopulation.SetText( population.ToString() );
 	}
@@ -284,12 +284,12 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		{
 			case 0:
 			{
-				text = "Private";
+				text = "#server_browser_entry_private";
 				break;
 			}
 			case 1:
 			{
-				text = "Official";
+				text = "#server_browser_entry_official";
 				break;
 			}
 		}
@@ -322,12 +322,12 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		{
 			case 0:
 			{
-				text = "1st/3rd Person";
+				text = "#server_browser_entry_person_both";
 				break;
 			}
 			case 1:
 			{
-				text = "1st Person Only";
+				text = "#server_browser_entry_person_first";
 				break;
 			}
 		}
@@ -338,12 +338,12 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	{
 		if( battleye )
 		{
-			m_ServerBattleye.SetText( "Enabled" );
+			m_ServerBattleye.SetText( "#server_browser_entry_enabled" );
 			m_ServerBattleye.SetColor( ARGBF( 1, 0, 1, 0 ) );
 		}
 		else
 		{
-			m_ServerBattleye.SetText( "Disabled" );
+			m_ServerBattleye.SetText( "#server_browser_entry_disabled" );
 			m_ServerBattleye.SetColor( ARGBF( 1, 1, 0, 0 ) );
 		}
 	}
@@ -394,7 +394,7 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	void Select( bool notify = true )
 	{
-		//if( !m_Selected )
+		if( !m_Selected )
 		{
 			if( notify )
 			{

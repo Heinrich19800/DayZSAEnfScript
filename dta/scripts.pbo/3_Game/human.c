@@ -129,6 +129,8 @@ class HumanInputController
 	//! returns 1..12 if some gesture slot is used, 0 otherwise
 	proto native int 			IsGestureSlot();
 
+	//! returns true, if player controls other entity (vehicle for example)
+	proto native bool 			IsOtherController();
 
 	//--------------------------------------------------------------
 
@@ -493,6 +495,12 @@ class HumanCommandVehicle
 	
 	proto native void				GetOutVehicle();
 	proto native void				JumpOutVehicle();
+	proto native void				SwitchSeat(int pTransportPositionIndex, int pVehicleSeat);
+	proto native bool				IsGettingIn();
+	proto native bool				IsGettingOut();
+	proto native bool				IsSwitchSeat();
+	proto native bool				WasGearChange();
+	proto native void				SetClutchState(bool pState);
 }
 
 // *************************************************************************************
@@ -538,6 +546,7 @@ class HumanCommandFullBodyDamage
 //! actions
 enum WeaponActions
 {
+	INTERRUPT			= 15,
 	NONE                = -1,
 	RELOAD 				= 0,
 	MECHANISM			= 1,
@@ -626,6 +635,7 @@ enum WeaponActionUnjammingTypes
 	//! unjam action types
 	UNJAMMING_START 					= 1,		// CMD_Weapon_Jam - 0
 	UNJAMMING_END 						= 0,		// 1
+	UNJAMMING_INTERRUPT					= -1,
 };
 
 enum WeaponActionFireTypes
@@ -653,6 +663,7 @@ string WeaponActionTypeToString (int A, int AT)
 {
 	switch (A)
 	{
+		case WeaponActions.INTERRUPT: return "Weapon interrupt";
 		case WeaponActions.NONE: return "---";
 		case WeaponActions.RELOAD: return typename.EnumToString(WeaponActionReloadTypes, AT);
 		case WeaponActions.MECHANISM: return typename.EnumToString(WeaponActionMechanismTypes, AT);
@@ -720,6 +731,9 @@ class HumanCommandWeapons
 	//! sets head tilt to optics
 	proto native	void		SetADS(bool pState);
 
+	//! command for lifting weapon near obstacled (works only when weapon is raised)
+	proto native	void		LiftWeapon(bool pState);
+
 	//!
 	void 	RegisterDefaultEvents()
 	{
@@ -783,6 +797,9 @@ class HumanCommandAdditives
 
 	//! sets exhaustion level 0..1, interpolate == false -> resets the value, otherwise it's interpolating towards the new value
 	proto native void 	SetExhaustion(float pValue, bool pInterpolate);
+
+	//! sets talking
+	proto native void 	SetTalking(bool pValue);
 }
 
 

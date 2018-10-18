@@ -53,7 +53,7 @@ FrameWidgetClass TitleScreenLayout {
    scaled 1
    fixaspect inside
    priority 1
-   text "Press Button"
+   text "#STR_TitleScreenLayout_InputPromptText0"
    font "gui/fonts/sdf_MetronBook72"
    "text color" 1 1 1 1
    "exact text" 0

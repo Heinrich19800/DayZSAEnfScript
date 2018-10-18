@@ -358,7 +358,7 @@ FrameWidgetClass settings_menu_root {
    vexactsize 1
    priority 1
    style Normal
-   text "SETTINGS"
+   text "OPTIONS"
    font "gui/fonts/sdf_MetronLight72"
    "text color" 0.8157 0.1255 0.7843 1
    "exact text" 0
@@ -468,7 +468,7 @@ FrameWidgetClass settings_menu_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Toggle"
+         text "#STR_settings_menu_root_toolbar_bg_ConsoleToolbar_Toggle_ToggleText0"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -526,7 +526,7 @@ FrameWidgetClass settings_menu_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Apply"
+         text "#STR_settings_menu_root_toolbar_bg_ConsoleToolbar_Apply_ApplyText0"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -583,7 +583,7 @@ FrameWidgetClass settings_menu_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Reset"
+         text "#STR_settings_menu_root_toolbar_bg_ConsoleToolbar_Reset_ResetText0"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -638,7 +638,7 @@ FrameWidgetClass settings_menu_root {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Back"
+         text "#STR_settings_menu_root_toolbar_bg_ConsoleToolbar_Back_BackText0"
          font "gui/fonts/sdf_MetronLight24"
          "text halign" center
          "text valign" center
@@ -691,6 +691,7 @@ FrameWidgetClass settings_menu_root {
      vexactsize 1
      font "gui/fonts/sdf_MetronLight24"
      "exact text" 1
+     "exact text size" 30
      "size to text h" 0
      "size to text v" 1
      wrap 1

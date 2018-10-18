@@ -154,7 +154,7 @@ WindowWidgetClass DialogBox {
      hexactsize 1
      vexactsize 1
      style Bold
-     text "DIALOG TITLE"
+     text "#layout_dialog_title"
      font "gui/fonts/sdf_MetronBook72"
      "text color" 1 1 1 1
      "exact text" 0

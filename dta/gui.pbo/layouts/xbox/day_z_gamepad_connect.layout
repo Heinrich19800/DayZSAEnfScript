@@ -35,7 +35,7 @@ WindowWidgetClass TitleScreenLayout {
    vexactpos 1
    hexactsize 1
    vexactsize 1
-   text "Please reconnect and press <image set=\\"xbox_buttons\\" name=\\"A\\" /> to continue."
+   text "#STR_TitleScreenLayout_Text0"xbox_buttons\\" name=\\"A\\" /> to continue."
    font "gui/fonts/sdf_MetronLight24"
    "exact text" 0
    "exact text size" 22
@@ -55,7 +55,7 @@ WindowWidgetClass TitleScreenLayout {
    hexactsize 1
    vexactsize 1
    style Bold
-   text "CONTROLLER DISCONNECTED"
+   text "#STR_TitleScreenLayout_Caption0"
    font "gui/fonts/sdf_MetronBook72"
    "text color" 1 1 1 1
    "exact text" 0

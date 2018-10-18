@@ -1,7 +1,7 @@
 PanelWidgetClass hands_preview_root {
  clipchildren 0
  ignorepointer 1
- color 0.502 0 0.3765 1
+ color 1 1 1 0
  size 1 420
  halign center_ref
  hexactpos 1
@@ -11,7 +11,7 @@ PanelWidgetClass hands_preview_root {
  priority 8
  draggable 0
  scriptclass "AutoHeightSpacer"
- style blank
+ style Outline
  {
   ScriptParamsClass {
    AlignChilds 0

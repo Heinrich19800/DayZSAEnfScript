@@ -8,7 +8,7 @@ enum ERecipeSanityCheck
 const float ACCEPTABLE_DISTANCE = 5;
 
 const int SANITY_CHECK_ACCEPTABLE_RESULT = ERecipeSanityCheck.NOT_OWNED_BY_ANOTHER_LIVE_PLAYER + ERecipeSanityCheck.CLOSE_ENOUGH;
-class PluginRecipesManager extends PluginBase
+class PluginRecipesManager extends PluginRecipesManagerBase
 {
 	ref Timer m_TestTimer;
 	const string KEYWORD_NEW_ITEM = "Item:";
@@ -471,7 +471,7 @@ class PluginRecipesManager extends PluginBase
 		return true;
 	}
 
-	protected void RegisterRecipe(RecipeBase recipe, int id)
+	override protected void RegisterRecipe(RecipeBase recipe, int id)
 	{
 		recipe.SetID(id);
 		m_RecipeList[id] = recipe;
@@ -528,7 +528,7 @@ class PluginRecipesManager extends PluginBase
 			PerformRecipeServer(id, item_a, item_b, player);
 		}
 
-		GetGame().GetUIManager().HideScriptedMenu(GetGame().GetUIManager().FindMenu(MENU_INVENTORY));			
+		GetGame().GetMission().HideInventory();
 	}*/
 
 	
@@ -739,7 +739,7 @@ class PluginRecipesManager extends PluginBase
 	
 	protected void CreateAllRecipes()
 	{
-		#include "Scripts\4_World\Classes\Recipes\Recipes\_RecipeList.inc"
+		RegisterRecipies();
 	}
 	
 	protected void ReadTest()

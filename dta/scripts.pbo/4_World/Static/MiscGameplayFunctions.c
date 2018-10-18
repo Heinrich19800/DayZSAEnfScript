@@ -1,21 +1,23 @@
-class TurnItemIntoItemLambda : ReplaceItemWithNewLambda
+class TurnItemIntoItemLambda extends ReplaceItemWithNewLambda
 {
 	bool m_TransferAgents;
 	bool m_TransferVariables;
 	bool m_TransferHealth;
 	bool m_ExcludeQuantity;
+	float m_quantity_override;
 	
 	void TurnItemIntoItemLambda (EntityAI old_item, string new_item_type, PlayerBase player)
 	{
 		SetTransferParams();
 	}
 	
-	void SetTransferParams (bool transfer_agents = true, bool transfer_variables = true, bool transfer_health = true, bool exclude_quantity = false)
+	void SetTransferParams (bool transfer_agents = true, bool transfer_variables = true, bool transfer_health = true, bool exclude_quantity = false, float quantity_override = -1)
 	{
 		m_TransferAgents = transfer_agents;
 		m_TransferVariables = transfer_variables; 
 		m_TransferHealth = transfer_health;
 		m_ExcludeQuantity = exclude_quantity;
+		m_quantity_override = quantity_override;
 	}
 
 	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
@@ -27,6 +29,13 @@ class TurnItemIntoItemLambda : ReplaceItemWithNewLambda
 			MiscGameplayFunctions.TransferItemProperties(old_item, new_item, m_TransferAgents, m_TransferVariables, m_TransferHealth, m_ExcludeQuantity);
 			MiscGameplayFunctions.TransferAttachments(old_item, new_item, m_Player);
 			//@TODO: Cargo? hands?
+			
+			//quantity override
+			if (ItemBase.Cast(new_item) && m_quantity_override != -1)
+			{
+				m_quantity_override = Math.Max(m_quantity_override,0);
+				ItemBase.Cast(new_item).SetQuantity(m_quantity_override);
+			}
 		}
 		else
 		{
@@ -34,6 +43,25 @@ class TurnItemIntoItemLambda : ReplaceItemWithNewLambda
 		}
 	}
 };
+
+class TurnItemIntoItemLambdaAnimSysNotify extends TurnItemIntoItemLambda
+{
+	override void OnNewEntityCreated(EntityAI new_item)
+	{
+		super.OnNewEntityCreated(new_item);
+		Human player = Human.Cast(m_Player);
+		player.GetItemAccessor().OnItemInHandsChanged();
+	}
+}
+
+class TurnItemIntoItemLambdaRestrain extends TurnItemIntoItemLambdaAnimSysNotify
+{
+	override void OnNewEntityCreated(EntityAI new_item)
+	{
+		super.OnNewEntityCreated(new_item);
+		m_Player.SetRestrained(true);
+	}
+}
 
 /**@class		DropEquipAndDestroyRootLambda
  * @brief		this one is a bit special: it drops all items and destroys the ex-root of the hierarchy
@@ -70,7 +98,7 @@ class DropEquipAndDestroyRootLambda : ReplaceItemWithNewLambdaBase
 				//@TODO: modify _dst with place on gnd?
 				
 				m_Player.LocalTakeToDst(child_src, child_dst);
-				
+												
 				GetGame().RemoteObjectTreeCreate(child); // this forces server to send CreateVehicle Message to client. This is needed for preserving the appearance of network operations on client (so that DeleteObject(old) arrives before CreateVehicle(new)). @NOTE: this does not delete the object on server, only it's network representation.
 			}
 		}
@@ -132,10 +160,10 @@ class MiscGameplayFunctions
 	{
 		if ((ItemBase.GetDebugActionsMask() & DebugActionType.UNLIMITED_AMMO) && GetGame().IsServer())
 		{
-			float ammoDamage;
-			string ammoTypeName;
 			int currentMuzzle = weapon.GetCurrentMuzzle();
-			weapon.GetCartridgeInfo(currentMuzzle, ammoDamage, ammoTypeName);
+			float ammoDamage = 0.0;
+			string ammoTypeName = weapon.GetChamberAmmoTypeName(currentMuzzle);
+			
 			Magazine magazine = weapon.GetMagazine(currentMuzzle);
 			if(magazine)
 			{
@@ -143,7 +171,7 @@ class MiscGameplayFunctions
 				{
 					for(int i = 0; i < magazine.GetAmmoMax();i++)
 					{
-						magazine.ServerStoreCartridge(0, ammoTypeName);
+						magazine.ServerStoreCartridge(ammoDamage, ammoTypeName);
 					}
 				}
 			}
@@ -253,11 +281,11 @@ class MiscGameplayFunctions
 	{
 		float health_normalized = health / 100;
 		string config_path = CFG_WEAPONSPATH + " " + class_name + " DamageSystem" + " GlobalHealth" + " healthLabels";
-		CashedObjectsArrays.ARRAY_FLOAT.Clear();
-		GetGame().ConfigGetFloatArray(config_path, CashedObjectsArrays.ARRAY_FLOAT);
-		for(int i = 0; i < CashedObjectsArrays.ARRAY_FLOAT.Count(); i++)
+		CachedObjectsArrays.ARRAY_FLOAT.Clear();
+		GetGame().ConfigGetFloatArray(config_path, CachedObjectsArrays.ARRAY_FLOAT);
+		for(int i = 0; i < CachedObjectsArrays.ARRAY_FLOAT.Count(); i++)
 		{
-			if( health_normalized >= CashedObjectsArrays.ARRAY_FLOAT.Get(i) )
+			if( health_normalized >= CachedObjectsArrays.ARRAY_FLOAT.Get(i) )
 			{
 				return i;
 			}
@@ -314,6 +342,7 @@ class MiscGameplayFunctions
 	static float GetEnergyMetabolicSpeed(int movement_speed)
 	{
 		float speed;
+		//PrintString(movement_speed.ToString());
 		switch (movement_speed)
 		{
 			case 1:
@@ -371,6 +400,31 @@ class MiscGameplayFunctions
 		return speed;
 	}
 	
+	static string ObtainRestrainItemTargetClassname(EntityAI entity)
+	{
+		return entity.ConfigGetString( "OnRestrainChange");
+	}
+	
+	static void TransformRestrainItem(EntityAI current_item, EntityAI tool, PlayerBase player, bool destroy = false)
+	{
+		bool type;
+		
+		if( tool )
+		{
+			//is unrestrain and not struggle
+			type = tool.ConfigGetBool("RestrainUnlockType");
+		}
+		string new_item_name = current_item.ConfigGetString( "OnRestrainChange");
+
+		if( new_item_name != "" )
+		{
+			MiscGameplayFunctions.TurnItemIntoItemEx(player, new ReplaceAndDestroy(current_item, new_item_name, player, type));
+		}
+		else
+		{
+			Error("no value for 'OnRestrainChange' config parameter");
+		}
+	}
 	
 	
 };

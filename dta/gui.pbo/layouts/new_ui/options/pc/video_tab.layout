@@ -8,14 +8,14 @@ FrameWidgetClass video_tab_root {
  vexactsize 0
  {
   ScrollWidgetClass video_settings_scroll {
-   ignorepointer 1
-   color 1 1 1 0
+   ignorepointer 0
    position 0 0
    size 600 1
    hexactpos 1
    vexactpos 1
    hexactsize 1
    vexactsize 0
+   style blank
    "Scrollbar V" 1
    {
     GridSpacerWidgetClass video_settings_root {
@@ -75,7 +75,7 @@ FrameWidgetClass video_tab_root {
            hexactsize 0
            vexactsize 0
            style Normal
-           text "OVERALL QUALITY"
+           text "#STR_video_tab_root_video_settings_scroll_video_settings_root_overall_settings_root_overall_settings_header_overall_text0"
            font "gui/fonts/sdf_MetronLight72"
            "exact text" 0
            "text halign" center
@@ -141,7 +141,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "QUALITY"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_overall_settings_root_overall_settings_content_overall_quality_setting_container_overall_quality_setting_overall_quality_setting_panel_overall_quality_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -217,7 +217,7 @@ FrameWidgetClass video_tab_root {
            hexactsize 0
            vexactsize 0
            style Normal
-           text "SCREEN"
+           text "#STR_video_tab_root_video_settings_scroll_video_settings_root_screen_settings_root_screen_settings_header_screen_text0"
            font "gui/fonts/sdf_MetronLight72"
            "exact text" 0
            "text halign" center
@@ -283,7 +283,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "DISPLAY MODE"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_screen_settings_root_screen_settings_content_display_mode_setting_container_display_mode_setting_display_mode_setting_panel_display_mode_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -358,7 +358,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "RESOLUTION"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_screen_settings_root_screen_settings_content_resolution_setting_container_resolution_setting_resolution_setting_panel_resolution_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -433,7 +433,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "BRIGHTNESS"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_screen_settings_root_screen_settings_content_brightness_setting_container_brightness_setting_brightness_setting_panel_brightness_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -508,7 +508,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "V-SYNC"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_screen_settings_root_screen_settings_content_vsync_setting_container_vsync_setting_vsync_setting_panel_vsync_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -583,7 +583,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "COLOR DEPTH"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_screen_settings_root_screen_settings_content_color_depth_setting_container_color_depth_setting_color_depth_setting_panel_color_depth_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -659,7 +659,7 @@ FrameWidgetClass video_tab_root {
            hexactsize 0
            vexactsize 0
            style Normal
-           text "SCENE COMPLEXITY"
+           text "#STR_video_tab_root_video_settings_scroll_video_settings_root_scene_settings_root_scene_settings_header_scene_text0"
            font "gui/fonts/sdf_MetronLight72"
            "exact text" 0
            "text halign" center
@@ -725,7 +725,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "OBJECT DETAIL"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_scene_settings_root_scene_settings_content_object_detail_setting_container_object_detail_setting_object_detail_setting_panel_object_detail_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -800,7 +800,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "TERRAIN DETAIL"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_scene_settings_root_scene_settings_content_terrain_detail_setting_container_terrain_detail_setting_terrain_detail_setting_panel_terrain_detail_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -875,7 +875,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "TEXTURE DETAIL"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_scene_settings_root_scene_settings_content_texture_detail_setting_container_texture_detail_setting_texture_detail_setting_panel_texture_detail_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -950,7 +950,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "CLOUDS DETAIL"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_scene_settings_root_scene_settings_content_clouds_detail_setting_container_clouds_detail_setting_clouds_detail_panel_clouds_detail_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -1025,7 +1025,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "SHADOW DETAIL"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_scene_settings_root_scene_settings_content_shadow_detail_setting_container_shadow_detail_setting_shadow_detail_setting_panel_shadow_detail_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -1101,7 +1101,7 @@ FrameWidgetClass video_tab_root {
            hexactsize 0
            vexactsize 0
            style Normal
-           text "RENDERING"
+           text "#STR_video_tab_root_video_settings_scroll_video_settings_root_rendering_settings_root_rendering_settings_header_rendering_text0"
            font "gui/fonts/sdf_MetronLight72"
            "exact text" 0
            "text halign" center
@@ -1167,7 +1167,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "TEXTURE FILTERING"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_rendering_settings_root_rendering_settings_content_texture_filtering_setting_container_texture_filtering_setting_texture_filtering_setting_panel_texture_filtering_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -1242,7 +1242,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "TERRAIN SURFACE DETAIL"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_rendering_settings_root_rendering_settings_content_terrain_surface_detail_setting_container_terrain_surface_detail_setting_terrain_surface_detail_setting_panel_terrain_surface_detail_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -1317,7 +1317,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "POSTPROCESS ANTIALIASING"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_rendering_settings_root_rendering_settings_content_ppaa_setting_container_ppaa_setting_ppaa_setting_panel_ppaa_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -1392,7 +1392,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "HARDWARE ANTIALIASING"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_rendering_settings_root_rendering_settings_content_hwaa_setting_container_hwaa_setting_hwaa_setting_panel_hwaa_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -1467,7 +1467,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "FOLIAGE SMOOTHING"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_rendering_settings_root_rendering_settings_content_atoc_setting_container_atoc_setting_atoc_setting_panel_atoc_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -1542,7 +1542,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "AMBIENT OCCLUSION"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_rendering_settings_root_rendering_settings_content_ao_setting_container_ao_setting_ao_setting_panel_ao_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0
@@ -1617,7 +1617,7 @@ FrameWidgetClass video_tab_root {
                  vexactpos 1
                  hexactsize 0
                  vexactsize 0
-                 text "POSTPROCESS QUALITY"
+                 text "#STR_video_tab_root_video_settings_scroll_video_settings_root_rendering_settings_root_rendering_settings_content_pp_setting_container_pp_setting_pp_setting_panel_pp_setting_label0"
                  font "gui/fonts/sdf_MetronLight24"
                  "text offset" 8 0
                  "exact text" 0

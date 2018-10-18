@@ -7,7 +7,7 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 	protected ref map<string, ref PlayerListEntryScriptedWidget>	m_Entries;
 	
 	protected int													m_TotalEntries;
-	protected int													m_SelectedEntry;
+	protected PlayerListEntryScriptedWidget							m_SelectedEntry;
 	
 	void PlayerListScriptedWidget( Widget parent, string header_text )
 	{
@@ -184,8 +184,22 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 	{
 		if( m_Entries )
 		{
+			PlayerListEntryScriptedWidget next_entry;
+			
+			if( m_Entries.Get( UID ) == m_SelectedEntry )
+			{
+				for( int i = 0; i < m_Entries.Count() - 1; i++ )
+				{
+					if( m_Entries.GetElement( i ) == m_Entries.Get( UID ) )
+					{
+						next_entry = m_Entries.GetElement( i + 1 );
+					}
+				}
+			}
+			
 			m_Entries.Remove( UID );
 			m_TotalEntries--;
+			SelectPlayer( next_entry );
 			m_Content.Update();
 		}
 	}
@@ -205,6 +219,12 @@ class PlayerListScriptedWidget extends ScriptedWidgetEventHandler
 		{
 			m_Entries.Get( UID ).MutePlayer( mute );
 		}
+	}
+	
+	void SelectPlayer( PlayerListEntryScriptedWidget entry )
+	{
+		m_SelectedEntry = entry;
+		ScrollToEntry( entry );
 	}
 	
 	void ScrollToEntry( PlayerListEntryScriptedWidget entry )

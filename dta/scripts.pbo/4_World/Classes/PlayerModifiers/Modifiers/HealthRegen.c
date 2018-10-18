@@ -1,4 +1,4 @@
-class HealthRegen: ModifierBase
+class HealthRegenMdfr: ModifierBase
 {
 	override void Init()
 	{

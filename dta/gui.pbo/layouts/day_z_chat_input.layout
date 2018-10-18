@@ -38,7 +38,7 @@ FrameWidgetClass FrameWidget {
    vexactpos 0
    hexactsize 0
    vexactsize 0
-   text "channel"
+   text "#layout_chat_channel"
    "exact text" 1
    "text valign" center
   }

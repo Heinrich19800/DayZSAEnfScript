@@ -80,7 +80,7 @@ class PluginManager
 		RegisterPluginDebug( "PluginRemotePlayerDebugServer",	false,	true );
 		RegisterPluginDebug( "PluginDrawCheckerboard",			true,	false );
 		RegisterPluginDebug( "PluginPresenceNotifier",			true,	false );
-		//RegisterPluginDebug( "PluginSoundDebug",				true,	false );
+		//RegisterPluginDebug( "PluginSoundDebug",				false,	false );
 		RegisterPluginDebug( "PluginCameraTools",					true, 	true );
 		
 		GetGame().GetUpdateQueue(CALL_CATEGORY_GAMEPLAY).Insert(this.MainOnUpdate);

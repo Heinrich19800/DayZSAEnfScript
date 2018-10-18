@@ -25,7 +25,7 @@ WindowWidgetClass HelpWindow {
      hexactsize 0
      vexactsize 1
      style Normal
-     text "Help"
+     text "#layout_help_help"
      "exact text" 1
      "text valign" center
     }
@@ -45,7 +45,7 @@ WindowWidgetClass HelpWindow {
        hexactsize 0
        vexactsize 1
        style Normal
-       text "Key bindings:"
+       text "#layout_help_key_bindings"
        "exact text" 1
        "text valign" center
       }
@@ -80,7 +80,7 @@ WindowWidgetClass HelpWindow {
        hexactsize 0
        vexactsize 1
        style Normal
-       text "Mouse bindings:"
+       text "#layout_help_mouse_bindings"
        "exact text" 1
        "text valign" center
       }
@@ -113,7 +113,7 @@ WindowWidgetClass HelpWindow {
    vexactsize 1
    userID 0
    style Default
-   text "Close"
+   text "#layout_help_close"
    switch once
   }
  }

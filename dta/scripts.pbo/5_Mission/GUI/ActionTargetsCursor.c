@@ -228,7 +228,11 @@ class ActionTargetsCursor extends ObjectFollower
 		GetTarget();
 		GetActions();
 
+#ifdef PLATFORM_CONSOLE
 		if(m_Target && ((m_Interact || m_Single || m_Continuous) && m_AM.GetRunningAction() == null) && GetGame().GetUIManager().GetMenu() == null)
+#else
+		if(m_Target || ((m_Interact || m_Single || m_Continuous) && m_AM.GetRunningAction() == null) && GetGame().GetUIManager().GetMenu() == null)
+#endif
 		{
 			//! cursor with fixed position (environment interaction mainly)
 			if ( m_Target.GetObject() == null && m_Interact)
@@ -497,7 +501,7 @@ class ActionTargetsCursor extends ObjectFollower
 		isTargetForced = false;
 	}
 
-	private bool IsComponentInSelection( array<Selection> selection, string compName )
+	protected bool IsComponentInSelection( array<Selection> selection, string compName )
 	{
 		if (selection.Count() == 0 || compName.Length() == 0) return false;
 
@@ -515,7 +519,7 @@ class ActionTargetsCursor extends ObjectFollower
 	// getters
 
 	// selects Action Group like in OptionsMenu
-	private void GetActionGroup(int group_index)
+	protected void GetActionGroup(int group_index)
 	{
 		g_Game.GetInput().GetActionGroupItems(group_index, m_ActionIndices);
 		string desc;
@@ -528,12 +532,12 @@ class ActionTargetsCursor extends ObjectFollower
 		}
 	}
 
- 	private void GetPlayer()
+ 	protected void GetPlayer()
 	{
 		Class.CastTo(m_Player, GetGame().GetPlayer());
 	}
 
-	private void GetActionManager()
+	protected void GetActionManager()
 	{
 		if( m_Player && m_Player.IsPlayerSelected() )
 		{
@@ -546,7 +550,7 @@ class ActionTargetsCursor extends ObjectFollower
 	}
 
 	//! get actions from Action Manager
-  	private void GetActions()
+  	protected void GetActions()
 	{
 		m_Interact = null;
 		m_Single = null;
@@ -555,6 +559,7 @@ class ActionTargetsCursor extends ObjectFollower
 		if(!m_AM) return;
 		if(!m_Target) return;
 		if(m_Player.IsSprinting()) return;
+		if(m_Player.GetCommand_Vehicle()) return; // TODO: TMP: Car AM rework needed
 
 		TSelectableActionInfoArray selectableActions = m_AM.GetSelectableActions();
 		int selectedActionIndex = m_AM.GetSelectedActionIndex();
@@ -568,14 +573,14 @@ class ActionTargetsCursor extends ObjectFollower
 		m_Continuous = m_AM.GetContinuousAction();
 	}
 
-	private void GetTarget()
+	protected void GetTarget()
 	{
 		if(!m_AM) return;
 
 		m_Target = m_AM.FindActionTarget();
 	}
 	
-	private string GetActionDesc(ActionBase action)
+	protected string GetActionDesc(ActionBase action)
 	{
 		string desc = "";
 		if (action && action.GetText())
@@ -586,7 +591,7 @@ class ActionTargetsCursor extends ObjectFollower
 		return desc;
 	}
 	
-	private string GetItemDesc(ActionBase action)
+	protected string GetItemDesc(ActionBase action)
 	{
 		string desc = "";
 		if(m_Target && m_Target.GetObject() && m_Target.GetObject().IsItemBase())
@@ -597,7 +602,7 @@ class ActionTargetsCursor extends ObjectFollower
 		return desc;
 	}
 	
-	private int GetItemHealth()
+	protected int GetItemHealth()
 	{
 		int health = -1;
 
@@ -614,7 +619,7 @@ class ActionTargetsCursor extends ObjectFollower
 		return health;
 	}
 
-	private void GetItemQuantity(out int q_type, out float q_cur, out int q_min, out int q_max)
+	protected void GetItemQuantity(out int q_type, out float q_cur, out int q_min, out int q_max)
 	{
 		EntityAI entity = null;
 		InventoryItem item = null;
@@ -632,7 +637,7 @@ class ActionTargetsCursor extends ObjectFollower
 		}
 	}
 
-	private void GetItemCargoCount(out int cargoCount)
+	protected void GetItemCargoCount(out int cargoCount)
 	{
 		EntityAI entity = null;
 		
@@ -653,7 +658,7 @@ class ActionTargetsCursor extends ObjectFollower
 	}
 
 	// setters
-	private void SetItemDesc(string descText, int cargoCount, string itemWidget, string descWidget)
+	protected void SetItemDesc(string descText, int cargoCount, string itemWidget, string descWidget)
 	{
 		Widget widget;
 		
@@ -681,7 +686,7 @@ class ActionTargetsCursor extends ObjectFollower
 		widget.Show(true);
 	}
 	
-	private void SetItemHealth(int health, string itemWidget, string healthWidget, bool enabled)
+	protected void SetItemHealth(int health, string itemWidget, string healthWidget, bool enabled)
 	{
 		Widget widget;
 		
@@ -697,28 +702,28 @@ class ActionTargetsCursor extends ObjectFollower
 				case -1 :
 					healthMark.GetParent().Show(false);
 					break;
-				case STATE_PRISTINE :
-					healthMark.SetColor(COLOR_PRISTINE);
+				case ItemManager.STATE_PRISTINE :
+					healthMark.SetColor(Colors.COLOR_PRISTINE);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
 					break;
-				case STATE_WORN :
-					healthMark.SetColor(COLOR_WORN);
+				case ItemManager.STATE_WORN :
+					healthMark.SetColor(Colors.COLOR_WORN);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
 					break;
-				case STATE_DAMAGED :
-					healthMark.SetColor(COLOR_DAMAGED);
+				case ItemManager.STATE_DAMAGED :
+					healthMark.SetColor(Colors.COLOR_DAMAGED);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
 					break;
-				case STATE_BADLY_DAMAGED:
-					healthMark.SetColor(COLOR_BADLY_DAMAGED);
+				case ItemManager.STATE_BADLY_DAMAGED:
+					healthMark.SetColor(Colors.COLOR_BADLY_DAMAGED);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
 					break;
-				case STATE_RUINED :
-					healthMark.SetColor(COLOR_RUINED);
+				case ItemManager.STATE_RUINED :
+					healthMark.SetColor(Colors.COLOR_RUINED);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
 					break;
@@ -735,7 +740,7 @@ class ActionTargetsCursor extends ObjectFollower
 			widget.Show(false);
 	}
 	
-	private void SetItemQuantity(int type, float current, int min, int max, string itemWidget, string quantityPBWidget, string quantityTextWidget, bool enabled )
+	protected void SetItemQuantity(int type, float current, int min, int max, string itemWidget, string quantityPBWidget, string quantityTextWidget, bool enabled )
 	{
 		Widget widget;
 		
@@ -779,7 +784,7 @@ class ActionTargetsCursor extends ObjectFollower
 			widget.Show(false);	
 	}
 
-	private void SetActionWidget(ActionBase action, string descText, string actionWidget, string descWidget)
+	protected void SetActionWidget(ActionBase action, string descText, string actionWidget, string descWidget)
 	{
 		Widget widget;
 		
@@ -820,7 +825,7 @@ class ActionTargetsCursor extends ObjectFollower
 	}
 
 	//! shows arrows near the interact action if there are more than one available
-	private void SetMultipleInteractAction(string multiActionsWidget)
+	protected void SetMultipleInteractAction(string multiActionsWidget)
 	{
 		Widget widget;
 
@@ -832,7 +837,7 @@ class ActionTargetsCursor extends ObjectFollower
 			widget.Show(false);
 	}
 	
-	private void SetInteractActionIcon(string actionWidget, string actionIconFrameWidget, string actionIconWidget, string actionIconTextWidget)
+	protected void SetInteractActionIcon(string actionWidget, string actionIconFrameWidget, string actionIconWidget, string actionIconTextWidget)
 	{
 		Param2<string, bool> key_data;
 		string group_name;
@@ -861,7 +866,9 @@ class ActionTargetsCursor extends ObjectFollower
 		}
 #ifdef DEVELOPER
 		else
-			Print( "ActionTargetsCursor.c | SetInteractActionIcon | Bad options for group_name" );
+		{
+			//Print( "ActionTargetsCursor.c | SetInteractActionIcon | Bad options for group_name" );
+		}
 #endif
 
 		if ( key_data )

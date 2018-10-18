@@ -25,16 +25,21 @@ class InGameMenu extends UIScriptedMenu
 	{
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_ingamemenu.layout");
 				
-		string version;
-		GetGame().GetVersion(version);
+		TextWidget version_widget = TextWidget.Cast( layoutRoot.FindAnyWidget("version") );
 		
-		TextWidget version_widget;
-		Class.CastTo(version_widget, layoutRoot.FindAnyWidget("version"));
-		version_widget.SetText("#main_menu_version " + version);
+		string version;
+		GetGame().GetVersion( version );
+		#ifdef PLATFORM_CONSOLE
+			version = "#main_menu_version" + " " + version + " (" + g_Game.GetDatabaseID() + ")";
+		#else
+			version = "#main_menu_version" + " " + version;
+		#endif
+		version_widget.SetText( version );
 
 		#ifdef PREVIEW_BUILD
 			version_widget.SetText("THIS IS PREVIEW");
 		#endif
+		
 		ButtonWidget restart_btn;
 		Class.CastTo(restart_btn, layoutRoot.FindAnyWidgetById(IDC_INT_RETRY));
 		
@@ -105,10 +110,12 @@ class InGameMenu extends UIScriptedMenu
 			if (!GetGame().IsMultiplayer())
 			{
 				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().RestartMission);
+				GetGame().GetMission().PlayerControlEnable();
 			}
 			else
 			{
 				GetGame().GetUIManager().ShowDialog("#main_menu_respawn", "#main_menu_respawn_question", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
+				GetGame().GetMission().PlayerControlEnable();
 			}
 			return true;
 		}
@@ -147,7 +154,7 @@ class InGameMenu extends UIScriptedMenu
 			PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
 			if(player)
 			{
-				GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(player.ShowDeadScreen, DayZPlayerImplement.DEAD_SCREEN_DELAY, false, false);
+				GetGame().GetCallQueue(CALL_CATEGORY_GUI).CallLater(player.ShowDeadScreen, DayZPlayerImplement.DEAD_SCREEN_DELAY, false, false, 0);
 			}
 			
 			MissionGameplay missionGP = MissionGameplay.Cast(GetGame().GetMission());

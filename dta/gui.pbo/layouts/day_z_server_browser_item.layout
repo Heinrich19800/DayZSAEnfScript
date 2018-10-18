@@ -95,7 +95,7 @@ PanelWidgetClass Item {
      hexactsize 0
      vexactsize 0
      style Normal
-     text "Popularity"
+     text "#layout_server_browser_item_popularity"
      font "gui/fonts/sdf_MetronBook24"
      "exact text" 0
      "text halign" center
@@ -108,7 +108,7 @@ PanelWidgetClass Item {
      vexactpos 0
      hexactsize 0
      vexactsize 0
-     text "PING"
+     text "#layout_server_browser_item_ping"
      font "gui/fonts/sdf_MetronBook24"
      "exact text" 0
      "text halign" center

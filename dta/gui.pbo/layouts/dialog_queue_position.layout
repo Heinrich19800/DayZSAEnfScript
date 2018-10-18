@@ -26,7 +26,7 @@ WindowWidgetClass TextInputDialogRoot {
    fixaspect inside
    userID 1
    style EmptyHighlight
-   text "Leave"
+   text "#STR_TextInputDialogRoot_ButtonLeave0"
    text_proportion 0.5
    font "gui/fonts/sdf_MetronBook24"
    "disabled text color" 0.3412 0.3412 0.3412 1

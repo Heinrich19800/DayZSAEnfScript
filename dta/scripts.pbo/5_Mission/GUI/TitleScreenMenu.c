@@ -37,7 +37,7 @@ class TitleScreenMenu extends UIScriptedMenu
 	{
 		if( g_Game.GetGameState() != DayZGameState.CONNECTING )
 		{
-			g_Game.SelectUser();
+			g_Game.GamepadCheck();
 		}
 	}
 	

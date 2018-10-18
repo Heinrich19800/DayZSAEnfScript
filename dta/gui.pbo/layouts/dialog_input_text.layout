@@ -58,7 +58,7 @@ WindowWidgetClass TextInputDialogRoot {
    hexactsize 1
    vexactsize 1
    style Bold
-   text "LABEL"
+   text "#STR_TextInputDialogRoot_WindowLabel0"
    font "gui/fonts/sdf_MetronBook72"
    "exact text" 0
    "text halign" center
@@ -85,7 +85,7 @@ WindowWidgetClass TextInputDialogRoot {
    vexactpos 1
    hexactsize 1
    vexactsize 1
-   text "Dialog text"
+   text "#STR_TextInputDialogRoot_MessageText0"
    font "gui/fonts/sdf_MetronLight24"
    "exact text" 0
    "exact text size" 22
@@ -101,7 +101,7 @@ WindowWidgetClass TextInputDialogRoot {
    vexactpos 1
    hexactsize 1
    vexactsize 1
-   text "Primary:"
+   text "#STR_TextInputDialogRoot_PrimaryLabel0"
    font "gui/fonts/sdf_MetronLight24"
    "exact text" 0
    "exact text size" 18
@@ -117,7 +117,7 @@ WindowWidgetClass TextInputDialogRoot {
    vexactpos 1
    hexactsize 1
    vexactsize 1
-   text "Secondary:"
+   text "#STR_TextInputDialogRoot_SecondaryLabel0"
    font "gui/fonts/sdf_MetronLight24"
    "exact text" 0
    "exact text size" 18

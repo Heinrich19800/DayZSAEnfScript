@@ -7,13 +7,13 @@ class WeaponFireAndChamberNext extends WeaponStateBase
 	ref WeaponFire m_fire;
 	ref WeaponEjectCasingAndChamberFromAttMag_W4T m_chamberNext;
 
-	void WeaponFireAndChamberNext (Weapon_Base w = NULL, WeaponStateBase parent = NULL, WeaponActions action = WeaponActions.NONE, int actionType = -1)
+	void WeaponFireAndChamberNext (Weapon_Base w = NULL, WeaponStateBase parent = NULL, WeaponActions action = WeaponActions.NONE, int actionType = -1, int alternativeType = -1)
 	{
 		m_action = action;
 		m_actionType = actionType;
 
 		// setup nested state machine
-		m_fire = new WeaponFireAndChamber(m_weapon, this, m_action, m_actionType);
+		m_fire = new WeaponFireAndChamber(m_weapon, this, m_action, m_actionType, alternativeType);
 		//m_chamberNext = new WeaponEjectCasingAndChamberFromAttMag_W4T(m_weapon, this);
 
 		// events

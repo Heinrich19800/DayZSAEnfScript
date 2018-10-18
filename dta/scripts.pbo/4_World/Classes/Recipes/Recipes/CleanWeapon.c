@@ -34,6 +34,7 @@ class CleanWeapon extends RecipeBase
 		
 		//ingredient 2
 		InsertIngredient(1,"DefaultWeapon");
+		InsertIngredient(1,"DefaultMagazine");
 		
 		m_IngredientAddHealth[1] = 0;// 0 = do nothing
 		m_IngredientSetHealth[1] = -1; // -1 = do nothing

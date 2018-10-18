@@ -45,8 +45,8 @@ class MainMenuNewsfeed extends ScriptedWidgetEventHandler
 		if( g_Game.IsStressTest() )
 		{
 			m_MainImage.LoadImageFile( 0, "set:main_menu_newsfeed image:image_1_1" );
-			m_MainText1.SetText( "Welcome to Stress Test Branch!" );
-			m_MainText2.SetText( "Click to read more about Stress Tests." );
+			m_MainText1.SetText( "#main_menu_news" );
+			m_MainText2.SetText( "#main_menu_news_desc" );
 		}
 		
 		m_Root.SetHandler( this );

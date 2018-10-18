@@ -109,7 +109,7 @@ FrameWidgetClass ServerBrowserRoot {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "OFFICIAL"
+             text "#STR_ServerBrowserRoot_Tabber_TabControls_TabBar_Tab_Control_Container_Tab_Control_0_Tab_Control_0_Title0"
              font "gui/fonts/sdf_MetronLight72"
              "text halign" center
              "text valign" center
@@ -165,7 +165,7 @@ FrameWidgetClass ServerBrowserRoot {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "COMMUNITY"
+             text "#STR_ServerBrowserRoot_Tabber_TabControls_TabBar_Tab_Control_Container_Tab_Control_1_Tab_Control_1_Title0"
              font "gui/fonts/sdf_MetronLight72"
              "text halign" center
              "text valign" center
@@ -221,7 +221,7 @@ FrameWidgetClass ServerBrowserRoot {
              hexactsize 0
              vexactsize 0
              priority 250
-             text "LAN"
+             text "#STR_ServerBrowserRoot_Tabber_TabControls_TabBar_Tab_Control_Container_Tab_Control_2_Tab_Control_2_Title0"
              font "gui/fonts/sdf_MetronLight72"
              "text halign" center
              "text valign" center
@@ -349,7 +349,7 @@ FrameWidgetClass ServerBrowserRoot {
    vexactsize 1
    priority 1
    style Normal
-   text "SERVER BROWSER"
+   text "#STR_ServerBrowserRoot_ServerBrowserTextWidget0"
    font "gui/fonts/sdf_MetronLight72"
    "text color" 0.8157 0.1255 0.7843 1
    "exact text" 0
@@ -442,7 +442,7 @@ FrameWidgetClass ServerBrowserRoot {
        vexactsize 1
        style DayZDefaultButtonBottom
        "no focus" 0
-       text "BACK"
+       text "#STR_ServerBrowserRoot_play_panel_root_top_back_button0"
        text_proportion 0.6
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -463,7 +463,7 @@ FrameWidgetClass ServerBrowserRoot {
        "next right" "news_main"
        "next up" "exit_button"
        "next down" "choose_server"
-       text "CUSTOMIZE CHARACTER"
+       text "#STR_ServerBrowserRoot_play_panel_root_top_customize_character0"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal

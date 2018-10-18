@@ -95,7 +95,7 @@ class DayZPlayerSyncJunctures
 	//! Full body
 	//! 
 	
-	static void SendPlayerStateAnim(DayZPlayer pPlayer, DayZPlayerConstants anim_id, int state_uid, int stance_mask, float duration)
+	static void SendPlayerSymptomAnim(DayZPlayer pPlayer, DayZPlayerConstants anim_id, int state_uid, int stance_mask, float duration)
 	{
 		ScriptJunctureData ctx = new ScriptJunctureData;
 		ctx.Write(anim_id);
@@ -107,7 +107,7 @@ class DayZPlayerSyncJunctures
 		pPlayer.SendSyncJuncture(SJ_PLAYER_STATES, ctx);
 	}
 	
-	static bool ReadPlayerStateAnimParams(ParamsReadContext pCtx, out DayZPlayerConstants anim_id, out int state_uid, out int stance_mask, out float duration)
+	static bool ReadPlayerSymptomAnimParams(ParamsReadContext pCtx, out DayZPlayerConstants anim_id, out int state_uid, out int stance_mask, out float duration)
 	{
 		if ( !pCtx.Read(anim_id) )
 			return false; // error

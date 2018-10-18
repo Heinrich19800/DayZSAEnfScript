@@ -1,4 +1,4 @@
-class Thirst: ModifierBase
+class ThirstMdfr: ModifierBase
 {
 	float 			m_LastWaterLevel;
 	ref HumanMovementState		m_MovementState	= new HumanMovementState();

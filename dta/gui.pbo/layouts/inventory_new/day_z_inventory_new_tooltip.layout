@@ -1,5 +1,6 @@
 SmartPanelWidgetClass BackPanelWidget {
  visible 1
+ clipchildren 1
  color 0.3569 0.3569 0.3569 0.7843
  position 5 10
  size 480 180
@@ -10,19 +11,6 @@ SmartPanelWidgetClass BackPanelWidget {
  priority 952
  style GrungeBorder
  {
-  TextWidgetClass ItemNameWidget {
-   position 0 0
-   size 1 0.12
-   hexactpos 0
-   vexactpos 0
-   hexactsize 0
-   vexactsize 0
-   priority 1
-   style Normal
-   text "Bullet Tuna"
-   "exact text" 1
-   "text halign" center
-  }
   ImageWidgetClass ItemNameBackgroundWidget {
    clipchildren 0
    color 0.2157 0.2157 0.2157 1
@@ -32,6 +20,24 @@ SmartPanelWidgetClass BackPanelWidget {
    hexactsize 0
    vexactsize 0
    imageTexture "{DAA636C623B11C5E}Gui/imagesets/GUI_back.edds"
+   {
+    TextWidgetClass ItemNameWidget {
+     position 0 0
+     size 1 1
+     hexactpos 0
+     vexactpos 0
+     hexactsize 0
+     vexactsize 0
+     priority 1
+     style Normal
+     text "Bullet Tuna"
+     font "gui/fonts/sdf_MetronBook24"
+     "exact text" 0
+     text_proportion 0.75
+     "text halign" center
+     "text valign" center
+    }
+   }
   }
   FrameWidgetClass ItemFrameWidget {
    clipchildren 1
@@ -46,16 +52,19 @@ SmartPanelWidgetClass BackPanelWidget {
   MultilineTextWidgetClass ItemDescWidget {
    clipchildren 1
    position 0.28 0.49597
-   size 1.87 0.46403
+   size 1.87 0.464
    hexactpos 0
    vexactpos 0
    hexactsize 0
    vexactsize 0
    fixaspect fixwidth
    style None
-   text "Description"
-   font "gui/fonts/Metron14"
+   text "#layout_tooltip_desc"
+   font "gui/fonts/sdf_MetronLight24"
    "exact text" 1
+   "exact text size" 18
+   "size to text h" 1
+   "size to text v" 1
    wrap 1
   }
   PanelWidgetClass AmountPanel {
@@ -88,7 +97,8 @@ SmartPanelWidgetClass BackPanelWidget {
      {
       TextWidgetClass ItemDamageWidget {
        clipchildren 0
-       size 0.75 0.75
+       position 0 0
+       size 1 1
        halign center_ref
        valign center_ref
        hexactpos 0
@@ -96,11 +106,14 @@ SmartPanelWidgetClass BackPanelWidget {
        hexactsize 0
        vexactsize 0
        style Normal
-       text "Damage"
-       font "gui/fonts/sdf_MetronBook24"
+       text "#layout_tooltip_damage"
+       font "gui/fonts/sdf_MetronLight24"
        "text color" 1 1 1 1
        "text spacing" 2 0
        "exact text" 0
+       text_proportion 0.75
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
       }
@@ -113,7 +126,7 @@ SmartPanelWidgetClass BackPanelWidget {
      ignorepointer 1
      color 1 1 1 0
      position 0 0.15
-     size 0.33 0.12
+     size 0.33 0.13
      halign center_ref
      hexactpos 0
      vexactpos 0
@@ -126,7 +139,8 @@ SmartPanelWidgetClass BackPanelWidget {
      {
       TextWidgetClass ItemWetnessWidget {
        clipchildren 0
-       size 0.75 0.75
+       position 0 0
+       size 1 1
        halign center_ref
        valign center_ref
        hexactpos 0
@@ -134,11 +148,14 @@ SmartPanelWidgetClass BackPanelWidget {
        hexactsize 0
        vexactsize 0
        style Normal
-       text "Wetness"
-       font "gui/fonts/sdf_MetronBook24"
+       text "#layout_tooltip_weight"
+       font "gui/fonts/sdf_MetronLight24"
        "text color" 1 1 1 1
        "text spacing" 2 0
        "exact text" 0
+       text_proportion 0.75
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
       }
@@ -164,7 +181,8 @@ SmartPanelWidgetClass BackPanelWidget {
      {
       TextWidgetClass ItemTemperatureWidget {
        clipchildren 0
-       size 0.75 0.75
+       position 0 0
+       size 1 1
        halign center_ref
        valign center_ref
        hexactpos 0
@@ -173,10 +191,13 @@ SmartPanelWidgetClass BackPanelWidget {
        vexactsize 0
        priority 1
        style Normal
-       text "Temperature"
-       font "gui/fonts/sdf_MetronBook24"
+       text "#layout_tooltip_temperature"
+       font "gui/fonts/sdf_MetronLight24"
        "text color" 1 1 1 1
        "exact text" 0
+       text_proportion 0.75
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
       }
@@ -189,7 +210,7 @@ SmartPanelWidgetClass BackPanelWidget {
      ignorepointer 1
      color 1 1 1 0
      position 0 0.15
-     size 0.33 0.12
+     size 0.33 0.13
      hexactpos 0
      vexactpos 0
      hexactsize 0
@@ -202,7 +223,7 @@ SmartPanelWidgetClass BackPanelWidget {
       TextWidgetClass ItemLiquidTypeWidget {
        clipchildren 0
        position 0 0
-       size 0.75 0.75
+       size 1 1
        halign center_ref
        valign center_ref
        hexactpos 0
@@ -211,10 +232,13 @@ SmartPanelWidgetClass BackPanelWidget {
        vexactsize 0
        priority 1
        style Normal
-       text "Liquid type"
-       font "gui/fonts/sdf_MetronBook24"
+       text "#layout_tooltip_liquid_type"
+       font "gui/fonts/sdf_MetronLight24"
        "text color" 1 1 1 1
        "exact text" 0
+       text_proportion 0.75
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
       }
@@ -227,7 +251,7 @@ SmartPanelWidgetClass BackPanelWidget {
      ignorepointer 1
      color 1 1 1 0
      position 0 0.15
-     size 0.32 0.12
+     size 0.32 0.13
      halign right_ref
      hexactpos 0
      vexactpos 0
@@ -241,7 +265,7 @@ SmartPanelWidgetClass BackPanelWidget {
       TextWidgetClass ItemQuantityWidget {
        clipchildren 0
        position 0 0
-       size 0.75 0.75
+       size 1 1
        halign center_ref
        valign center_ref
        hexactpos 0
@@ -249,10 +273,13 @@ SmartPanelWidgetClass BackPanelWidget {
        hexactsize 0
        vexactsize 0
        style Normal
-       text "Quantity"
-       font "gui/fonts/sdf_MetronBook24"
+       text "#layout_tooltip_quantity"
+       font "gui/fonts/sdf_MetronLight24"
        "text color" 1 1 1 1
        "exact text" 0
+       text_proportion 0.75
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
       }
@@ -279,7 +306,7 @@ SmartPanelWidgetClass BackPanelWidget {
       TextWidgetClass ItemWeightWidget {
        clipchildren 0
        position 0 0
-       size 0.75 0.75
+       size 1 1
        halign center_ref
        valign center_ref
        hexactpos 0
@@ -287,10 +314,13 @@ SmartPanelWidgetClass BackPanelWidget {
        hexactsize 0
        vexactsize 0
        style Normal
-       text "Weight"
-       font "gui/fonts/sdf_MetronBook24"
+       text "#layout_tooltip_weight"
+       font "gui/fonts/sdf_MetronLight24"
        "text color" 1 1 1 1
        "exact text" 0
+       text_proportion 0.75
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
       }
@@ -302,7 +332,7 @@ SmartPanelWidgetClass BackPanelWidget {
      inheritalpha 0
      ignorepointer 1
      color 1 1 1 0
-     position 0 0.28
+     position 0 0.29
      size 0.33 0.13
      hexactpos 0
      vexactpos 0
@@ -315,7 +345,8 @@ SmartPanelWidgetClass BackPanelWidget {
      {
       TextWidgetClass ItemFoodStageWidget {
        clipchildren 0
-       size 0.75 0.75
+       position 0 0
+       size 1 1
        halign center_ref
        valign center_ref
        hexactpos 0
@@ -323,11 +354,14 @@ SmartPanelWidgetClass BackPanelWidget {
        hexactsize 0
        vexactsize 0
        style Normal
-       text "Food Stage"
-       font "gui/fonts/sdf_MetronBook24"
+       text "#layout_tooltip_food_stage"
+       font "gui/fonts/sdf_MetronLight24"
        "text color" 1 1 1 1
        "text spacing" 2 0
        "exact text" 0
+       text_proportion 0.75
+       "size to text h" 0
+       "size to text v" 1
        "text halign" center
        "text valign" center
       }

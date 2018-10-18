@@ -494,7 +494,7 @@ FrameWidgetClass MainFrameWidget {
          vexactsize 0
          userID 199
          style MenuDefault
-         text "Search"
+         text "#layout_server_browser_ip_serarch"
          font "gui/fonts/MetronBook22"
         }
         ButtonWidgetClass EB_ServerSearchButton {
@@ -506,7 +506,7 @@ FrameWidgetClass MainFrameWidget {
          vexactsize 0
          userID 200
          style MenuDefault
-         text "Search"
+         text "#layout_server_browser_server_serarch"
          text_proportion 0.8
          font "gui/fonts/Metron22"
         }

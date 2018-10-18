@@ -38,7 +38,7 @@ WindowWidgetClass connectionWarningWindowWidget {
    vexactpos 1
    hexactsize 1
    vexactsize 1
-   text "WARNING"
+   text "#layout_notification_info_warning"
    "text offset" 0 0
    "exact text" 1
    "text halign" center

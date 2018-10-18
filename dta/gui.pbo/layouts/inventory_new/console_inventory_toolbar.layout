@@ -32,7 +32,7 @@ PanelWidgetClass ConsoleToolbar {
      vexactpos 1
      hexactsize 0
      vexactsize 1
-     text "General toolbar"
+     text "#layout_console_inventory_toolbar_text"
      font "gui/fonts/MetronLight"
      "italic text" 0
      "exact text" 1
@@ -63,7 +63,7 @@ PanelWidgetClass ConsoleToolbar {
      vexactpos 1
      hexactsize 0
      vexactsize 1
-     text "Context toolbar"
+     text "#layout_console_inventory_toolbar_context"
      font "gui/fonts/MetronLight"
      "italic text" 0
      "exact text" 1

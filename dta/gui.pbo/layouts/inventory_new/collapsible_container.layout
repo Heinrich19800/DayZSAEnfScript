@@ -1,7 +1,7 @@
-PanelWidgetClass collapsible_container_root {
- clipchildren 1
+WrapSpacerWidgetClass collapsible_container_root {
+ clipchildren 0
  ignorepointer 1
- color 1 0.2784 0.9882 1
+ color 1 0.2784 0.9882 0
  position 0 0
  size 1 0
  hexactpos 1
@@ -9,13 +9,14 @@ PanelWidgetClass collapsible_container_root {
  hexactsize 0
  vexactsize 1
  priority 8
- scriptclass "AutoHeightSpacer"
- style blank
+ scriptclass ""
+ style Colorable
+ "Size To Content V" 1
  {
-  PanelWidgetClass body {
+  WrapSpacerWidgetClass body {
    visible 1
-   clipchildren 1
-   color 0.4863 1 0.6941 1
+   clipchildren 0
+   color 1 1 1 0
    position 0 0
    size 1 0
    halign center_ref
@@ -23,21 +24,10 @@ PanelWidgetClass collapsible_container_root {
    vexactpos 1
    hexactsize 0
    vexactsize 1
-   priority 9
-   scriptclass "AutoHeightSpacer"
-   style blank
-   {
-    ScriptParamsClass {
-     AlignChilds 1
-     Gap 5
-    }
-   }
-  }
- }
- {
-  ScriptParamsClass {
-   AlignChilds 1
-   Gap 5
+   priority 90
+   scriptclass ""
+   style Outline
+   "Size To Content V" 1
   }
  }
 }

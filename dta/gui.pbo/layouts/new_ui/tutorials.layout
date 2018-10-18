@@ -2853,7 +2853,7 @@ FrameWidgetClass rootFrame {
    vexactsize 1
    priority 1
    style Normal
-   text "TUTORIALS"
+   text "#STR_rootFrame_TutorialsTextWidget0"
    font "gui/fonts/sdf_MetronLight72"
    "text color" 0.8157 0.1255 0.7843 1
    "exact text" 0
@@ -2935,7 +2935,7 @@ FrameWidgetClass rootFrame {
          vexactpos 1
          hexactsize 1
          vexactsize 1
-         text "Back"
+         text "#STR_rootFrame_toolbar_bg_ConsoleToolbar_Back_BackText0"
          font "gui/fonts/sdf_MetronLight24"
          "text valign" center
         }

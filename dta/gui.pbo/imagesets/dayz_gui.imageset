@@ -194,8 +194,8 @@ ImageSetClass {
   }
   ImageSetDefClass ColorableBar {
    Name "ColorableBar"
-   Pos 89 256
-   Size 13 13
+   Pos 90 257
+   Size 11 11
    Flags 0
   }
   ImageSetDefClass editorQuadCenter {

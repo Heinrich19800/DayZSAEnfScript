@@ -1,24 +1,82 @@
 class TentBase extends ItemBase
 {
-	static const int PACKED 	= 0;
-	static const int PITCHED 	= 1;
+	protected const bool PACKED 	= false;
+	protected const bool PITCHED 	= true;
 	
-	private int m_State;
+	protected bool m_State;
 	
-	protected ref map< ref ToggleSelections, bool> m_ToggleSelections;
-	protected ref array<string> m_ShowSelectionsWhenPitched;
-	protected ref array<string> m_HideSelectionsWhenPacked;
+	protected ref map< ref ToggleAnimations, bool> m_ToggleAnimations;
+	protected ref array<string> m_ShowAnimationsWhenPitched;
+	protected ref array<string> m_ShowAnimationsWhenPacked;
+	protected Object m_ClutterCutter;
 	
 	void TentBase()
 	{
-		m_ToggleSelections = new map<ref ToggleSelections, bool>;
-		m_ShowSelectionsWhenPitched = new array<string>;
-		m_HideSelectionsWhenPacked = new array<string>;
+		m_ToggleAnimations = new map<ref ToggleAnimations, bool>;
+		m_ShowAnimationsWhenPitched = new array<string>;
+		m_ShowAnimationsWhenPacked = new array<string>;
+		RegisterNetSyncVariableBool("m_State");
 	}
 	
-	void Init()
+	void ~TentBase()
 	{
-		Pack( false );
+		if ( m_ClutterCutter )
+		{
+			DestroyClutterCutter();
+		}
+	}
+	
+	override void EEInit()
+	{
+		super.EEInit();
+
+		Pack();
+	}
+	
+	override void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
+	{		
+		super.OnItemLocationChanged(old_owner, new_owner);
+		
+		if ( new_owner || old_owner )
+		{
+			Pack();
+		}
+	}
+	
+	override void OnVariablesSynchronized()
+	{
+		super.OnVariablesSynchronized();
+		
+		if ( m_State )
+		{
+			Pitch();
+		}
+		else
+		{
+			Pack();
+		}
+	}
+	
+	void HideAllAnimationsAndProxyPhysics()
+	{		
+		string cfg_path = "cfgVehicles " + GetType() + " AnimationSources";
+		
+		if ( GetGame().ConfigIsExisting( cfg_path ) )
+		{
+			int	selections = GetGame().ConfigGetChildrenCount( cfg_path );
+			string proxy_selection_name;
+			
+			for ( int i = 0; i < selections; i++ )
+			{
+				string selection_name;
+				GetGame().ConfigGetChildName( cfg_path, i, selection_name );
+				SetAnimationPhase( selection_name, 1 );
+				
+				proxy_selection_name = selection_name;
+				proxy_selection_name.ToLower();	
+				RemoveProxyPhysics( proxy_selection_name );
+			}
+		}
 	}
 	
 	override bool IsDeployable()
@@ -60,54 +118,25 @@ class TentBase extends ItemBase
 	{
 		super.EEItemAttached(item, slot_name);
 		
-		if ( !g_Game.IsServer() ) return;
-
-		if ( item.IsInherited(XmasLights) ) 
-		{
-			XmasLights fence_light = XmasLights.Cast( item );
-			fence_light.AttachToObject(this);
-			SetAnimationPhase( "xlights", 0 );
-		}
-		else if ( item.IsKindOf ( "CamoNet" ) ) 
+		if ( item.IsKindOf ( "CamoNet" ) ) 
 		{
 			SetAnimationPhase( "camonet", 0 );
-			
-			RegenerateNavmesh();
 		}
 	}
 
 	override void EEItemDetached(EntityAI item, string slot_name)
 	{
 		super.EEItemDetached(item, slot_name);
-		
-		if ( !g_Game.IsServer() ) return;
-		
-		if ( item.IsInherited(XmasLights) ) 
-		{
-			XmasLights fence_light = XmasLights.Cast( item );
-			fence_light.DetachFromObject(this);
-			SetAnimationPhase( "xlights", 1 );
-			SetAnimationPhase( "placing", 0 );
-		}
-		else if ( item.IsKindOf ( "CamoNet" ) ) 
+				
+		if ( item.IsKindOf ( "CamoNet" ) ) 
 		{
 			SetAnimationPhase( "camonet", 1 );
-			SetAnimationPhase( "placing", 0 );
-			
-			RegenerateNavmesh();
 		}
-	}
-	
-	override void OnPlacementStarted( Man player )
-	{
-		super.OnPlacementStarted( player );
-		
-		Pitch( false );
 	}
 	
 	override void OnPlacementComplete( Man player )
 	{
-		Pitch();
+		Pitch( true );
 	}
 	
 	int GetState()
@@ -140,57 +169,89 @@ class TentBase extends ItemBase
 		}
 	}
 	
-	void Pack( bool update_navmesh = true )
+	bool CanAttach( ItemBase item )
 	{
-		//Print("PACKING");
-		m_State = PACKED;
-		if (GetInventory())
-			DestroyInventory();
-		
-		SetAnimationPhase( "placing", 1 );
-		SetAnimationPhase( "inventory", 0 );
-		
-		for ( int i = 0; i < m_HideSelectionsWhenPacked.Count(); i++ )
+		if ( item.IsKindOf ( "CamoNet" ) ) 
 		{
-			SetAnimationPhase( m_HideSelectionsWhenPacked.Get(i), 1 );
+			return true;
 		}
+		
+		return false;
+	}
+	
+	void Pack( bool update_navmesh = true )
+	{	
+		HideAllAnimationsAndProxyPhysics();
+		
+		m_State = PACKED;
+		string proxy_selection_name;
+		string animation_name;
+
+		for ( int i = 0; i < m_ShowAnimationsWhenPacked.Count(); i++ )
+		{
+			animation_name = m_ShowAnimationsWhenPacked.Get(i);
+		
+			SetAnimationPhase( animation_name, 0 );
+			proxy_selection_name = animation_name;
+			proxy_selection_name.ToLower();
+			AddProxyPhysics( proxy_selection_name );
+		}
+	
+		GetInventory().LockInventory(HIDE_INV_FROM_SCRIPT);
 		
 		if ( update_navmesh ) 
 		{
-			//Print("Pack->RegenerateNavmesh");
 			RegenerateNavmesh();	
 		}
+						
+		DestroyClutterCutter();
+		
+		SetViewIndex( PACKED );
+		
+		SetSynchDirty();
 	}
 
 	void Pitch( bool update_navmesh = true )
-	{
-		//Print("PITCHING");
+	{		
+		HideAllAnimationsAndProxyPhysics();
+		
 		m_State = PITCHED;
-		if (!GetInventory())
-			CreateAndInitInventory();
+		string proxy_selection_name;
+		string animation_name;
 		
-		SetAnimationPhase( "placing", 0 );
-		SetAnimationPhase( "inventory", 1 );
-		
-		for ( int i = 0; i < m_ShowSelectionsWhenPitched.Count(); i++ )
+		for ( int i = 0; i < m_ShowAnimationsWhenPitched.Count(); i++ )
 		{
-			SetAnimationPhase( m_ShowSelectionsWhenPitched.Get(i), 0 );
+			animation_name = m_ShowAnimationsWhenPitched.Get(i);
+			
+			SetAnimationPhase( animation_name, 0 );
+			proxy_selection_name = animation_name;
+			proxy_selection_name.ToLower();
+			AddProxyPhysics( proxy_selection_name );
 		}
+		
+		GetInventory().UnlockInventory(HIDE_INV_FROM_SCRIPT);
 		
 		if ( update_navmesh ) 
 		{
-			//Print("Pitch->RegenerateNavmesh");
 			RegenerateNavmesh();	
 		}
+		
+		SetViewIndex( PITCHED );
+		
+		SetSynchDirty();
 	}
 	
-	bool CanToggleSelection( string selection )
-	{
-		for ( int i = 0; i < m_ToggleSelections.Count(); i++ )
+	bool CanToggleAnimations( string selection )
+	{		
+		for ( int i = 0; i < m_ToggleAnimations.Count(); i++ )
 		{
-			ToggleSelections toggle = m_ToggleSelections.GetKey(i);
+			ToggleAnimations toggle = m_ToggleAnimations.GetKey(i);
+			string toggle_off = toggle.GetToggleOff();
+			toggle_off.ToLower();
+			string toggle_on = toggle.GetToggleOn();
+			toggle_on.ToLower();
 			
-			if ( toggle.GetToggleOff() == selection || toggle.GetToggleOn() == selection )
+			if ( toggle_off == selection || toggle_on == selection )
 			{
 				return true;
 			}
@@ -199,26 +260,34 @@ class TentBase extends ItemBase
 		return false;
 	}
 
-	void ToggleSelection( string selection )
+	void ToggleAnimation( string selection )
 	{
-		//Print("TOGGLE SELLECTIONS");
-		for ( int i = 0; i < m_ToggleSelections.Count(); i++ )
+		for ( int i = 0; i < m_ToggleAnimations.Count(); i++ )
 		{
-			ToggleSelections toggle = m_ToggleSelections.GetKey(i);
+			ToggleAnimations toggle = m_ToggleAnimations.GetKey(i);
 			
-			if ( toggle.GetToggleOff() == selection || toggle.GetToggleOn() == selection )
+			string toggle_off = toggle.GetToggleOff();
+			toggle_off.ToLower();
+			string toggle_on = toggle.GetToggleOn();
+			toggle_on.ToLower();
+						
+			if ( toggle_off == selection || toggle_on == selection )
 			{
-				if ( m_ToggleSelections.GetElement(i) )
+				if ( m_ToggleAnimations.GetElement(i) )
 				{
 					SetAnimationPhase( toggle.GetToggleOff(), 0 );
+					AddProxyPhysics( toggle.GetToggleOff() );
 					SetAnimationPhase( toggle.GetToggleOn(), 1 );
-					m_ToggleSelections.Set( toggle, false );
+					RemoveProxyPhysics( toggle.GetToggleOn() );
+					m_ToggleAnimations.Set( toggle, false );
 				}
 				else
-				{
+				{				
 					SetAnimationPhase( toggle.GetToggleOff(), 1 );
+					RemoveProxyPhysics( toggle.GetToggleOff() );
 					SetAnimationPhase( toggle.GetToggleOn(), 0 );
-					m_ToggleSelections.Set( toggle, true );
+					AddProxyPhysics( toggle.GetToggleOn() );
+					m_ToggleAnimations.Set( toggle, true );
 				}
 			}
 		}
@@ -229,5 +298,16 @@ class TentBase extends ItemBase
 		SetAffectPathgraph( true, false );
 		
 		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GetGame().UpdatePathgraphRegionByObject, 100, false, this);
+	}
+	
+	void DestroyClutterCutter()
+	{
+		if ( GetGame().IsMultiplayer() || GetGame().IsServer() )
+		{
+			if ( m_ClutterCutter )
+			{
+				GetGame().ObjectDelete( m_ClutterCutter );
+			}
+		}
 	}
 };
