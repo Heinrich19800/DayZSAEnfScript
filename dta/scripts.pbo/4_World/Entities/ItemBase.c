@@ -1103,7 +1103,9 @@ class ItemBase extends InventoryItem
 		float this_free_space;
 			
 		int max_quantity;
-		int stack_max = InventorySlots.GetStackMaxForSlotId( GetInventory().GetSlotId(0) );
+		InventoryLocation il = new InventoryLocation;
+		GetInventory().GetCurrentInventoryLocation( il );
+		int stack_max = InventorySlots.GetStackMaxForSlotId( il.GetSlot() );
 		if( use_stack_max && stack_max > 0 )
 		{
 			max_quantity = stack_max;

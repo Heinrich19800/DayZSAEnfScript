@@ -75,7 +75,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		#ifdef PLATFORM_CONSOLE
 			//Sort init
 			TextWidget sort_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "SortText" ) );
-			sort_text.SetText( "Sort host ASC" );
+			sort_text.SetText( "#str_serverbrowserroot_toolbar_bg_consoletoolbar_sort_sorttext0" );
 		#endif
 		
 		PPEffects.SetBlurMenu( 0.5 );
@@ -190,9 +190,9 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		
 		if( focus )
 		{
-			con_text.SetText( "Toggle" );
-			ref_text.SetText( "Refresh Servers" );
-			res_text.SetText( "Reset Filters" );
+			con_text.SetText( "#str_settings_menu_root_toolbar_bg_consoletoolbar_toggle_toggletext0" );
+			ref_text.SetText( "#server_browser_menu_refresh" );
+			res_text.SetText( "#server_browser_menu_reset_filters" );
 		}
 		#endif
 	}

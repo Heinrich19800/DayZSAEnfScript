@@ -103,7 +103,7 @@ class MainMenuNewsfeed extends ScriptedWidgetEventHandler
 	
 	void OpenTwitter()
 	{
-		GetGame().OpenURL( "https://twitter.com/dayzdevteam" );
+		GetGame().OpenURL( "https://twitter.com/DayZ" );
 	}
 	
 	void OpenYoutube()

@@ -9,6 +9,7 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 	protected ref HandAnimatedTakingFromAtt m_Taking;
 	protected ref HandAnimatedMovingToAtt m_MovingTo;
 	protected ref HandAnimatedSwapping m_Swapping;
+	protected ref HandAnimatedForceSwapping m_FSwapping;
 
 	void DayZPlayerInventory () { }
 
@@ -23,6 +24,7 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 		m_Taking = new HandAnimatedTakingFromAtt(GetManOwner(), null);
 		m_MovingTo = new HandAnimatedMovingToAtt(GetManOwner(), null);
 		m_Swapping = new HandAnimatedSwapping(GetManOwner(), null);
+		m_FSwapping = new HandAnimatedForceSwapping(GetManOwner(), null);
 
 		// events
 		HandEventBase _fin_ = new HandEventHumanCommandActionFinished;
@@ -31,18 +33,20 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 		HandEventBase __M__ = new HandEventMoveTo;
 		HandEventBase __W__ = new HandEventSwap;
 		//HandEventBase __D__ = new HandEventDropping;
-		//HandEventBase __F__ = new HandEventForceSwapping;
+		HandEventBase __F__ = new HandEventForceSwap;
 
 		// setup transitions
-		m_FSM.AddTransition(new HandTransition( m_Empty   , __T__,    m_Taking, NULL, new HandGuardHasAnimatedAtachmentInEvent(GetManOwner())));
+		m_FSM.AddTransition(new HandTransition( m_Empty   , __T__,    m_Taking, NULL, new HandSelectAnimationOfTakeToHandsEvent(GetManOwner())));
 		m_FSM.AddTransition(new HandTransition( m_Taking  , _fin_,  m_Equipped, null, null));
 
-		m_FSM.AddTransition(new HandTransition( m_Equipped, __M__,  m_MovingTo, NULL, new HandGuardAnd(HandGuardHasAnimatedAtachmentInHands(GetManOwner()), new HandGuardHasRoomForAttachment(GetManOwner()))));
+		m_FSM.AddTransition(new HandTransition( m_Equipped, __M__,  m_MovingTo, NULL, new HandSelectAnimationOfMoveFromHandsEvent(GetManOwner())));
 		m_FSM.AddTransition(new HandTransition( m_MovingTo, _fin_,  m_Empty   , null, null));
 
-		HandGuardBase swapGuard = new HandGuardAnd(HandGuardHasAnimatedAtachmentInHands(GetManOwner()), new HandGuardHasAnimatedAtachmentInEvent(GetManOwner()));
-		m_FSM.AddTransition(new HandTransition( m_Equipped, __W__,  m_Swapping, NULL, swapGuard));
+		m_FSM.AddTransition(new HandTransition( m_Equipped, __W__,  m_Swapping, NULL, new HandSelectAnimationOfSwapInHandsEvent(GetManOwner())));
 		m_FSM.AddTransition(new HandTransition( m_Swapping, _fin_,  m_Equipped, null, null));
+
+		m_FSM.AddTransition(new HandTransition( m_Equipped, __F__, m_FSwapping, NULL, new HandSelectAnimationOfForceSwapInHandsEvent(GetManOwner())));
+		m_FSM.AddTransition(new HandTransition(m_FSwapping, _fin_,  m_Equipped, null, null));
 
 		super.Init(); // initialize ordinary human fsm (no anims)
 	}

@@ -337,7 +337,6 @@ class GameInventory
 					break; // not in bubble
 				}
 
-				// workaround for commented code
 				InventoryLocation src1, src2, dst1, dst2;
 				if (GameInventory.MakeSrcAndDstForSwap(item1, item2, src1, src2, dst1, dst2))
 				{

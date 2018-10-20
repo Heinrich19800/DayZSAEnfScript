@@ -26,6 +26,7 @@ const int IDC_MAIN_PLAY         	= 142;
 const int IDC_MAIN_CHARACTER		= 143;
 const int IDC_MAIN_ONLINE			= 124;
 const int IDC_MULTI_REFRESH			= 123;
+const int IDC_MULTI_INVITE			= 126;
 
 
 const int IDC_BOOK_VIEWER_PREV  	= 102;
@@ -276,7 +277,6 @@ const int ID_EMOTE_SURRENDER 	= 61;
 const float ENVIRO_TICK_RATE 						= 2;		//! in secs. how often should enviro effet process
 const float	ENVIRO_TICKS_TO_WETNESS_CALCULATION 	= 2;	  	//! each X (ticks) is processed wetness on items on player
 const float ENVIRO_TICK_ROOF_RC_CHECK 				= 10;	  	//! in secs. how often we should check if player is under the roof (raycast)
-const float ENVIRO_WET_PENALTY_EFFECT 				= 5;	  	//! how much wetness of clothes affects players heatcomfort
 const float ENVIRO_WET_INCREMENT 					= 0.01;	  	//! amount of wetness added to items wet value each tick if is raining
 const float ENVIRO_DRY_INCREMENT 					= 0.0005; 	//! amount of wetness subtracted from items wet value each tick if is not raining due to player heat
 const float ENVIRO_SUN_INCREMENT 					= 0.002;	//! amount of wetness subtracted from items wet value each tick if is not raining due to sun
@@ -300,6 +300,19 @@ const float ENVIRO_HEATCOMFORT_FEETPARTS_WEIGHT		= 0.5;		//! how much this feet 
 const float ENVIRO_LOW_TEMP_LIMIT					= -40;		//! lowest temperature(deg Celsius) where the player gets lowest possible heat comfort (-1)
 const float ENVIRO_HIGH_TEMP_LIMIT					= 50;		//! highest temperature(deg Celsius) where the player gets highest possible heat comfort (1)
 const float ENVIRO_PLAYER_COMFORT_TEMP				= 18;		//! comfort temperature of environment for the player
+
+//! impact of item wetness to its heat isolation
+const float ENVIRO_ISOLATION_WETFACTOR_DRY			= 1.0;
+const float ENVIRO_ISOLATION_WETFACTOR_DAMP			= 0.75;
+const float ENVIRO_ISOLATION_WETFACTOR_WET			= 0.5;
+const float ENVIRO_ISOLATION_WETFACTOR_SOAKED		= 0.0;
+const float ENVIRO_ISOLATION_WETFACTOR_DRENCHED 	= -1.0;
+
+const float ENVIRO_ISOLATION_HEALTHFACTOR_PRISTINE  = 1.0;
+const float ENVIRO_ISOLATION_HEALTHFACTOR_WORN		= 0.75;
+const float ENVIRO_ISOLATION_HEALTHFACTOR_DAMAGED	= 0.5;
+const float ENVIRO_ISOLATION_HEALTHFACTOR_B_DAMAGED = 0.25;
+const float ENVIRO_ISOLATION_HEALTHFACTOR_RUINED  	= 0.0;
 
 /** @}*/
 
@@ -514,6 +527,30 @@ const int VARIABLE_WET 			= 8;
 const int VARIABLE_LIQUIDTYPE	= 16;
 const int VARIABLE_ISLIT		= 32;
 const int VARIABLE_COLOR		= 64;
+/** @}*/
+
+/**
+ * \defgroup Item Health States (ItemBase.GetHealthLabel)
+ * \desc Constants for Item Health States
+ * @{
+ */
+const int STATE_RUINED 		 	= 4;
+const int STATE_BADLY_DAMAGED 	= 3;
+const int STATE_DAMAGED 	  	= 2;
+const int STATE_WORN 		  	= 1;
+const int STATE_PRISTINE 	  	= 0;
+/** @}*/
+	
+/**
+ * \defgroup Item Wetness States (ItemBase.GetWet)
+ * \desc Constants for Item Wetness States
+ * @{
+ */
+const float STATE_DRENCHED		= 0.8;
+const float STATE_SOAKING_WET	= 0.5;
+const float STATE_WET			= 0.25;
+const float STATE_DAMP			= 0.05;
+const float STATE_DRY			= 0;
 /** @}*/
 
 const float CRAFTING_TIME_UNIT_SIZE = 4.0;// time unit size for crafting, this value is multiplied by the length given by a recipe

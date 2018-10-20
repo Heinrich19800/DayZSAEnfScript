@@ -678,10 +678,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void Connect( ServerBrowserEntry server )
 	{
-		if ( !m_Menu )
+		if( !m_Menu )
 			return;
 		
-		if ( m_Menu.IsRefreshing() != m_TabType )
+		if( m_Menu.IsRefreshing() != TabType.NONE )
 			return;
 		
 		m_SelectedServer = server;
@@ -825,7 +825,6 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		m_Root.FindAnyWidget( w_name ).Show( true );
 		m_Root.FindAnyWidget( w_name + "_dsc" ).Show( !m_SortOrder );
 		m_Root.FindAnyWidget( w_name + "_asc" ).Show( m_SortOrder );
-		
 		#endif
 	}
 	

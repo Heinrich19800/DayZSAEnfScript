@@ -186,32 +186,32 @@ class InspectMenuNew extends UIScriptedMenu
 		
 		switch(damageLevel)
 		{
-			case ItemManager.STATE_RUINED:
+			case STATE_RUINED:
 			{
-				WidgetTrySetText(root_widget, "ItemDamageWidget", "RUINED", Colors.COLOR_RUINED);
+				WidgetTrySetText(root_widget, "ItemDamageWidget", "#inv_inspect_ruined", Colors.COLOR_RUINED);
 				break;
 			}
-			case ItemManager.STATE_BADLY_DAMAGED:
+			case STATE_BADLY_DAMAGED:
 			{
-				WidgetTrySetText(root_widget, "ItemDamageWidget", "BADLY DAMAGED", Colors.COLOR_BADLY_DAMAGED);
-				break;
-			}
-			
-			case ItemManager.STATE_DAMAGED:
-			{
-				WidgetTrySetText(root_widget, "ItemDamageWidget", "DAMAGED", Colors.COLOR_DAMAGED);
+				WidgetTrySetText(root_widget, "ItemDamageWidget", "#inv_inspect_badly", Colors.COLOR_BADLY_DAMAGED);
 				break;
 			}
 			
-			case ItemManager.STATE_WORN:
+			case STATE_DAMAGED:
 			{
-				WidgetTrySetText(root_widget, "ItemDamageWidget", "WORN", Colors.COLOR_WORN);
+				WidgetTrySetText(root_widget, "ItemDamageWidget", "#inv_inspect_damaged", Colors.COLOR_DAMAGED);
 				break;
 			}
 			
-			case ItemManager.STATE_PRISTINE:
+			case STATE_WORN:
 			{
-				WidgetTrySetText(root_widget, "ItemDamageWidget", "PRISTINE", Colors.COLOR_PRISTINE);
+				WidgetTrySetText(root_widget, "ItemDamageWidget", "#inv_inspect_worn", Colors.COLOR_WORN);
+				break;
+			}
+			
+			case STATE_PRISTINE:
+			{
+				WidgetTrySetText(root_widget, "ItemDamageWidget", "#inv_inspect_pristine", Colors.COLOR_PRISTINE);
 				break;
 			}
 					
@@ -238,11 +238,11 @@ class InspectMenuNew extends UIScriptedMenu
 			if( blood_container.GetBloodTypeVisible() )
 			{
 				string blood_type_name = BloodTypes.GetBloodTypeName(blood_container.GetLiquidType());
-				WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "BLOOD: " + blood_type_name, Colors.COLOR_LIQUID);
+				WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_blood: " + blood_type_name, Colors.COLOR_LIQUID);
 			}
 			else
 			{
-				WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "BLOOD", Colors.COLOR_LIQUID);
+				WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_blood", Colors.COLOR_LIQUID);
 			}
 		}
 		else if( item_base && item_base.GetQuantity() > 0 && item_base.IsLiquidContainer() )
@@ -253,49 +253,49 @@ class InspectMenuNew extends UIScriptedMenu
 			{
 				case LIQUID_WATER:
 				{
-					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "WATER", Colors.COLOR_LIQUID);
+					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_water", Colors.COLOR_LIQUID);
 					break;
 				}
 					
 				case LIQUID_RIVERWATER:
 				{
-					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "RIVER WATER", Colors.COLOR_LIQUID);
+					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_river_water", Colors.COLOR_LIQUID);
 					break;
 				}
 					
 				case LIQUID_VODKA:
 				{
-					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "VODKA", Colors.COLOR_LIQUID);
+					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_vodka", Colors.COLOR_LIQUID);
 					break;
 				}
 				
 				case LIQUID_BEER:
 				{
-					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "BEER", Colors.COLOR_LIQUID);
+					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_beer", Colors.COLOR_LIQUID);
 					break;
 				}
 				
 				case LIQUID_GASOLINE:
 				{
-					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "GASOLINE", Colors.COLOR_LIQUID);
+					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_gasoline", Colors.COLOR_LIQUID);
 					break;
 				}
 				
 				case LIQUID_DIESEL:
 				{
-					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "DIESEL", Colors.COLOR_LIQUID);
+					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_diesel", Colors.COLOR_LIQUID);
 					break;
 				}
 				
 				case LIQUID_DISINFECTANT:
 				{
-					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "DISINFECTANT", Colors.COLOR_LIQUID);
+					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_disinfectant", Colors.COLOR_LIQUID);
 					break;
 				}
 	
 				case LIQUID_SALINE:
 				{
-					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "SALINE", Colors.COLOR_LIQUID);
+					WidgetTrySetText(root_widget, "ItemLiquidTypeWidget", "#inv_inspect_saline", Colors.COLOR_LIQUID);
 					break;
 				}
 				
@@ -325,7 +325,7 @@ class InspectMenuNew extends UIScriptedMenu
 		
 		if( temperature != 0)
 		{
-			WidgetTrySetText(root_widget, "ItemTemperatureWidget",  "~ " + temperature.ToString() +  " CELSIUS", GetTemperatureColor( temperature ) );
+			WidgetTrySetText(root_widget, "ItemTemperatureWidget",  "~ " + temperature.ToString() +  " " + "#inv_inspect_celsius", GetTemperatureColor( temperature ) );
 		}	
 		else
 		{
@@ -364,25 +364,25 @@ class InspectMenuNew extends UIScriptedMenu
 			bagwet = parent.ConfigGetFloat("absorbency");
 		}
 		
-		if( wetness < ItemManager.STATE_DAMP )
+		if( wetness < STATE_DAMP )
 		{
 			WidgetTrySetText(root_widget, "ItemWetnessWidget", "");
 		}
-		else if( wetness >= ItemManager.STATE_DAMP && wetness < ItemManager.STATE_WET )
+		else if( wetness >= STATE_DAMP && wetness < STATE_WET )
 		{
-			WidgetTrySetText(root_widget, "ItemWetnessWidget", "DAMP", Colors.COLOR_DAMP);
+			WidgetTrySetText(root_widget, "ItemWetnessWidget", "#inv_inspcet_damp", Colors.COLOR_DAMP);
 		}
-		else if( wetness >= ItemManager.STATE_WET && wetness < ItemManager.STATE_SOAKING_WET )
+		else if( wetness >= STATE_WET && wetness < STATE_SOAKING_WET )
 		{
-			WidgetTrySetText( root_widget, "ItemWetnessWidget", "WET", Colors.COLOR_WET );
+			WidgetTrySetText( root_widget, "ItemWetnessWidget", "#inv_inspect_wet", Colors.COLOR_WET );
 		}
-		else if( wetness >= ItemManager.STATE_SOAKING_WET && wetness < ItemManager.STATE_DRENCHED )
+		else if( wetness >= STATE_SOAKING_WET && wetness < STATE_DRENCHED )
 		{
-			WidgetTrySetText( root_widget, "ItemWetnessWidget", "SOAKING WET", Colors.COLOR_SOAKING_WET );
+			WidgetTrySetText( root_widget, "ItemWetnessWidget", "#inv_inspect_soaking_wet", Colors.COLOR_SOAKING_WET );
 		}
 		else
 		{
-			WidgetTrySetText( root_widget, "ItemWetnessWidget", "DRENCHED", Colors.COLOR_DRENCHED );
+			WidgetTrySetText( root_widget, "ItemWetnessWidget", "#inv_inspect_drenched", Colors.COLOR_DRENCHED );
 		}
 	}
 	
@@ -404,30 +404,30 @@ class InspectMenuNew extends UIScriptedMenu
 				{
 					if( item_quantity == 1 )
 					{
-						WidgetTrySetText( root_widget, "ItemQuantityWidget", item_quantity.ToString() + " PIECE", Colors.COLOR_DEFAULT );
+						WidgetTrySetText( root_widget, "ItemQuantityWidget", item_quantity.ToString() + " " + "#inv_inspect_piece", Colors.COLOR_DEFAULT );
 					}
 					else
 					{
-						WidgetTrySetText( root_widget, "ItemQuantityWidget", item_quantity.ToString() + " PIECES", Colors.COLOR_DEFAULT );
+						WidgetTrySetText( root_widget, "ItemQuantityWidget", item_quantity.ToString() + " " + "#inv_inspect_piece", Colors.COLOR_DEFAULT );
 					}		
 				}
 				else if( item.ConfigGetString("stackedUnit") == "percentage" )
 				{
 					quantity_ratio = Math.Round( ( item_quantity / max_quantity ) * 100 );
 					
-					WidgetTrySetText( root_widget, "ItemQuantityWidget", quantity_ratio.ToString() + "% REMAINING", Colors.COLOR_DEFAULT );			
+					WidgetTrySetText( root_widget, "ItemQuantityWidget", quantity_ratio.ToString() + "#inv_inspect_remaining", Colors.COLOR_DEFAULT );			
 				}
 				else if( item.ConfigGetString("stackedUnit") == "g" )
 				{
 					quantity_ratio = Math.Round( ( item_quantity / max_quantity ) * 100 );
 					
-					WidgetTrySetText( root_widget, "ItemQuantityWidget", quantity_ratio.ToString() + "% REMAINING", Colors.COLOR_DEFAULT );			
+					WidgetTrySetText( root_widget, "ItemQuantityWidget", quantity_ratio.ToString() + "#inv_inspect_remaining", Colors.COLOR_DEFAULT );			
 				}
 				else if( item.ConfigGetString("stackedUnit") == "ml" )
 				{
 					quantity_ratio = Math.Round( ( item_quantity / max_quantity ) * 100 );
 					
-					WidgetTrySetText( root_widget, "ItemQuantityWidget", quantity_ratio.ToString() + "% REMAINING", Colors.COLOR_DEFAULT );
+					WidgetTrySetText( root_widget, "ItemQuantityWidget", quantity_ratio.ToString() + "#inv_inspect_remaining", Colors.COLOR_DEFAULT );
 				}
 				else if( item.IsInherited( Magazine ) )
 				{
@@ -436,11 +436,11 @@ class InspectMenuNew extends UIScriptedMenu
 					
 					if( magazine_item.GetAmmoCount() == 1 )
 					{
-						WidgetTrySetText( root_widget, "ItemQuantityWidget",  magazine_item.GetAmmoCount().ToString() + " PIECE", Colors.COLOR_DEFAULT );
+						WidgetTrySetText( root_widget, "ItemQuantityWidget",  magazine_item.GetAmmoCount().ToString() + " " + "#inv_inspect_piece", Colors.COLOR_DEFAULT );
 					}
 					else
 					{
-						WidgetTrySetText( root_widget, "ItemQuantityWidget",  magazine_item.GetAmmoCount().ToString() + " PIECES", Colors.COLOR_DEFAULT );
+						WidgetTrySetText( root_widget, "ItemQuantityWidget",  magazine_item.GetAmmoCount().ToString() + " " + "#inv_inspect_pieces", Colors.COLOR_DEFAULT );
 					}
 				}
 				else
@@ -496,19 +496,19 @@ class InspectMenuNew extends UIScriptedMenu
 			if (weight >= 1000)
 			{
 				int kilos = Math.Round(weight / 1000.0);
-				WidgetTrySetText(root_widget, "ItemWeightWidget", "ABOUT " + kilos.ToString() + " KG", Colors.COLOR_DEFAULT);
+				WidgetTrySetText(root_widget, "ItemWeightWidget", "#inv_inspect_about" + " " + kilos.ToString() + " " + "#inv_inspect_kg", Colors.COLOR_DEFAULT);
 			}
 			else if (weight >= 500)
 			{
-				WidgetTrySetText(root_widget, "ItemWeightWidget", "UNDER 1 KG", Colors.COLOR_DEFAULT);
+				WidgetTrySetText(root_widget, "ItemWeightWidget", "#inv_inspect_under_1", Colors.COLOR_DEFAULT);
 			} 
 			else if (weight >= 250)
 			{
-				WidgetTrySetText(root_widget, "ItemWeightWidget", "UNDER 0.5 KG", Colors.COLOR_DEFAULT);
+				WidgetTrySetText(root_widget, "ItemWeightWidget", "#inv_inspect_under_05", Colors.COLOR_DEFAULT);
 			}
 			else 
 			{
-				WidgetTrySetText(root_widget, "ItemWeightWidget", "UNDER 0.25 KG", Colors.COLOR_DEFAULT);
+				WidgetTrySetText(root_widget, "ItemWeightWidget", "#inv_inspect_under_025", Colors.COLOR_DEFAULT);
 			}
 		}
 	}

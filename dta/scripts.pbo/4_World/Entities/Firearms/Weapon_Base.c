@@ -541,7 +541,7 @@ class Weapon_Base extends Weapon
 	}
 	
 	// lifting weapon on obstcles
-	bool LiftWeapon (PlayerBase player)
+	bool LiftWeaponCheck (PlayerBase player)
 	{
 		m_LiftWeapon = false;
 		// not a gun, no weap.raise for now

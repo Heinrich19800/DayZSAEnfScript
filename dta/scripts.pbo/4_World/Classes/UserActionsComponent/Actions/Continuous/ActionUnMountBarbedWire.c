@@ -78,8 +78,9 @@ class ActionUnmountBarbedWire: ActionContinuousBase
 		barbed_wire.SetMountedState( false );
 		
 		//unlock slot
-		int slot_id = barbed_wire.GetInventory().GetSlotId( 0 );
-		base_building.GetInventory().SetSlotLock( slot_id, false );
+		InventoryLocation inventory_location = new InventoryLocation;
+		barbed_wire.GetInventory().GetCurrentInventoryLocation( inventory_location );		
+		base_building.GetInventory().SetSlotLock( inventory_location.GetSlot(), false );
 		
 		//refresh visuals and physics
 		base_building.Refresh();

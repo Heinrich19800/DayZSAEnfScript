@@ -416,8 +416,31 @@ FrameWidgetClass FrameWidget {
        "next left" ""
        "next right" ""
        "next up" "restartbtn"
-       "next down" "controlsbtn"
+       "next down" "invitebtn"
        text "#layout_xbox_ingame_menu_options"
+       text_proportion 0.55
+       font "gui/fonts/sdf_MetronLight24"
+       switch normal
+      }
+      ButtonWidgetClass invitebtn {
+       visible 1
+       color 0.0392 0.0392 0.0392 1
+       position 0 0
+       size 1 38
+       halign center_ref
+       valign bottom_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 1
+       userID 126
+       style DayZDefaultButtonSides
+       "no focus" 0
+       "next left" ""
+       "next right" ""
+       "next up" "optionsbtn"
+       "next down" "controlsbtn"
+       text "#layout_xbox_ingame_menu_invite"
        text_proportion 0.55
        font "gui/fonts/sdf_MetronLight24"
        switch normal
@@ -438,7 +461,7 @@ FrameWidgetClass FrameWidget {
        "no focus" 0
        "next left" ""
        "next right" ""
-       "next up" "optionsbtn"
+       "next up" "invitebtn"
        "next down" "onlinebtn"
        text "#layout_xbox_ingame_menu_controls"
        text_proportion 0.55

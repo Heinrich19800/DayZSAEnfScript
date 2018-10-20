@@ -1,6 +1,7 @@
 class LandMineTrap extends TrapBase
 {
 	SoundOnVehicle m_TimerLoop;
+	protected ref Timer m_DeleteTimer;
 	
 	void LandMineTrap()
 	{
@@ -63,6 +64,14 @@ class LandMineTrap extends TrapBase
 	override void OnSteppedOn(EntityAI victim)
 	{
 		this.Explode();
+		
+		m_DeleteTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+		m_DeleteTimer.Run( 2, this, "DeleteThis" );
+	}
+	
+	void DeleteThis()
+	{
+		GetGame().ObjectDelete(this);
 	}
 	
 	override void OnItemLocationChanged  ( EntityAI old_owner, EntityAI new_owner ) 

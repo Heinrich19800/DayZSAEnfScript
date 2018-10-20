@@ -728,10 +728,9 @@ class Man extends EntityAI
 	proto native void StatSyncToClient();
 	///@} Stats
 	
-	bool IsInventorySoftLocked()
-	{
-		return false;
-	};
-	
+	bool IsInventorySoftLocked() { return false; }
 	void SetInventorySoftLock(bool status);
+	
+	/// returns true if man is in transport, false otherwise
+	bool IsInTransport () { return null != Transport.Cast(GetParent()); }
 };

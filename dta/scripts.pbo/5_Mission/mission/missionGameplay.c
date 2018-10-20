@@ -966,10 +966,14 @@ class MissionGameplay extends MissionBase
 		}
 		
 		if (parent)
+		{
 			m_Logout = LogoutMenu.Cast(parent.EnterScriptedMenu(MENU_LOGOUT));
-		
-		if (m_Logout)
-			m_Logout.SetTimeLoading();
+			
+			if (m_Logout)
+			{
+				m_Logout.SetLogoutTime();
+			}
+		}		
 	}
 	
 	override void StartLogoutMenu(int time)

@@ -38,7 +38,7 @@ WindowWidgetClass LogoutDialogRoot {
      hexactsize 1
      vexactsize 1
      style EmptyHighlight
-     text "#message_dialog_yes"
+     text "#exit_now"
      text_proportion 0.5
      font "gui/fonts/sdf_MetronBook24"
     }
@@ -55,7 +55,7 @@ WindowWidgetClass LogoutDialogRoot {
      hexactsize 1
      vexactsize 1
      style EmptyHighlight
-     text "#message_dialog_no"
+     text "#cancel"
      text_proportion 0.5
      font "gui/fonts/sdf_MetronBook24"
     }

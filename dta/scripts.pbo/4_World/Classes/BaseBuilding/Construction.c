@@ -470,8 +470,10 @@ class Construction
 				if ( lockable )
 				{
 					//lock attachment
-					int slot_id = attachment.GetInventory().GetSlotId( 0 );
-					GetParent().GetInventory().SetSlotLock( slot_id, true );
+					InventoryLocation inventory_location = new InventoryLocation;
+					attachment.GetInventory().GetCurrentInventoryLocation( inventory_location );
+			
+					GetParent().GetInventory().SetSlotLock( inventory_location.GetSlot(), true );
 				}
 				else
 				{
@@ -524,8 +526,9 @@ class Construction
 				//material still attached
 				if ( lockable )
 				{
-					slot_id = attachment.GetInventory().GetSlotId( 0 );
-					GetParent().GetInventory().SetSlotLock( slot_id, false );
+					InventoryLocation inventory_location = new InventoryLocation;
+					attachment.GetInventory().GetCurrentInventoryLocation( inventory_location );
+					GetParent().GetInventory().SetSlotLock( inventory_location.GetSlot() , false );
 					
 					//detach
 					if ( GetGame().IsMultiplayer() )

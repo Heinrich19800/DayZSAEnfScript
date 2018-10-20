@@ -40,19 +40,26 @@ class OnlineServices
 	static void GetClientServices()
 	{
 		BiosUserManager user_manager = GetGame().GetUserManager();
-		BiosUser selected_user = user_manager.GetSelectedUser();
-		if( selected_user )
+		if( user_manager )
 		{
-			m_ClientServices = selected_user.GetClientServices();
-		}
-		#ifdef PLATFORM_WINDOWS
-			array<ref BiosUser> user_list = new array<ref BiosUser>;
-			user_manager.GetUserList( user_list );
-			if( user_list.Count() > 0 )
+			BiosUser selected_user = user_manager.GetSelectedUser();
+			if( selected_user )
 			{
-				m_ClientServices = user_list.Get( 0 ).GetClientServices();
+				m_ClientServices = selected_user.GetClientServices();
 			}
-		#endif
+			#ifdef PLATFORM_WINDOWS
+				array<ref BiosUser> user_list = new array<ref BiosUser>;
+				user_manager.GetUserList( user_list );
+				if( user_list.Count() > 0 )
+				{
+					m_ClientServices = user_list.Get( 0 ).GetClientServices();
+				}
+			#endif
+		}
+		else
+		{
+			Error( "BiosClientServices Error: Usermanager does not exist." );
+		}
 	}
 	
 	static bool ErrorCaught( EBiosError error )
@@ -66,7 +73,7 @@ class OnlineServices
 			}
 			case EBiosError.CANCEL:
 			{
-				DebugPrint.LogErrorAndTrace( "BiosClientServices Error: Opperation canceled." );
+				DebugPrint.LogErrorAndTrace( "BiosClientServices Error: Operation canceled." );
 				return true;
 			}
 			case EBiosError.BAD_PARAMETER:
@@ -286,6 +293,26 @@ class OnlineServices
 	static map<string, bool> GetMuteList()
 	{
 		return m_MuteList;
+	}
+	
+	static void ShowInviteScreen()
+	{
+		#ifdef PLATFORM_CONSOLE
+			GetClientServices();
+			if( m_ClientServices )
+			{
+				string addr;
+				int port;
+				if( GetGame().GetHostAddress( addr, port ) )
+				{
+					ErrorCaught( m_ClientServices.GetSessionService().ShowInviteToGameplaySessionAsync( addr, port ) );
+				}
+			}
+			else
+			{
+				DebugPrint.LogErrorAndTrace( "BiosClientServices Error: Service reference does not exist." );
+			}
+		#endif
 	}
 	
 	static void LoadMPPrivilege()

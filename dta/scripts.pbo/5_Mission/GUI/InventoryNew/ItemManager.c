@@ -1,16 +1,5 @@
 class ItemManager
 {
-	static const int STATE_RUINED 		 	= 4;
-	static const int STATE_BADLY_DAMAGED 	= 3;
-	static const int STATE_DAMAGED 	  		= 2;
-	static const int STATE_WORN 		  	= 1;
-	static const int STATE_PRISTINE 	  	= 0;
-	
-	static const float STATE_DRENCHED		= 0.8;
-	static const float STATE_SOAKING_WET	= 0.5;
-	static const float STATE_WET			= 0.25;
-	static const float STATE_DAMP			= 0.05;
-	
 	private ref static ItemManager m_Instance;
 	protected bool m_IsDragging;
 	protected EntityAI m_DraggedItem;

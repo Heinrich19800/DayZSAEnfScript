@@ -2,6 +2,8 @@ class PlayerBase extends ManBase
 {
 	static ref ScriptInvoker Event_OnPlayerDeath = new ScriptInvoker();
 	const int 						SIMPLIFIED_SHOCK_CAP = 63;
+	const int 						SHAKE_LEVEL_MAX = 7;
+	const int 						BREATH_VAPOUR_LEVEL_MAX = 7;
 	private int						m_LifeSpanState;
 	private int						m_LastShavedSeconds;
 	private int						m_BloodType;
@@ -77,7 +79,9 @@ class PlayerBase extends ManBase
 	vector 							m_DirectionToCursor;
 	int								m_DiseaseCount;
 	protected bool					m_AllowQuickRestrain;
-	
+	protected int					m_Shakes;
+	protected int					m_BreathVapour;
+
 	ref protected RandomGeneratorSyncManager m_RGSManager;
 	
 	#ifdef BOT
@@ -275,11 +279,13 @@ class PlayerBase extends ManBase
 		m_PresenceNotifierDebug = PluginPresenceNotifier.Cast( GetPlugin( PluginPresenceNotifier ) );
 		
 		RegisterNetSyncVariableInt("m_LifeSpanState", LifeSpanState.BEARD_NONE, LifeSpanState.COUNT);
-		RegisterNetSyncVariableInt("m_BloodType", 0, 128);
+		RegisterNetSyncVariableInt("m_BloodType", 0, 127);
 		RegisterNetSyncVariableInt("m_ShockSimplified",0, SIMPLIFIED_SHOCK_CAP);
 		RegisterNetSyncVariableInt("m_SoundEvent",0,31);
 		RegisterNetSyncVariableInt("m_StaminaState",0,7);
 		RegisterNetSyncVariableInt("m_BleedingBits");
+		RegisterNetSyncVariableInt("m_Shakes",-SHAKE_LEVEL_MAX,SHAKE_LEVEL_MAX);
+		RegisterNetSyncVariableInt("m_BreathVapour",0,BREATH_VAPOUR_LEVEL_MAX);
 		
 		RegisterNetSyncVariableBool("m_IsUnconscious");
 		RegisterNetSyncVariableBool("m_IsRestrained");
@@ -287,7 +293,8 @@ class PlayerBase extends ManBase
 		RegisterNetSyncVariableBool("m_HasBloodyHandsVisible");
 		RegisterNetSyncVariableBool("m_HasBloodTypeVisible");
 		RegisterNetSyncVariableBool("m_LiquidTendencyDrain");
-		RegisterNetSyncVariableBool("m_LiftWeapon");
+		//RegisterNetSyncVariableBool("m_LiftWeapon_player");
+		
 		
 		m_OriginalSlidePoseAngle = GetSlidePoseAngle();
 		
@@ -308,6 +315,11 @@ class PlayerBase extends ManBase
 		{
 			GetGame().RPCSingleParam(this, ERPCs.RPC_ON_SET_CAPTIVE, NULL, true, GetIdentity());
 		}
+	}
+	
+	int GetBreathVapourLevel()
+	{
+		return m_BreathVapour;
 	}
 	
 	
@@ -356,6 +368,9 @@ class PlayerBase extends ManBase
 	override void EEKilled( Object killer )
 	{
 		Print("EEKilled, you have died");
+		
+		DayZPlayerSyncJunctures.SendDeath(this, -1, 0);
+		
 		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )
 		{
 			// @NOTE: this branch does not happen, EEKilled is called only on server
@@ -1372,6 +1387,7 @@ class PlayerBase extends ManBase
 			}
 		}
 		#endif
+		ProcessLiftWeapon();
 	}
 	
 	bool m_ShowDbgUI = true;
@@ -1429,7 +1445,7 @@ class PlayerBase extends ManBase
 			}
 		}
 	}
-
+	
 	override void CommandHandler(float pDt, int pCurrentCommandID, bool pCurrentCommandFinished)	
 	{
 		// lower implement 
@@ -1478,17 +1494,19 @@ class PlayerBase extends ManBase
 			Weapon_Base weap;
 			if ( Weapon_Base.CastTo(weap, GetItemInHands()) )
 			{
-				bool limited = weap.LiftWeapon(this);
-				if (limited && !m_LiftWeapon)
-					SetLiftWeapon(true);
-				else if (!limited && m_LiftWeapon)
-					SetLiftWeapon(false);
+				bool limited = weap.LiftWeaponCheck(this);
+				if (limited && !m_LiftWeapon_player)
+					SendLiftWeaponSync(true);
+				else if (!limited && m_LiftWeapon_player)
+					SendLiftWeaponSync(false);
 			}
-			else if (m_LiftWeapon)
+			else if (m_LiftWeapon_player)
 			{
-				SetLiftWeapon(false);
+				SendLiftWeaponSync(false);
 			}
 		}
+		
+		//CheckLiftWeapon();
 		
 		if( m_WeaponManager )
 		{
@@ -1522,7 +1540,8 @@ class PlayerBase extends ManBase
 		if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER || !GetGame().IsMultiplayer() )
 		{
 			ShockRefill(pDt);
-			
+			ShakeCheck();
+			AirTemperatureCheck();
 			if ( m_Environment )
 			{
 				m_Environment.Update(pDt);
@@ -1747,6 +1766,46 @@ class PlayerBase extends ManBase
 		
 		OnCommandHandlerTick(pDt, pCurrentCommandID);
 	}
+	
+	
+	
+	
+	void AirTemperatureCheck()
+	{
+		float air_temperature = m_Environment.GetTemperature();
+		int level;
+		//	if( MiscGameplayFunctions.IsValueInRange( air_temperature, PlayerConstants.BREATH_VAPOUR_THRESHOLD_HIGH, PlayerConstants.BREATH_VAPOUR_THRESHOLD_LOW) )
+		float value = Math.InverseLerp( PlayerConstants.BREATH_VAPOUR_THRESHOLD_LOW, PlayerConstants.BREATH_VAPOUR_THRESHOLD_HIGH,air_temperature);
+		value = Math.Clamp(value,0,1);
+		level = Math.Round(value * BREATH_VAPOUR_LEVEL_MAX);//translate from normalized value to levels
+		if( level != m_BreathVapour )
+		{
+			m_BreathVapour = level;
+			SetSynchDirty();
+		}
+	}
+	
+	
+	void ShakeCheck()
+	{
+		if(  IsFireWeaponRaised() )
+		{
+			float heat_comfort = GetStatHeatComfort().Get();
+			int level;
+			if( heat_comfort <= PlayerConstants.THRESHOLD_HEAT_COMFORT_MINUS_WARNING )
+			{
+				float value = Math.InverseLerp( PlayerConstants.THRESHOLD_HEAT_COMFORT_MINUS_WARNING, PlayerConstants.THRESHOLD_HEAT_COMFORT_MINUS_CRITICAL,heat_comfort);
+				value = Math.Clamp(value,0,1);
+				level = Math.Round(value * SHAKE_LEVEL_MAX);//translate from normalized value to levels
+			}
+			if( level != m_Shakes )
+			{
+				m_Shakes = level;
+				SetSynchDirty();
+			}
+		}
+	}
+	
 	
 	
 	void OnUnconsciousStart()
@@ -2483,6 +2542,11 @@ class PlayerBase extends ManBase
 		return m_VisibilityCoef;
 	}
 
+	
+	int GetShakeLevel()
+	{
+		return m_Shakes;
+	}
 	//!returns player's immunity strength between 0..1
 	float GetImmunity()
 	{
@@ -2914,6 +2978,9 @@ class PlayerBase extends ManBase
 		if( m_EmoteManager && userDataType == INPUT_UDT_GESTURE )	 return m_EmoteManager.OnInputUserDataProcess(userDataType, ctx);
 		
 		if( m_hac ) 	return EndMapAnim(userDataType, ctx);
+		
+		if( userDataType == INPUT_UDT_WEAPON_LIFT_EVENT )
+			return SetLiftWeapon(userDataType, ctx);
 		
 		if( m_ActionManager )
 			return m_ActionManager.OnInputUserDataProcess(userDataType, ctx);
@@ -4139,17 +4206,95 @@ class PlayerBase extends ManBase
 	
 	bool IsLiftWeapon()
 	{
-		return m_LiftWeapon;
+		return m_LiftWeapon_player;
 	}
 	
-	void SetLiftWeapon(bool state)
+	bool SetLiftWeapon(int userDataType, ParamsReadContext ctx)
 	{
-		m_LiftWeapon = state;
+		if (userDataType != INPUT_UDT_WEAPON_LIFT_EVENT)
+			return false;
+		//m_LiftWeapon_player = state;
+		//SetSynchDirty();
+		bool state;
+		ctx.Read(state);
 		
-		HumanCommandWeapons	hcw = GetCommandModifier_Weapons();
+		m_LiftWeapon_player = state;
+		m_ProcessLiftWeapon = true;
+		
+		/*HumanCommandWeapons	hcw = GetCommandModifier_Weapons();
 		if( hcw )
 			hcw.LiftWeapon(state);
+		
+		Debug.Log("SimulationStamp_server: " + this.GetSimulationTimeStamp());*/
+		return true;
 	}
+	
+	void SendLiftWeaponSync(bool state)
+	{
+		HumanCommandWeapons	hcw;
+		//SP version
+		if (!GetGame().IsMultiplayer())
+		{
+			m_LiftWeapon_player = state;
+		
+			hcw = GetCommandModifier_Weapons();
+			if( hcw )
+				hcw.LiftWeapon(state);
+			
+			return;
+		}
+		
+		ScriptInputUserData ctx = new ScriptInputUserData;
+		
+		if (GetGame().IsMultiplayer() && GetGame().IsClient() && !ctx.CanStoreInputUserData())
+		{
+			//Print("ctx unavailable");
+			return;
+		}
+		else if (GetGame().IsMultiplayer() && GetGame().IsClient() && ctx.CanStoreInputUserData())
+		{
+			//Print("sending ECB cancel request");
+			ctx.Write(INPUT_UDT_WEAPON_LIFT_EVENT);
+			ctx.Write(state);
+			ctx.Send();
+			
+			//Debug.Log("SimulationStamp_client: " + this.GetSimulationTimeStamp());
+			m_LiftWeapon_player = state; //on client only, for now
+			
+			hcw = GetCommandModifier_Weapons();
+			if( hcw )
+				hcw.LiftWeapon(state);
+		}
+	}
+	
+	void ProcessLiftWeapon()
+	{
+		if (m_ProcessLiftWeapon)
+		{
+			HumanCommandWeapons	hcw = GetCommandModifier_Weapons();
+			if( hcw )
+				hcw.LiftWeapon(m_LiftWeapon_player);
+			m_ProcessLiftWeapon = false;
+			
+			//Debug.Log("SimulationStamp_server: " + this.GetSimulationTimeStamp());
+		}
+	}
+	
+	/*void CheckLiftWeapon()
+	{
+		HumanCommandWeapons	hcw = GetCommandModifier_Weapons();
+		if( hcw )
+			hcw.LiftWeapon(m_LiftWeapon_player);
+		
+		if (GetGame().IsServer())
+		{
+			Print("Server lift state: " + m_LiftWeapon_player);
+		}
+		else
+		{
+			Print("Client lift state: " + m_LiftWeapon_player);
+		}
+	}*/
 	
 	//! call this if you wish to hide held item
 	void HideItemInHands(bool state)

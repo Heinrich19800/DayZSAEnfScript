@@ -16,7 +16,7 @@ class Watchtower extends BaseBuildingBase
 		
 		//drop materials if they are not supported by selected floor (or roof)
 		//level 2
-		if ( slot_name.Contains( "Material_L2" ) )
+		if ( slot_name.Contains( "Material_L2" ) || slot_name.Contains( "Level_2" ) )
 		{
 			if ( !GetConstruction().IsPartConstructed( "level_1_roof" ) )
 			{
@@ -32,7 +32,7 @@ class Watchtower extends BaseBuildingBase
 			}
 		}
 		//level 3
-		else if ( slot_name.Contains( "Material_L3" ) )
+		else if ( slot_name.Contains( "Material_L3" ) || slot_name.Contains( "Level_3" ) )
 		{
 			if ( !GetConstruction().IsPartConstructed( "level_2_roof" ) )
 			{
@@ -67,11 +67,47 @@ class Watchtower extends BaseBuildingBase
 	//--- ACTION CONDITIONS
 	override bool IsFacingFront( PlayerBase player )
 	{
-		return true;
+		vector fence_pos = GetPosition();
+		vector player_pos = player.GetPosition();
+		vector player_dir = player.GetDirection();
+		
+		vector player_fence_dir = fence_pos - player_pos;
+		player_fence_dir.Normalize();
+		player_dir.Normalize();
+		
+		if ( player_dir.Length() != 0 )
+		{
+			float dot = vector.Dot( player_fence_dir, player_dir );
+			
+			if ( dot > 0 )
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	override bool IsFacingBack( PlayerBase player )
 	{
-		return true;
+		vector fence_pos = GetPosition();
+		vector player_pos = player.GetPosition();
+		vector player_dir = player.GetDirection();
+		
+		vector player_fence_dir = fence_pos - player_pos;
+		player_fence_dir.Normalize();
+		player_dir.Normalize();
+		
+		if ( player_dir.Length() != 0 )
+		{
+			float dot = vector.Dot( player_fence_dir, player_dir );
+			
+			if ( dot < 0 )
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

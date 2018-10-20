@@ -276,11 +276,14 @@ class AttachmentCategoriesRow: ClosableContainer
 				if( inv_loc_dst.IsValid() && inv_loc_dst.GetType() == InventoryLocationType.ATTACHMENT )
 				{
 					stack_max = InventorySlots.GetStackMaxForSlotId( inv_loc_dst.GetSlot() );
-					item.SplitIntoStackMaxClient( m_Entity, inv_loc_dst.GetSlot() );
 					quantity = item.GetQuantity();
 					if( stack_max == 0 || stack_max >= quantity || !item.CanBeSplit() )
 					{
 						GetGame().GetPlayer().PredictiveTakeEntityToTargetAttachmentEx( m_Entity, item, inv_loc_dst.GetSlot() );
+					}
+					else if( stack_max >= 0 || !item.CanBeSplit() )
+					{
+						item.SplitIntoStackMaxClient( m_Entity, inv_loc_dst.GetSlot() );
 					}
 				}
 			}
@@ -564,7 +567,8 @@ class AttachmentCategoriesRow: ClosableContainer
 			item_preview2.GetParent().Show( true );
 			if(!entity.GetInventory())
 				return;
-			if(entity.GetInventory().FindAttachment(slot_id) == NULL)
+			EntityAI ent = entity.GetInventory().FindAttachment(slot_id);
+			if( !entity.GetInventory().FindAttachment(slot_id) )
 			{
 				image_widget2.Show(true);
 				if( temp_widget )

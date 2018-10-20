@@ -57,6 +57,7 @@ class Object extends IEntity
 		
 		if ( GetGame().IsServer() )
 		{
+			SynchExplosion();
 			DamageSystem.ExplosionDamage(Class.Cast(this), NULL, ammoType, GetPosition());
 		}
 		
@@ -74,7 +75,37 @@ class Object extends IEntity
 			}
 		}*/
 		
-		GetGame().ObjectDelete(this);
+		//GetGame().ObjectDelete(this);
+	}
+	
+	void SynchExplosion()
+	{
+		if ( GetGame().IsServer() )
+		{
+			Param1<EntityAI> p = new Param1<EntityAI>(NULL);
+			
+			GetGame().RPCSingleParam( this, ERPCs.RPC_EXPLODE_EVENT, p, true);
+		}
+	}
+	
+	//! Called on clients when this object explodes
+	void OnExplodeClient()
+	{
+		string ammoType = this.ConfigGetString("ammoType");
+		
+		if (ammoType == "")
+			ammoType = "Dummy_Heavy";
+		
+		string path = "cfgAmmo " + ammoType + " particle";
+		string particle_path;
+		GetGame().ConfigGetText(path, particle_path);
+		
+		int particle_ID = ParticleList.GetParticleID(ParticleList.GetPathToParticles() + particle_path);
+		
+		if (particle_ID > 0)
+		{
+			Particle.Play(particle_ID, GetPosition());
+		}
 	}
 	
 	//! returns action component name by given component index, 'geometry' can be "fire" or "view" (default "" for mixed/legacy mode)

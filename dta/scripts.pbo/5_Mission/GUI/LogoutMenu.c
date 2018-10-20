@@ -81,7 +81,7 @@ class LogoutMenu extends UIScriptedMenu
 		return true;
 	}
 	
-	void SetTimeLoading()
+	void SetLogoutTime()
 	{
 		m_LogoutTimetext.SetText(" ");
 	}

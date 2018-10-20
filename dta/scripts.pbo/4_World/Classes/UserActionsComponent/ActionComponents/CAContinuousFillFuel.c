@@ -104,27 +104,32 @@ class CAContinuousFillFuel : CAContinuousBase
 	//---------------------------------------------------------------------------
 	override float GetProgress()
 	{
+		if ( m_ItemQuantity <= 0 )
+			return 1;
+
 		return -(m_SpentQuantity_total / m_ItemQuantity);
 	}
 	
 	//---------------------------------------------------------------------------
 	void CalcAndSetQuantity( ActionData action_data )
 	{
+
+		m_SpentQuantity_total += m_SpentQuantity;
+	
+		if ( m_SpentUnits )
+		{
+			m_SpentUnits.param1 = m_SpentQuantity;
+			SetACData(m_SpentUnits);
+		}
+		
+		
 		if ( GetGame().IsServer() )
 		{
-			Car car = Car.Cast(action_data.m_Target.GetObject());
-			m_SpentQuantity_total += m_SpentQuantity;
-
-			if ( m_SpentUnits )
-			{
-				m_SpentUnits.param1 = m_SpentQuantity;
-				SetACData(m_SpentUnits);
-			}
-
+			Car car = Car.Cast(action_data.m_Target.GetObject());	
 			action_data.m_MainItem.AddQuantity( -m_SpentQuantity );
 			car.Fill( CarFluid.FUEL, (m_SpentQuantity * 0.001) );
-
-			m_SpentQuantity = 0;
 		}
+		
+		m_SpentQuantity = 0;
 	}
 }

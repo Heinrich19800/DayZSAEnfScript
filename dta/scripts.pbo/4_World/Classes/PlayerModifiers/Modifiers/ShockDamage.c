@@ -40,6 +40,7 @@ class ShockDamageMdfr: ModifierBase
 	{
 		float blood =  player.GetHealth("","Blood");
 		float value = Math.InverseLerp( PlayerConstants.SHOCK_DAMAGE_BLOOD_THRESHOLD_HIGH, PlayerConstants.SHOCK_DAMAGE_BLOOD_THRESHOLD_LOW, blood );
+		value = Math.Clamp(value,0,1);
 		float dmg = Math.Lerp( PlayerConstants.SHOCK_DAMAGE_HIGH, PlayerConstants.SHOCK_DAMAGE_LOW, value);
 		float damage =  -dmg * deltaT;
 		player.AddHealth("","Shock", damage);

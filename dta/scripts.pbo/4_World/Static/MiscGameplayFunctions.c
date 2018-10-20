@@ -426,5 +426,9 @@ class MiscGameplayFunctions
 		}
 	}
 	
+	static bool IsValueInRange(float value, float from, float to)
+	{
+		return (value >= from) && (value <= to);
+	}
 	
 };

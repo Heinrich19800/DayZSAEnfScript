@@ -1330,6 +1330,13 @@ class EntityAI extends Entity
 					}
 					break;
 				}
+				
+				case ERPCs.RPC_EXPLODE_EVENT:
+				{
+					OnExplodeClient();
+					
+					break;
+				}
 			}
 		}
 	}

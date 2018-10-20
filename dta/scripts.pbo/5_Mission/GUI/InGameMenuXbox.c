@@ -107,11 +107,11 @@ class InGameMenuXbox extends UIScriptedMenu
 					layoutRoot.FindAnyWidget( "Gamercard" ).Show( true );
 					if( OnlineServices.IsPlayerMuted( uid ) )
 					{
-						mute_text.SetText( "Unmute" );
+						mute_text.SetText( "#xbox_ingame_menu_unmute" );
 					}
 					else
 					{
-						mute_text.SetText( "Mute" );
+						mute_text.SetText( "#xbox_ingame_menu_mute" );
 					}
 				}
 				
@@ -218,20 +218,32 @@ class InGameMenuXbox extends UIScriptedMenu
 		case 117:
 			EnterScriptedMenu(MENU_TUTORIAL);
 			return true;
-		break;
+		case IDC_MULTI_INVITE:
+			OnlineServices.ShowInviteScreen();
+			return true;
 		}
 
 		return false;
 	}
 	
+
 	override bool OnModalResult(Widget w, int x, int y, int code, int result)
 	{
 		super.OnModalResult(w, x, y, code, result);
 		
 		if ( code == IDC_INT_EXIT && result == DBB_YES )
 		{
-			GetGame().GetMission().AbortMission();
-			g_Game.CancelQueueTime();	
+			if (GetGame().IsMultiplayer())
+			{
+				GetGame().LogoutRequestTime();
+				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().GetMission().CreateLogoutMenu, this);
+			}
+			else
+			{
+				// skip logout screen in singleplayer
+				GetGame().GetMission().AbortMission();
+			}	
+			g_Game.CancelQueueTime();
 			
 			return true;	
 		
@@ -305,11 +317,11 @@ class InGameMenuXbox extends UIScriptedMenu
 							layoutRoot.FindAnyWidget( "Gamercard" ).Show( true );
 							if( OnlineServices.IsPlayerMuted( uid ) )
 							{
-								mute_text.SetText( "Unmute" );
+								mute_text.SetText( "#xbox_ingame_menu_unmute" );
 							}
 							else
 							{
-								mute_text.SetText( "Mute" );
+								mute_text.SetText( "#xbox_ingame_menu_mute" );
 							}
 						}
 						
@@ -339,11 +351,11 @@ class InGameMenuXbox extends UIScriptedMenu
 							layoutRoot.FindAnyWidget( "Gamercard" ).Show( true );
 							if( OnlineServices.IsPlayerMuted( uid ) )
 							{
-								mute_text.SetText( "Unmute" );
+								mute_text.SetText( "#xbox_ingame_menu_unmute" );
 							}
 							else
 							{
-								mute_text.SetText( "Mute" );
+								mute_text.SetText( "#xbox_ingame_menu_mute" );
 							}
 						}
 						
@@ -378,11 +390,11 @@ class InGameMenuXbox extends UIScriptedMenu
 							m_ServerInfoPanel.MutePlayer( uid, !muted );
 							if( !muted )
 							{
-								mute_text.SetText( "Unmute" );
+								mute_text.SetText( "#xbox_ingame_menu_unmute" );
 							}
 							else
 							{
-								mute_text.SetText( "Mute" );
+								mute_text.SetText( "#xbox_ingame_menu_mute" );
 							}
 						}
 					}
@@ -452,11 +464,11 @@ class InGameMenuXbox extends UIScriptedMenu
 				layoutRoot.FindAnyWidget( "Gamercard" ).Show( true );
 				if( OnlineServices.IsPlayerMuted( uid ) )
 				{
-					mute_text.SetText( "Unmute" );
+					mute_text.SetText( "#xbox_ingame_menu_unmute" );
 				}
 				else
 				{
-					mute_text.SetText( "Mute" );
+					mute_text.SetText( "#xbox_ingame_menu_mute" );
 				}
 			}
 			
@@ -486,11 +498,11 @@ class InGameMenuXbox extends UIScriptedMenu
 				layoutRoot.FindAnyWidget( "Gamercard" ).Show( true );
 				if( OnlineServices.IsPlayerMuted( uid ) )
 				{
-					mute_text.SetText( "Unmute" );
+					mute_text.SetText( "#xbox_ingame_menu_unmute" );
 				}
 				else
 				{
-					mute_text.SetText( "Mute" );
+					mute_text.SetText( "#xbox_ingame_menu_mute" );
 				}
 			}
 			

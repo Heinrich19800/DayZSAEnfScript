@@ -45,6 +45,7 @@ class InventoryQuickbar: InventoryGridController
 		}
 		
 		m_Items.Clear();
+		InventoryItem item;
 		
 		if( m_Grid )
 		{
@@ -57,12 +58,21 @@ class InventoryQuickbar: InventoryGridController
 
 				m_QuickbarSize = player.GetQuickBarSize();
 				m_Grid.SetGridItemsSize( m_QuickBarGridWidth, m_QuickBarGridWidth );
-				m_Grid.SetGridSize( m_QuickbarSize,1 );
+				m_Grid.SetGridSize( m_QuickbarSize, 1 );
 				m_Grid.SetController( this );		
 				m_Grid.GenerateQuickBarBackgroundTiles( m_QuickbarSize );
 				
 				float size = m_QuickBarGridWidth / 2.5;
 				m_Grid.SetQuantityPanelSize( size );
+				
+				for (i = 0; i < m_QuickbarSize; i++)
+				{
+					item = InventoryItem.Cast( player.GetQuickBarEntity(i) );
+					if( item )
+					{
+						m_Grid.AddItem(item, Vector(i, 1, 1), Vector(0,0,0) );
+					}
+				}
 			}
 		}
 		
@@ -77,8 +87,8 @@ class InventoryQuickbar: InventoryGridController
 		m_QuickbarSize = player.GetQuickBarSize();
 		for( i = 0; i < m_QuickbarSize; i++)
 		{
-			InventoryItem item = InventoryItem.Cast( player.GetQuickBarEntity(i) );
-			if( item ) 
+			item = InventoryItem.Cast( player.GetQuickBarEntity(i) );
+			if( item )
 			{
 				m_Items.Set( item, Vector(i, 1, 1) );
 			}

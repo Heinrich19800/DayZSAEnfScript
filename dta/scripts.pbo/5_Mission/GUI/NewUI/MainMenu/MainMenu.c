@@ -96,7 +96,7 @@ class MainMenu extends UIScriptedMenu
 		#endif
 		#ifdef PLATFORM_XBOX
 			m_CustomizeCharacter.Show( true );
-			m_CustomizeCharacter.SetText( "#main_menu_options" );
+			m_CustomizeCharacter.SetText( "#main_menu_configure" );
 			m_PlayVideo.Show( true );
 		#endif
 		

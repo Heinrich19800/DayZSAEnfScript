@@ -450,7 +450,7 @@ FrameWidgetClass main_menu_root {
            hexactsize 1
            vexactsize 0
            userID 152
-           text "@dayzdevteam"
+           text "@DayZ"
            font "gui/fonts/sdf_MetronLight24"
            "exact text" 0
            "text valign" center

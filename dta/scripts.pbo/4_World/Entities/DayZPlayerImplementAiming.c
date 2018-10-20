@@ -17,7 +17,6 @@ class DayZPlayerImplementAiming
 
 
 	protected const float SWAY_WEIGHT_SCALER = 1;//use this to scale the sway effect up/down
-	protected float CONST_SPEED = 2;
 	protected float m_HorizontalNoise;
 	protected float m_HorizontalTargetValue;
 	protected float m_HorizontalNoiseVelocity[1] = {0};
@@ -95,7 +94,8 @@ class DayZPlayerImplementAiming
 		//! get sway
 		ApplyBreathingPattern(breathing_offset_x, breathing_offset_y, 3.0, m_TotalTime, m_SwayWeight);
 		ApplyHorizontalNoise(noise_offset_x, noise_offset_y, 0.2, 0.5, 3.0, speed, 3 * m_SwayWeight, pDt);
-		//ApplyShakes(shake_offset_x, shake_offset_y, 1);
+		float shake_weight = Math.InverseLerp(0, PlayerBase.SHAKE_LEVEL_MAX, m_PlayerPb.GetShakeLevel());
+		ApplyShakes(shake_offset_x, shake_offset_y, shake_weight);
 		
 		//! get recoil
 		if( m_CurrentRecoil )
@@ -152,7 +152,7 @@ class DayZPlayerImplementAiming
 	protected void ApplyShakes(out float x_axis, out float y_axis, float weight)
 	{
 		m_ShakeCount++;
-		if(m_ShakeCount % 4 == 0)
+		if(m_ShakeCount > Math.RandomIntInclusive(3, 6))
 		{
 			m_ShakeCount = 0;
 			float modifier = Math.RandomFloatInclusive(0.1,0.4);

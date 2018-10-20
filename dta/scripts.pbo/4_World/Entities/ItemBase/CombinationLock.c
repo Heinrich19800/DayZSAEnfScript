@@ -102,15 +102,17 @@ class CombinationLock extends ItemBase
 		ShuffleLock();
 		
 		//set slot lock
-		int slot_id = GetInventory().GetSlotId( 0 );
-		parent.GetInventory().SetSlotLock( slot_id, true );		
+		InventoryLocation inventory_location = new InventoryLocation;
+		GetInventory().GetCurrentInventoryLocation( inventory_location );		
+		parent.GetInventory().SetSlotLock( inventory_location.GetSlot(), true );		
 	}
 	
 	void Unlock( EntityAI parent )
 	{
 		//set slot unlock
-		int slot_id = GetInventory().GetSlotId( 0 );
-		parent.GetInventory().SetSlotLock( slot_id, false );			
+		InventoryLocation inventory_location = new InventoryLocation;
+		GetInventory().GetCurrentInventoryLocation( inventory_location );			
+		parent.GetInventory().SetSlotLock( inventory_location.GetSlot(), false );			
 		
 		//drop entity from attachment slot
 		if ( GetGame().IsMultiplayer() )

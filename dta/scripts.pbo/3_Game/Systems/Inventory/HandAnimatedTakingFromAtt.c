@@ -1,59 +1,6 @@
 class HandTakingAnimated_Hide extends HandStartAction
 { };
 
-int SlotToAnimType (notnull Man player, notnull InventoryLocation src)
-{
-	if (src.GetType() == InventoryLocationType.ATTACHMENT)
-	{
-		switch (src.GetSlot())
-		{
-			case InventorySlots.SHOULDER:
-			{
-				if (src.GetItem() && src.GetItem().IsWeapon())
-				{
-					return WeaponHideShowTypes.HIDESHOW_SLOT_RFLLEFTBACK;
-				}
-				return WeaponHideShowTypes.HIDESHOW_SLOT_2HDLEFTBACK;
-			}
-			case InventorySlots.MELEE:
-			{
-				if (src.GetItem() && src.GetItem().IsWeapon())
-				{
-					return WeaponHideShowTypes.HIDESHOW_SLOT_RFLRIGHTBACK;
-				}
-				return WeaponHideShowTypes.HIDESHOW_SLOT_2HDRIGHTBACK;
-			}
-			case InventorySlots.PISTOL:
-			{
-				EntityAI parent_item = src.GetParent(); 		//belt
-				Man owner;
-				if (parent_item)
-					owner = parent_item.GetHierarchyRootPlayer(); 		//player
-				if (owner && owner.GetInventory().FindAttachment(InventorySlots.HIPS) == parent_item) //is the pistol in a belt holster?
-				{
-					return WeaponHideShowTypes.HIDESHOW_SLOT_PISTOLBELT;
-				}
-				return WeaponHideShowTypes.HIDESHOW_SLOT_PISTOLCHEST;
-			}
-			case InventorySlots.KNIFE:
-				return WeaponHideShowTypes.HIDESHOW_SLOT_KNIFEBACK;
-			
-			case InventorySlots.VEST:
-			case InventorySlots.FEET:
-			case InventorySlots.BODY:
-			case InventorySlots.LEGS:
-			case InventorySlots.BACK:
-				return WeaponHideShowTypes.HIDESHOW_SLOT_PISTOLBELT; // @NOTE: this is DUMMY for "generic take" anim
-			
-			default:
-				Print("[hndfsm] SlotToAnimType -  not animated slot in src_loc=" + src.DumpToString());
-		};
-		//
-		//if (InventorySlots.GetSlotIdFromString("Pistol"))
-	}
-	return -1;
-}
-
 class HandTakingAnimated_Show extends HandStartAction
 {
 	ref InventoryLocation m_Src;
@@ -130,12 +77,8 @@ class HandAnimatedTakingFromAtt extends HandStateBase
 		m_Entity.GetInventory().GetCurrentInventoryLocation(il);
 		m_Show.m_Src = il;
 
-		int animType = SlotToAnimType(m_Player, il);
-		if (animType)
-		{
-			m_Hide.m_ActionType = animType;
-			m_Show.m_ActionType = animType;
-		}
+		m_Hide.m_ActionType = e.GetAnimationID();
+		m_Show.m_ActionType = e.GetAnimationID();
 
 		super.OnEntry(e); // @NOTE: super at the end (prevent override from submachine start)
 	}

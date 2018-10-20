@@ -278,10 +278,13 @@ class Torch : ItemBase
 		
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 		
+		// Uncomment this when its fixed
+		/*
 		if ( GetGame().IsServer()  &&  GetCompEM().GetEnergy0To100() < 1 )
 		{
-			MiscGameplayFunctions.TurnItemIntoItemEx(player, new TurnItemIntoItemLambda(this, "WoodenStick", player));
+			//MiscGameplayFunctions.TurnItemIntoItemEx(player, new TurnItemIntoItemLambda(this, "WoodenStick", player));
 		}
+		*/
 	}
 	
 	override void OnWorkStart()

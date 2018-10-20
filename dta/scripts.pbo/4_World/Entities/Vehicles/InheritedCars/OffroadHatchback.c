@@ -1,5 +1,10 @@
 class OffroadHatchback extends CarScript
 {
+	override void Init()
+	{
+		super.Init();
+		m_dmgContactCoef = 0.0095;
+	}
 
 	override int GetAnimInstance()
 	{
@@ -205,17 +210,17 @@ class OffroadHatchback extends CarScript
 				//-----
 				if ( GetCarDoorsState( "NivaDriverDoors" ) == CarDoorState.DOORS_CLOSED )
 				{
-					newValue = newValue + 0.85;
+					newValue = newValue + 0.5;
 				}
 
 				if ( GetCarDoorsState( "NivaCoDriverDoors" ) == CarDoorState.DOORS_CLOSED )
 				{
-					newValue = newValue + 0.85;
+					newValue = newValue + 0.5;
 				}
 
 				if ( GetCarDoorsState( "NivaTrunk" ) == CarDoorState.DOORS_CLOSED )
 				{
-					newValue = newValue + 0.6;
+					newValue = newValue + 0.1;
 				}
 
 				if ( newValue > 1 )
@@ -272,8 +277,14 @@ class OffroadHatchback extends CarScript
 		return false;
 	}
 	
-	override int CanReachSeatFromSeat( int currentSeat, int nextSeat )
+	override bool CanReachSeatFromSeat( int currentSeat, int nextSeat )
 	{
+		if ( nextSeat == 0 && GetAnimationPhase("SeatDriver") > 0.5  )
+			return false;
+		
+		if ( nextSeat == 1 && GetAnimationPhase("SeatCoDriver") > 0.5  )
+			return false;
+		
 		switch( currentSeat )
 		{
 		case 0:

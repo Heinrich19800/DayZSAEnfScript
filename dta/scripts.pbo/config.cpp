@@ -1110,6 +1110,111 @@ class CfgSlots
 		selection="BusRightDoors_3";
 		ghostIcon="busdoor";
 	};
+	class Slot_Level_1_Wall_1_Barbedwire_1
+	{
+		name="Level_1_Wall_1_Barbedwire_1";
+		displayName="Bottom barbed wire";
+		selection="level_1_wall_1_barbedwire_1";
+		ghostIcon="barbedwire";
+	};
+	class Slot_Level_1_Wall_1_Barbedwire_2
+	{
+		name="Level_1_Wall_1_Barbedwire_2";
+		displayName="Upper barbed wire";
+		selection="level_1_wall_1_barbedwire_2";
+		ghostIcon="barbedwire";
+	};
+	class Slot_Level_1_Wall_2_Barbedwire_1
+	{
+		name="Level_1_Wall_2_Barbedwire_1";
+		displayName="Bottom barbed wire";
+		selection="level_1_wall_2_barbedwire_1";
+		ghostIcon="barbedwire";
+	};
+	class Slot_Level_1_Wall_2_Barbedwire_2
+	{
+		name="Level_1_Wall_2_Barbedwire_2";
+		displayName="Upper barbed wire";
+		selection="level_1_wall_2_barbedwire_2";
+		ghostIcon="barbedwire";
+	};
+	class Slot_Level_1_Wall_3_Barbedwire_1
+	{
+		name="Level_1_Wall_3_Barbedwire_1";
+		displayName="Bottom barbed wire";
+		selection="level_1_wall_3_barbedwire_1";
+		ghostIcon="barbedwire";
+	};
+	class Slot_Level_1_Wall_3_Barbedwire_2
+	{
+		name="Level_1_Wall_3_Barbedwire_2";
+		displayName="Upper barbed wire";
+		selection="level_1_wall_3_barbedwire_2";
+		ghostIcon="barbedwire";
+	};
+	class Slot_Level_1_Wall_1_Camonet
+	{
+		name="Level_1_Wall_1_Camonet";
+		displayName="1st floor camonet";
+		selection="level_1_wall_1_camonet";
+		ghostIcon="camonet";
+	};
+	class Slot_Level_1_Wall_2_Camonet
+	{
+		name="Level_1_Wall_2_Camonet";
+		displayName="1st floor camonet";
+		selection="level_1_wall_2_camonet";
+		ghostIcon="camonet";
+	};
+	class Slot_Level_1_Wall_3_Camonet
+	{
+		name="Level_1_Wall_3_Camonet";
+		displayName="1st floor camonet";
+		selection="level_1_wall_3_camonet";
+		ghostIcon="camonet";
+	};
+	class Slot_Level_2_Wall_1_Camonet
+	{
+		name="Level_2_Wall_1_Camonet";
+		displayName="2nd floor camonet";
+		selection="level_2_wall_1_camonet";
+		ghostIcon="camonet";
+	};
+	class Slot_Level_2_Wall_2_Camonet
+	{
+		name="Level_2_Wall_2_Camonet";
+		displayName="2nd floor camonet";
+		selection="level_2_wall_2_camonet";
+		ghostIcon="camonet";
+	};
+	class Slot_Level_2_Wall_3_Camonet
+	{
+		name="Level_2_Wall_3_Camonet";
+		displayName="2nd floor camonet";
+		selection="level_2_wall_3_camonet";
+		ghostIcon="camonet";
+	};
+	class Slot_Level_3_Wall_1_Camonet
+	{
+		name="Level_3_Wall_1_Camonet";
+		displayName="3rd floor camonet";
+		selection="level_3_wall_1_camonet";
+		ghostIcon="camonet";
+	};
+	class Slot_Level_3_Wall_2_Camonet
+	{
+		name="Level_3_Wall_2_Camonet";
+		displayName="3rd floor camonet";
+		selection="level_3_wall_2_camonet";
+		ghostIcon="camonet";
+	};
+	class Slot_Level_3_Wall_3_Camonet
+	{
+		name="Level_3_Wall_3_Camonet";
+		displayName="3rd floor camonet";
+		selection="level_3_wall_3_camonet";
+		ghostIcon="camonet";
+	};
 	class Slot_Material_L1_WoodenLogs
 	{
 		name="Material_L1_WoodenLogs";
@@ -1149,49 +1254,49 @@ class CfgSlots
 	class Slot_Material_L1_WoodenPlanks
 	{
 		name="Material_L1_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="material_l1_woodenplanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L1W1_WoodenPlanks
 	{
 		name="Material_L1W1_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="material_l1w1_woodenplanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L1W2_WoodenPlanks
 	{
 		name="Material_L1W2_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="material_l1w2_woodenplanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L1W3_WoodenPlanks
 	{
 		name="Material_L1W3_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="material_l1w3_woodenplanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L1W1_MetalSheets
 	{
 		name="Material_L1W1_MetalSheets";
-		displayName="Wooden planks";
+		displayName="Metal sheets";
 		selection="material_l1w1_metalsheets";
 		ghostIcon="plates";
 	};
 	class Slot_Material_L1W2_MetalSheets
 	{
 		name="Material_L1W2_MetalSheets";
-		displayName="Wooden planks";
+		displayName="Metal sheets";
 		selection="material_l1w2_metalsheets";
 		ghostIcon="plates";
 	};
 	class Slot_Material_L1W3_MetalSheets
 	{
 		name="Material_L1W3_MetalSheets";
-		displayName="Wooden planks";
+		displayName="Metal sheets";
 		selection="material_l1w3_metalsheets";
 		ghostIcon="plates";
 	};
@@ -1234,49 +1339,49 @@ class CfgSlots
 	class Slot_Material_L2_WoodenPlanks
 	{
 		name="Material_L2_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="material_l2_woodenplanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L2W1_WoodenPlanks
 	{
 		name="Material_L2W1_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="material_l2w1_woodenplanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L2W2_WoodenPlanks
 	{
 		name="Material_L2W2_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="material_l2w2_woodenplanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L2W3_WoodenPlanks
 	{
 		name="Material_L2W3_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="material_l2w3_woodenplanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L2W1_MetalSheets
 	{
 		name="Material_L2W1_MetalSheets";
-		displayName="Wooden planks";
+		displayName="Metal sheets";
 		selection="material_l2w1_metalsheets";
 		ghostIcon="plates";
 	};
 	class Slot_Material_L2W2_MetalSheets
 	{
 		name="Material_L2W2_MetalSheets";
-		displayName="Wooden planks";
+		displayName="Metal sheets";
 		selection="material_l2w2_metalsheets";
 		ghostIcon="plates";
 	};
 	class Slot_Material_L2W3_MetalSheets
 	{
 		name="Material_L2W3_MetalSheets";
-		displayName="Wooden planks";
+		displayName="Metal sheets";
 		selection="material_l2w3_metalsheets";
 		ghostIcon="plates";
 	};
@@ -1319,49 +1424,49 @@ class CfgSlots
 	class Slot_Material_L3_WoodenPlanks
 	{
 		name="Material_L3_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="Material_L3_WoodenPlanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L3W1_WoodenPlanks
 	{
 		name="Material_L3W1_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="Material_L3W1_WoodenPlanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L3W2_WoodenPlanks
 	{
 		name="Material_L3W2_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="Material_L3W2_WoodenPlanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L3W3_WoodenPlanks
 	{
 		name="Material_L3W3_WoodenPlanks";
-		displayName="Nails";
+		displayName="Wooden planks";
 		selection="Material_L3W3_WoodenPlanks";
 		ghostIcon="planks";
 	};
 	class Slot_Material_L3W1_MetalSheets
 	{
 		name="Material_L3W1_MetalSheets";
-		displayName="Wooden planks";
+		displayName="Metal sheets";
 		selection="Material_L3W1_MetalSheets";
 		ghostIcon="plates";
 	};
 	class Slot_Material_L3W2_MetalSheets
 	{
 		name="Material_L3W2_MetalSheets";
-		displayName="Wooden planks";
+		displayName="Metal sheets";
 		selection="Material_L3W2_MetalSheets";
 		ghostIcon="plates";
 	};
 	class Slot_Material_L3W3_MetalSheets
 	{
 		name="Material_L3W3_MetalSheets";
-		displayName="Wooden planks";
+		displayName="Metal sheets";
 		selection="Material_L3W3_MetalSheets";
 		ghostIcon="plates";
 	};

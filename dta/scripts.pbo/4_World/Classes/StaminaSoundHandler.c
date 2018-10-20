@@ -162,7 +162,7 @@ class StaminaSoundHandler
 	eStaminaZones GetZone()
 	{
 		float stamina_normalized = Math.InverseLerp(0, m_StaminaHandler.GetStaminaCap(), m_Stamina);
-		
+		stamina_normalized = Math.Clamp(stamina_normalized,0,1);
 		//PrintString(" stamina_normalized " +stamina_normalized.ToString());
 		eStaminaZones stamina_zone = eStaminaZones.ZONE0;
 		

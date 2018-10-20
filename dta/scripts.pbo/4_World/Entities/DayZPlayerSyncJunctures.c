@@ -14,6 +14,31 @@ class DayZPlayerSyncJunctures
 	static const int SJ_WEAPON_ACTION_ACK_ACCEPT		= 8;
 	static const int SJ_WEAPON_ACTION_ACK_REJECT		= 9;
 	static const int SJ_UNCONSCIOUSNESS					= 10;
+	static const int SJ_DEATH					     	= 11;
+
+	//-------------------------------------------------------------
+	//!
+	//! Death
+	//! 
+
+	static void SendDeath(DayZPlayer pPlayer, int pType, float pHitDir)
+	{
+		ScriptJunctureData ctx = new ScriptJunctureData;
+		
+		ctx.Write(pType);
+		ctx.Write(pHitDir);
+		pPlayer.SendSyncJuncture(SJ_DEATH, ctx);
+	}
+	
+	static bool ReadDeathParams(ParamsReadContext pCtx, out int pType, out float pHitDir)
+	{
+		if (!pCtx.Read(pType))
+			return false;
+		if (!pCtx.Read(pHitDir))
+			return false;
+
+		return true;
+	}
 
 	//-------------------------------------------------------------
 	//!

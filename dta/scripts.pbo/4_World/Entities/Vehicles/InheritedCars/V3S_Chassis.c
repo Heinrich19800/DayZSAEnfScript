@@ -1,5 +1,11 @@
 class V3S_Chassis extends CarScript
 {
+	override void Init()
+	{
+		super.Init();
+		m_dmgContactCoef = 0.028;
+	}
+	
 	override int GetAnimInstance()
 	{
 		return VehicleAnimInstances.V3S;

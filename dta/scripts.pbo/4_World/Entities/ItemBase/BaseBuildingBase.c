@@ -366,8 +366,8 @@ class BaseBuildingBase extends ItemBase
 			string slot_name = attachment_slots.Get( i );
 			EntityAI attachment = FindAttachmentBySlotName( slot_name );
 			string slot_name_mounted = slot_name + "_Mounted";
-			
-			if ( attachment && !GetInventory().GetSlotLock( attachment.GetInventory().GetSlotId( 0 ) ) )
+		
+			if ( attachment && !IsAttachmentSlotLocked( attachment ) )
 			{
 				if ( attachment.IsInherited( BarbedWire ) )
 				{
@@ -419,7 +419,7 @@ class BaseBuildingBase extends ItemBase
 			EntityAI attachment = FindAttachmentBySlotName( slot_name );
 			string slot_name_mounted = slot_name + "_Mounted";
 			
-			if ( attachment && !GetInventory().GetSlotLock( attachment.GetInventory().GetSlotId( 0 ) ) )
+			if ( attachment && !IsAttachmentSlotLocked( attachment ) )
 			{
 				if ( attachment.IsInherited( BarbedWire ) )
 				{
@@ -463,7 +463,20 @@ class BaseBuildingBase extends ItemBase
 	override bool CanUseConstruction()
 	{
 		return true;
-	}	
+	}
+
+	protected bool IsAttachmentSlotLocked( ItemBase attachment )
+	{
+		if ( attachment )
+		{
+			InventoryLocation inventory_location = new InventoryLocation;
+			attachment.GetInventory().GetCurrentInventoryLocation( inventory_location );
+			
+			return GetInventory().GetSlotLock( inventory_location.GetSlot() );
+		}
+			
+		return false;
+	}
 	
 	//--- ATTACHMENT SLOTS
 	void GetAttachmentSlots( EntityAI entity, out array<string> attachment_slots )

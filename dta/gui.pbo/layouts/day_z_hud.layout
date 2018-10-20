@@ -2450,8 +2450,9 @@ FrameWidgetClass HudFrameWidget {
     PanelWidgetClass ItemActions {
      visible 1
      clipchildren 0
+     keepsafezone 1
      position 0 51
-     size 300 126
+     size 300 180
      valign bottom_ref
      hexactpos 1
      vexactpos 1
@@ -2462,10 +2463,10 @@ FrameWidgetClass HudFrameWidget {
       ImageWidgetClass ia_container {
        visible 1
        disabled 0
-       clipchildren 1
+       clipchildren 0
        inheritalpha 0
        color 0.3137 0.3137 0.3137 0.6275
-       size 300 120
+       size 300 160
        valign bottom_ref
        hexactpos 1
        vexactpos 1

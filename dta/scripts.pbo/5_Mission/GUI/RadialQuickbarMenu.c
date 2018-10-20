@@ -234,7 +234,7 @@ class RadialQuickbarMenu extends UIScriptedMenu
 			}
 			else
 			{
-				item_title.SetText( "Empty" );
+				item_title.SetText( "#empty" );
 				
 				//display content panels
 				item_details.Show( false );

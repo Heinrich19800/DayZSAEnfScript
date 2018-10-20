@@ -435,6 +435,8 @@ class HumanCommandDeath
 class HumanCommandUnconscious
 {	
 	proto native void 	WakeUp();
+	proto native bool	IsOnLand();
+	proto native bool	IsInWater();
 }
 
 
@@ -942,7 +944,7 @@ class Human extends Man
 	//!----- Death -----
 
 	//! starts command - death
-	proto native 	HumanCommandDeath			StartCommand_Death();
+	proto native 	HumanCommandDeath			StartCommand_Death(int pType, float pDirection);
 
 	proto native 	HumanCommandDeath			GetCommand_Death();
 

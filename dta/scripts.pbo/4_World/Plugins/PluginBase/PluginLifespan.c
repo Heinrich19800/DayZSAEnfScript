@@ -17,6 +17,7 @@ class PluginLifespan extends PluginBase
 {
 	protected static const int LIFESPAN_MIN = 0;
 	protected static const int LIFESPAN_MAX = 60; // value in minutes when player achieved maximum age in order to have full beard
+	protected int m_FakePlaytime;
 	
 	protected ref map<PlayerBase, ref LifespanLevel> m_PlayerCurrentLevel;
 	protected ref map<string, ref array< ref LifespanLevel>> m_LifespanLevels;
@@ -36,6 +37,7 @@ class PluginLifespan extends PluginBase
 		LoadFromCfg();
 		m_PlayerCurrentLevel = new map<PlayerBase, ref LifespanLevel>;
 		m_BloodType = new map<PlayerBase, int>;
+		m_FakePlaytime = 0;
 	}
 
 //-----------------------------
@@ -192,6 +194,15 @@ class PluginLifespan extends PluginBase
 		SynchShowBloodType( player, blood_type );
 	}
 	
+	void ChangeFakePlaytime( PlayerBase player, int change )
+	{
+		if ( !GetGame().IsMultiplayer() )
+		{
+			m_FakePlaytime = change;
+			UpdateLifespan( player, true );
+		}
+	}
+	
 //-----------------------------
 // Facial hair
 //-----------------------------
@@ -201,7 +212,14 @@ class PluginLifespan extends PluginBase
 		if ( player != NULL )
 		{
 			// NEW STATS API
-			float player_playtime = player.StatGet("playtime");
+			if ( GetGame().IsMultiplayer() )
+			{
+				float player_playtime = player.StatGet("playtime");
+			}
+			else
+			{
+				player_playtime = m_FakePlaytime;
+			}
 						
 			float player_beard = player_playtime - player.GetLastShavedSeconds();
 			player_beard = player_beard / 60.0;

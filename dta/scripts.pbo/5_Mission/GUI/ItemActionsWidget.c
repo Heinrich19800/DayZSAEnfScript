@@ -367,27 +367,27 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 				case -1 :
 					healthMark.GetParent().Show(false);
 					break;
-				case ItemManager.STATE_PRISTINE :
+				case STATE_PRISTINE :
 					healthMark.SetColor(Colors.COLOR_PRISTINE);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
 					break;
-				case ItemManager.STATE_WORN :
+				case STATE_WORN :
 					healthMark.SetColor(Colors.COLOR_WORN);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
 					break;
-				case ItemManager.STATE_DAMAGED :
+				case STATE_DAMAGED :
 					healthMark.SetColor(Colors.COLOR_DAMAGED);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
 					break;
-				case ItemManager.STATE_BADLY_DAMAGED:
+				case STATE_BADLY_DAMAGED:
 					healthMark.SetColor(Colors.COLOR_BADLY_DAMAGED);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
 					break;
-				case ItemManager.STATE_RUINED :
+				case STATE_RUINED :
 					healthMark.SetColor(Colors.COLOR_RUINED);
 					healthMark.SetAlpha(0.5);
 					healthMark.GetParent().Show(true);
@@ -520,7 +520,7 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 			Class.CastTo(actionName, widget.FindAnyWidget(descWidget));
 			if(action.IsInherited(ActionContinuousBase))
 			{
-				descText = descText + " [HOLD]";
+				descText = descText + " " + "#action_target_cursor_hold";
 				actionName.SetText(descText);
 			}
 			else

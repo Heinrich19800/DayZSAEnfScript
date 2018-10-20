@@ -12,6 +12,7 @@ const int INPUT_UDT_WEAPON_REMOTE_EVENT			= 10;
 const int INPUT_UDT_USER_MUTE_XBOX				= 11;
 const int INPUT_UDT_USER_SYNC_PERMISSIONS		= 12;
 const int INPUT_UDT_HAND_REMOTE_EVENT			= 13;
+const int INPUT_UDT_WEAPON_LIFT_EVENT 			= 14;
 
 const int AC_UNCATEGORIZED						= 0;
 const int AC_SINGLE_USE							= 1;

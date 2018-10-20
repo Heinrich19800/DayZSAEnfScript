@@ -33,6 +33,7 @@ class HeatComfortMdfr: ModifierBase
 		if( heat_comfort > PlayerConstants.WATER_LOSS_THRESHOLD_HC_PLUS_LOW )
 		{
 			value_normalized = Math.InverseLerp(PlayerConstants.WATER_LOSS_THRESHOLD_HC_PLUS_LOW, PlayerConstants.WATER_LOSS_THRESHOLD_HC_PLUS_HIGH, heat_comfort);
+			value_normalized = Math.Clamp(value_normalized,0,1);
 			float water_loss = deltaT * Math.Lerp(PlayerConstants.WATER_LOSS_HC_PLUS_LOW, PlayerConstants.WATER_LOSS_HC_PLUS_HIGH, value_normalized);
 			player.GetStatWater().Add(-water_loss);
 			//PrintString("water loss:"+water_loss.ToString());
@@ -44,6 +45,7 @@ class HeatComfortMdfr: ModifierBase
 		else if( heat_comfort < PlayerConstants.ENERGY_LOSS_THRESHOLD_HC_MINUS_LOW )
 		{
 			value_normalized = Math.InverseLerp(PlayerConstants.ENERGY_LOSS_THRESHOLD_HC_MINUS_LOW, PlayerConstants.ENERGY_LOSS_THRESHOLD_HC_MINUS_HIGH, heat_comfort);
+			value_normalized = Math.Clamp(value_normalized,0,1);
 			float energy_loss = deltaT * Math.Lerp(PlayerConstants.ENERGY_LOSS_HC_MINUS_LOW, PlayerConstants.ENERGY_LOSS_HC_MINUS_HIGH, value_normalized);
 			player.GetStatEnergy().Add(-energy_loss);
 			//PrintString("energy loss:"+energy_loss.ToString());

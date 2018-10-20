@@ -24,6 +24,8 @@ class CarScript extends Car
 	protected float m_FuelTankHealth;
 
 	protected bool m_EngineSmoke;
+	
+	float m_dmgContactCoef;
 
 	void CarScript()
 	{
@@ -43,6 +45,8 @@ class CarScript extends Car
 		m_FuelTankHealth = 1;
 
 		m_EngineSmoke = false;
+		
+		m_dmgContactCoef = 0;
 	}
 /*
 	here we should handle the damage dealt in OnContact event, but maybe we will react even in that event 
@@ -102,12 +106,12 @@ class CarScript extends Car
 			default:
 				if ( GetGame().IsServer() || !GetGame().IsMultiplayer() )
 				{
-					if ( data.Impulse > 500 )
+					if ( data.Impulse > 1000 )
 					{
 						//Print("Velkej Impulse - give some dmg");
 						//DecreaseHealth("Engine", "Health", 400.0);
 
-						float dmg = data.Impulse * 0.095;
+						float dmg = data.Impulse * m_dmgContactCoef;
 						Print( zoneName );
 						Print( dmg );
 /*					

@@ -276,24 +276,60 @@ class Environment
 	// Calculates item heat isolation based on its wetness
 	float GetCurrentItemHeatIsolation(ItemBase pItem)
 	{
-		float heat_isolation = pItem.GetHeatIsolation();
-		float wet_factor = pItem.GetWet();
+		float wetFactor;
+		float healthFactor;
 
-		//! takes into account health of item
-		heat_isolation = heat_isolation * pItem.GetHealth01("", "");
+		float heatIsolation = pItem.GetHeatIsolation(); 	//! item heat isolation (from cfg)
+		float itemHealthLabel = pItem.GetHealthLabel();		//! item health (state)
+		float itemWetness = pItem.GetWet();					//! item wetness
 		
-		if ( wet_factor > 0 )
+		//! wet factor selection
+		if ( itemWetness >= STATE_DRY && itemWetness < STATE_DAMP )
 		{
-			if ( wet_factor <= ENVIRO_WET_PENALTY )
-			{
-				heat_isolation = heat_isolation * (1 - wet_factor);
-			}
-			else
-			{
-				heat_isolation = -ENVIRO_WET_PENALTY_EFFECT * (wet_factor - ENVIRO_WET_PENALTY);
-			}
+			wetFactor = ENVIRO_ISOLATION_WETFACTOR_DRY;
 		}
-		return heat_isolation;
+		else if ( itemWetness >= STATE_DAMP && itemWetness < STATE_WET )
+		{
+			wetFactor = ENVIRO_ISOLATION_WETFACTOR_DAMP;
+		}
+		else if ( itemWetness >= STATE_WET && itemWetness < STATE_SOAKING_WET )
+		{
+			wetFactor = ENVIRO_ISOLATION_WETFACTOR_WET;
+		}
+		else if ( itemWetness >= STATE_SOAKING_WET && itemWetness < STATE_DRENCHED )
+		{
+			wetFactor = ENVIRO_ISOLATION_WETFACTOR_SOAKED;
+		}
+		else if ( itemWetness >= STATE_DRENCHED )
+		{
+			wetFactor = ENVIRO_ISOLATION_WETFACTOR_DRENCHED;
+		}
+		
+		//! health factor selection
+		switch (itemHealthLabel)
+		{
+		case STATE_PRISTINE:
+			healthFactor = ENVIRO_ISOLATION_HEALTHFACTOR_PRISTINE;
+		break;
+		case STATE_WORN:
+			healthFactor = ENVIRO_ISOLATION_HEALTHFACTOR_WORN;
+		break;
+		case STATE_DAMAGED:
+			healthFactor = ENVIRO_ISOLATION_HEALTHFACTOR_DAMAGED;
+		break;
+		case STATE_BADLY_DAMAGED:
+			healthFactor = ENVIRO_ISOLATION_HEALTHFACTOR_B_DAMAGED;
+		break;
+		case STATE_RUINED:
+			healthFactor = ENVIRO_ISOLATION_HEALTHFACTOR_RUINED;
+		break;
+		}
+		
+		//! apply fatctors
+		heatIsolation *= healthFactor;
+		heatIsolation *= wetFactor;
+
+		return heatIsolation;
 	}
 
 	protected float GetCurrentItemWetAbsorbency(ItemBase pItem)
@@ -311,6 +347,11 @@ class Environment
 	{
 		float temperature_reduction = Math.Max(0, (m_PlayerHeightPos * ENVIRO_TEMPERATURE_HEIGHT_REDUCTION));
 		return temperature_reduction;
+	}
+	
+	float GetTemperature()
+	{
+		return m_EnvironmentTemperature;
 	}
 	
 	// Calculates and return temperature of environment
@@ -648,6 +689,7 @@ class Environment
 				item = Class.Cast(attachment);
 				int attachmentSlot = attachment.GetInventory().GetSlotId(0);
 
+				//! go through all body parts we've defined for that zone (ex.: head, body, feet)
 				for (int i = 0; i < pBodyPartIds.Count(); i++)
 				{
 					if (attachmentSlot == pBodyPartIds.Get(i))

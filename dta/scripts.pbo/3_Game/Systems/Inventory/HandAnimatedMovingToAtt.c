@@ -17,6 +17,8 @@ class HandStartHidingAnimated extends HandStartAction
 	{
 		super.OnExit(e);
 	}
+	
+	override bool IsWaitingForActionFinish () { return m_ActionType == -1; }
 };
 
 
@@ -94,15 +96,8 @@ class HandAnimatedMovingToAtt extends HandStateBase
 		if (ev_move)
 		{
 			m_Show.m_Dst = ev_move.m_Dst;
-
-			int animType = SlotToAnimType(m_Player, ev_move.m_Dst);
-			if (animType != -1)
-			{
-				m_Hide.m_ActionType = animType;
-				m_Show.m_ActionType = animType;
-			}
-			else
-				Error("[hndfsm] HandAnimatedMovingToAtt - slot not mapped to anim type");
+			m_Hide.m_ActionType = ev_move.GetAnimationID();
+			m_Show.m_ActionType = ev_move.GetAnimationID();
 		}
 		
 		super.OnEntry(e); // @NOTE: super at the end (prevent override from submachine start)

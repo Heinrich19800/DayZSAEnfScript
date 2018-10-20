@@ -138,14 +138,13 @@ class Hologram
 			}
 		}
 		
-		TentBase tent;
-		if ( Class.CastTo( tent, entity_in_hands ) )
+		//Camping & Base building
+		if ( entity_in_hands.IsInherited( TentBase ) || entity_in_hands.IsInherited( FenceKit ) || entity_in_hands.IsInherited( WatchtowerKit ) )
 		{
 			return entity_in_hands.GetType() + "Placing";
 		}
-
+		
 		return entity_in_hands.GetType();
-
 	}
 		
 	// update loop for visuals and collisions of the hologram

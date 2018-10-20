@@ -1378,6 +1378,8 @@ class PluginDiagMenu extends PluginBase
 				PluginLifespan module_lifespan_update;
 				Class.CastTo(module_lifespan_update, GetPlugin( PluginLifespan ));
 				module_lifespan_update.UpdateLifespan( player, true );
+				module_lifespan_update.ChangeFakePlaytime( player, playtime_update );
+				
 			break;
 			case ERPCs.DEV_GO_UNCONSCIOUS:
 				ctx.Read( CachedObjectsParams.PARAM1_BOOL );

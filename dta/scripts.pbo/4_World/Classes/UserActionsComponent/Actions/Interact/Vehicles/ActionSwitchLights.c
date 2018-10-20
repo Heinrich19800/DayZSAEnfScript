@@ -37,7 +37,25 @@ class ActionSwitchLights: ActionInteractBase
 				if ( Class.CastTo(car, trans) )
 				{
 					if ( car.CrewMemberIndex( player ) == DayZPlayerConstants.VEHICLESEAT_DRIVER )
-						return true;
+					{
+						if ( !car.IsLightsOn() )
+						{
+							EntityAI neededItem = null;
+
+							if ( car.IsVitalCarBattery() ) neededItem = car.FindAttachmentBySlotName("CarBattery");
+							if ( car.IsVitalTruckBattery() ) neededItem = car.FindAttachmentBySlotName("TruckBattery");
+
+							if ( !neededItem || (neededItem && neededItem.IsRuined()) )
+								return false;
+
+							neededItem = null;
+							neededItem = car.FindAttachmentBySlotName("LightBulb");
+							if ( !neededItem || (neededItem && neededItem.IsRuined()) )
+								return false;
+
+							return true;
+						}
+					}
 				}
 			}
 		}

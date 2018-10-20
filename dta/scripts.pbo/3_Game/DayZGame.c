@@ -881,20 +881,17 @@ class DayZGame extends CGame
 		// turn the lights off
 		GetGame().SetEVUser(-5);
 		// timer for spawning screen
-		#ifdef PLATFORM_CONSOLE
+		GetGame().GetUserManager().GetUserDatabaseIdAsync();
+		
+		if (queueTime > 0)
+		{
+			GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.ClientSpawning, 1000, true, newChar);
+		}
+		else
+		{
+			// no spawning screen needed
 			ClientSpawningFinished(newChar);
-			GetGame().GetUserManager().GetUserDatabaseIdAsync();
-		#else
-			if (queueTime > 0)
-			{
-				GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.ClientSpawning, 1000, true, newChar);
-			}
-			else
-			{
-				// no spawning screen needed
-				ClientSpawningFinished(newChar);
-			}
-		#endif
+		}
 	}
 	
 	// ------------------------------------------------------------
@@ -998,7 +995,7 @@ class DayZGame extends CGame
 			if (m_connectionLost.GetDuration() != duration)
 			{
 				// use STR_MP_NO_MESSAGE 
-				m_connectionLost.SetText("No message received for %1 " + duration.ToString() + " seconds");	
+				m_connectionLost.SetText("#dayz_game_no_message" + " %1 " + duration.ToString() + " " + "#dayz_game_seconds");	
 				m_connectionLost.SetDuration(duration);
 			}
 		}
@@ -1131,7 +1128,7 @@ class DayZGame extends CGame
 		if (text_widget)
 		{
 			#ifdef PLATFORM_XBOX
-					text_widget.SetText("dayz_game_press" + "" + "<image set=\"xbox_buttons\" name=\"A\" />" + "" + "dayz_game_to_start");
+					text_widget.SetText("#dayz_game_press" + "" + "<image set=\"xbox_buttons\" name=\"A\" />" + "" + "#dayz_game_to_start");
 			#endif
 					
 			#ifdef PLATFORM_PS4
