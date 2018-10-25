@@ -12,8 +12,6 @@ class DayZIntroSceneXbox: Managed
 	protected ref TStringArray 	m_CharShoesList;
 	protected ref TStringArray			m_AllCharacters;
 	
-	protected ref EntityAnimEndEventHandler 	m_anim_end_event_handler;
-
 	protected Camera		m_SceneCamera;
 	protected PlayerBase	m_SceneCharacter;
 	protected Weather		m_Weather;
@@ -391,7 +389,6 @@ class DayZIntroSceneXbox: Managed
 			g_Game.SetNewCharacter(false);
 			m_SceneCharacter.PlaceOnSurface();
 			m_SceneCharacter.SetDirection(m_CharacterDir);
-			m_SceneCharacter.SetEventHandler(m_anim_end_event_handler);
 			m_SceneCharacter.SetLastShavedSeconds(m_LastShavedSeconds);
 	
 			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(UpdateCharacterPos, 250);
@@ -418,7 +415,6 @@ class DayZIntroSceneXbox: Managed
 		{
 			m_SceneCharacter.PlaceOnSurface();
 			m_SceneCharacter.SetDirection(m_CharacterDir);
-			m_SceneCharacter.SetEventHandler(m_anim_end_event_handler);
 			m_SceneCharacter.SetLastShavedSeconds(m_LastShavedSeconds);
 
 			// NEW STATS API

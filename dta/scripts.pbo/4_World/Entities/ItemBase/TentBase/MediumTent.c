@@ -4,7 +4,7 @@ class MediumTent extends TentBase
 	{		
 		m_ToggleAnimations.Insert( new ToggleAnimations("EntranceO", "EntranceC"), 0 );
 			
-		m_ShowAnimationsWhenPitched.Insert( "Camo" );
+		m_ShowAnimationsWhenPitched.Insert( "Body" );
 		m_ShowAnimationsWhenPitched.Insert( "EntranceO" );
 
 		m_ShowAnimationsWhenPacked.Insert( "Inventory" );
@@ -48,5 +48,15 @@ class MediumTent extends TentBase
 	override bool IsTwoHandedBehaviour()
 	{
 		return true;
+	}
+	
+	override string GetSoundOpen()
+	{
+		return "MediumTent_Door_Open_SoundSet";
+	}
+	
+	override string GetSoundClose()
+	{
+		return "MediumTent_Door_Close_SoundSet";
 	}
 };

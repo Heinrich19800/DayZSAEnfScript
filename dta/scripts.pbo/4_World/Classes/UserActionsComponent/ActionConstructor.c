@@ -63,7 +63,6 @@ class ActionConstructor
 		actions.Insert(new ActionInjectMorphineTarget);
 		actions.Insert(new ActionHandcuffTarget);
 		actions.Insert(new ActionBuildPartSwitch);
-		actions.Insert(new ActionMineTreeActionSwitch);
 		actions.Insert(new ActionAttachOnSelection);
 		actions.Insert(new ActionTurnOnWeaponFlashlight);
 		actions.Insert(new ActionTurnOffWeaponFlashlight);
@@ -199,8 +198,6 @@ class ActionConstructor
 		actions.Insert(new ActionEmptyCookingPot);
 		actions.Insert(new ActionViewOptics);
 		actions.Insert(new ActionViewBinoculars);
-		actions.Insert(new ActionMineTreeFence);
-		actions.Insert(new ActionMineTreeWatchtower);
 		actions.Insert(new ActionFoldBaseBuildingObject);
 		actions.Insert(new ActionUseRangefinder);
 		//actions.Insert(new ActionAttached);
@@ -208,6 +205,8 @@ class ActionConstructor
 		actions.Insert(new ActionUnmountBarbedWire);
 		actions.Insert(new ActionDialCombinationLock);
 		actions.Insert(new ActionDialCombinationLockOnTarget);
+		actions.Insert(new ActionBuildBasePart);
+		actions.Insert(new ActionDismantleBasePart);
 		
 		// Interact actions
 		actions.Insert(new ActionPullOutPlug);

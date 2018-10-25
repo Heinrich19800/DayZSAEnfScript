@@ -261,7 +261,7 @@ class ActionManagerServer: ActionManagerBase
 					// check pCurrentCommandID before start or reject 
 					if( ActionPossibilityCheck(pCurrentCommandID) && pCurrentCommandID != DayZPlayerConstants.COMMANDID_SWIM && pCurrentCommandID != DayZPlayerConstants.COMMANDID_LADDER )
 					{
-						if(!m_Player.IsRestrained() || m_CurrentActionData.m_Action.GetType() == AT_STRUGGLE )
+						if(!m_Player.IsRestrained() || m_CurrentActionData.m_Action.CanBeUsedInRestrain() )
 						{
 							m_CurrentActionData.m_State = UA_START;
 							m_CurrentActionData.m_Action.Start(m_CurrentActionData);

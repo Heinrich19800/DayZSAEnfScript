@@ -122,7 +122,7 @@ class ActionEnterLadder: ActionInteractBase
 	
 	override void Start( ActionData action_data )
 	{
-
+		super.Start( action_data );
 		Building 	b;
 		Class.CastTo(b, action_data.m_Target.GetObject());
 		

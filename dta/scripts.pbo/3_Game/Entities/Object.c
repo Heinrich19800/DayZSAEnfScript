@@ -708,9 +708,11 @@ class Object extends IEntity
 	proto native bool IsPlainObject();
 	
 	/**
-  \brief Returns damage level (range 0..4, 0 = pristine, 1 = worn, 2 = damaged, 3 = badly damaged, 4 = ruined).
+  	\brief Returns global health level specified in object's config class parameter healthLevels
+	     (range is usually 0..4, 0 = pristine, 1 = worn, 2 = damaged, 3 = badly damaged, 4 = ruined but can be changed).
+	@param zoneName if empty string, returns state of global health level
 	*/
-	proto native int GetHealthLabel();
+	proto native int GetHealthLevel(string zone = "");
 	
 	/**
   \brief Enable or disable object to receive damage

@@ -547,6 +547,8 @@ enum DayZPlayerConstants
 	CMD_ACTIONMOD_SEARCHINVENTORY		= 21,		// erc,cro			[end]
 	CMD_ACTIONMOD_CRAFTING				= 22,		// erc,cro			[end]
 	CMD_ACTIONMOD_RESTRAINEDSTRUGGLE	= 23,		// erc,cro 			[end, end2]
+	CMD_ACTIONMOD_COVERHEAD_SELF		= 24,		// erc,cro 			[end, end2]
+	CMD_ACTIONMOD_COVERHEAD_TARGET		= 25,		// erc,cro 			[end, end2]
 	
 	// onetime 
 	CMD_ACTIONMOD_PICKUP_HANDS			= 500,		// erc,cro
@@ -643,6 +645,8 @@ enum DayZPlayerConstants
 	CMD_ACTIONFB_RAISEITEM				= 110,		// pne 				[end]
 	CMD_ACTIONFB_RESTRAINEDSTRUGGLE		= 111,		// ,pne 			[end, end2]
 	CMD_ACTIONFB_RESTRAINSELF			= 112,		// erc,cro 			[end]
+	CMD_ACTIONFB_ASSEMBLE				= 113,		// erc,cro			[end, end2]
+	CMD_ACTIONFB_DISASSEMBLE			= 114,		// erc,cro			[end, end2]
 	
 	// onetime 
 	CMD_ACTIONFB_PICKUP_HANDS			= 500,		// pne

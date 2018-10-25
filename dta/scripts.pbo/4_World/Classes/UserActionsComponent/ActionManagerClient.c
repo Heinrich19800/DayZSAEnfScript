@@ -35,10 +35,17 @@ class ActionManagerClient: ActionManagerBase
 					// check pCurrentCommandID before start or reject 
 					if( m_ActionPossible && pCurrentCommandID != DayZPlayerConstants.COMMANDID_SWIM && pCurrentCommandID != DayZPlayerConstants.COMMANDID_LADDER )
 					{
-						m_CurrentActionData.m_State = UA_START;
-						m_CurrentActionData.m_Action.Start(m_CurrentActionData);
-						if( m_CurrentActionData.m_Action.IsInstant() )
+						if(!m_Player.IsRestrained() || m_CurrentActionData.m_Action.CanBeUsedInRestrain() )
+						{
+							m_CurrentActionData.m_State = UA_START;
+							m_CurrentActionData.m_Action.Start(m_CurrentActionData);
+							if( m_CurrentActionData.m_Action.IsInstant() )
+								OnActionEnd();
+						}
+						else
+						{
 							OnActionEnd();
+						}
 					}
 					else
 					{
@@ -283,8 +290,6 @@ class ActionManagerClient: ActionManagerBase
 				}
 				return;
 			}
-			
-			
 			
 			ItemBase target_item;
 			Class.CastTo(target_item,  target.GetObject() );

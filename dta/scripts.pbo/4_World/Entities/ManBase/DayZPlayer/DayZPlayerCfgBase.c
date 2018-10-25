@@ -109,6 +109,7 @@ class DayzPlayerItemBehaviorCfg extends HumanItemBehaviorCfg
 		m_fMeleeEvadeHeadingFilterSpeed	= Math.DEG2RAD * 1440;	// 720 stup / sek
 
 		m_bAttackLean = false;
+		m_bJumpAllowed = true;
 	}
 
 	void 	SetPistols()
@@ -218,7 +219,7 @@ class DayzPlayerItemBehaviorCfg extends HumanItemBehaviorCfg
 	  SetIKAll(false, true, true);
 		
 	  m_bAttackLean = true;
-	  
+	  m_bJumpAllowed = false;
 	}
 }
 
@@ -569,7 +570,8 @@ void DayZPlayerTypeRegisterItems(DayZPlayerType pType)
 		//! Camping 1handed
 		pType.AddItemInHandsProfileIK("BarbedWire", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded, 						"dz/anims/anm/player/ik/gear/barbed_wire.anm");
 		pType.AddItemInHandsProfileIK("BatteryCharger", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded, 					"dz/anims/anm/player/ik/gear/battery_charger.anm");
-		pType.AddItemInHandsProfileIK("XmasLights", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded, 					"dz/anims/anm/player/ik/gear/christmas_lights.anm");
+		pType.AddItemInHandsProfileIK("XmasLights", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded, 						"dz/anims/anm/player/ik/gear/christmas_lights.anm");
+		pType.AddItemInHandsProfileIK("FenceKit", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded, 							"dz/anims/anm/player/ik/gear/fence_kit_folded.anm");
 
 		
 		
@@ -990,13 +992,10 @@ void DayZPlayerTypeRegisterItems(DayZPlayerType pType)
 	//! Restrained items
 	{
 		pType.AddItemInHandsProfileIK("HandcuffsLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/handcuffslocked.anm");
-		pType.AddItemInHandsProfileIK("RopeLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/bp_rope_tied.anm");
-		pType.AddItemInHandsProfileIK("DuctTapeLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/handcuffslocked.anm");
-		pType.AddItemInHandsProfileIK("MetalWireLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/handcuffslocked.anm");
-		pType.AddItemInHandsProfileIK("BarbedWireLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/handcuffslocked.anm");
-		pType.AddItemInHandsProfileIK("DuctTapeLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/handcuffslocked.anm");
-		pType.AddItemInHandsProfileIK("MetalWireLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/handcuffslocked.anm");
-		pType.AddItemInHandsProfileIK("BarbedWireLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/handcuffslocked.anm");
+		pType.AddItemInHandsProfileIK("RopeLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 							"dz/anims/anm/player/ik/gear/bp_rope_tied.anm");
+		pType.AddItemInHandsProfileIK("DuctTapeLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/DuctTape_tied.anm");
+		pType.AddItemInHandsProfileIK("MetalWireLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/Metalwire_tied.anm");
+		pType.AddItemInHandsProfileIK("BarbedWireLocked", "dz/anims/workspaces/player/player_main/player_main_1h_restrained.asi", restrained, 						"dz/anims/anm/player/ik/gear/Barbed_wire_tied.anm");
 	}
 	
 	//! Surrender items (dummy!)

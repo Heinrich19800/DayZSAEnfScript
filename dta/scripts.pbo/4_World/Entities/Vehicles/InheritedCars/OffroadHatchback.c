@@ -28,6 +28,18 @@ class OffroadHatchback extends CarScript
 		return 0;
 
 	}
+	
+	override void EEItemDetached(EntityAI item, string slot_name)
+	{
+		if ( GetGame().IsServer() )
+		{
+			if ( slot_name == "LightBulb" || slot_name == "CarBattery")
+			{
+				if ( IsLightsOn() )
+					SwitchLights();
+			}
+		}
+	}
 
 	override bool CanReleaseAttachment( EntityAI attachment )
 	{

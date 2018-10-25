@@ -51,7 +51,7 @@ class ActionFoldBaseBuildingObject: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
 		base_building.FoldBaseBuildingObject();

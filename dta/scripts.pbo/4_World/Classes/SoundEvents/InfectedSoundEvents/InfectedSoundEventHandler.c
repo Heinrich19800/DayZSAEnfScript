@@ -57,25 +57,21 @@ class InfectedSoundEventHandler extends SoundEventHandler
 	{
 		if( m_CurrentState )
 		{
-			if (!m_CurrentState.IsLooped())
-			{
-				m_CurrentState.Stop();
-				m_CurrentState = null;
-			}
-			else
-			{
-				if (m_CurrentState.GetSoundSetCallback())
-				{
-					m_CurrentState.GetSoundSetCallback().Loop(false);
-					m_CurrentState = null;
-				}
-			}
+			m_CurrentState.Stop();
+		}
+	}
+	
+	void SoftStop()
+	{
+		if( m_CurrentState )
+		{
+			m_CurrentState.SoftStop();
 		}
 	}
 	
 	bool IsPlaying()
 	{
-		if( m_CurrentState )
+		if( m_CurrentState && m_CurrentState.IsSoundCallbackExist() )
 		{
 			return true;
 		}
@@ -96,13 +92,21 @@ class InfectedSoundEventHandler extends SoundEventHandler
 		{
 		 	if(!m_CurrentState.IsSoundCallbackExist())
 			{
+				//Print("Missing callback - cleanup and continue");
 				delete m_CurrentState;
+			}
+			
+			//! same sound event - skip
+			if(GetCurrentStateEventID() == id)
+			{
+				//Print("Same ID - skipping");
+				return false;
 			}
 		}
 		
 		if(m_CurrentState)
 		{
-			m_CurrentState.Stop();
+			m_CurrentState.SoftStop();
 			m_CurrentState = requested_state.ClassName().ToType().Spawn();
 			m_CurrentState.Init(m_Infected);
 			m_CurrentState.Play();

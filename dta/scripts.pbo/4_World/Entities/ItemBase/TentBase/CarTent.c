@@ -4,7 +4,7 @@ class CarTent extends TentBase
 	{		
 		m_ToggleAnimations.Insert( new ToggleAnimations("EntranceO", "EntranceC"), 0 );
 			
-		m_ShowAnimationsWhenPitched.Insert( "Camo" );
+		m_ShowAnimationsWhenPitched.Insert( "Body" );
 		m_ShowAnimationsWhenPitched.Insert( "EntranceO" );
 
 		m_ShowAnimationsWhenPacked.Insert( "Inventory" );
@@ -47,5 +47,15 @@ class CarTent extends TentBase
 	override bool IsDeployable()
 	{
 		return true;
+	}
+	
+	override string GetSoundOpen()
+	{
+		return "CarTent_Door_Open_SoundSet";
+	}
+	
+	override string GetSoundClose()
+	{
+		return "CarTent_Door_Close_SoundSet";
 	}
 };

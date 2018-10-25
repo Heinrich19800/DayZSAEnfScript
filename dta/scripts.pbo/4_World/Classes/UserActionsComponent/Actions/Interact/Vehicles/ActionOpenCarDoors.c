@@ -75,4 +75,9 @@ class ActionOpenCarDoors: ActionInteractBase
 			car.SetAnimationPhase( m_AnimSource, 1.0);
 		}
 	}
+	
+	override bool CanBeUsedInVehicle()
+	{
+		return true;
+	}
 };

@@ -55,7 +55,14 @@ class ActionGiveBloodSelf: ActionContinuousBase
 			lambda.SetTransferParams(true, true, true);
 			MiscGameplayFunctions.TurnItemIntoItemEx(action_data.m_Player, lambda);
 		}
-
+		else
+		{
+			if ( action_data.m_MainItem.GetQuantity() <= 0 )
+			{
+				GetGame().ObjectDelete( action_data.m_MainItem );
+			}	
+		}
+		
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 	
@@ -78,7 +85,7 @@ class ActionGiveBloodSelf: ActionContinuousBase
 		
 		if ( action_data.m_MainItem && action_data.m_MainItem.GetQuantity() <= 0.01 )
 		{
-			action_data.m_MainItem.SetQuantity(0);
+			action_data.m_MainItem.SetQuantity(0, false, false);
 		}
 	}
 	

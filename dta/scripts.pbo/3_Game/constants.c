@@ -301,13 +301,13 @@ const float ENVIRO_LOW_TEMP_LIMIT					= -40;		//! lowest temperature(deg Celsius
 const float ENVIRO_HIGH_TEMP_LIMIT					= 50;		//! highest temperature(deg Celsius) where the player gets highest possible heat comfort (1)
 const float ENVIRO_PLAYER_COMFORT_TEMP				= 18;		//! comfort temperature of environment for the player
 
-//! impact of item wetness to its heat isolation
+//! impact of item wetness to the heat isolation
 const float ENVIRO_ISOLATION_WETFACTOR_DRY			= 1.0;
 const float ENVIRO_ISOLATION_WETFACTOR_DAMP			= 0.75;
 const float ENVIRO_ISOLATION_WETFACTOR_WET			= 0.5;
 const float ENVIRO_ISOLATION_WETFACTOR_SOAKED		= 0.0;
 const float ENVIRO_ISOLATION_WETFACTOR_DRENCHED 	= -1.0;
-
+//! impact of item health (state) to the heat isolation
 const float ENVIRO_ISOLATION_HEALTHFACTOR_PRISTINE  = 1.0;
 const float ENVIRO_ISOLATION_HEALTHFACTOR_WORN		= 0.75;
 const float ENVIRO_ISOLATION_HEALTHFACTOR_DAMAGED	= 0.5;
@@ -530,7 +530,7 @@ const int VARIABLE_COLOR		= 64;
 /** @}*/
 
 /**
- * \defgroup Item Health States (ItemBase.GetHealthLabel)
+ * \defgroup Item Health States (ItemBase.GetHealthLevel)
  * \desc Constants for Item Health States
  * @{
  */

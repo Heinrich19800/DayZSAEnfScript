@@ -192,7 +192,7 @@ class IngameHud extends Hud
 		m_VehiclePanelFuelMeter			= ProgressBarWidget.Cast( m_VehiclePanel.FindAnyWidget("FuelMeter") );
 		m_VehiclePanelFuel2Meter		= ProgressBarWidget.Cast( m_VehiclePanel.FindAnyWidget("FuelMeter0") );
 		
-		m_VehiclePanelEngineHealth		= m_VehiclePanel.FindAnyWidget("CheckEnginePanel");
+		m_VehiclePanelEngineHealth		= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("CheckEngineIcon") );
 		
 		//Class.CastTo(m_Zeroing, m_HudPanelWidget.FindAnyWidget("Zeroing"));
 		//Class.CastTo(m_WeaponMode, m_HudPanelWidget.FindAnyWidget("WeaponMode"));
@@ -849,9 +849,7 @@ class IngameHud extends Hud
 				next_gear = CarGear.NEUTRAL;
 			}
 			
-			int health = m_CurrentVehicle.GetHealthLabel();
-			//Print( m_CurrentVehicle.GetHealthLabel() );
-			//Print( health );
+			int health = m_CurrentVehicle.GetHealthLevel();
 			if( m_CurrentVehicle.IsEngineOn() && health > 0 )
 			{
 				m_VehiclePanelEngineHealth.Show( true );

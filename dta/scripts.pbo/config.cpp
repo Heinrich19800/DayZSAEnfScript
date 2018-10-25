@@ -753,12 +753,14 @@ class CfgSlots
 	{
 		name="CarBattery";
 		displayName="CarBattery";
+		selection="battery";
 		ghostIcon="carbattery";
 	};
 	class Slot_TruckBattery
 	{
 		name="TruckBattery";
 		displayName="TruckBattery";
+		selection="battery";
 		ghostIcon="carbattery";
 	};
 	class Slot_LightBulb
@@ -1538,7 +1540,7 @@ class CfgSlots
 	{
 		name="LargeBattery";
 		displayName="LargeBattery";
-		selection="LargeBattery";
+		selection="battery";
 		ghostIcon="carbattery";
 	};
 };

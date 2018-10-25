@@ -1,18 +1,12 @@
 class EffVomit : EffectParticle
 {
-	Object m_Character;
-	
 	void EffVomit()
 	{
 		SetParticleID(ParticleList.VOMIT);
 //		SetSoundName("Action_Vomitting_0");
 	}
 	
-	void SetDecalOwner(Object o)
-	{
-		m_Character = o;
-	}
-	
+
 	override void Event_OnStarted()
 	{
 		// Uncomment this to spawn fake decal of vomit on ground.

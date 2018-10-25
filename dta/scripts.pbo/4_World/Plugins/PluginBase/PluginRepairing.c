@@ -9,7 +9,7 @@ class PluginRepairing extends PluginBase
 
 	bool Repair(PlayerBase player, ItemBase repair_kit, ItemBase item, float specialty_weight)
 	{	
-		switch ( item.GetHealthLabel() ) 
+		switch ( item.GetHealthLevel() ) 
 		{
 			case PRISTINE_STATE:
 				break;
@@ -76,7 +76,7 @@ class PluginRepairing extends PluginBase
 
 	bool CanRepair( ItemBase repair_kit, ItemBase item )
 	{
-		if ( item.GetHealthLabel() <= WORN_STATE)
+		if ( item.GetHealthLevel() <= WORN_STATE)
 		{
 			return false;
 		}

@@ -8,23 +8,18 @@ class ActionBuildPartCB : ActionContinuousBaseCB
 
 class ActionBuildPart: ActionContinuousBase
 {
-	float m_DamageAmount;
-	
-	string m_PartName;						//base part name
-	
 	void ActionBuildPart()
 	{
 		m_CallbackClass = ActionBuildPartCB;
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CRAFTING;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_ASSEMBLE;
 		m_FullBody = true;
-		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
 		
 		m_MessageStartFail = "I cannot build a construction part.";
 		m_MessageStart = "I have build a construction part.";
 		m_MessageSuccess = "I have build a construction part.";
 		m_MessageFail = "I have failed to build a construction part.";
 		
-		m_DamageAmount = 2;
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 	}
 	
@@ -42,71 +37,65 @@ class ActionBuildPart: ActionContinuousBase
 	override string GetText()
 	{
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
-		ActionBuildPartSwitch switch_action = ActionBuildPartSwitch.Cast( player.GetActionManager().GetAction( AT_BUILD_PART_SWITCH ) );
-		string part_name_text;
-		
-		if ( switch_action )
+		if ( player )
 		{
-			if ( switch_action.m_Construction ) 
+			ConstructionActionData construction_action_data = player.GetConstructionActionData();
+			ConstructionPart constrution_part = construction_action_data.GetCurrentBuildPart();
+			
+			if ( constrution_part )
 			{
-				ConstructionPart construction_part = switch_action.m_Construction.GetConstructionPart( switch_action.GetActualBuildPart() );
-				
-				if ( construction_part )
-				{
-					part_name_text = construction_part.GetName();
-				}				
+				return "#build" + " " + constrution_part.GetName();
 			}
 		}
 		
-		return "#build" + " " + part_name_text;
+		return "";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{	
 		Object targetObject = target.GetObject();
-		string part_name;
 		
 		if ( targetObject && targetObject.CanUseConstruction() )
 		{
 			BaseBuildingBase base_building = BaseBuildingBase.Cast( targetObject );
-			ActionBuildPartSwitch switch_action = ActionBuildPartSwitch.Cast( player.GetActionManager().GetAction( AT_BUILD_PART_SWITCH ) );
+			Construction construction = base_building.GetConstruction();
+			ConstructionActionData construction_action_data = player.GetConstructionActionData();
+			construction_action_data.SetTarget( targetObject );
 			
-			if ( switch_action ) 
-			{
-				//Trigger action condition if not already triggered on Server (data setup)
-				if ( GetGame().IsServer() && !switch_action.m_ACTriggeredOnServer )
-				{
-					switch_action.ActionCondition( player, target, item );
-				}
-				
-				part_name = switch_action.GetActualBuildPart();
-			}
+			string main_part_name = targetObject.GetActionComponentName( target.GetComponentIndex() );
 			
 			//Debug
 			//base_building.GetConstruction().IsColliding( part_name );
 			
-			if ( part_name.Length() > 0 && base_building.IsFacingBack( player ) )
+			if ( !GetGame().IsMultiplayer() || GetGame().IsServer() )
 			{
-				m_PartName = part_name;
+				construction_action_data.RefreshPartsToBuild( main_part_name );
+			}
+			ConstructionPart constrution_part = construction_action_data.GetCurrentBuildPart();
+			
+			if ( constrution_part && !constrution_part.IsBase() && base_building.IsFacingBack( player ) )
+			{
 				return true;
-			}				
+			}			
 		}
 		
 		return false;
 	}
 		
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
 		Construction construction = base_building.GetConstruction();
+		ConstructionActionData construction_action_data = action_data.m_Player.GetConstructionActionData();
+		string part_name = construction_action_data.GetCurrentBuildPart().GetPartName();
 		
-		if ( !construction.IsColliding( m_PartName ) && construction.CanBuildPart( m_PartName ) )
+		if ( !construction.IsColliding( part_name ) && construction.CanBuildPart( part_name ) )
 		{
 			//build
-			construction.BuildPart( m_PartName, true, true );
+			construction.BuildPart( part_name, true, true );
 			
 			//add damage to tool
-			action_data.m_MainItem.DecreaseHealth ( m_DamageAmount );
+			action_data.m_MainItem.DecreaseHealth ( 2 );
 		}
 		else
 		{

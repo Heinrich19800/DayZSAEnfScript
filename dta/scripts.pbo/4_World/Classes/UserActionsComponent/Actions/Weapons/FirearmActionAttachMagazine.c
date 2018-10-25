@@ -49,7 +49,7 @@ class FirearmActionAttachMagazine : FirearmActionBase
 		super.Start( action_data );
 		Weapon_Base wpn = Weapon_Base.Cast(action_data.m_MainItem);
 		Magazine mag = Magazine.Cast(action_data.m_Target.GetObject());	
-		if ( action_data.m_Player.GetWeaponManager().CanAttachMagazine(wpn,mag) )
+		if ( action_data.m_Player.GetWeaponManager().CanAttachMagazine(wpn,mag,false) )
 			action_data.m_Player.GetWeaponManager().AttachMagazine(mag, this);
 		else
 			action_data.m_Player.GetWeaponManager().SwapMagazine(mag, this);

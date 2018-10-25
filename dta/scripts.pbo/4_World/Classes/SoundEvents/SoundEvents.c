@@ -47,7 +47,11 @@ class SoundEventBase
 		return true;
 	}
 	
-	void Play() {}
+	void Play()
+	{
+	}
+	
+	void OnPlay(PlayerBase player);
 	
 	void Stop()
 	{

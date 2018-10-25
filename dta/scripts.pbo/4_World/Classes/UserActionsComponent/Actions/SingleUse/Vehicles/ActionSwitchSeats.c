@@ -1,4 +1,4 @@
-class ActionSwitchSeats: ActionSingleUseBase
+class ActionSwitchSeats: ActionBase
 {
 	private Transport m_transport;
 	private int       m_nextSeatIdx;
@@ -63,14 +63,10 @@ class ActionSwitchSeats: ActionSingleUseBase
 
 		return true;
 	}
-	
-	override bool IsInstant()
-	{
-		return true;
-	}
 
 	override void Start( ActionData action_data )
 	{
+		super.Start( action_data );
 		HumanCommandVehicle vehCommand = action_data.m_Player.GetCommand_Vehicle();
 		if ( vehCommand )
 		{
@@ -86,9 +82,24 @@ class ActionSwitchSeats: ActionSingleUseBase
 		}
 	}
 	
-	override void OnCompleteClient( ActionData action_data )
+	override void OnUpdate(ActionData action_data)
 	{
-		action_data.m_Player.OnVehicleSwitchSeat( m_nextSeatIdx );
-	}
 
+		if(action_data.m_State == UA_START)
+		{
+			if( !action_data.m_Player.GetCommand_Vehicle().IsSwitchSeat() )
+			{
+				if( !GetGame().IsMultiplayer() || GetGame().IsClient() )
+				{
+					action_data.m_Player.OnVehicleSwitchSeat( m_nextSeatIdx );
+				}
+				End(action_data);
+			}
+		}
+	}
+	
+	override bool CanBeUsedInVehicle()
+	{
+		return true;
+	}
 };

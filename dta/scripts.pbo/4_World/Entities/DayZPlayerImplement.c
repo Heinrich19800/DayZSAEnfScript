@@ -474,6 +474,11 @@ class DayZPlayerImplement extends DayZPlayer
 		{
 			if (pInputs.IsReloadOrMechanismContinuousUseStart())
 			{
+				if (GetWeaponManager().CanUnjam(weapon))
+				{
+					GetWeaponManager().Unjam();
+					pExitIronSights = true;
+				}
 				weapon.ProcessWeaponEvent(new WeaponEventUnjam(this));
 			}
 		}
@@ -834,6 +839,22 @@ class DayZPlayerImplement extends DayZPlayer
 	//! 
 	
 	bool m_bIsJumpInProgress = false;
+	
+	//!
+	bool CanJump()
+	{
+		if( IsRestrained() || IsUnconscious() || IsInFBEmoteState() || !CanConsumeStamina(EStaminaConsumers.JUMP) )
+			return false;
+		
+		if( m_MovementState.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_PRONE || m_MovementState.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_RAISEDPRONE)
+			return false;
+		
+		HumanItemBehaviorCfg hibcfg = GetItemAccessor().GetItemInHandsBehaviourCfg();
+		if( !hibcfg.m_bJumpAllowed )
+			return false;
+		
+		return true;
+	}
 	
 	//!
 	void StartJump()
@@ -1211,7 +1232,7 @@ class DayZPlayerImplement extends DayZPlayer
 		// start jump 
 		if(hic.IsJumpClimb())
 		{
-			if( !IsRestrained() && !IsUnconscious() && !IsInFBEmoteState() && CanConsumeStamina(EStaminaConsumers.JUMP) )
+			if( CanJump() )
 			{
 				StartJump();
 				DepleteStamina(EStaminaModifiers.JUMP);
@@ -1249,6 +1270,7 @@ class DayZPlayerImplement extends DayZPlayer
 			if (isWeapon)
 			{
 				//! Melee with firearms
+				/*
 				if ((hic.IsWeaponRaised() && hic.IsImmediateAction()) || m_ProcessFirearmMeleeHit )
 				{
 					if (m_MeleeFightLogic.Process(pCurrentCommandID, hic, entityInHands, m_MovementState))
@@ -1263,6 +1285,7 @@ class DayZPlayerImplement extends DayZPlayer
 						m_ProcessFirearmMeleeHit = false;
 					}
 				}
+				*/
 				
 				bool exitIronSights = false;
 				HandleWeapons(pDt, entityInHands, hic, exitIronSights);
@@ -1719,92 +1742,88 @@ class DayZPlayerImplement extends DayZPlayer
 
 	AnimBootsType GetBootsType()
 	{
-		Entity boots = GetInventory().FindAttachment(InventorySlots.FEET);
-		if (boots == NULL)
-			return AnimBootsType.None;
+		EntityAI boots = GetInventory().FindAttachment(InventorySlots.FEET);
+		if(boots)
+		{
+			switch( boots.GetAttachmentSoundType() )
+			{
+				case "Sneakers":
+					return AnimBootsType.Sneakers;
+				case "Boots":
+					return AnimBootsType.Boots;
+			}
+		}
 
-		string bootsName = boots.GetType();
-
-		if (bootsName.Contains("Sneakers") || bootsName.Contains("AthleticShoes") || bootsName.Contains("JoggingShoes"))
-		{
-			return AnimBootsType.Sneakers;
-		}
-		else if (bootsName.Contains("Boots") || bootsName.Contains("Wellies") || bootsName.Contains("Shoes"))
-		{
-			return AnimBootsType.Boots;
-		}
-		else
-		{
-			//Print("Unrecognized boots type: \"" + bootsName + "\"");
-			return AnimBootsType.None;
-		}
+		return AnimBootsType.None;
 	}
 	
 	//Get top body clothes
 	AnimUpperBodyType GetBodyAttachmentType()
 	{
-		Entity attachment = GetInventory().FindAttachment(InventorySlots.BODY);
-		if(attachment == NULL)
-			return AnimUpperBodyType.None;
+		EntityAI attachment = GetInventory().FindAttachment(InventorySlots.BODY);
+		if(attachment)
+		{
+			switch( attachment.GetAttachmentSoundType() )
+			{
+				case "NylonJacket":
+					return AnimUpperBodyType.NylonJacket;
+				case "TShirt":
+					return AnimUpperBodyType.TShirt;
+				case "WoolShirt":
+					return AnimUpperBodyType.WoolShirt;
+				case "HeavyJacket":
+					return AnimUpperBodyType.HeavyJacket; 
+				case "LeatherJacket":
+					return AnimUpperBodyType.LeatherJacket;
+				case "Coat":
+					return AnimUpperBodyType.Coat;
+				case "ChemlonDress":
+					return AnimUpperBodyType.ChemlonDress;
+				case "Ghillie":
+					return AnimUpperBodyType.Ghillie;
+			}
+		}
 		
-		string name = attachment.GetType();
+		return AnimUpperBodyType.None;
+	}
+	
+	AnimBackType GetBackAttachmentType()
+	{
+		EntityAI back = GetInventory().FindAttachment(InventorySlots.BACK);
+		if(back)
+		{
+			switch( back.GetAttachmentSoundType() )
+			{
+				case "Small":
+					return AnimBackType.Small;
+				case "Military":
+					return AnimBackType.Military;
+				case "Outdoor":
+					return AnimBackType.Outdoor;
+				case "Ghillie":
+					return AnimBackType.Ghillie; 
+			}
+		}
 		
-		if (name.Contains("BomberJacket") || name.Contains("HikingJacket") || name.Contains("HuntingJacket") || name.Contains("QuiltedJacket") || name.Contains("Raincoat") || name.Contains("TacticalShirt") || name.Contains("TrackSuitJacket"))
-		{
-			return AnimUpperBodyType.NylonJacket;
-		}
-		else if (name.Contains("TShirt") || name.Contains("MedicalScrubsShirt") || name.Contains("NurseDress"))
-		{
-			return AnimUpperBodyType.TShirt;
-		}
-		else if (name.Contains("Shirt") || name.Contains("WoolDress") || name.Contains("Sweater"))
-		{
-			return AnimUpperBodyType.WoolShirt;
-		}
-		else if (name.Contains("ParamedicJacket") || name.Contains("FirefighterJacket") || name.Contains("GorkaEJacket") || name.Contains("TTSKOJacket") || name.Contains("M65Jacket"))
-		{
-			return AnimUpperBodyType.HeavyJacket;
-		}
-		else if (name.Contains("LeatherJacket") || name.Contains("RidersJacket"))
-		{
-			return AnimUpperBodyType.LeatherJacket;
-		}
-		else if (name.Contains("WoolCoat"))
-		{
-			return AnimUpperBodyType.Coat;
-		}
-		else if (name.Contains("PrisonersJacket") || name.Contains("PoliceJacket") || name.Contains("LabCoat") || name.Contains("USMCJacket") || name.Contains("PoliceJacketOrel"))
-		{
-			return AnimUpperBodyType.ChemlonDress;
-		}
-		else if (name.Contains("Ghillie"))
-		{
-			return AnimUpperBodyType.Ghillie;
-		}
-		else
-		{
-			//Print("Unrecognized upper body type: \"" + name + "\"");
-			return AnimUpperBodyType.None;
-		}
+		return AnimBackType.None;
 	}
 	
 	//Get weapon on back
 	AnimRangedWeaponType GetShoulderAttachmentType()
 	{
-		Entity shoulderAttachment = GetInventory().FindAttachment(InventorySlots.SHOULDER);
-		if(shoulderAttachment == NULL)
-			return AnimRangedWeaponType.None;
-		
-		string shoulderAttachmentName = shoulderAttachment.GetType();
-		
-		if (shoulderAttachmentName.Contains("Shotgun"))
+		EntityAI shoulderAttachment = GetInventory().FindAttachment(InventorySlots.SHOULDER);
+		if(shoulderAttachment)
 		{
-			return AnimRangedWeaponType.Shotgun;
+			switch( shoulderAttachment.GetAttachmentSoundType())
+			{
+				case "Shotgun":
+					return AnimRangedWeaponType.Shotgun;
+				case "Rifle":
+					return AnimRangedWeaponType.Rifle;
+			}
 		}
-		else
-		{
-			return AnimRangedWeaponType.Rifle;
-		}
+
+		return AnimRangedWeaponType.None;
 	}
 	
 	string GetSurfaceType(SurfaceAnimationBone limbType)
@@ -1993,7 +2012,7 @@ class DayZPlayerImplement extends DayZPlayer
 		}
 		else if (pEventType == "SoundVoice")
 		{
-			if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )
+			if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT || GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_REMOTE )
 			{
 				int event_id = m_PlayerSoundEventHandler.ConvertAnimIDtoEventID(pUserInt);
 				if( event_id > 0 )
@@ -2106,10 +2125,13 @@ class DayZPlayerImplement extends DayZPlayer
 		for(int i = 0; i < attachments.Count(); i++)
 		{
 			int attachmentHash = -1;
-			if(attachments[i] == "shoulder")
+			if( attachments[i] == "shoulder" )
 				attachmentHash = GetShoulderAttachmentType();
-			else if(attachments[i] == "body")
+			else if( attachments[i] == "body" )
 				attachmentHash = GetBodyAttachmentType();
+			else if( attachments[i] == "back" )
+				attachmentHash = GetBackAttachmentType();
+			
 			SoundObjectBuilder soundBuilder = table.GetSoundBuilder(pUserInt, attachments[i], attachmentHash);
 			
 			if (soundBuilder != NULL)

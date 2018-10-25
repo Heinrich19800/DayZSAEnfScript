@@ -73,6 +73,9 @@ class ParticleList
 	static const int BLOOD_SURFACE_DROPS			= RegisterParticle("blood_surface_drops");
 	static const int BLOOD_SURFACE_CHUNKS			= RegisterParticle("blood_surface_chunks");
 	static const int VOMIT							= RegisterParticle("character_vomit_01");
+	static const int BREATH_VAPOUR_LIGHT			= RegisterParticle("breath_vapour_light");
+	static const int BREATH_VAPOUR_MEDIUM			= RegisterParticle("breath_vapour_medium");
+	static const int BREATH_VAPOUR_HEAVY			= RegisterParticle("breath_vapour_heavy");
 	static const int VOMIT_CHUNKS					= RegisterParticle("character_vomit_puddle");
 	
 	// GUNS

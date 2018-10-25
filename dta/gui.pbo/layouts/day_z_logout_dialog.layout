@@ -38,7 +38,7 @@ WindowWidgetClass LogoutDialogRoot {
      hexactsize 1
      vexactsize 1
      style EmptyHighlight
-     text "#exit_now"
+     text "#layout_day_z_dialog_exit"
      text_proportion 0.5
      font "gui/fonts/sdf_MetronBook24"
     }

@@ -612,7 +612,7 @@ class ActionTargetsCursor extends ObjectFollower
 		}
 		if(m_Target && m_Target.GetObject() && m_Target.GetObject().IsHealthVisible())
 		{
-			health = m_Target.GetObject().GetHealthLabel();
+			health = m_Target.GetObject().GetHealthLevel();
 			return health;
 		}
 		

@@ -70,7 +70,7 @@ class ActionUnrestrainTarget: ActionContinuousBase
 	
 	override void CreateConditionComponents()  
 	{	
-		m_ConditionTarget = new CCTMan(UAMaxDistances.DEFAULT);
+		m_ConditionTarget = new CCTMan(UAMaxDistances.DEFAULT, false);
 		m_ConditionItem = new CCINonRuined;
 	}
 	

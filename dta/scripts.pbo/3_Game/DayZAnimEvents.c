@@ -114,6 +114,15 @@ enum AnimUpperBodyType
 	Ghillie				= 602194810
 }
 
+enum AnimBackType
+{
+	None 				= -1,
+	Small 				= 161213437,
+	Military 			= 1935514591,
+	Outdoor				= 574855932,
+	Ghillie				= 602194810
+}
+
 enum AnimRangedWeaponType
 {
 	None 		= 5727960,

@@ -64,12 +64,6 @@ class FirearmActionBase : ActionBase
 		return DayZPlayerConstants.STANCEMASK_ALL;
 	}
 	
-	void OnWeaponFsmEnd(ActionData action_data)
-	{
-		action_data.m_Player.GetActionManager().OnActionEnd();
-	}
-	
-	
 	override int GetActionCategory()
 	{
 		return AC_SINGLE_USE;
@@ -98,6 +92,7 @@ class FirearmActionBase : ActionBase
 	
 	override void Start( ActionData action_data )
 	{
+		super.Start( action_data );
 		action_data.m_State = UA_PROCESSING;
 		bool in_iron_sights = action_data.m_Player.IsInIronsights();
 		if(in_iron_sights)

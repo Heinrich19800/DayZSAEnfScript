@@ -49,7 +49,7 @@ class ActionBandageSelf: ActionContinuousBase
 		return player.IsBleeding();
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		if (action_data.m_Player.GetBleedingManagerServer() )
 		{

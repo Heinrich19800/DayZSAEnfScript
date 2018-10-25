@@ -117,7 +117,7 @@ class WeaponParticlesBase // This class represents every particle effect you see
 			{
 				if ( !suppressor  ||  !(m_IgnoreIfSuppressed) ) // ignoreIfSuppressed
 				{
-					if ( CheckHealthCondition( muzzle_owner.GetHealthLabel() ) ) // onlyWithinHealthLabel
+					if ( CheckHealthCondition( muzzle_owner.GetHealthLevel() ) ) // onlyWithinHealthLevel
 					{
 						if ( m_OnlyIfBulletIs == ""  ||  m_OnlyIfBulletIs == ammoType ) // onlyIfBulletIs
 						{

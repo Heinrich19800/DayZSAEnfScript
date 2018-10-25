@@ -1,8 +1,5 @@
 class ActionTakeItemToHands: ActionInteractBase
 {
-	string m_ItemName = "";
-	bool m_ProneException;
-
 	void ActionTakeItemToHands()
 	{
 		m_MessageSuccess    = "";
@@ -19,7 +16,7 @@ class ActionTakeItemToHands: ActionInteractBase
 	
 	override bool HasProneException()
 	{
-		return m_ProneException;
+		return true;
 	}
 	
 	override int GetType()
@@ -61,8 +58,6 @@ class ActionTakeItemToHands: ActionInteractBase
 	
 	override void OnStartServer( ActionData action_data )
 	{
-		CheckForHeavyAnimation( action_data );
-		
 		vector rotation = vector.Zero;
 		vector target_dir = action_data.m_Target.GetObject().GetPosition() - action_data.m_Player.GetPosition();
 		
@@ -70,48 +65,45 @@ class ActionTakeItemToHands: ActionInteractBase
 		action_data.m_Player.SetOrientation(rotation);
 	}
 	
-	override void OnStartClient( ActionData action_data )
-	{
-		CheckForHeavyAnimation( action_data );
-	}
-	
 	override void OnExecuteServer( ActionData action_data )
 	{
-		if (!GetGame().IsMultiplayer())
-		{
-			ActionManagerClient am = ActionManagerClient.Cast(action_data.m_Player.GetActionManager());
-			am.UnlockInventory(action_data);
-		}
-		
 		EntityAI ntarget = EntityAI.Cast(action_data.m_Target.GetObject());
 		action_data.m_Player.PredictiveTakeEntityToHands(ntarget);
 	}
 	
 	override void OnExecuteClient( ActionData action_data )
 	{
-		ActionManagerClient am = ActionManagerClient.Cast(action_data.m_Player.GetActionManager());
-		am.UnlockInventory(action_data);
-
 		EntityAI ntarget = EntityAI.Cast(action_data.m_Target.GetObject());
 		action_data.m_Player.PredictiveTakeEntityToHands(ntarget);
 	}
 	
-	void CheckForHeavyAnimation( ActionData action_data )
+	override void CreateAndSetupActionCallback( ActionData action_data )
 	{
-		m_ProneException = true;
 		Object target = action_data.m_Target.GetObject();
-		
-		if (target && target.ConfigIsExisting("heavyItem"))
+		bool heavy_item = false;
+		ActionBaseCB callback;
+		if (target && target.ConfigIsExisting("heavyItem") && target.ConfigGetBool("heavyItem"))
 		{
-			if (target.ConfigGetBool("heavyItem"))
+			heavy_item = true;
+		}
+			
+		if(heavy_item)
+		{
+			Class.CastTo(callback, action_data.m_Player.StartCommand_Action(DayZPlayerConstants.CMD_ACTIONFB_PICKUP_HEAVY,GetCallbackClassTypename(),DayZPlayerConstants.STANCEMASK_ERECT));
+		}
+		else
+		{
+			if( action_data.m_Player.IsPlayerInStance(DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT) )
 			{
-				m_ProneException = false;
-				m_FullBody = true;
-				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_PICKUP_HEAVY;
+				Class.CastTo(callback, action_data.m_Player.AddCommandModifier_Action(DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS,GetCallbackClassTypename()));
 			}
 			else
-				m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_PICKUP_HANDS;
+			{
+				Class.CastTo(callback, action_data.m_Player.StartCommand_Action(DayZPlayerConstants.CMD_ACTIONFB_PICKUP_HANDS,GetCallbackClassTypename(),DayZPlayerConstants.STANCEMASK_PRONE));
+			}
 		}
-		
+		callback.SetActionData(action_data); 
+		callback.InitActionComponent();
+		action_data.m_Callback = callback;
 	}
 };

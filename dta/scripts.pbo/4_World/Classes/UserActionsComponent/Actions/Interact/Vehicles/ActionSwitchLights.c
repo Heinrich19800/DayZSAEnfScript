@@ -79,4 +79,8 @@ class ActionSwitchLights: ActionInteractBase
 		}
 	}
 
+	override bool CanBeUsedInVehicle()
+	{
+		return true;
+	}
 };

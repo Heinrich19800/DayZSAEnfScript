@@ -147,7 +147,7 @@ class GridContainer: LayoutHolder
 	override void SetLayoutName()
 	{
 		#ifdef PLATFORM_CONSOLE
-		m_LayoutName = WidgetLayoutName.GridContainer;
+		m_LayoutName = WidgetLayoutName.GridContainerXbox;
 		#else
 		m_LayoutName = WidgetLayoutName.GridContainer;
 		#endif

@@ -78,6 +78,12 @@ class RecoilBase
 			Destroy();
 		}
 		
+		if( m_DeleteRequested )
+		{
+			delete this;
+		}
+		
+		
 		ApplyMouseOffset(pDt, axis_mouse_x, axis_mouse_y);
 		ApplyHandsOffset(pDt, axis_hands_x, axis_hands_y);
 		
@@ -89,10 +95,7 @@ class RecoilBase
 		axis_hands_x = axis_hands_x * recoil_modifier[0];
 		axis_hands_y = axis_hands_y * recoil_modifier[1];
 		
-		if( m_DeleteRequested )
-		{
-			delete this;
-		}
+		
 		
 
 	}
@@ -163,7 +166,7 @@ class RecoilBase
 	vector GetRecoilModifier(Weapon_Base weapon)
 	{
 		vector recoil_modifier;
-		if( weapon.GetPropertyModifierObject() )
+		if( weapon && weapon.GetPropertyModifierObject() )
 		{
 			recoil_modifier = weapon.GetPropertyModifierObject().GetRecoilModifiers();
 		}

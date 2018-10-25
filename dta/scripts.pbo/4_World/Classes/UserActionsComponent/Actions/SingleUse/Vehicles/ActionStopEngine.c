@@ -79,4 +79,9 @@ class ActionStopEngine: ActionSingleUseBase
 			}
 		}
 	}
+	
+	override bool CanBeUsedInVehicle()
+	{
+		return true;
+	}
 };

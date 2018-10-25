@@ -13,8 +13,9 @@ class DayZPlayerSyncJunctures
 	static const int SJ_ACTION_ACK_REJECT				= 7;
 	static const int SJ_WEAPON_ACTION_ACK_ACCEPT		= 8;
 	static const int SJ_WEAPON_ACTION_ACK_REJECT		= 9;
-	static const int SJ_UNCONSCIOUSNESS					= 10;
-	static const int SJ_DEATH					     	= 11;
+	static const int SJ_WEAPON_SET_JAMMING_CHANCE		= 10;
+	static const int SJ_UNCONSCIOUSNESS					= 11;
+	static const int SJ_DEATH					     	= 12;
 
 	//-------------------------------------------------------------
 	//!
@@ -205,6 +206,14 @@ class DayZPlayerSyncJunctures
 		pPlayer.SendSyncJuncture(SJ_QUICKBAR_SET_SHORTCUT, ctx);
 	}
 	
+	static void SendWeaponJamChance(DayZPlayer pPlayer, float jamChance )
+	{
+		ScriptJunctureData ctx = new ScriptJunctureData;
+		ctx.Write(jamChance);
+
+		pPlayer.SendSyncJuncture(SJ_WEAPON_SET_JAMMING_CHANCE, ctx);
+	}
+
 	/*static bool ReadQuickbarSetShortcut(ParamsReadContext pCtx, out EntityAI item, out int index)
 	{	
 		Param2<EntityAI,int> shortcutParam = new Param2<EntityAI,int>(NULL,-1);

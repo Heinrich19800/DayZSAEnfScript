@@ -77,7 +77,7 @@ PanelWidgetClass height_wrapper {
           ImageWidgetClass OutOfReach0 {
            visible 0
            clipchildren 1
-           ignorepointer 0
+           ignorepointer 1
            position 0 0
            size 1 1
            hexactpos 0
@@ -425,6 +425,26 @@ PanelWidgetClass height_wrapper {
          priority 150
          draggable 0
          {
+          ImageWidgetClass OutOfReach1 {
+           visible 0
+           clipchildren 1
+           ignorepointer 1
+           color 1 0.8824 1 1
+           position 0 0
+           size 1 1
+           hexactpos 1
+           vexactpos 1
+           hexactsize 0
+           vexactsize 0
+           fixaspect fixwidth
+           priority 200
+           draggable 0
+           image0 "set:dayz_gui image:icon_out_of_reach"
+           mode blend
+           "src alpha" 1
+           stretch 1
+           filter 1
+          }
           ImageWidgetClass RadialIcon1 {
            visible 0
            clipchildren 1
@@ -608,26 +628,6 @@ PanelWidgetClass height_wrapper {
           }
          }
         }
-        ImageWidgetClass OutOfReach1 {
-         visible 0
-         clipchildren 1
-         ignorepointer 0
-         color 1 0.8824 1 1
-         position 0 0
-         size 1 1
-         hexactpos 1
-         vexactpos 1
-         hexactsize 0
-         vexactsize 0
-         fixaspect fixwidth
-         priority 200
-         draggable 0
-         image0 "set:dayz_gui image:icon_out_of_reach"
-         mode blend
-         "src alpha" 1
-         stretch 1
-         filter 1
-        }
        }
       }
       ImageWidgetClass GhostSlot1 {
@@ -753,25 +753,6 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 1
        {
-        ImageWidgetClass OutOfReach2 {
-         visible 0
-         clipchildren 1
-         ignorepointer 0
-         position 0 0
-         size 1 1
-         hexactpos 0
-         vexactpos 0
-         hexactsize 0
-         vexactsize 0
-         fixaspect fixwidth
-         priority 200
-         draggable 0
-         image0 "set:dayz_gui image:icon_out_of_reach"
-         mode blend
-         "src alpha" 1
-         stretch 1
-         filter 1
-        }
         PanelWidgetClass Col2 {
          visible 0
          ignorepointer 1
@@ -795,6 +776,25 @@ PanelWidgetClass height_wrapper {
          priority 150
          draggable 0
          {
+          ImageWidgetClass OutOfReach2 {
+           visible 0
+           clipchildren 1
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           fixaspect fixwidth
+           priority 200
+           draggable 0
+           image0 "set:dayz_gui image:icon_out_of_reach"
+           mode blend
+           "src alpha" 1
+           stretch 1
+           filter 1
+          }
           ImageWidgetClass RadialIcon2 {
            visible 0
            clipchildren 1
@@ -1102,25 +1102,6 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 1
        {
-        ImageWidgetClass OutOfReach3 {
-         visible 0
-         clipchildren 1
-         ignorepointer 0
-         position 0 0
-         size 1 1
-         hexactpos 0
-         vexactpos 0
-         hexactsize 0
-         vexactsize 0
-         fixaspect fixwidth
-         priority 200
-         draggable 0
-         image0 "set:dayz_gui image:icon_out_of_reach"
-         mode blend
-         "src alpha" 1
-         stretch 1
-         filter 1
-        }
         PanelWidgetClass Col3 {
          visible 0
          ignorepointer 1
@@ -1144,6 +1125,25 @@ PanelWidgetClass height_wrapper {
          priority 150
          draggable 0
          {
+          ImageWidgetClass OutOfReach3 {
+           visible 0
+           clipchildren 1
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           fixaspect fixwidth
+           priority 200
+           draggable 0
+           image0 "set:dayz_gui image:icon_out_of_reach"
+           mode blend
+           "src alpha" 1
+           stretch 1
+           filter 1
+          }
           ImageWidgetClass RadialIcon3 {
            visible 0
            clipchildren 1
@@ -1452,25 +1452,6 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 1
        {
-        ImageWidgetClass OutOfReach4 {
-         visible 0
-         clipchildren 1
-         ignorepointer 0
-         position 0 0
-         size 1 1
-         hexactpos 0
-         vexactpos 0
-         hexactsize 0
-         vexactsize 0
-         fixaspect fixwidth
-         priority 200
-         draggable 0
-         image0 "set:dayz_gui image:icon_out_of_reach"
-         mode blend
-         "src alpha" 1
-         stretch 1
-         filter 1
-        }
         PanelWidgetClass Col4 {
          visible 0
          ignorepointer 1
@@ -1494,6 +1475,25 @@ PanelWidgetClass height_wrapper {
          priority 150
          draggable 0
          {
+          ImageWidgetClass OutOfReach4 {
+           visible 0
+           clipchildren 1
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           fixaspect fixwidth
+           priority 200
+           draggable 0
+           image0 "set:dayz_gui image:icon_out_of_reach"
+           mode blend
+           "src alpha" 1
+           stretch 1
+           filter 1
+          }
           ImageWidgetClass RadialIcon4 {
            visible 0
            clipchildren 1
@@ -1801,25 +1801,6 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 1
        {
-        ImageWidgetClass OutOfReach5 {
-         visible 0
-         clipchildren 1
-         ignorepointer 0
-         position 0 0
-         size 1 1
-         hexactpos 0
-         vexactpos 0
-         hexactsize 0
-         vexactsize 0
-         fixaspect fixwidth
-         priority 200
-         draggable 0
-         image0 "set:dayz_gui image:icon_out_of_reach"
-         mode blend
-         "src alpha" 1
-         stretch 1
-         filter 1
-        }
         PanelWidgetClass Col5 {
          visible 0
          ignorepointer 1
@@ -1843,6 +1824,25 @@ PanelWidgetClass height_wrapper {
          priority 150
          draggable 0
          {
+          ImageWidgetClass OutOfReach5 {
+           visible 0
+           clipchildren 1
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           fixaspect fixwidth
+           priority 200
+           draggable 0
+           image0 "set:dayz_gui image:icon_out_of_reach"
+           mode blend
+           "src alpha" 1
+           stretch 1
+           filter 1
+          }
           ImageWidgetClass RadialIcon5 {
            visible 0
            clipchildren 1
@@ -2150,25 +2150,6 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 1
        {
-        ImageWidgetClass OutOfReach6 {
-         visible 0
-         clipchildren 1
-         ignorepointer 0
-         position 0 0
-         size 1 1
-         hexactpos 0
-         vexactpos 0
-         hexactsize 0
-         vexactsize 0
-         fixaspect fixwidth
-         priority 200
-         draggable 0
-         image0 "set:dayz_gui image:icon_out_of_reach"
-         mode blend
-         "src alpha" 1
-         stretch 1
-         filter 1
-        }
         PanelWidgetClass Col6 {
          visible 0
          ignorepointer 1
@@ -2192,6 +2173,25 @@ PanelWidgetClass height_wrapper {
          priority 150
          draggable 0
          {
+          ImageWidgetClass OutOfReach6 {
+           visible 0
+           clipchildren 1
+           ignorepointer 1
+           position 0 0
+           size 1 1
+           hexactpos 0
+           vexactpos 0
+           hexactsize 0
+           vexactsize 0
+           fixaspect fixwidth
+           priority 200
+           draggable 0
+           image0 "set:dayz_gui image:icon_out_of_reach"
+           mode blend
+           "src alpha" 1
+           stretch 1
+           filter 1
+          }
           ImageWidgetClass RadialIcon6 {
            visible 0
            clipchildren 1

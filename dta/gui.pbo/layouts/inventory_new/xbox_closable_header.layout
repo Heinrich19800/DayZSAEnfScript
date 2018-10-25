@@ -39,11 +39,10 @@ PanelWidgetClass closable_header_root {
      vexactsize 0
      style Light
      text "#layout_xbox_closable_header"
-     font "gui/fonts/sdf_MetronBook24"
+     font "gui/fonts/sdf_MetronLight24"
      "text offset" 10 0
      "exact text" 1
-     "exact text size" 24
-     "text halign" center
+     "exact text size" 20
      "text valign" center
     }
     PanelWidgetClass Dropzone {
@@ -110,9 +109,10 @@ PanelWidgetClass closable_header_root {
     }
     TextWidgetClass CargoCount {
      visible 0
+     clipchildren 0
      ignorepointer 1
-     position 0 0
-     size 0.15 0.6
+     position 0.05 0
+     size 0.4 0.6
      halign right_ref
      valign center_ref
      hexactpos 0
@@ -121,8 +121,13 @@ PanelWidgetClass closable_header_root {
      vexactsize 0
      style Light
      text "10/50"
+     font "gui/fonts/sdf_MetronLight24"
      "text offset" 10 0
      "exact text" 1
+     "exact text size" 20
+     "size to text h" 0
+     "size to text v" 0
+     "text halign" right
      "text valign" center
     }
    }

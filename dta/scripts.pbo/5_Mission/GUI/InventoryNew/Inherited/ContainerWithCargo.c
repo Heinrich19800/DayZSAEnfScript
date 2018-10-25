@@ -74,7 +74,18 @@ class ContainerWithCargo: ClosableContainer
 			}
 		
 			m_CargoGrid.UpdateInterval();
+			#ifdef PLATFORM_CONSOLE
+				m_IconsContainer.RecomputeItemPositions();
+			#endif
 		}
+	}
+	
+	override void Refresh()
+	{
+		super.Refresh();
+		#ifdef PLATFORM_CONSOLE
+			m_IconsContainer.RecomputeItemPositions();
+		#endif
 	}
 
 	override void MoveGridCursor( int direction )

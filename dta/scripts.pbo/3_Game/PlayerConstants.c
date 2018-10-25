@@ -1,15 +1,17 @@
 class PlayerConstants 
 {
-	static const string NORMAL_TEMPERATURE = "36.8";
-	static const string HIGH_TEMPERATURE = "38.5";
+	static const float NORMAL_TEMPERATURE_L = 35.2;
+	static const float NORMAL_TEMPERATURE_H = 36.8;
+	static const float HIGH_TEMPERATURE_L = 38.5;
+	static const float HIGH_TEMPERATURE_H = 39.9;
 	//-------------------------------------------------------
 	static const float STOMACH_ENERGY_TRANSFERED_PER_SEC 		= 1;	//amount of kcal transfered to energy per second(this should ideally be higher than what player burns under high metabolic load[sprint])
 	static const float STOMACH_WATER_TRANSFERED_PER_SEC 		= 4;	//amount of ml transfered to water per second(this should ideally be higher than what player burns under high metabolic load[sprint])
 	static const float STOMACH_SOLID_EMPTIED_PER_SEC 			= 1;	//amount of g/ml emptied from stomach per second
 	//static const float STOMACH_EMPTIED_LIQUID_PER_SEC	 		= Playerstatic constants.WATER_TRANSFERED_PER_SEC;
-	static const float LOW_WATER_TRESHOLD 						= 250;	//threshold from which water affects health
+	static const float LOW_WATER_THRESHOLD 						= 250;	//threshold from which water affects health
 	static const float WATER_DECREMENT_PER_SEC 				= STOMACH_WATER_TRANSFERED_PER_SEC / 4; //used in poisoning for now
-	static const float LOW_ENERGY_TRESHOLD 					= 200;	//threshold from which energy affects health
+	static const float LOW_ENERGY_THRESHOLD 					= 200;	//threshold from which energy affects health
 	//static const float ENERGY_DECREMENT_PER_SEC 				= 0.035; //not used?
 	//static const float DAMAGE_PER_SEC 							= 1; //not used? (was how much HP is lowered while low on energy/water)
 	//static const float DAMAGE_BLOOD_PER_SEC 					= 10; //not used?
@@ -122,5 +124,5 @@ class PlayerConstants
 	static const float BLEEDING_SOURCE_BLOODLOSS_PER_SEC = -6; // amount of blood loss per second from one bleeding source 
 	//----------------------------------------------------------
 	static const float BREATH_VAPOUR_THRESHOLD_HIGH = -5.0;
-	static const float BREATH_VAPOUR_THRESHOLD_LOW = 12.0;
+	static const float BREATH_VAPOUR_THRESHOLD_LOW = 7.0;
 }

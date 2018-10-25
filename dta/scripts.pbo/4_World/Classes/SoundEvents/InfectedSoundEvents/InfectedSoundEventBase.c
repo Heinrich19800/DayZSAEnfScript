@@ -29,18 +29,34 @@ class InfectedSoundEventBase extends SoundEventBase
 
 	bool IsLooped()
 	{
-		return false;
+		return true;
+	}
+	
+	void SoftStop()
+	{
+		if (m_SoundSetCallback)
+		{
+			m_SoundSetCallback.Loop(false);
+			m_SoundSetCallback = null;
+		}
 	}
 
 	override void Stop()
 	{
-		super.Stop();
+		//super.Stop();
+		if (m_SoundSetCallback)
+		{
+			m_SoundSetCallback.Stop();
+		}
 		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).RemoveByName(this, "PosUpdate");
 	}
 	
 	void PosUpdate()
 	{
-		m_SoundSetCallback.SetPosition(m_Infected.GetPosition());
+		if (m_SoundSetCallback)
+		{
+			m_SoundSetCallback.SetPosition(m_Infected.GetPosition());
+		}
 	}
 	
 	override void Play()

@@ -61,14 +61,6 @@ class ActionInteractBase : AnimatedActionBase
 		m_ConditionTarget = new CCTObject(UAMaxDistances.DEFAULT);
 	}
 	
-	override bool Can( PlayerBase player, ActionTarget target, ItemBase item )
-	{
-		if ( !CanUseInRestrain() && player.IsRestrained())
-			return false;
-		
-		return super.Can( player, target, item);
-	}
-	
 	string GetHUDCursorIcon()
 	{
 		return m_HUDCursorIcon;
@@ -77,11 +69,6 @@ class ActionInteractBase : AnimatedActionBase
 	override int GetActionCategory()
 	{
 		return AC_INTERACT;
-	}
-	
-	bool CanUseInRestrain()
-	{
-		return false;
 	}
 	
 };

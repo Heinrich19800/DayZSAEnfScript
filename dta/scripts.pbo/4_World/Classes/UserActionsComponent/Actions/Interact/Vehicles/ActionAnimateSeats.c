@@ -58,4 +58,9 @@ class ActionAnimateSeats: ActionAnimateCarSelection
 
 		return false;
 	}
+	
+	override bool CanBeUsedInVehicle()
+	{
+		return true;
+	}
 };

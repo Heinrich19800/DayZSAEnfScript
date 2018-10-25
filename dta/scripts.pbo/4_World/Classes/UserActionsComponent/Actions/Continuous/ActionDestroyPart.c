@@ -8,23 +8,12 @@ class ActionDestroyPartCB : ActionContinuousBaseCB
 
 class ActionDestroyPart: ActionContinuousBase
 {
-	float m_DamageAmount;
-	
-	string m_PartName;						//base part name
-	string m_PartNameText;					//custom name of the part that will be displayed as action prompt
-	
 	void ActionDestroyPart()
 	{
 		m_CallbackClass = ActionDestroyPartCB;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CRAFTING;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;		
-		
-		m_MessageStartFail = "I cannot build a construction part.";
-		m_MessageStart = "I have build a construction part.";
-		m_MessageSuccess = "I have build a construction part.";
-		m_MessageFail = "I have failed to build a construction part.";
-		m_DamageAmount = 2;
 		
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 	}
@@ -42,7 +31,19 @@ class ActionDestroyPart: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "#destroy" + " " +  m_PartNameText;		//add name of the construction part if possible
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+		if ( player )
+		{
+			ConstructionActionData construction_action_data = player.GetConstructionActionData();
+			ConstructionPart constrution_part = construction_action_data.GetTargetPart();
+			
+			if ( constrution_part )
+			{
+				return "#destroy" + " " + constrution_part.GetName();
+			}
+		}
+		
+		return "";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -55,19 +56,19 @@ class ActionDestroyPart: ActionContinuousBase
 			
 			BaseBuildingBase base_building = BaseBuildingBase.Cast( targetObject );
 			Construction construction = base_building.GetConstruction();		
-			
 			ConstructionPart construction_part = construction.GetConstructionPartToDestroy( part_name );
+			
 			if ( construction_part && base_building.IsFacingFront( player ) )
 			{
 				//if part is base but more attachments are present
-				if ( construction_part.IsBase() && base_building.GetInventory().AttachmentCount() > 1 )
+				if ( base_building.HasAttachmentsBesidesBase() )
 				{
 					return false;
 				}
 				
-				m_PartName = construction_part.GetPartName();
-				m_PartNameText = construction_part.GetName();
-			
+				ConstructionActionData construction_action_data = player.GetConstructionActionData();
+				construction_action_data.SetTargetPart( construction_part );
+				
 				return true;
 			}
 		}
@@ -75,18 +76,20 @@ class ActionDestroyPart: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
 		Construction construction = base_building.GetConstruction();
+		ConstructionActionData construction_action_data = action_data.m_Player.GetConstructionActionData();
+		ConstructionPart construction_part = construction_action_data.GetTargetPart();
 		
-		if ( construction.CanDestroyPart( m_PartName ) )
+		if ( construction.CanDestroyPart( construction_part.GetPartName() ) )
 		{
 			//build
-			construction.DestroyPart( m_PartName, false );
+			construction.DestroyPart( construction_part.GetPartName(), false );
 			
 			//add damage to tool
-			action_data.m_MainItem.DecreaseHealth ( "", "", m_DamageAmount, true );
+			action_data.m_MainItem.DecreaseHealth ( "", "", 2, true );
 		}
 		else
 		{
@@ -94,17 +97,5 @@ class ActionDestroyPart: ActionContinuousBase
 		}
 
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
-	}
-	
-	override void OnCompleteClient( ActionData action_data )
-	{	
-		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
-		Construction construction = base_building.GetConstruction();
-		
-		if ( construction.CanDestroyPart( m_PartName ) )
-		{
-			//dismantle
-			construction.DestroyPart( m_PartName, false );
-		}
 	}
 }

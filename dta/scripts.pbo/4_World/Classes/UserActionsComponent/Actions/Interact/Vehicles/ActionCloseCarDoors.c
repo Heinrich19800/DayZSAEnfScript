@@ -75,4 +75,9 @@ class ActionCloseCarDoors: ActionInteractBase
 			car.SetAnimationPhase( m_AnimSource, 0.0);
 		}
 	}
+	
+	override bool CanBeUsedInVehicle()
+	{
+		return true;
+	}
 };

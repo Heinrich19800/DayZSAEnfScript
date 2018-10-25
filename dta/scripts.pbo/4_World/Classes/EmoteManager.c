@@ -21,11 +21,11 @@ class EmoteCB : HumanCommandActionCallback
 		{
 			m_player.GetEmoteManager().KillPlayer();
 		}
-		else if (GetGame().IsServer())
+		else if (GetGame().IsServer() && pEventID == UA_ANIM_EVENT)
 		{
 			if (m_player.GetItemInHands())
 				m_player.GetItemInHands().Delete();
-			else
+			else if ( m_player.GetCommand_Move() && m_player.GetCommand_Move().IsOnBack() )
 				m_player.GetHumanInventory().CreateInHands("SurrenderDummyItem");
 		}
 	}
@@ -267,20 +267,10 @@ class EmoteManager
 			{
 				//TODO, HACK: fix this hack once inventory lock conditions have been sorted out
 				SetEmoteLockState(false);
-				if (!m_Player.GetCommand_Move().IsOnBack())
+				if ( !m_Player.GetCommand_Move() || (m_Player.GetCommand_Move() && m_Player.GetCommand_Move().IsOnBack()) )
 				{
-					bool item_created;
-					if (!m_Player.GetItemInHands())
-					{
-						if (GetGame().IsServer())
-						{
-							//m_Player.GetHumanInventory().CreateInHands("SurrenderDummyItem");
-						}
-						SetEmoteLockState(true);
-					}
+					m_IsSurrendered = !m_IsSurrendered; //invalid position, surrender state cannot proceed
 				}
-				else //the item did not create properly and the surrender state cannot proceed
-					m_IsSurrendered = !m_IsSurrendered;
 			}
 		}
 		
@@ -870,19 +860,23 @@ class EmoteManager
 	
 	protected void HideItemInHands()
 	{
+		/*if (GetGame().IsMultiplayer() && !GetGame().IsClient())
+			return;*/
 		m_item = m_Player.GetItemInHands();
 		if(m_Callback && m_item)
 		{
-			m_Player.HideItemInHands(true);
+			m_Player.GetItemAccessor().HideItemInHands(true);
 			m_ItemToHands = true;
 		}
 	}
 	
 	protected void ShowItemInHands()
 	{
+		/*if (GetGame().IsMultiplayer() && !GetGame().IsClient())
+			return;*/
 		if (m_item)
 		{
-			m_Player.HideItemInHands(false);
+			m_Player.GetItemAccessor().HideItemInHands(false);
 		}
 		m_ItemToHands = false;
 	}
@@ -1039,6 +1033,11 @@ class EmoteManager
 			{
 				return false;
 			}
+		}
+		
+		if ( m_Player.GetCommand_Move() && m_Player.GetCommand_Move().IsOnBack() )
+		{
+			return false;
 		}
 		
 		//"locks" player in surrender state

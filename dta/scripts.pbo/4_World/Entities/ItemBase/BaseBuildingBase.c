@@ -10,7 +10,7 @@ class BaseBuildingBase extends ItemBase
 	
 	float 	m_ConstructionKitHealth;			//stored health value for used construction kit
 	
-	ref Construction 	m_Construction;
+	ref Construction 			m_Construction;
 	
 	bool 	m_HasBase = false;
 	bool 	m_HasGate = false;
@@ -458,6 +458,9 @@ class BaseBuildingBase extends ItemBase
 		}
 		
 		GetConstruction().UpdatePhysics();
+		
+		//regenerate navmesh
+		SetAffectPathgraph( true, false );
 	}	
 	
 	override bool CanUseConstruction()
@@ -465,7 +468,7 @@ class BaseBuildingBase extends ItemBase
 		return true;
 	}
 
-	protected bool IsAttachmentSlotLocked( ItemBase attachment )
+	protected bool IsAttachmentSlotLocked( EntityAI attachment )
 	{
 		if ( attachment )
 		{
@@ -498,6 +501,7 @@ class BaseBuildingBase extends ItemBase
 		
 		GetConstruction().Init();
 	}
+	
 	Construction GetConstruction()
 	{
 		return m_Construction;
@@ -509,7 +513,20 @@ class BaseBuildingBase extends ItemBase
 	{
 		return true;
 	}
-
+	
+	bool HasAttachmentsBesidesBase()
+	{
+		if ( GetInventory().AttachmentCount() > 1 )
+		{
+			if ( !HasBase() )
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	//this into/outo parent.Cargo
 	override bool CanPutInCargo( EntityAI parent )
 	{

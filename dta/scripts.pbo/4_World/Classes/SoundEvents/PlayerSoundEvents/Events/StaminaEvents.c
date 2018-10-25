@@ -8,6 +8,16 @@ class StaminaSoundEventBase extends PlayerSoundEventBase
 		}
 		return false;
 	}
+	
+	override void OnPlay(PlayerBase player)
+	{
+		//Material matColors = GetGame().GetWorld().GetMaterial("graphics/particles/materials/smoke/steam_small_cook_01");
+		//matColors.SetParam("AlphaTest", 0/*+add_additional_modifiers_here*/);
+		
+		if( player.CanSpawnBreathVaporEffect() ) 
+			player.SpawnBreathVaporEffect();
+		
+	}
 }
 class StaminaDownLight extends StaminaSoundEventBase
 {
@@ -56,5 +66,16 @@ class StaminaUpEnd extends StaminaSoundEventBase
 		m_Type = EPlayerSoundEventType.STAMINA;
 		m_ID = EPlayerSoundEventID.STAMINA_UP_END;
 		m_SoundVoiceAnimEventClassID = 5;
+	}
+}
+
+class StaminaNormalDummy extends StaminaSoundEventBase
+{
+	void StaminaNormalDummy()
+	{
+		m_Type = EPlayerSoundEventType.STAMINA;
+		m_ID = EPlayerSoundEventID.STAMINA_NORMAL_DUMMY;
+		m_IsDummyType = true;
+		m_DummySoundLength = 3000;//in ms
 	}
 }

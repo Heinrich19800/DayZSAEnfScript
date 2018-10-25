@@ -581,6 +581,8 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("L SEARCH INVENTORY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_SEARCHINVENTORY, false), 0);
 			m_ActionsSelector.AddItem("L CRAFTING UPPDERBODY", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_CRAFTING, false), 0);
 			m_ActionsSelector.AddItem("L RESTRAINED STRUGGLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_RESTRAINEDSTRUGGLE, false), 0);
+			m_ActionsSelector.AddItem("L COVER HEAD SELF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_COVERHEAD_SELF, false), 0);
+			m_ActionsSelector.AddItem("L COVER HEAD TARGET", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_COVERHEAD_TARGET, false), 0);
 			
 			m_ActionsSelector.AddItem("L ENGINE START", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_STARTENGINE, false), 0);
 			m_ActionsSelector.AddItem("L TOOT HORN", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONMOD_TOOTHORN, false), 0);
@@ -694,6 +696,8 @@ class PluginDayzPlayerDebug extends PluginBase
 			m_ActionsSelector.AddItem("FB L RAISE ITEM", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_RAISEITEM, true, DayZPlayerConstants.STANCEMASK_PRONE), 0);
 			m_ActionsSelector.AddItem("FB L RESTRAINED STRUGGLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_RESTRAINEDSTRUGGLE, true, DayZPlayerConstants.STANCEMASK_PRONE | DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 			m_ActionsSelector.AddItem("FB L RESTRAIN SELF", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_RESTRAINSELF, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("FB L ASSEMBLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_ASSEMBLE, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
+			m_ActionsSelector.AddItem("FB L DISASSEMBLE", new PluginDayzPlayerDebugUserData(DayZPlayerConstants.CMD_ACTIONFB_DISASSEMBLE, true, DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT), 0);
 		
 		}
 		

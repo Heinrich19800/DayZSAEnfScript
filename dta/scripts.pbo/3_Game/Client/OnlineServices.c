@@ -3,10 +3,17 @@ class OnlineServices
 	static ref ScriptInvoker												m_FriendsAsyncInvoker		= new ScriptInvoker();
 	static ref ScriptInvoker												m_PermissionsAsyncInvoker	= new ScriptInvoker();
 	static ref ScriptInvoker												m_ServersAsyncInvoker		= new ScriptInvoker();
+	static ref ScriptInvoker												m_ServerAsyncInvoker		= new ScriptInvoker();
 	static ref ScriptInvoker												m_MuteUpdateAsyncInvoker	= new ScriptInvoker();
 	
 	static ref BiosClientServices											m_ClientServices;
 	static ref TrialService													m_TrialService				= new TrialService;
+	
+	
+	protected static string													m_CurrentServerIP;
+	protected static int													m_CurrentServerPort;
+	protected static ref GetServersResultRow								m_CurrentServerInfo;
+	
 	
 	protected static ref map<string, ref BiosFriendInfo>					m_FriendsList;
 	protected static ref map<string, bool>									m_MuteList;
@@ -69,7 +76,6 @@ class OnlineServices
 			case EBiosError.OK:
 			{
 				return false;
-				break;
 			}
 			case EBiosError.CANCEL:
 			{
@@ -134,16 +140,68 @@ class OnlineServices
 		}
 	}
 	
+	static void GetCurrentServerInfo( string ip, int port )
+	{
+		GetClientServices();
+		
+		m_CurrentServerIP = ip;
+		m_CurrentServerPort = port;
+		
+		GetServersInput inputValues = new GetServersInput;
+		
+		inputValues.SetHostIp( ip );
+		inputValues.SetHostPort( port );
+		inputValues.m_Page = 0;
+		inputValues.m_RowsPerPage = 10;
+		inputValues.m_Platform = 1;
+
+		#ifdef PLATFORM_XBOX
+			inputValues.m_Platform = 2;
+		#endif
+		#ifdef PLATFORM_PS4
+			inputValues.m_Platform = 3;
+		#endif
+		
+		if( m_ClientServices )
+		{
+			m_ClientServices.GetLobbyService().GetServers( inputValues );
+		}
+	}
+	
+	static void ClearCurrentServerInfo()
+	{
+		m_CurrentServerInfo	= null;
+		m_CurrentServerIP	= "";
+		m_CurrentServerPort	= 0;
+	}
+	
 	static void OnLoadServersAsync( ref GetServersResult result_list, EBiosError error, string response )
 	{
 		if( !ErrorCaught( error ) )
 		{
 			m_ServersAsyncInvoker.Invoke( result_list, error, response );
+			if( m_CurrentServerIP != "" && m_CurrentServerPort > 0 )
+			{
+				foreach( GetServersResultRow result : result_list.m_Results )
+				{
+					if( result.m_HostIp == m_CurrentServerIP && result.m_HostPort == m_CurrentServerPort )
+					{
+						m_CurrentServerInfo	= result;
+						m_CurrentServerIP	= "";
+						m_CurrentServerPort	= 0;
+					}
+				}
+			}
 		}
 		else
 		{
 			m_ServersAsyncInvoker.Invoke( null, error, "" );
 		}
+	}
+	
+	static GetServersResultRow GetCurrentServerInfo()
+	{
+		return m_CurrentServerInfo;
 	}
 	
 	static void LoadFriends()

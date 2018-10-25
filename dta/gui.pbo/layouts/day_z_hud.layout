@@ -2116,7 +2116,7 @@ FrameWidgetClass HudFrameWidget {
        }
       }
       PanelWidgetClass CheckEnginePanel {
-       visible 0
+       visible 1
        position 0 0.16
        size 0.1 0.2
        valign bottom_ref
@@ -2127,6 +2127,7 @@ FrameWidgetClass HudFrameWidget {
        style blank
        {
         ImageWidgetClass CheckEngineIcon {
+         visible 0
          color 1 0 0 1
          position 0 0
          size 0.536 0.469

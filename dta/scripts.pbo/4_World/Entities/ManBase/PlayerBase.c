@@ -3,7 +3,7 @@ class PlayerBase extends ManBase
 	static ref ScriptInvoker Event_OnPlayerDeath = new ScriptInvoker();
 	const int 						SIMPLIFIED_SHOCK_CAP = 63;
 	const int 						SHAKE_LEVEL_MAX = 7;
-	const int 						BREATH_VAPOUR_LEVEL_MAX = 7;
+	const int 						BREATH_VAPOUR_LEVEL_MAX = 3;
 	private int						m_LifeSpanState;
 	private int						m_LastShavedSeconds;
 	private int						m_BloodType;
@@ -53,6 +53,7 @@ class PlayerBase extends ManBase
 	ref CraftingManager 			m_CraftingManager;
 	ref InventoryActionHandler 		m_InventoryActionHandler;
 	ref protected QuickBarBase		m_QuickBarBase;
+	ref StaminaSoundHandler			m_StaminaSoundHandler;
 	bool 							m_QuickBarHold;
 	Hud 							m_Hud;
 	protected bool					m_CancelAction;
@@ -81,6 +82,7 @@ class PlayerBase extends ManBase
 	protected bool					m_AllowQuickRestrain;
 	protected int					m_Shakes;
 	protected int					m_BreathVapour;
+	
 
 	ref protected RandomGeneratorSyncManager m_RGSManager;
 	
@@ -119,6 +121,9 @@ class PlayerBase extends ManBase
 	string m_SaySoundLastSetName;
 	//input control
 	bool m_ActionQBControl;
+	
+	//Action data for base building actions
+	ref ConstructionActionData m_ConstructionActionData;
 	
 	//writing notes start
 	bool enterNoteMenuRead;
@@ -208,7 +213,8 @@ class PlayerBase extends ManBase
 		m_TrasferValues = new TransferValues(this);
 		m_EmoteManager = new EmoteManager(this);
 		m_SoftSkillsManager = new SoftSkillsManager(this);//Soft Skills calculation
-		m_StaminaHandler = new StaminaHandler(this);//current stamina calculation	
+		m_StaminaHandler = new StaminaHandler(this);//current stamina calculation
+		m_StaminaSoundHandler = new StaminaSoundHandler(m_StaminaHandler, this);
 		m_InjuryHandler = new InjuryHandler(this);
 		m_WeaponManager = new WeaponManager(this);
 		m_DebugMonitorValues = new DebugMonitorValues(this);
@@ -284,8 +290,8 @@ class PlayerBase extends ManBase
 		RegisterNetSyncVariableInt("m_SoundEvent",0,31);
 		RegisterNetSyncVariableInt("m_StaminaState",0,7);
 		RegisterNetSyncVariableInt("m_BleedingBits");
-		RegisterNetSyncVariableInt("m_Shakes",-SHAKE_LEVEL_MAX,SHAKE_LEVEL_MAX);
-		RegisterNetSyncVariableInt("m_BreathVapour",0,BREATH_VAPOUR_LEVEL_MAX);
+		RegisterNetSyncVariableInt("m_Shakes", -SHAKE_LEVEL_MAX, SHAKE_LEVEL_MAX);
+		RegisterNetSyncVariableInt("m_BreathVapour", 0, BREATH_VAPOUR_LEVEL_MAX);
 		
 		RegisterNetSyncVariableBool("m_IsUnconscious");
 		RegisterNetSyncVariableBool("m_IsRestrained");
@@ -309,13 +315,6 @@ class PlayerBase extends ManBase
 	//--------------------------------------------------------------------------
 	// PLAYER DAMAGE EVENT HANDLING
 	//--------------------------------------------------------------------------
-	override void EEOnSetCaptive(bool captive)
-	{
-		if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER && captive )
-		{
-			GetGame().RPCSingleParam(this, ERPCs.RPC_ON_SET_CAPTIVE, NULL, true, GetIdentity());
-		}
-	}
 	
 	int GetBreathVapourLevel()
 	{
@@ -371,31 +370,29 @@ class PlayerBase extends ManBase
 		
 		DayZPlayerSyncJunctures.SendDeath(this, -1, 0);
 		
-		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )
-		{
-			// @NOTE: this branch does not happen, EEKilled is called only on server
-			if( GetGame().GetPlayer() == this )
-			{
-				super.EEKilled( killer );
-			}
-			if (GetHumanInventory().GetEntityInHands())
-				GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(ServerDropEntity,1000,false,( GetHumanInventory().GetEntityInHands() ));
-		}
-		else if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER)//server
-		{
-			if( GetBleedingManagerServer() ) delete GetBleedingManagerServer();
-			if( GetHumanInventory().GetEntityInHands() )
-				GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(ServerDropEntity,1000,false,( GetHumanInventory().GetEntityInHands() ));
-			
-			// kill character in database
-			if (GetHive())
-			{
-				GetHive().CharacterKill(this);
-			}
+		if( GetBleedingManagerServer() ) delete GetBleedingManagerServer();
 		
-			// disable voice communication
-			GetGame().EnableVoN(this, false);
+		if( GetHumanInventory().GetEntityInHands() )
+		{
+			if( CanDropEntity(this) )
+			{
+				if( !IsRestrained() )
+				{
+					GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(ServerDropEntity,1000,false,( GetHumanInventory().GetEntityInHands()));
+				}
+			}
+			
 		}
+		
+		// kill character in database
+		if (GetHive())
+		{
+			GetHive().CharacterKill(this);
+		}
+	
+		// disable voice communication
+		GetGame().EnableVoN(this, false);
+	
 		
 		if ( GetSoftSkillManager() )
 		{
@@ -817,6 +814,20 @@ class PlayerBase extends ManBase
 			m_RecipeID = recipeID;			
 		}		
 	}
+	
+	// --------------------------------------------------
+	// Action data for base building actions
+	//---------------------------------------------------	
+	ConstructionActionData GetConstructionActionData()
+	{
+		if ( !m_ConstructionActionData )
+		{
+			m_ConstructionActionData  = new ref ConstructionActionData();
+		}
+		
+		return m_ConstructionActionData;
+	}
+	
 	// --------------------------------------------------
 	// QuickBar
 	//---------------------------------------------------
@@ -1153,17 +1164,6 @@ class PlayerBase extends ManBase
 
 	// ------------------------------------------------------------------------
 
-	//! should be removed?
-	/*
-	override void EEOnWaterEnter()
-	{
-		if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER || !GetGame().IsMultiplayer() && m_Environment )
-		{
-			m_Environment.ProcessWetnessByWaterLevel();
-		}
-	}
-	*/
-
 	//! water contact (driven by Environment)
 	void SetInWater(bool pState)
 	{
@@ -1371,22 +1371,29 @@ class PlayerBase extends ManBase
 		if( m_VirtualHud ) m_VirtualHud.OnScheduledTick();
 	}
 	
-	void OnCommandHandlerTick(float deltaTime, int pCurrentCommandID)
+	void OnCommandHandlerTick(float delta_time, int pCurrentCommandID)
 	{
 		if(!IsAlive() ) return;
-		if( m_DebugMonitorValues ) m_DebugMonitorValues.OnScheduledTick(deltaTime);
-		if( GetSymptomManager() ) GetSymptomManager().OnScheduledTick(deltaTime, pCurrentCommandID);//needs to stay in command handler tick as it's playing animations
-		if( GetBleedingManagerServer() ) GetBleedingManagerServer().OnTick(deltaTime);
-		#ifdef DEVELOPER
-		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )
+		if( m_DebugMonitorValues ) m_DebugMonitorValues.OnScheduledTick(delta_time);
+		if( GetSymptomManager() ) GetSymptomManager().OnScheduledTick(delta_time, pCurrentCommandID);//needs to stay in command handler tick as it's playing animations
+		if( GetBleedingManagerServer() ) GetBleedingManagerServer().OnTick(delta_time);
+		
+		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT || GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_REMOTE )
 		{ 
-			if(m_PlayerSoundEventHandler) m_PlayerSoundEventHandler.OnTick(deltaTime);
-			if( m_WeaponDebug )
+			if( GetPlayerSoundEventHandler() ) GetPlayerSoundEventHandler().OnTick(delta_time);
+			//! is not equal to
+			if( GetInstanceType() != DayZPlayerInstanceType.INSTANCETYPE_REMOTE ) 
 			{
-				m_WeaponDebug.OnCommandHandlerUpdate();
+				#ifdef DEVELOPER
+				if( m_WeaponDebug )
+				{
+					m_WeaponDebug.OnCommandHandlerUpdate();
+				}
+				#endif
 			}
+
 		}
-		#endif
+		
 		ProcessLiftWeapon();
 	}
 	
@@ -1772,12 +1779,21 @@ class PlayerBase extends ManBase
 	
 	void AirTemperatureCheck()
 	{
+		if( !m_Environment.IsTemperatureSet() )
+			return;
 		float air_temperature = m_Environment.GetTemperature();
 		int level;
-		//	if( MiscGameplayFunctions.IsValueInRange( air_temperature, PlayerConstants.BREATH_VAPOUR_THRESHOLD_HIGH, PlayerConstants.BREATH_VAPOUR_THRESHOLD_LOW) )
-		float value = Math.InverseLerp( PlayerConstants.BREATH_VAPOUR_THRESHOLD_LOW, PlayerConstants.BREATH_VAPOUR_THRESHOLD_HIGH,air_temperature);
-		value = Math.Clamp(value,0,1);
-		level = Math.Round(value * BREATH_VAPOUR_LEVEL_MAX);//translate from normalized value to levels
+		if( MiscGameplayFunctions.IsValueInRange( air_temperature, PlayerConstants.BREATH_VAPOUR_THRESHOLD_HIGH, PlayerConstants.BREATH_VAPOUR_THRESHOLD_LOW) )
+		{
+			float value = Math.InverseLerp( PlayerConstants.BREATH_VAPOUR_THRESHOLD_LOW, PlayerConstants.BREATH_VAPOUR_THRESHOLD_HIGH,air_temperature);
+			value = Math.Clamp(value,0,1);
+			level = Math.Round(Math.Lerp(1,BREATH_VAPOUR_LEVEL_MAX,value));
+		}
+		else
+		{
+			level = 0;
+		}
+		//level = Math.Floor(value * BREATH_VAPOUR_LEVEL_MAX);//translate from normalized value to levels
 		if( level != m_BreathVapour )
 		{
 			m_BreathVapour = level;
@@ -1922,27 +1938,27 @@ class PlayerBase extends ManBase
 	
 	void OnSwimmingStart()
 	{
-		if ( GetItemInHands() ) HideItemInHands(true);
+		if ( GetItemInHands() ) GetItemAccessor().HideItemInHands(true);
 		if( GetInventory() ) GetInventory().LockInventory(LOCK_FROM_SCRIPT);
 		CloseInventoryMenu();
 	}
 	
 	void OnSwimmingStop()
 	{
-		if ( GetItemInHands() )	HideItemInHands(false);
+		if ( GetItemInHands() )	GetItemAccessor().HideItemInHands(false);
 		if( GetInventory() ) GetInventory().UnlockInventory(LOCK_FROM_SCRIPT);
 	}
 	
 	void OnClimbLadderStart()
 	{
-		if ( GetItemInHands() ) HideItemInHands(true);
+		if ( GetItemInHands() ) GetItemAccessor().HideItemInHands(true);
 		if( GetInventory() ) GetInventory().LockInventory(LOCK_FROM_SCRIPT);
 		CloseInventoryMenu();
 	}
 	
 	void OnClimbLadderStop()
 	{
-		if ( GetItemInHands() )	HideItemInHands(false);
+		if ( GetItemInHands() )	GetItemAccessor().HideItemInHands(false);
 		if( GetInventory() ) GetInventory().UnlockInventory(LOCK_FROM_SCRIPT);
 	}
 	
@@ -1981,12 +1997,16 @@ class PlayerBase extends ManBase
 	//! ------------------
 	void OnVehicleEnter()
 	{
+		if ( GetItemInHands() ) GetItemAccessor().HideItemInHands(true);
+		
 		if( m_Hud )
 			m_Hud.ShowVehicleInfo();
 	}
 	
 	void OnVehicleExit()
 	{
+		if ( GetItemInHands() ) GetItemAccessor().HideItemInHands(false);
+		
 		if( m_Hud )
 			m_Hud.HideVehicleInfo();
 	}
@@ -2181,7 +2201,7 @@ class PlayerBase extends ManBase
 			}
 			else
 			{
-				if( !GetInventory().AddInventoryReservation(quickBarEntity,handInventoryLocation,1000) )
+				if( GetInventory().HasInventoryReservation(quickBarEntity,handInventoryLocation) )
 					return;
 				
 				PredictiveTakeEntityToHands( quickBarEntity );		
@@ -3417,6 +3437,46 @@ class PlayerBase extends ManBase
 			return false;			
 		}
 	}
+	
+	bool CanSpawnBreathVaporEffect()
+	{
+		if( IsAlive() && !IsSwimming() )
+		{
+			return true;
+		}
+		return false;
+	}
+		
+	void SpawnBreathVaporEffect()
+	{
+		int boneIdx = GetBoneIndexByName("Head");
+			
+		if( boneIdx != -1 )
+		{
+			EffectParticle eff;
+			if( m_BreathVapour == 1 )
+			{
+				eff = new EffBreathVapourLight();
+			}
+			else if( m_BreathVapour == 2)
+			{
+				eff = new EffBreathVapourMedium();
+			}
+			else if( m_BreathVapour == 3)
+			{
+				eff = new EffBreathVapourHeavy();
+			}
+			
+			if( eff )
+			{
+				vector player_pos = GetPosition();
+				eff.SetDecalOwner( this );
+				SEffectManager.PlayInWorld( eff, "-0.03 0.15 0" );
+				Particle p = eff.GetParticle();
+				AddChild(p, boneIdx);
+			}
+		}
+	}
 
 	void SetLifeSpanStateVisible( int show_state )
 	{
@@ -4132,6 +4192,7 @@ class PlayerBase extends ManBase
 			case DayZPlayerSyncJunctures.SJ_ACTION_INTERRUPT:
 				m_CancelAction = true;
 				break;
+			
 
 			case DayZPlayerSyncJunctures.SJ_PLAYER_STATES:
 				GetSymptomManager().SetAnimation(pCtx);
@@ -4148,6 +4209,7 @@ class PlayerBase extends ManBase
 				break;
 			case DayZPlayerSyncJunctures.SJ_WEAPON_ACTION_ACK_ACCEPT:
 			case DayZPlayerSyncJunctures.SJ_WEAPON_ACTION_ACK_REJECT:
+			case DayZPlayerSyncJunctures.SJ_WEAPON_SET_JAMMING_CHANCE:
 				m_WeaponManager.OnSyncJuncture(pJunctureID,pCtx);
 				break;
 			case DayZPlayerSyncJunctures.SJ_UNCONSCIOUSNESS:
@@ -4297,7 +4359,7 @@ class PlayerBase extends ManBase
 	}*/
 	
 	//! call this if you wish to hide held item
-	void HideItemInHands(bool state)
+/*	void HideItemInHands(bool state)
 	{
 		ItemBase item = GetItemInHands();
 		if (!item)
@@ -4340,7 +4402,7 @@ class PlayerBase extends ManBase
 				item.SetInvisible(false);
 			}
 		}
-	}
+	}*/
 	
 	override void SetDeathDarknessLevel(float duration, float tick_time)
 	{
@@ -4409,8 +4471,9 @@ class PlayerBase extends ManBase
 	{
 	}*/
 	
-	bool CanRedirectToWeaponManager (notnull EntityAI item)
+	bool CanRedirectToWeaponManager (notnull EntityAI item, out bool isActionPossible)
 	{
+		isActionPossible = false;
 		Magazine mag = Magazine.Cast(item);
 		Weapon_Base wpn = Weapon_Base.Cast(item.GetHierarchyParent());
 		if (mag && wpn)
@@ -4418,10 +4481,13 @@ class PlayerBase extends ManBase
 			if (GetWeaponManager().CanDetachMagazine(wpn, mag))
 			{
 				Print("[inv] PlayerBase.CanRedirectToWeaponManager OK, can detach mag=" + mag + " from wpn=" + wpn);
-				return true;
+				isActionPossible = true;
 			}
 			else
+			{
 				Print("[inv] PlayerBase.CanRedirectToWeaponManager cannot detach mag=" + mag + " from wpn=" + wpn);
+			}
+			return true;
 		}
 		return false;
 	}
@@ -4429,58 +4495,83 @@ class PlayerBase extends ManBase
 	// Inventory actions with redirection to weapon manager
 	override bool PredictiveTakeEntityToTargetInventory (notnull EntityAI target, FindInventoryLocationType flags, notnull EntityAI item)
 	{
-		if (CanRedirectToWeaponManager(item))
+		bool can_detach;
+		if (CanRedirectToWeaponManager(item,can_detach))
 		{
-			InventoryLocation il = new InventoryLocation();
-			target.GetInventory().FindFreeLocationFor(item, flags, il);
-			return GetWeaponManager().DetachMagazine(il);
+			if (can_detach)
+			{
+				InventoryLocation il = new InventoryLocation();
+				target.GetInventory().FindFreeLocationFor(item, flags, il);
+				return GetWeaponManager().DetachMagazine(il);
+			}
+			return false;
 		}
 		return super.PredictiveTakeEntityToTargetInventory(target, flags, item);
 	}
 	
 	override bool PredictiveTakeEntityToInventory (FindInventoryLocationType flags, notnull EntityAI item)
 	{
-		if (CanRedirectToWeaponManager(item))
+		bool can_detach;
+		if (CanRedirectToWeaponManager(item,can_detach))
 		{
-			InventoryLocation il = new InventoryLocation();
-			GetInventory().FindFreeLocationFor(item, flags, il);
-			return GetWeaponManager().DetachMagazine(il);
+			if (can_detach)
+			{
+				InventoryLocation il = new InventoryLocation();
+				GetInventory().FindFreeLocationFor(item, flags, il);
+				return GetWeaponManager().DetachMagazine(il);
+			}
+			return false;
 		}
 		return super.PredictiveTakeEntityToInventory(flags, item);
 	}
 	
 	override bool PredictiveTakeEntityToTargetCargo (notnull EntityAI target, notnull EntityAI item)
 	{
-		if (CanRedirectToWeaponManager(item))
+		bool can_detach;
+		if (CanRedirectToWeaponManager(item,can_detach))
 		{
-			InventoryLocation il = new InventoryLocation();
-			target.GetInventory().FindFreeLocationFor(item, FindInventoryLocationType.CARGO, il);
-			return GetWeaponManager().DetachMagazine(il);			
+			if (can_detach)
+			{
+				InventoryLocation il = new InventoryLocation();
+				target.GetInventory().FindFreeLocationFor(item, FindInventoryLocationType.CARGO, il);
+				return GetWeaponManager().DetachMagazine(il);	
+			}
+			return false;	
 		}
 		return super.PredictiveTakeEntityToTargetCargo(target,item);
 	}
 	
 	override bool PredictiveTakeEntityToTargetCargoEx (notnull EntityAI target, notnull EntityAI item, int idx, int row, int col)
 	{
-		if (CanRedirectToWeaponManager(item))
+		bool can_detach;
+		if (CanRedirectToWeaponManager(item,can_detach))
 		{
-			InventoryLocation il = new InventoryLocation;
-			il.SetCargo(target, item, idx, row, col);
-			return GetWeaponManager().DetachMagazine(il);
+			if (can_detach)
+			{
+				InventoryLocation il = new InventoryLocation;
+				il.SetCargo(target, item, idx, row, col);
+				return GetWeaponManager().DetachMagazine(il);
+			}
+			return false;
 		}		
 		return super.PredictiveTakeEntityToTargetCargoEx (target, item, idx, row, col);
 	}
 	
 	override bool PredictiveDropEntity (notnull EntityAI item)
 	{
-		if (CanRedirectToWeaponManager(item))
+		bool can_detach;
+		if (CanRedirectToWeaponManager(item,can_detach))
 		{
-			vector m4[4];
-			Math3D.MatrixIdentity4(m4);
-			GameInventory.PrepareDropEntityPos(this, item, m4);
-			InventoryLocation il = new InventoryLocation;
-			il.SetGround(item, m4);
-			return GetWeaponManager().DetachMagazine(il);
+			if (can_detach)
+			{
+				vector m4[4];
+				Math3D.MatrixIdentity4(m4);
+				GameInventory.PrepareDropEntityPos(this, item, m4);
+				InventoryLocation il = new InventoryLocation;
+				il.SetGround(item, m4);
+				return GetWeaponManager().DetachMagazine(il);
+			}
+			return false;
 		}
 		return super.PredictiveDropEntity(item);
 	}
@@ -4496,14 +4587,30 @@ class PlayerBase extends ManBase
 
 			if (Class.CastTo(parentWpn, swapmag1.GetHierarchyParent()))
 			{
-				Print("[inv] PlayerBase.PredictiveSwapEntities: swapping mag1=" + swapmag1 + " to parent wpn=" + parentWpn + " of mag1=" + swapmag1);
-				return GetWeaponManager().SwapMagazine(swapmag2);
+				if (GetWeaponManager().CanSwapMagazine(parentWpn, swapmag2) )
+				{
+					Print("[inv] PlayerBase.PredictiveSwapEntities: swapping mag1=" + swapmag1 + " to parent wpn=" + parentWpn + " of mag1=" + swapmag1);
+					return GetWeaponManager().SwapMagazine(swapmag2);
+				}
+				else
+				{
+					Print("[inv] PlayerBase.PredictiveSwapEntities: can not swap magazines");
+					return false;
+				}
 			}
 
 			if (Class.CastTo(parentWpn, swapmag2.GetHierarchyParent()))
 			{
-				Print("[inv] PlayerBase.PredictiveSwapEntities: swapping mag1=" + swapmag1 + " to parent wpn=" + parentWpn + " of mag2=" + swapmag2);
-				return GetWeaponManager().SwapMagazine(swapmag1);
+				if (GetWeaponManager().CanSwapMagazine(parentWpn, swapmag1) )
+				{
+					Print("[inv] PlayerBase.PredictiveSwapEntities: swapping mag1=" + swapmag1 + " to parent wpn=" + parentWpn + " of mag2=" + swapmag2);
+					return GetWeaponManager().SwapMagazine(swapmag1);
+				}
+				else
+				{
+					Print("[inv] PlayerBase.PredictiveSwapEntities: can not swap magazines");
+					return false;
+				}
 			}
 		}
 		return super.PredictiveSwapEntities( item1, item2);

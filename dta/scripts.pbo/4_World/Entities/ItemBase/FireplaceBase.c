@@ -1934,8 +1934,9 @@ class FireplaceBase extends ItemBase
 	{
 		//check wind
 		float wind_speed = GetGame().GetWeather().GetWindSpeed();
+		float wind_speed_threshold = GetGame().GetWeather().GetWindMaximumSpeed() * 0.8;
 		
-		if ( wind_speed > 8 )
+		if ( wind_speed >= wind_speed_threshold )
 		{
 			return true;
 		}

@@ -18,7 +18,7 @@ class CraftWatchtowerKit extends RecipeBase
 		m_MinDamageIngredient[1] = -1;//-1 = disable check
 		m_MaxDamageIngredient[1] = 3;//-1 = disable check
 		
-		m_MinQuantityIngredient[1] = 1;//-1 = disable check
+		m_MinQuantityIngredient[1] = 4;//-1 = disable check
 		m_MaxQuantityIngredient[1] = -1;//-1 = disable check
 		//----------------------------------------------------------------------------------------------------------------------
 		
@@ -38,7 +38,7 @@ class CraftWatchtowerKit extends RecipeBase
 		
 		m_IngredientAddHealth[1] = 0;// 0 = do nothing
 		m_IngredientSetHealth[1] = -1; // -1 = do nothing
-		m_IngredientAddQuantity[1] = -1;// 0 = do nothing
+		m_IngredientAddQuantity[1] = -4;// 0 = do nothing
 		m_IngredientDestroy[1] = false;// false = do nothing
 		m_IngredientUseSoftSkills[1] = false;// set 'true' to allow modification of the values by softskills on this ingredient
 		//----------------------------------------------------------------------------------------------------------------------

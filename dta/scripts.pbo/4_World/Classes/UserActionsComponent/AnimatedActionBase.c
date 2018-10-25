@@ -35,7 +35,6 @@ class ActionBaseCB : HumanCommandActionCallback
 			if(action)
 				action.End(m_ActionData, m_ActionData.m_State);
 			
-			m_ActionData.m_Player.GetActionManager().OnActionEnd();
 		}
 
 		
@@ -217,7 +216,7 @@ class AnimatedActionBase : ActionBase
 		return true;
 	}
 	
-	protected int GetActionCommand(PlayerBase player)
+	protected int GetActionCommand( PlayerBase player )
 	{
 		if ( HasProneException() )
 		{
@@ -266,6 +265,8 @@ class AnimatedActionBase : ActionBase
 	// called from actionmanager.c
 	override void Start( ActionData action_data ) //Setup on start of action
 	{
+		super.Start( action_data );
+		//Debug.Log("[Action DEBUG] Start time stamp: " + action_data.m_Player.GetSimulationTimeStamp());
 		if( GetGame().IsServer() )
 		{
 			OnStartServer(action_data);
@@ -451,9 +452,12 @@ class AnimatedActionBase : ActionBase
 	}
 	
 	// called from ActionBaseCB.c 
-	void End( ActionData action_data, int state )
+	override void End( ActionData action_data, int state = -1 )
 	{
-		if ( action_data.m_Player && action_data.m_ActionComponent ) 
+		if( state == -1 )
+			state = action_data.m_State;
+		
+		if ( action_data.m_Player ) 
 		{
 			switch ( state )
 			{
@@ -514,12 +518,14 @@ class AnimatedActionBase : ActionBase
 					action_data.m_Callback.Interrupt();
 				break;
 			}
+			action_data.m_Player.GetActionManager().OnActionEnd();
 		}
 		else
 		{
 			Print("ActionBase.c | End | ACTION COULD NOT BE FINISHED RIGHT AT THE END");
 			action_data.m_Callback.Interrupt();
 		}
+		
 		//player.GetActionManager().EnableActions();
 	}
 	

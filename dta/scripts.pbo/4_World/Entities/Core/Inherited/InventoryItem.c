@@ -155,27 +155,9 @@ typedef Clothing ClothingBase;
 //-----------------------------------------------------------------------------
 class ItemBook extends InventoryItemSuper
 {
-	override void EEUsed(Man owner)
-	{
-		if ( GetGame().IsServer() )
-		{
-			 RPCSingleParam(ERPCs.RPC_READ_A_BOOK, NULL, true, owner.GetIdentity());
-		}
-	}
-
 	override event bool OnUseFromInventory(Man owner)
 	{
 		return false;
-	}
-	
-	override void OnRPC( PlayerIdentity sender, int rpc_type, ParamsReadContext  ctx)
-	{
-		super.OnRPC(sender, rpc_type, ctx);
-		
-		if (rpc_type == ERPCs.RPC_READ_A_BOOK)
-		{
-			super.EEUsed(NULL);
-		}
 	}
 };
 

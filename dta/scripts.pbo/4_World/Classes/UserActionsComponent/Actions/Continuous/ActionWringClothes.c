@@ -68,7 +68,7 @@ class ActionWringClothes: ActionContinuousBase
 		action_data.m_MainItem.AddWet( -delta );
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{
 		Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );		
 		float delta = nacdata.param1;

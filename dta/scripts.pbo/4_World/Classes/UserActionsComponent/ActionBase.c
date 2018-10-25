@@ -9,6 +9,7 @@ class ActionData
 	PlayerBase							m_Player;
 	int 								m_PossibleStanceMask;
 	ref array<ref InventoryLocation>	m_ReservedInventoryLocations;
+	int									m_RefreshReservationTimer;
 	bool								m_WasExecuted;
 }
 
@@ -74,6 +75,7 @@ class ActionBase
 		action_data.m_MainItem = item;
 		action_data.m_PossibleStanceMask = GetStanceMask(player);
 		action_data.m_ReservedInventoryLocations = new array<ref InventoryLocation>;
+		action_data.m_RefreshReservationTimer = 150;
 		action_data.m_WasExecuted = false;
 		
 		if ( (!GetGame().IsMultiplayer() || GetGame().IsClient()) && !IsInstant() )
@@ -171,7 +173,16 @@ class ActionBase
 	{
 		return !CanBePerformedFromInventory();
 	}
+	
+	bool CanBeUsedInRestrain()
+	{
+		return false;
+	}
 	 
+	bool CanBeUsedInVehicle()
+	{
+		return false;
+	}
 	
 	protected bool ActionConditionContinue( ActionData action_data ) //condition for action
 	{
@@ -330,6 +341,7 @@ class ActionBase
 	// called from actionmanager.c
 	void Start( ActionData action_data ) //Setup on start of action
 	{
+		action_data.m_State = UA_START;
 /*		if( GetGame().IsServer() )
 		{
 			OnStartServer(action_data);
@@ -340,6 +352,12 @@ class ActionBase
 		}	
 		*/	
 		InformPlayers(action_data.m_Player,action_data.m_Target,UA_START);	
+	}
+	
+	void End( ActionData action_data, int state = -1 )
+	{
+		if( action_data.m_Player )
+			action_data.m_Player.GetActionManager().OnActionEnd();
 	}
 	
 	void OnContinuousCancel(ActionData action_data)
@@ -354,6 +372,26 @@ class ActionBase
 		{
 			return false;
 		}
+		
+		if ( player.IsRestrained() && !CanBeUsedInRestrain() )
+			return false;
+		
+		if (player.GetCommand_Vehicle() && !CanBeUsedInVehicle() )
+			return false;
+		
+		if ( HasTarget() )
+		{
+			EntityAI entity = EntityAI.Cast(target.GetObject());
+			if ( entity && !target.GetObject().IsMan() )
+			{
+				Man man = entity.GetHierarchyRootPlayer();
+				if( man && man != player )
+				{
+					return false;
+				}
+			}
+		}
+		
 		if ( m_ConditionItem && m_ConditionItem.Can(player, item) && m_ConditionTarget && m_ConditionTarget.Can(player, target) && ActionCondition(player, target, item) ) 
 		{	
 			return true;
@@ -390,9 +428,13 @@ class ActionBase
 			{
 				targetInventoryLocation = new InventoryLocation;
 				targetItem.GetInventory().GetCurrentInventoryLocation(targetInventoryLocation);
-				if ( !action_data.m_Player.GetInventory().AddInventoryReservation( targetItem, targetInventoryLocation, 10000) )
+				if ( action_data.m_Player.GetInventory().HasInventoryReservation( targetItem, targetInventoryLocation) )
 				{
 					success = false;
+				}
+				else
+				{
+					action_data.m_Player.GetInventory().AddInventoryReservation( targetItem, targetInventoryLocation, 10000);
 				}
 			}
 		}	
@@ -400,11 +442,14 @@ class ActionBase
 		handInventoryLocation = new InventoryLocation;
 		handInventoryLocation.SetHands(action_data.m_Player,action_data.m_Player.GetItemInHands());
 
-		if ( !action_data.m_Player.GetInventory().AddInventoryReservation( action_data.m_Player.GetItemInHands(), handInventoryLocation, 10000) )
+		if ( action_data.m_Player.GetInventory().HasInventoryReservation( action_data.m_Player.GetItemInHands(), handInventoryLocation) )
 		{
 			success = false;
 		}
-		
+		else
+		{
+			action_data.m_Player.GetInventory().AddInventoryReservation( action_data.m_Player.GetItemInHands(), handInventoryLocation, 10000);
+		}
 		
 		if ( success )
 		{
@@ -434,6 +479,21 @@ class ActionBase
 				action_data.m_Player.GetInventory().ClearInventoryReservation( il.GetItem() , il );
 			}
 			action_data.m_ReservedInventoryLocations.Clear();
+		}
+	}
+	
+	void RefreshReservations(ActionData action_data)
+	{
+		if(action_data.m_ReservedInventoryLocations)
+		{
+			InventoryLocation il;
+			for ( int i = 0; i < action_data.m_ReservedInventoryLocations.Count(); i++)
+			{
+				Print("-");
+				il = action_data.m_ReservedInventoryLocations.Get(i);
+				EntityAI entity = il.GetItem();
+				action_data.m_Player.GetInventory().ExtendInventoryReservation( il.GetItem() , il, 10000 );
+			}
 		}
 	}
 		
@@ -472,6 +532,7 @@ class ActionBase
 				break;
 				
 			case UA_CANCEL:
+
 				message = GetMessageCancel();
 				break;
 			
@@ -688,6 +749,18 @@ class ActionBase
 	
 	void OnUpdate(ActionData action_data)
 	{
+		if(!GetGame().IsMultiplayer() || GetGame().IsClient())
+		{
+			if(action_data.m_RefreshReservationTimer > 0)
+			{
+				action_data.m_RefreshReservationTimer--;
+			}
+			else
+			{
+				action_data.m_RefreshReservationTimer = 150;
+				RefreshReservations(action_data);
+			}
+		}
 	}
 
 	// SOFT SKILLS ------------------------------------------------

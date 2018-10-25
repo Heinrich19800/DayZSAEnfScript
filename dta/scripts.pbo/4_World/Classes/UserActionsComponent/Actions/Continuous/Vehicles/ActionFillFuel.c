@@ -46,12 +46,22 @@ class ActionFillFuel: ActionContinuousBase
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{	
 		if( !target ) return false;
-		if( !IsTransport(target) ) return false;
-		if( item.GetQuantity() <= 0 ) return false;
-		if( item.GetLiquidType() != LIQUID_GASOLINE ) return false;
-		if( !IsInReach(player, target, UAMaxDistances.DEFAULT) ) return false;
+
+		if( !IsTransport(target) )
+			return false;
+
+		if( item.GetQuantity() <= 0 )
+			return false;
+		
+		if( item.GetLiquidType() != LIQUID_GASOLINE )
+			return false;
+		
+		if( !IsInReach(player, target, UAMaxDistances.DEFAULT) )
+			return false;
 
 		Car car = Car.Cast(target.GetObject());
+		if( car && car.GetFluidFraction( CarFluid.FUEL ) >= 0.98 )
+			return false;
 
 		if( car.IsActionComponentPartOfSelection(target.GetComponentIndex(), "refill") )
 		{

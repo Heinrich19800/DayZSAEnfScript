@@ -725,12 +725,12 @@ class CfgWorlds
 					ambient[]=
 					{
 						{0.2,0.23,0.44999999},
-						7.1999998
+						6.1999998
 					};
 					ambientCloud[]=
 					{
 						{0.2,0.23,0.44999999},
-						7.1999998
+						6.1999998
 					};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
@@ -747,8 +747,8 @@ class CfgWorlds
 						6.6999998
 					};
 					filmGrainIntensity=0.025;
-					desiredLuminanceCoef=0.44999999;
-					desiredLuminanceCoefCloud=0.44999999;
+					desiredLuminanceCoef=0.25;
+					desiredLuminanceCoefCloud=0.25;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -775,12 +775,12 @@ class CfgWorlds
 					ambient[]=
 					{
 						{0.2,0.23,0.44999999},
-						8.1999998
+						7.1999998
 					};
 					ambientCloud[]=
 					{
 						{0.2,0.23,0.44999999},
-						8.1999998
+						7.1999998
 					};
 					groundReflection[]={0,0,0};
 					groundReflectionCloud[]={0,0,0};
@@ -789,16 +789,16 @@ class CfgWorlds
 					sky[]=
 					{
 						{0.5,0.63999999,1},
-						8
+						7
 					};
 					skyAroundSun[]=
 					{
 						{2.2,1.24,1},
-						9.1999998
+						8.1999998
 					};
 					filmGrainIntensity=0;
-					desiredLuminanceCoef=0.62;
-					desiredLuminanceCoefCloud=0.62;
+					desiredLuminanceCoef=0.30000001;
+					desiredLuminanceCoefCloud=0.30000001;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -847,8 +847,8 @@ class CfgWorlds
 						11
 					};
 					filmGrainIntensity=0;
-					desiredLuminanceCoef=0.62;
-					desiredLuminanceCoefCloud=0.62;
+					desiredLuminanceCoef=0.34999999;
+					desiredLuminanceCoefCloud=0.34999999;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -897,8 +897,8 @@ class CfgWorlds
 						11.4
 					};
 					filmGrainIntensity=0;
-					desiredLuminanceCoef=0.62;
-					desiredLuminanceCoefCloud=0.62;
+					desiredLuminanceCoef=0.47;
+					desiredLuminanceCoefCloud=0.47;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -2811,7 +2811,6 @@ class CfgVehicles
 				class Health
 				{
 					hitpoints=100;
-					healthLabels[]={1,0.69999999,0.5,0.30000001,0};
 				};
 			};
 		};
@@ -3005,7 +3004,6 @@ class CfgVehicles
 				class Health
 				{
 					hitpoints=100;
-					healthLabels[]={1,0.69999999,0.5,0.30000001,0};
 				};
 			};
 			class GlobalArmor
@@ -4351,6 +4349,7 @@ class cfgWeapons
 		targetCategory="loot";
 		weaponInfoType="RscWeaponZeroing";
 		rotationFlags=17;
+		soundAttType="Rifle";
 		cursor="aimGunGhost";
 		cursorAim="aimPistol";
 		SingleUseActions[]={558,559,579,580};
@@ -4496,7 +4495,6 @@ class cfgWeapons
 				class Health
 				{
 					hitpoints=100;
-					healthLabels[]={1,0.69999999,0.5,0.30000001,0};
 				};
 			};
 		};
@@ -4509,6 +4507,7 @@ class cfgWeapons
 	{
 		scope=0;
 		rotationFlags=17;
+		soundAttType="Shotgun";
 		animClass="Shotgun";
 		modelOptics="-";
 		distanceZoomMin=50;
@@ -4526,6 +4525,7 @@ class cfgWeapons
 		targetCategory="loot";
 		inventorySlot="Pistol";
 		rotationFlags=17;
+		soundAttType="None";
 		cursor="aimGunGhost";
 		cursorAim="aimPistol";
 		type=1;
@@ -4668,7 +4668,6 @@ class cfgWeapons
 				class Health
 				{
 					hitpoints=100;
-					healthLabels[]={1,0.69999999,0.5,0.30000001,0};
 				};
 			};
 		};
@@ -4802,7 +4801,6 @@ class cfgWeapons
 				class Health
 				{
 					hitpoints=100;
-					healthLabels[]={1,0.69999999,0.5,0.30000001,0};
 				};
 			};
 		};

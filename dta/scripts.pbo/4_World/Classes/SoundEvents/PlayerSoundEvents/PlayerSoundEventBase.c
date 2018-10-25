@@ -7,7 +7,16 @@ enum EPlayerSoundEventType
 
 class PlayerSoundEventBase extends SoundEventBase
 {
-	PlayerBase m_Player;
+	PlayerBase 	m_Player;
+	float		m_DummySoundLength;
+	float 		m_DummyStartTime;
+	bool		m_IsDummyType;
+	float 		m_PlayTime;
+	
+	bool IsDummy()
+	{
+		return m_IsDummyType;
+	}
 	
 	void PlayerSoundEventBase()
 	{
@@ -29,19 +38,18 @@ class PlayerSoundEventBase extends SoundEventBase
 		return true;
 	}
 	
-	void OnTick(float delta_time)
+	bool IsDummyFinished()
 	{
-		// !check for playback end
-		if(!m_SoundSetCallback)
-			delete this;
-		
-		// !update pos
-		if(m_SoundSetCallback)
-			m_SoundSetCallback.SetPosition(m_Player.GetPosition());
-		//PrintString(m_Player.GetPosition().ToString());
-		
+		return GetGame().GetTime() > (m_DummyStartTime + m_DummySoundLength);
 	}
 	
+	
+	void OnTick(float delta_time)
+	{
+		if(m_SoundSetCallback)
+			m_SoundSetCallback.SetPosition(m_Player.GetPosition());
+	}
+
 	bool CanPlay(PlayerBase player)
 	{
 		if( player.IsHoldingBreath() ) 
@@ -58,6 +66,15 @@ class PlayerSoundEventBase extends SoundEventBase
 	
 	override void Play()
 	{
-		m_SoundSetCallback = m_Player.ProcessVoiceEvent("","", m_SoundVoiceAnimEventClassID);
+		super.Play();
+	
+		if( !IsDummy() ) 
+		{
+			m_SoundSetCallback = m_Player.ProcessVoiceEvent("","", m_SoundVoiceAnimEventClassID);
+		}
+		else
+		{
+			m_DummyStartTime = GetGame().GetTime();
+		}
 	}
 }

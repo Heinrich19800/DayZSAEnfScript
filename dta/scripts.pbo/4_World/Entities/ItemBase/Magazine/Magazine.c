@@ -133,7 +133,7 @@ class Magazine : InventoryItemSuper
 	
 	float GetChanceToJam()
 	{
-		return m_ChanceToJam[GetHealthLabel()];
+		return m_ChanceToJam[GetHealthLevel()];
 	}
 	/*
 	override void SplitItem()

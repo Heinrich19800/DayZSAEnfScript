@@ -73,7 +73,7 @@ class ActionWorldCraft: ActionContinuousBase
 		return "Default worldcraft text";
 	}
 	
-	override bool Can( PlayerBase player, ActionTarget target, ItemBase item )
+	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		//Client
 		if( !GetGame().IsMultiplayer() || GetGame().IsClient() )

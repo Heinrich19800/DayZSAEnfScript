@@ -26,6 +26,7 @@ class ItemBase extends InventoryItem
 	bool	m_IsHologram;
 	bool	m_IsTakeable;
 	bool	m_IsSoundSynchRemote;
+	string	m_SoundAttType;
 	// items color variables
 	int 	m_ColorComponentR;
 	int 	m_ColorComponentG;
@@ -81,6 +82,11 @@ class ItemBase extends InventoryItem
 			{
 				LoadParticleConfigOnOverheating( GetMuzzleID() );
 			}
+		}
+
+		if (GetGame().IsClient() || !GetGame().IsMultiplayer())
+		{
+			PreLoadSoundAttachmentType();
 		}
 	}
 	
@@ -1070,6 +1076,9 @@ class ItemBase extends InventoryItem
 	{
 		bool can_this_be_combined =  ConfigGetBool("canBeSplit");
 		
+		if (GetInventory().HasInventoryReservation(this, NULL) || other_item.GetInventory().HasInventoryReservation(other_item,NULL))
+			return false;
+		
 		if(CastTo(player,GetHierarchyRootPlayer())) //false when attached to player's attachment slot
 		{
 			if(player.GetInventory().HasAttachment(this))
@@ -1103,9 +1112,12 @@ class ItemBase extends InventoryItem
 		float this_free_space;
 			
 		int max_quantity;
+		int stack_max;
+		
 		InventoryLocation il = new InventoryLocation;
 		GetInventory().GetCurrentInventoryLocation( il );
-		int stack_max = InventorySlots.GetStackMaxForSlotId( il.GetSlot() );
+		if( il.GetSlot() != -1 )
+			stack_max = InventorySlots.GetStackMaxForSlotId( il.GetSlot() );
 		if( use_stack_max && stack_max > 0 )
 		{
 			max_quantity = stack_max;
@@ -2876,6 +2888,24 @@ class ItemBase extends InventoryItem
 	/*event ItemStageChanged()
 	{
 	}*/
+	
+	//! Attachment Sound Type getting from config file
+	protected void PreLoadSoundAttachmentType()
+	{
+		string att_type = "None";
+
+		if( ConfigIsExisting("soundAttType") )
+		{
+			att_type = ConfigGetString("soundAttType");
+		}
+		
+		m_SoundAttType = att_type;
+	}
+	
+	override string GetAttachmentSoundType()
+	{	
+		return m_SoundAttType;
+	}
 	
 	//----------------------------------------------------------------
 	//SOUNDS

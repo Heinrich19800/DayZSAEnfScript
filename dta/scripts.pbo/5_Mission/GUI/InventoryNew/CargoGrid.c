@@ -7,7 +7,7 @@ class UICargoGrid
 	protected ref array<ref GridContainer>	m_Rows;
 	protected Container						m_Parent;
 	protected bool							m_SetDefaultFocusAfterInitIcon;
-	protected bool							m_RefreshItemPositions;
+	protected bool							m_RefreshItemPositions = true;
 	
 	void SetParent( Container parent )
 	{
@@ -46,14 +46,16 @@ class UICargoGrid
 	
 	void UICargoGrid( EntityAI entity, IconsContainer items_container )
 	{
-		m_Entity			= entity;
-		m_IconsContainer	= items_container;
-		m_ShowedItems		= new array<int>;
-		m_Rows				= new array<ref GridContainer>;
+		m_Entity				= entity;
+		m_IconsContainer		= items_container;
+		m_ShowedItems			= new array<int>;
+		m_Rows					= new array<ref GridContainer>;
 		
 		#ifndef PLATFORM_CONSOLE
 		InitGridHeight();
 		#endif
+		
+		m_RefreshItemPositions	= true;
 	}
 	
 	Widget GetLastRowWidget()
@@ -116,11 +118,12 @@ class UICargoGrid
 		{
 			m_IconsContainer.Remove( m_Rows.Get( i ) );
 		}
+		
 		m_Rows.Clear();
 		
-			//START - Init grid rows
-			
-			#ifdef PLATFORM_CONSOLE
+		//START - Init grid rows
+		
+		#ifdef PLATFORM_CONSOLE
 			int cargo_height = ( ( m_IconsContainer.GetItemCount() / ROWS_NUMBER_XBOX ) * 2 ) + 2;
 			if( m_IconsContainer.GetItemCount() % ROWS_NUMBER_XBOX == 0 )
 			{
@@ -130,30 +133,31 @@ class UICargoGrid
 			{
 				cargo_height = 2;
 			}
-			#else
+		#else
 			int cargo_height = 	m_Entity.GetInventory().GetCargo().GetHeight();
-			#endif
+		#endif
 
-			for ( int j = 0; j < cargo_height; j++ )
-			{
-				GridContainer row = new GridContainer( m_IconsContainer );
-				row.SetNumber( j );
-				row.SetEntity( m_Entity );
-				row.SetWidth( m_Entity.GetInventory().GetCargo().GetWidth() );
-				row.GetMainWidget().SetSort( j );
-				m_IconsContainer.Insert( row );
-				m_Rows.Insert( row );
-			}
-		
-		//m_IconsContainer.Refresh();
+		for ( int j = 0; j < cargo_height; j++ )
+		{
+			GridContainer row = new GridContainer( m_IconsContainer );
+			row.SetNumber( j );
+			row.SetEntity( m_Entity );
+			row.SetWidth( m_Entity.GetInventory().GetCargo().GetWidth() );
+			row.GetMainWidget().SetSort( j );
+			m_IconsContainer.Insert( row );
+			m_Rows.Insert( row );
+		}
+	
+		#ifndef PLATFORM_CONSOLE
+		m_IconsContainer.Refresh();
+		m_IconsContainer.RecomputeItemPositions();
+		#endif
 		//END - Init grid rows
-		
-		
 	}
 	
 	void RecomputeGridHeight()
 	{
-
+		
 	}
 	
 	void Remove()
@@ -435,6 +439,9 @@ class UICargoGrid
 				EntityAI item = InitIcon( j );
 				showed_items.Insert( item.GetID() );
 			}
+			
+			m_IconsContainer.UpdateItemsTemperature();
+
 			//END - Add new Icons
 			#ifdef PLATFORM_CONSOLE
 				if( m_RefreshItemPositions )
@@ -451,8 +458,7 @@ class UICargoGrid
 					m_RefreshItemPositions = false;
 				}
 			#endif
-			m_IconsContainer.UpdateItemsTemperature();
-
+			
 			//START - Remove removed item Icons
 			for ( int i = 0; i < m_ShowedItems.Count(); i++ )
 			{
@@ -521,6 +527,7 @@ class UICargoGrid
 					}
 				}
 			}
+			
 			//END - Remove removed item Icons
 			TextWidget tw		= TextWidget.Cast( GetParent().GetMainWidget().FindAnyWidget("CargoCount") );
 			
@@ -537,8 +544,8 @@ class UICargoGrid
 			}
 			#else
 			#ifdef PLATFORM_CONSOLE
-			capacity		= CargoList.Cast( m_Entity.GetInventory().GetCargo() ).GetMaxWeight();
-			occupied_cargo	= CargoList.Cast( m_Entity.GetInventory().GetCargo() ).GetTotalWeight( null );
+				capacity		= CargoList.Cast( m_Entity.GetInventory().GetCargo() ).GetMaxWeight();
+				occupied_cargo	= CargoList.Cast( m_Entity.GetInventory().GetCargo() ).GetTotalWeight( null );
 			#endif
 			#endif
 			
@@ -547,8 +554,6 @@ class UICargoGrid
 			m_ShowedItems = showed_items;
 		}
 	}
-	
-	
 
 	EntityAI InitIcon( int index )
 	{

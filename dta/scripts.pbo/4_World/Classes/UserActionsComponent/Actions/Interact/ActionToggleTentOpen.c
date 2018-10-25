@@ -83,9 +83,8 @@ class ActionToggleTentOpen: ActionInteractBase
 				{
 					tent.ToggleAnimation( selections[s] );
 				}
-
 			}
-			
+								
 			//regenerate pathgraph
 			tent.SetAffectPathgraph( true, false );
 			
@@ -94,6 +93,16 @@ class ActionToggleTentOpen: ActionInteractBase
 				//Start update
 				GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(GetGame().UpdatePathgraphRegionByObject, 100, false, tent);
 			}
+		}
+	}
+	
+	override void OnCompleteServer( ActionData action_data )
+	{
+		Object target_object = action_data.m_Target.GetObject();
+		TentBase ntarget = TentBase.Cast( target_object );
+		if( ntarget )
+		{
+			ntarget.SoundSynchRemoteReset();
 		}
 	}
 };

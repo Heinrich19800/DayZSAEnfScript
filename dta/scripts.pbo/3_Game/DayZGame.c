@@ -746,6 +746,7 @@ class DayZGame extends CGame
 			if( null != GetUserManager().GetSelectedUser() )
 			{
 				OnlineServices.LeaveGameplaySession();
+				OnlineServices.ClearCurrentServerInfo();
 				if ( GetGameState() == DayZGameState.IN_GAME )
 				{
 					SetGameState( DayZGameState.MAIN_MENU );
@@ -783,12 +784,6 @@ class DayZGame extends CGame
 			if( GetGame().GetHostAddress( address, port ) )
 			{
 				AddVisitedServer( address, port );
-			}
-			
-			if( GetPlayer() )
-			{
-				GetPlayer().GetNetworkID( low, high );
-				Print( "NetID: " + high.ToString() + low.ToString() );
 			}
 			
 #ifdef PLATFORM_CONSOLE
@@ -1486,7 +1481,11 @@ class DayZGame extends CGame
 			if( m_ConnectAddress == addr && m_ConnectPort == port )
 				return;
 		}
-		Connect( GetGame().GetUIManager().GetMenu(), m_ConnectAddress, m_ConnectPort, m_ConnectPassword );
+		bool test = Connect( GetGame().GetUIManager().GetMenu(), m_ConnectAddress, m_ConnectPort, m_ConnectPassword );
+		if( test )
+		{
+			OnlineServices.GetCurrentServerInfo( m_ConnectAddress, m_ConnectPort );
+		}
 	}
 	
 	void ConnectFromServerBrowser( string ip, int port, string password = "" )

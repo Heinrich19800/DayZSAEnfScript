@@ -30,6 +30,8 @@ class HumanItemBehaviorCfg
 	//! per weapon lean forward 
 	bool	m_bAttackLean;					//! default false
 
+	//! per weapon lean forward 
+	bool	m_bJumpAllowed;					//! default true
 	
 
 	void 	SetIK(int pStance, int pMovement, bool pAim, bool pRArm, bool pLArm)
@@ -87,6 +89,12 @@ class HumanItemAccessor
 {
 	//! signalization from script to engine that item in hands changed
 	proto native void 	OnItemInHandsChanged();
+
+	//! hides item in hands visually
+	proto native void	HideItemInHands(bool pState);
+
+	//! returns if item in hands is hidden visually
+	proto native bool	IsItemInHandsHidden();
 
 	//! returns true if item in hands is a weapon
 	proto native bool	IsItemInHandsWeapon();

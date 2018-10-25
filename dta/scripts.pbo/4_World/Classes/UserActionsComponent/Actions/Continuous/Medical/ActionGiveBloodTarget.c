@@ -48,7 +48,14 @@ class ActionGiveBloodTarget: ActionContinuousBase
 		{
 			MiscGameplayFunctions.TurnItemIntoItemEx(action_data.m_Player, new SyringeLambda(action_data.m_MainItem, "Syringe", action_data.m_Player));
 		}
-
+		else
+		{
+			if ( action_data.m_MainItem.GetQuantity() <= 0 )
+			{
+				GetGame().ObjectDelete( action_data.m_MainItem );
+			}	
+		}
+		
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 	
@@ -72,7 +79,7 @@ class ActionGiveBloodTarget: ActionContinuousBase
 		
 		if ( action_data.m_MainItem && action_data.m_MainItem.GetQuantity() <= 0.01 )
 		{
-			action_data.m_MainItem.SetQuantity(0);
+			action_data.m_MainItem.SetQuantity(0, false, false);
 		}
 	}
 	

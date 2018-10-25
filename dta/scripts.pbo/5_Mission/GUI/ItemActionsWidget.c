@@ -269,7 +269,7 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 
 		if(m_EntityInHands)
 		{
-			health = m_EntityInHands.GetHealthLabel();
+			health = m_EntityInHands.GetHealthLevel();
 			return health;
 		}
 		

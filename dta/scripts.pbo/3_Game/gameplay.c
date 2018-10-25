@@ -240,59 +240,7 @@ class ProxySubpart extends Entity
 {
 };
 
-class EventParams: Managed
-{
-};
-
-class EventParams1 extends EventParams
-{
-	Object obj;
-	void EventParams1(Object o)
-	{
-		obj = o;
-	}
-};
-
-class EntityEventHandler: Managed
-{
-	void OnEvent(EntityAI entity, int entity_event_type /* EE* */, Param params)
-	{
-	}
-};
-
-class EntityAnimEndEventHandler extends EntityEventHandler
-{
-	private string m_anim_name;
-	private ref CallQueueContext m_call;
-
-	void EntityAnimEndEventHandler(string anim_name, Class target, string fn, Param params = NULL)
-	{
-		m_anim_name = anim_name;
-		m_call = new CallQueueContext(target, fn, params);
-	}
-
-	override void OnEvent(EntityAI entity, int entity_event_type /* EE* */, Param params)
-	{
-		if (entity_event_type != EEAnimDone)
-		{
-			return;
-		}
-		
-		if (!m_call)
-		{
-			return;
-		}
-
-		Param1<string> param = Param1<string>.Cast( params );
-		if (m_anim_name == "" || param.param1 == m_anim_name)
-		{
-			m_call.Call();
-		}
-	}
-};
-
 //-----------------------------------------------------------------------------
-
 // custom widgets
 //-----------------------------------------------------------------------------
 class ItemPreviewWidget: Widget

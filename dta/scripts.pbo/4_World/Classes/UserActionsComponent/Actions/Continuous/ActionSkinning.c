@@ -84,7 +84,7 @@ class ActionSkinning: ActionContinuousBase
 	}
 
 	// Spawns the loot according to the Skinning class in the dead agent's config
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{
 		Object targetObject = action_data.m_Target.GetObject();
 		
@@ -100,6 +100,7 @@ class ActionSkinning: ActionContinuousBase
 		
 		if (body.IsInherited(PlayerBase))
 		{	
+			// This section drops all clothes (and attachments) from the dead player before deleting their body
 			PlayerBase body_PB = PlayerBase.Cast(body);
 			
 			DropEquipAndDestroyRootLambda lambda(body_PB, "", action_data.m_Player);

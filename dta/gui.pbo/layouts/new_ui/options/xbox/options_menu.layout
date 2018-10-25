@@ -691,7 +691,7 @@ FrameWidgetClass settings_menu_root {
      vexactsize 1
      font "gui/fonts/sdf_MetronLight24"
      "exact text" 1
-     "exact text size" 30
+     "exact text size" 22
      "size to text h" 0
      "size to text v" 1
      wrap 1

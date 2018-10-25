@@ -301,6 +301,35 @@ class AttachmentCategoriesRow: ClosableContainer
 			}
 		}
 	}
+	
+	void ShowTooltip( Widget w, int x, int y )
+	{
+		if( w == NULL )
+		{
+			return;
+		}
+		ItemPreviewWidget iw = ItemPreviewWidget.Cast( w.FindAnyWidget("Render") );
+		if( !iw )
+		{
+		  string name = w.GetName();
+		  name.Replace("PanelWidget", "Render");
+		  iw = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
+		}
+		if( !iw )
+		{
+		  iw = ItemPreviewWidget.Cast( w );
+		}
+		
+		if( iw && iw.GetItem() )
+		{
+			ItemManager.GetInstance().PrepareTooltip( iw.GetItem(), x, y );
+		}
+	}
+	
+	void HideTooltip( Widget w, Widget enterW, int x, int y )
+	{
+		ItemManager.GetInstance().HideTooltip();
+	}
 
 	override void DraggingOverHeader( Widget w, int x, int y, Widget receiver )
 	{
@@ -539,6 +568,9 @@ class AttachmentCategoriesRow: ClosableContainer
 					WidgetEventHandler.GetInstance().RegisterOnDraggingOver( ic.GetMainWidget().FindAnyWidget("Icon"+k),  this, "DraggingOverHeader" );
 					WidgetEventHandler.GetInstance().RegisterOnDraggingOver( ic.GetMainWidget().FindAnyWidget("GhostSlot"+k),  this, "DraggingOverHeader" );
 					WidgetEventHandler.GetInstance().RegisterOnDraggingOver( ic.GetMainWidget().FindAnyWidget("PanelWidget"+k),  this, "DraggingOverHeader" );
+					
+					WidgetEventHandler.GetInstance().RegisterOnMouseEnter( ic.GetMainWidget().FindAnyWidget("PanelWidget"+k),  this, "ShowTooltip" );
+					WidgetEventHandler.GetInstance().RegisterOnMouseLeave( ic.GetMainWidget().FindAnyWidget("PanelWidget"+k),  this, "HideTooltip" );
 				}
 			}
 		}

@@ -11,7 +11,7 @@ class LargeTent extends TentBase
 		m_ToggleAnimations.Insert( new ToggleAnimations("Window6O", "Window6C"), 0 );
 		m_ToggleAnimations.Insert( new ToggleAnimations("Window7O", "Window7C"), 0 );
 			
-		m_ShowAnimationsWhenPitched.Insert( "Camo" );
+		m_ShowAnimationsWhenPitched.Insert( "Body" );
 		m_ShowAnimationsWhenPitched.Insert( "EntranceO" );
 		m_ShowAnimationsWhenPitched.Insert( "Window1O" );
 		m_ShowAnimationsWhenPitched.Insert( "Window2O" );
@@ -63,5 +63,25 @@ class LargeTent extends TentBase
 	override bool IsTwoHandedBehaviour()
 	{
 		return true;
+	}
+	
+	override string GetSoundOpen()
+	{
+		return "LargeTent_Door_Open_SoundSet";
+	}
+	
+	override string GetSoundClose()
+	{
+		return "LargeTent_Door_Close_SoundSet";
+	}
+	
+	override string GetSoundOpenWindow()
+	{
+		return "LargeTent_Window_Open_SoundSet";
+	}
+	
+	override string GetSoundCloseWindow()
+	{
+		return "LargeTent_Window_Close_SoundSet";
 	}
 };

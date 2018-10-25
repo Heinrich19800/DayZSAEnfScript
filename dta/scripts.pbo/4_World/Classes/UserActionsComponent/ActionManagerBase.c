@@ -75,7 +75,7 @@ class ActionManagerBase
 				m_ActionsMap.Set(m_Actions.Get(i).GetType(), m_Actions.Get(i));
 			}
 			
-			m_SelectableActions = new TSelectableActionInfoArray;			
+			m_SelectableActions = new TSelectableActionInfoArray;
 			m_SelectedActionIndex = 0;
 			m_SelectableActionsHasChanged = false;
 			
@@ -185,7 +185,7 @@ class ActionManagerBase
 		}
 		
 		m_SelectedActionIndex--;
-		if( m_SelectedActionIndex < 0 ) 
+		if( m_SelectedActionIndex < 0 )
 		{
 			m_SelectedActionIndex = m_SelectableActions.Count() - 1;
 		}
@@ -198,7 +198,7 @@ class ActionManagerBase
 	//------------------------------------------------------
 	bool ActionPossibilityCheck(int pCurrentCommandID)
 	{
-		if ( m_Player.IsSprinting() || m_Player.IsUnconscious() || m_Player.GetCommandModifier_Action() || m_Player.GetCommand_Action() )
+		if ( m_Player.IsSprinting() || m_Player.IsUnconscious() || m_Player.GetCommandModifier_Action() || m_Player.GetCommand_Action() || m_Player.IsPlayingEmote() )
 			return false;
 		
 		if (pCurrentCommandID == DayZPlayerConstants.COMMANDID_ACTION || pCurrentCommandID == DayZPlayerConstants.COMMANDID_MOVE || pCurrentCommandID == DayZPlayerConstants.COMMANDID_SWIM || pCurrentCommandID == DayZPlayerConstants.COMMANDID_LADDER || pCurrentCommandID == DayZPlayerConstants.COMMANDID_VEHICLE)
@@ -334,7 +334,7 @@ class ActionManagerBase
 		FirearmActionBase weapon_action = FirearmActionBase.Cast(GetRunningAction());
 		if(weapon_action)
 		{
-			weapon_action.OnWeaponFsmEnd(m_CurrentActionData);
+			weapon_action.End(m_CurrentActionData);
 		}
 	}
 	

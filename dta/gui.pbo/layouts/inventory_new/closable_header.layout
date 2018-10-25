@@ -127,11 +127,12 @@ PanelWidgetClass closable_header_root {
      draggable 0
     }
     TextWidgetClass CargoCount {
-     visible 0
+     visible 1
+     disabled 1
      clipchildren 0
      ignorepointer 1
      position 100 0
-     size 0.05 1
+     size 0.1 0.6
      halign right_ref
      valign center_ref
      hexactpos 1
@@ -143,9 +144,9 @@ PanelWidgetClass closable_header_root {
      font "gui/fonts/sdf_MetronLight24"
      "exact text" 1
      "exact text size" 20
-     text_proportion 0.5
-     "size to text h" 1
+     "size to text h" 0
      "size to text v" 0
+     "text halign" right
      "text valign" center
     }
    }

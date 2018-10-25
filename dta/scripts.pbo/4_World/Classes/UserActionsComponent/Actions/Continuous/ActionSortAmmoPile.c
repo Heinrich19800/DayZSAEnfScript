@@ -60,7 +60,7 @@ class ActionSortAmmoPile: ActionContinuousBase
 				int count = magazine.GetAmmoCount();
 				if(magazine.ServerAcquireCartridge(health, ammo_type))
 				{
-					int health_label = MiscGameplayFunctions.GetHealthLabelForAmmo(ammo_type,health);
+					int health_label = MiscGameplayFunctions.GetHealthLevelForAmmo(ammo_type,health);
 					if( piles[health_label] == null )
 					{
 						piles[health_label] = Magazine.Cast( GetGame().CreateObject( item.ClassName(), item.GetPosition() ) );		

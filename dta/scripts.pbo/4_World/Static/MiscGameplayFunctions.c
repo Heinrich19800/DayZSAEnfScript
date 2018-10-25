@@ -277,7 +277,7 @@ class MiscGameplayFunctions
 		return items;
 	}
 	
-	static int GetHealthLabelForAmmo(string class_name, float health)
+	static int GetHealthLevelForAmmo(string class_name, float health)
 	{
 		float health_normalized = health / 100;
 		string config_path = CFG_WEAPONSPATH + " " + class_name + " DamageSystem" + " GlobalHealth" + " healthLabels";

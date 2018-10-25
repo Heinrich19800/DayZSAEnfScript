@@ -34,6 +34,7 @@ class Environment
 	protected bool 					m_IsInside;
 	protected bool 					m_IsUnderRoof;
 	protected bool 					m_IsInWater;
+	protected bool					m_IsTempSet;
 	
 	//
 	protected float 				m_HeatSourceTemp;
@@ -133,6 +134,7 @@ class Environment
 		};
 	}
 
+	
 	// Calculates heatisolation of clothing, process its wetness, collects heat from heated items and calculates player's heat comfort
 	void Update(float pDelta)
 	{
@@ -194,6 +196,11 @@ class Environment
 				m_HeatSourceTemp = 0.0;
 			}
 		}
+	}
+	
+	bool IsTemperatureSet()
+	{
+		return m_IsTempSet;
 	}
 	
 	void AddToEnvironmentTemperature(float pTemperature)
@@ -280,7 +287,7 @@ class Environment
 		float healthFactor;
 
 		float heatIsolation = pItem.GetHeatIsolation(); 	//! item heat isolation (from cfg)
-		float itemHealthLabel = pItem.GetHealthLabel();		//! item health (state)
+		float itemHealthLabel = pItem.GetHealthLevel();		//! item health (state)
 		float itemWetness = pItem.GetWet();					//! item wetness
 		
 		//! wet factor selection
@@ -465,6 +472,12 @@ class Environment
 		m_Fog = weather.GetFog().GetActual();
 		m_Clouds =	weather.GetOvercast().GetActual();
 		m_Wind = weather.GetWindSpeed();
+		SetEnvironmentTemperature();
+	}
+	
+	void SetEnvironmentTemperature()
+	{
+		m_IsTempSet = true;
 		m_EnvironmentTemperature = GetEnvironmentTemperature();
 	}
 

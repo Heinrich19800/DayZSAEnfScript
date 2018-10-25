@@ -161,4 +161,9 @@ class ActionStartEngine: ActionContinuousBase
 			}
 		}
 	}
+	
+	override bool CanBeUsedInVehicle()
+	{
+		return true;
+	}
 };

@@ -182,7 +182,7 @@ class InspectMenuNew extends UIScriptedMenu
 	{
 		if ( item.IsInherited( ZombieBase ) || item.IsInherited( Car ) ) return;
 		
-		int damageLevel = item.GetHealthLabel();
+		int damageLevel = item.GetHealthLevel();
 		
 		switch(damageLevel)
 		{

@@ -9,10 +9,7 @@ enum CarSoundCtrl
 
 	// miscellaneous
 	DOORS, //!< indicates if doors are open
-
-	// other
-	CAMERA, //!< indicates if camera is 3rd or 1st person view
-	PLAYER  //!< indicates if driver is controlled by player
+	PLAYER //!< indicates if driver is controlled by player
 };
 
 

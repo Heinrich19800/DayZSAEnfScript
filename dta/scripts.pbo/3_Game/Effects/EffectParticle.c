@@ -4,7 +4,7 @@ class EffectParticle : Effect
 	protected Particle 			m_ParticleObj;
 	protected int				m_ParticleID;
 	protected vector			m_Orientation;
-		
+	protected Object 			m_Object;
 	//=====================================
 	// Constructor
 	//=====================================
@@ -199,5 +199,13 @@ class EffectParticle : Effect
 	override void OnCheckUpdate()
 	{
 		
+	}
+	
+	//=====================================
+	// SetDecalOwner
+	//=====================================	
+	void SetDecalOwner(Object o)
+	{
+		m_Object = o;
 	}
 }

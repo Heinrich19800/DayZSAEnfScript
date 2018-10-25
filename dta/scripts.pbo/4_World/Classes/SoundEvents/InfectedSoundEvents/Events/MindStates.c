@@ -48,8 +48,6 @@ class ChaseMoveSoundEvent extends MindStateSoundEventBase
 		m_ID = EInfectedSoundEventID.MINDSTATE_CHASE_MOVE;
 		m_SoundSetNameRoot = "ChaseMove";
 	}
-	
-	override bool IsLooped() { return true; }
 }
 
 class AlertedIdleSoundEvent extends MindStateSoundEventBase

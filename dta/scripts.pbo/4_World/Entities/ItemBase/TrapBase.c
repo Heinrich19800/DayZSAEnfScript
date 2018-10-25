@@ -24,8 +24,6 @@ class TrapBase extends ItemBase
 	string m_InfoDamage;
 	string m_InfoActivationTime;
 
-	ref EntityAnimEndEventHandler m_anim_end_event_handler;
-	
 	protected ref Timer m_Timer;
 	protected TrapTrigger m_TrapTrigger;
 

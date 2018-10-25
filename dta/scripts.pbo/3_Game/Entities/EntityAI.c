@@ -83,8 +83,6 @@ class EntityAI extends Entity
 		Debug.LogError(msg, "Object", "n/a", fnc_name, this.GetType());
 	}
 
-	private EntityEventHandler m_event_handler;
-
 	///@{ Skinning
 	bool IsSkinned()
 	{
@@ -219,13 +217,6 @@ class EntityAI extends Entity
 		}
 	}
 
-	EntityEventHandler GetEventHandler() { return m_event_handler; }
-
-	void SetEventHandler(EntityEventHandler event_handler)
-	{
-		m_event_handler = event_handler;
-	}
-	
 	int GetAgents() { return 0; }
 	void RemoveAgent(int agent_id);
 	void RemoveAllAgents();
@@ -275,17 +266,6 @@ class EntityAI extends Entity
 			GetCompEM().OnDeviceDestroyed();
 	}
 	
-	void EEAnimHook(int userType, string param) { }
-
-	void EEAnimDone(string moveName)
-	{
-		if (m_event_handler) 
-		{
-			Param param = new Param1<string>(moveName);
-			m_event_handler.OnEvent(this, EEAnimDone, param);
-		}
-	}
-
 	void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner) { }
 	
 	void EEItemLocationChanged (notnull InventoryLocation oldLoc, notnull InventoryLocation newLoc)
@@ -311,10 +291,6 @@ class EntityAI extends Entity
 		}
 	}
 
-	void EEAnimStateChanged(string moveName) { }
-
-	void EEFired(int muzzleType, int mode, string ammoType) { }
-
 	void EEAmmoChanged()
 	{
 		Mission mission;
@@ -327,11 +303,8 @@ class EntityAI extends Entity
 		}
 	}
 
-	void EELocal(bool isLocal) { }
-	
-	void EEHealthLevelChanged(int oldLevel, int newLevel)
+	void EEHealthLevelChanged(int oldLevel, int newLevel, string zone)
 	{
-		
 	}
 
 	void EEKilled(Object killer) { }
@@ -339,10 +312,7 @@ class EntityAI extends Entity
 	void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos) { }
 	
 	// called only on the client who caused the hit
-	void EEHitByRemote(int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos)
-	{
-		
-	}
+	void EEHitByRemote(int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos) { }
 	
 	// !Called on PARENT when a child is attached to it.
 	void EEItemAttached(EntityAI item, string slot_name)
@@ -441,23 +411,6 @@ class EntityAI extends Entity
 	
 	}
 	
-	void EEOnWaterEnter()
-	{
-	}
-	
-	void EEOnWaterExit()
-	{
-	}
-
-	void EEUsed(Man owner)
-	{
-	}
-
-	//! Called on client (in multiplayer) when sqf synchronize variable is synchronized
-	void EEVariableSynchronized(string variable_name)
-	{
-	}
-
 	//! Called when entity is part of "connected system" and being restored after load
 	void EEOnAfterLoad()
 	{
@@ -543,12 +496,6 @@ class EntityAI extends Entity
 		}
 	}
 	
-	/**
-	\brief This event is called when player is marked captive.
-		\param captive \p bool true when player is marked captive, false when it is unmarked captive.
-	*/
-	void EEOnSetCaptive(bool captive){ }
-
 	/**@fn		CanReceiveAttachment
 	 * @brief calls this->CanReceiveAttachment(attachment)
 	 * @return	true if action allowed
@@ -1002,8 +949,6 @@ class EntityAI extends Entity
 	proto native bool	IsPilotLight();
 	proto native void SetPilotLight(bool isOn);
 	
-	proto native bool IsWaterContact();
-	
 	//! Returns the vehicle in which the given unit is mounted. If there is none, NULL is returned.
 	proto native Transport GetTransport();
 	
@@ -1381,5 +1326,11 @@ class EntityAI extends Entity
 	{
 		//! returns Global so it is obvious you need to configure that properly on entity
 		return "";
+	}
+	
+	//! returns sound type of attachment (used for clothing and weapons on DayZPlayerImplement, paired with Anim*Type enum from DayZAnimEvents)
+	string GetAttachmentSoundType()
+	{
+		return "None";
 	}
 };

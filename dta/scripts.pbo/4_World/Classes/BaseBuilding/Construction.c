@@ -215,7 +215,7 @@ class Construction
 	}
 	
 	//Get all construction parts that can be build (at that current time)
-	void GetConstructionPartsToBuild( string main_part_name, out array<string> construction_parts )
+	void GetConstructionPartsToBuild( string main_part_name, out array<ConstructionPart> construction_parts )
 	{
 		construction_parts.Clear();
 		
@@ -226,24 +226,7 @@ class Construction
 		
 			if ( main_part_name == value.GetMainPartName() && CanBuildPart( value.GetPartName() ) )
 			{
-				construction_parts.Insert( value.GetPartName() );
-			}
-		}
-	}
-
-	//Get all construction parts that are already built
-	void GetBuiltConstructionParts( out array<string> construction_parts )
-	{
-		construction_parts.Clear();
-		
-		for ( int i = 0; i < m_ConstructionParts.Count(); ++i )
-		{
-			string key = m_ConstructionParts.GetKey( i );
-			ConstructionPart value = m_ConstructionParts.Get( key );
-		
-			if ( value.IsBuilt() )
-			{
-				construction_parts.Insert( value.GetPartName() );
+				construction_parts.Insert( value );
 			}
 		}
 	}

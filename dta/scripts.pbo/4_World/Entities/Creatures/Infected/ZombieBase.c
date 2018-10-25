@@ -11,7 +11,8 @@ class ZombieBase extends DayZInfected
 	protected int m_MindState = -1;
 	protected float m_MovementSpeed = -1;
 	
-	ref InfectedSoundEventHandler m_InfectedSoundEventHandler;
+	protected ref AbstractWave				m_LastSoundVoiceAW;
+	protected ref InfectedSoundEventHandler	m_InfectedSoundEventHandler;
 
 	//-------------------------------------------------------------
 	void ZombieBase()
@@ -29,6 +30,7 @@ class ZombieBase extends DayZInfected
 		//! client only
 		if( !GetGame().IsMultiplayer() || GetGame().IsClient() )
 		{
+			m_LastSoundVoiceAW 			= null;
 			m_InfectedSoundEventHandler = new InfectedSoundEventHandler(this);
 		}
 	}
@@ -324,38 +326,16 @@ class ZombieBase extends DayZInfected
 		switch( m_MindState )
 		{
 		case DayZInfectedConstants.MINDSTATE_CALM:
-			if( m_MovementSpeed == DayZInfectedConstantsMovement.MOVEMENTSTATE_IDLE)
-			{
-				m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_CALM_IDLE);
-				break;
-			}
-			else
-			{
-				m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_CALM_MOVE);
-				break;
-			}
+			m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_CALM_MOVE);
+			break;
 		case DayZInfectedConstants.MINDSTATE_ALERTED:
-			if( m_MovementSpeed == DayZInfectedConstantsMovement.MOVEMENTSTATE_IDLE)
-			{
-				m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_ALERTED_IDLE);
-				break;
-			}
-			else
-			{
-				m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_ALERTED_MOVE);
-				break;
-			}
+			m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_ALERTED_MOVE);
+			break;
 		case DayZInfectedConstants.MINDSTATE_DISTURBED:
-			if( m_MovementSpeed == DayZInfectedConstantsMovement.MOVEMENTSTATE_IDLE )
-			{
-				m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_DISTURBED_IDLE);
-				break;
-			}
+			m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_DISTURBED_IDLE);
+			break
 		case DayZInfectedConstants.MINDSTATE_CHASE:
-			//if( m_MovementSpeed >= DayZInfectedConstantsMovement.MOVEMENTSTATE_WALK )
-			//{
-				m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_CHASE_MOVE);
-			//}
+			m_InfectedSoundEventHandler.PlayRequest(EInfectedSoundEventID.MINDSTATE_CHASE_MOVE);
 			break;
 		default:
 			m_InfectedSoundEventHandler.Stop();
@@ -376,48 +356,73 @@ class ZombieBase extends DayZInfected
 
 	AbstractWave ProcessVoiceFX(string pSoundSetName)
 	{
-		ref SoundParams			m_SoundParams;
-		ref SoundObjectBuilder	m_SoundObjectBuilder;
-		ref SoundObject			m_SoundObject;
-		ref AbstractWave		m_SoundWaveObject;
+		ref SoundParams			soundParams;
+		ref SoundObjectBuilder	soundObjectBuilder;
+		ref SoundObject			soundObject;
 		if(GetGame().IsClient() || !GetGame().IsMultiplayer())
 		{
-			m_SoundParams = new SoundParams( pSoundSetName );
-			if ( !m_SoundParams.IsValid() )
+			soundParams = new SoundParams( pSoundSetName );
+			if ( !soundParams.IsValid() )
 			{
 				//SoundError("Invalid sound set.");
 				return null;
 			}
 			
-			m_SoundObjectBuilder = new SoundObjectBuilder( m_SoundParams );
-			m_SoundObject = m_SoundObjectBuilder.BuildSoundObject();
-			m_SoundObject.SetKind( WaveKind.WAVEEFFECT );
+			soundObjectBuilder = new SoundObjectBuilder( soundParams );
+			soundObject = soundObjectBuilder.BuildSoundObject();
+			soundObject.SetKind( WaveKind.WAVEEFFECT );
 			
-			return PlaySound(m_SoundObject, m_SoundObjectBuilder);
+			return PlaySound(soundObject, soundObjectBuilder);
 		}
-		
-		/*
-		if(GetGame().IsServer() || !GetGame().IsMultiplayer())
-		{
-			if(soundEvent.m_NoiseParams != NULL)
-				GetGame().GetNoiseSystem().AddNoise(this, soundEvent.m_NoiseParams);
-		}
-		*/
 
 		return null;
 	}
 
 	override void OnSoundVoiceEvent(int event_id, string event_user_string)
 	{
-		super.OnSoundVoiceEvent(event_id, event_user_string);
-
-		if (m_InfectedSoundEventHandler && m_InfectedSoundEventHandler.IsPlaying())
+		//super.OnSoundVoiceEvent(event_id, event_user_string);
+		AnimSoundVoiceEvent voice_event = GetCreatureAIType().GetSoundVoiceEvent(event_id);
+		if(voice_event != null)
 		{
-			m_InfectedSoundEventHandler.Stop();
-			DebugSound("[Infected @ " + this + "][SoundEvent] InfectedSoundEventHandler - stop all");
+			//! stop state sound when playing anim SoundVoice
+			if (m_InfectedSoundEventHandler) // && m_InfectedSoundEventHandler.IsPlaying())
+			{
+				m_InfectedSoundEventHandler.Stop();
+				DebugSound("[Infected @ " + this + "][SoundEvent] InfectedSoundEventHandler - stop all");
+			}
+
+			//! stop playing of old SoundVoice from anim (if any)
+			if (m_LastSoundVoiceAW != null)
+			{
+				DebugSound("[Infected @ " + this + "][AnimVoiceEvent] Stopping LastAW");
+				m_LastSoundVoiceAW.Stop();
+			}
+			
+			//! play new SoundVoice from anim
+			ProcessSoundVoiceEvent(voice_event, m_LastSoundVoiceAW);
+			
+			HandleSoundEvents();
+		}
+	}
+	
+	protected void ProcessSoundVoiceEvent(AnimSoundVoiceEvent sound_event, out AbstractWave aw)
+	{
+		if(GetGame().IsClient() || !GetGame().IsMultiplayer())
+		{
+			SoundObjectBuilder objectBuilder = sound_event.GetSoundBuilder();
+			if(NULL != objectBuilder)
+			{
+				objectBuilder.UpdateEnvSoundControllers(GetPosition());
+				SoundObject soundObject = objectBuilder.BuildSoundObject();
+				aw = PlaySound(soundObject, objectBuilder);
+			}
 		}
 		
-		HandleSoundEvents();
+		if(GetGame().IsServer() || !GetGame().IsMultiplayer())
+		{
+			if(sound_event.m_NoiseParams != NULL)
+				GetGame().GetNoiseSystem().AddNoise(this, sound_event.m_NoiseParams);
+		}
 	}
 	
 	//-------------------------------------------------------------

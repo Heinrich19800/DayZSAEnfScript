@@ -69,11 +69,14 @@ class ActionRestrainSelf: ActionContinuousBase
 		return true;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		PlayerBase player = PlayerBase.Cast( action_data.m_Player );
 		EntityAI item_in_hands = player.GetHumanInventory().GetEntityInHands();
-		string new_item_name = MiscGameplayFunctions.ObtainRestrainItemTargetClassname(item_in_hands);
-		MiscGameplayFunctions.TurnItemIntoItemEx(player, new TurnItemIntoItemLambdaRestrain(item_in_hands, new_item_name, action_data.m_Player));
+		if( item_in_hands )
+		{
+			string new_item_name = MiscGameplayFunctions.ObtainRestrainItemTargetClassname(item_in_hands);
+			MiscGameplayFunctions.TurnItemIntoItemEx(player, new TurnItemIntoItemLambdaRestrain(item_in_hands, new_item_name, action_data.m_Player));
+		}
 	}
 };

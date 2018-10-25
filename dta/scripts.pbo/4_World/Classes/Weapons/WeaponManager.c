@@ -21,6 +21,10 @@ class WeaponManager
 	protected Weapon_Base				m_WeaponInHand;
 	protected FirearmActionBase			m_ControlAction;
 	
+	//Jamming
+	protected float m_NewJamChance;
+	protected bool m_WaitToSyncJamChance;
+	
 	
 	void WeaponManager(PlayerBase player)
 	{
@@ -37,11 +41,14 @@ class WeaponManager
 		m_IsEventSended = false;
 		m_canEnd = false;
 		m_readyToStart = false;
+		
+		m_NewJamChance = -1;
+		m_WaitToSyncJamChance = false;
 	}
 //----------------------------------------------------------------------------	
 // Weapon Action conditions
 //----------------------------------------------------------------------------	
-	bool CanAttachMagazine(Weapon_Base wpn, Magazine mag)
+	bool CanAttachMagazine(Weapon_Base wpn, Magazine mag, bool reservationCheck = true )
 	{	
 		if ( !wpn || !mag )
 			return false;
@@ -49,7 +56,13 @@ class WeaponManager
 		if ( m_player.GetHumanInventory().GetEntityInHands() != wpn )
 			return false;
 		
-		if( wpn.IsDamageDestroyed())
+		if ( wpn.IsDamageDestroyed())
+			return false;
+		
+		if ( mag.GetHierarchyRootPlayer() && mag.GetHierarchyRootPlayer() != m_player )
+			return false;
+		
+		if ( reservationCheck && (m_player.GetInventory().HasInventoryReservation(wpn, null) || m_player.GetInventory().HasInventoryReservation(mag, null)))
 			return false;
 		
 		InventoryLocation invLoc;
@@ -57,13 +70,15 @@ class WeaponManager
 		
 		mag.GetInventory().GetCurrentInventoryLocation(invLoc);
 		Weapon_Base wnp2;
+		
+
 		//magazine is already in weapon
-		if( Class.CastTo(wnp2,  invLoc.GetParent()) )
+		if ( Class.CastTo(wnp2,  invLoc.GetParent()) )
 			return false;
 			
 		int muzzleIndex = wpn.GetCurrentMuzzle();
 		
-		if(wpn.CanAttachMagazine(muzzleIndex, mag))
+		if (wpn.CanAttachMagazine(muzzleIndex, mag))
 			return true;
 
 		return false;
@@ -71,7 +86,7 @@ class WeaponManager
 	}
 //---------------------------------------------------------------------------	
 	
-	bool CanSwapMagazine(Weapon_Base wpn, Magazine mag)
+	bool CanSwapMagazine(Weapon_Base wpn, Magazine mag, bool reservationCheck = true)
 	{
 		if ( !wpn || !mag )
 			return false;
@@ -79,14 +94,22 @@ class WeaponManager
 		if ( m_player.GetHumanInventory().GetEntityInHands() != wpn )
 			return false;
 		
-		if( mag.IsDamageDestroyed() || wpn.IsDamageDestroyed())
+		if ( mag.IsDamageDestroyed() || wpn.IsDamageDestroyed())
 			return false;
+		
+		if ( mag.GetHierarchyRootPlayer() && mag.GetHierarchyRootPlayer() != m_player )
+			return false;
+		
+		if ( reservationCheck && (m_player.GetInventory().HasInventoryReservation(wpn, null) || m_player.GetInventory().HasInventoryReservation(mag, null)))
+			return false;
+		
 
 		InventoryLocation invLoc;
 		invLoc = new InventoryLocation;
 		
 		mag.GetInventory().GetCurrentInventoryLocation(invLoc);
 		Weapon_Base wnp2;
+		
 		//second magazine is already in weapon
 		if( Class.CastTo(wnp2,  invLoc.GetParent()) )
 			return false;		
@@ -100,7 +123,7 @@ class WeaponManager
 		return true;
 	}
 //----------------------------------------------------------------------------			
-	bool CanDetachMagazine(Weapon_Base wpn, Magazine mag)
+	bool CanDetachMagazine(Weapon_Base wpn, Magazine mag, bool reservationCheck = true)
 	{
 		if ( !wpn || !mag )
 			return false;
@@ -111,10 +134,13 @@ class WeaponManager
 		if ( mag.GetHierarchyParent() != wpn )
 			return false;
 		
+		if ( reservationCheck && (m_player.GetInventory().HasInventoryReservation(wpn, null) || m_player.GetInventory().HasInventoryReservation(mag, null)))
+			return false;
+		
 		return true;
 	}
 //---------------------------------------------------------------------------
-	bool CanLoadBullet(Weapon_Base wpn, Magazine mag)
+	bool CanLoadBullet(Weapon_Base wpn, Magazine mag, bool reservationCheck = true)
 	{
 		if ( !wpn || !mag )
 			return false;
@@ -125,7 +151,13 @@ class WeaponManager
 		if( mag.IsDamageDestroyed() || wpn.IsDamageDestroyed())
 			return false;
 		
+		if ( mag.GetHierarchyRootPlayer() && mag.GetHierarchyRootPlayer() != m_player )
+			return false;
+		
 		if( wpn.IsJammed(/*wpn.GetCurrentMuzzle()*/) )
+			return false;
+		
+		if ( reservationCheck && (m_player.GetInventory().HasInventoryReservation(wpn,null) || m_player.GetInventory().HasInventoryReservation(mag,null)))
 			return false;
 		
 		int muzzleIndex = wpn.GetCurrentMuzzle();
@@ -136,7 +168,7 @@ class WeaponManager
 		return true;
 	}
 //---------------------------------------------------------------------------	
-	bool CanUnjam(Weapon_Base wpn)
+	bool CanUnjam(Weapon_Base wpn, bool reservationCheck = true)
 	{
 		if( !wpn )
 			return false;
@@ -146,6 +178,9 @@ class WeaponManager
 		
 		if( wpn.IsDamageDestroyed())
 			return false;
+		
+		if ( reservationCheck && m_player.GetInventory().HasInventoryReservation(wpn, null))
+			return false;
 
 		
 		if( wpn.IsJammed(/*wpn.GetCurrentMuzzle()*/) )
@@ -154,12 +189,15 @@ class WeaponManager
 		return true;
 	}
 	
-	bool CanEjectBullet(Weapon_Base wpn)
+	bool CanEjectBullet(Weapon_Base wpn, bool reservationCheck = true)
 	{
 		if( !wpn )
 			return false;
 		 
 		if( m_player.GetHumanInventory().GetEntityInHands() != wpn)
+			return false;
+		
+		if( reservationCheck && m_player.GetInventory().HasInventoryReservation(wpn, null))
 			return false;
 		
 		if( wpn.IsJammed(/*wpn.GetCurrentMuzzle()*/) )
@@ -176,18 +214,26 @@ class WeaponManager
 		if (Weapon_Base.CastTo(weapon, m_player.GetItemInHands()) )
 		{
 			weapon.GetInventory().GetCurrentInventoryLocation(ilWeapon); 
-			if(!m_player.GetInventory().AddInventoryReservation(weapon,ilWeapon,GameInventory.c_InventoryReservationTimeoutMS) )
+			if ( m_player.GetInventory().HasInventoryReservation(weapon, ilWeapon) )
 			{
 				return false;
 			}
+			else
+			{
+				m_player.GetInventory().AddInventoryReservation(weapon,ilWeapon,GameInventory.c_InventoryReservationTimeoutMS);
+			}	
 		}
 		
 		if( invLoc )
 		{
-			if ( !m_player.GetInventory().AddInventoryReservation(invLoc.GetItem(),invLoc,GameInventory.c_InventoryReservationTimeoutMS) )
+			if ( m_player.GetInventory().HasInventoryReservation(invLoc.GetItem(),invLoc) )
 			{
 				m_player.GetInventory().ClearInventoryReservation(weapon, ilWeapon);
 				return false;
+			}
+			else
+			{
+				m_player.GetInventory().AddInventoryReservation(invLoc.GetItem(),invLoc,GameInventory.c_InventoryReservationTimeoutMS);
 			}
 		}
 		
@@ -196,7 +242,7 @@ class WeaponManager
 			m_TargetInventoryLocation = new InventoryLocation;
 			mag.GetInventory().GetCurrentInventoryLocation(m_TargetInventoryLocation);
 			
-			if ( !m_player.GetInventory().AddInventoryReservation(mag, m_TargetInventoryLocation, GameInventory.c_InventoryReservationTimeoutMS) )
+			if ( m_player.GetInventory().HasInventoryReservation(mag, m_TargetInventoryLocation) )
 			//if ( !m_player.GetInventory().AddInventoryReservation( mag, m_TargetInventoryLocation, GameInventory.c_InventoryReservationTimeoutMS) )
 			{
 				m_player.GetInventory().ClearInventoryReservation(weapon, ilWeapon);
@@ -205,6 +251,10 @@ class WeaponManager
 					m_player.GetInventory().ClearInventoryReservation(invLoc.GetItem(), invLoc);
 				}
 				return false;
+			}
+			else
+			{
+				m_player.GetInventory().AddInventoryReservation(mag, m_TargetInventoryLocation, GameInventory.c_InventoryReservationTimeoutMS);
 			}
 		}
 		m_PendingTargetMagazine = mag;
@@ -320,40 +370,47 @@ class WeaponManager
 	
 	void OnSyncJuncture(int pJunctureID, ParamsReadContext pCtx)
 	{
-		int AcknowledgmentID;
-		pCtx.Read(AcknowledgmentID);
-		if ( AcknowledgmentID == m_PendingWeaponActionAcknowledgmentID)
+		if (pJunctureID == DayZPlayerSyncJunctures.SJ_WEAPON_SET_JAMMING_CHANCE )
 		{
-			if (pJunctureID == DayZPlayerSyncJunctures.SJ_WEAPON_ACTION_ACK_ACCEPT)
-			{ 
-				m_readyToStart = true;
-			}
-			else if (pJunctureID == DayZPlayerSyncJunctures.SJ_WEAPON_ACTION_ACK_REJECT)
+			pCtx.Read(m_NewJamChance);
+		}
+		else
+		{
+			int AcknowledgmentID;
+			pCtx.Read(AcknowledgmentID);
+			if ( AcknowledgmentID == m_PendingWeaponActionAcknowledgmentID)
 			{
-				if(m_PendingWeaponAction >= 0 )
+				if (pJunctureID == DayZPlayerSyncJunctures.SJ_WEAPON_ACTION_ACK_ACCEPT)
+				{ 
+					m_readyToStart = true;
+				}
+				else if (pJunctureID == DayZPlayerSyncJunctures.SJ_WEAPON_ACTION_ACK_REJECT)
 				{
-					if(!(GetGame().IsServer() && GetGame().IsMultiplayer()))
+					if(m_PendingWeaponAction >= 0 )
 					{
-						InventoryLocation ilWeapon = new InventoryLocation;
-						ItemBase weapon = m_player.GetItemInHands();
-						weapon.GetInventory().GetCurrentInventoryLocation(ilWeapon);
-						m_player.GetInventory().ClearInventoryReservation(m_player.GetItemInHands(),ilWeapon);
-						
-						if( m_PendingTargetMagazine )
+						if(!(GetGame().IsServer() && GetGame().IsMultiplayer()))
 						{
-							m_PendingTargetMagazine.GetInventory().ClearInventoryReservation(m_PendingTargetMagazine, m_TargetInventoryLocation );
+							InventoryLocation ilWeapon = new InventoryLocation;
+							ItemBase weapon = m_player.GetItemInHands();
+							weapon.GetInventory().GetCurrentInventoryLocation(ilWeapon);
+							m_player.GetInventory().ClearInventoryReservation(m_player.GetItemInHands(),ilWeapon);
+							
+							if( m_PendingTargetMagazine )
+							{
+								m_PendingTargetMagazine.GetInventory().ClearInventoryReservation(m_PendingTargetMagazine, m_TargetInventoryLocation );
+							}
+							
+							if( m_PendingInventoryLocation )
+							{
+								m_player.GetInventory().ClearInventoryReservation( NULL, m_PendingInventoryLocation );
+							}
 						}
-						
-						if( m_PendingInventoryLocation )
-						{
-							m_player.GetInventory().ClearInventoryReservation( NULL, m_PendingInventoryLocation );
-						}
+						m_PendingWeaponActionAcknowledgmentID = -1;
+						m_PendingTargetMagazine = NULL;
+						m_PendingWeaponAction = -1;
+						m_PendingInventoryLocation = NULL;
+						m_InProgress = false;
 					}
-					m_PendingWeaponActionAcknowledgmentID = -1;
-					m_PendingTargetMagazine = NULL;
-					m_PendingWeaponAction = -1;
-					m_PendingInventoryLocation = NULL;
-					m_InProgress = false;
 				}
 			}
 		}
@@ -505,7 +562,11 @@ class WeaponManager
 	void StartPendingAction()
 	{		
 		m_WeaponInHand = Weapon_Base.Cast(m_player.GetItemInHands());
-		
+		if(!m_WeaponInHand)
+		{
+			OnWeaponActionEnd();
+			return;
+		}
 		switch (m_PendingWeaponAction)
 		{
 			case AT_WPN_ATTACH_MAGAZINE:
@@ -568,8 +629,50 @@ class WeaponManager
 		m_InProgress = value;
 	}
 	
+	void Refresh()
+	{
+		OnWeaponActionEnd();
+	}
+	
 	void Update( float deltaT )
 	{
+		if (m_WeaponInHand != m_player.GetItemInHands())
+		{
+			OnWeaponActionEnd();
+			m_WeaponInHand = Weapon_Base.Cast(m_player.GetItemInHands());
+			if ( m_WeaponInHand )
+			{
+				m_WeaponInHand.SetSyncJammingChance(0);
+			}
+		}
+		
+		if (!m_WeaponInHand)
+			return;
+		
+		if (!GetGame().IsMultiplayer())
+		{
+			m_WeaponInHand.SetSyncJammingChance(m_WeaponInHand.GetChanceToJam());
+		}
+		else
+		{
+			if ( m_NewJamChance >= 0)
+			{
+				m_WeaponInHand.SetSyncJammingChance(m_NewJamChance);
+				m_NewJamChance = -1;
+				m_WaitToSyncJamChance = false;
+			}
+			if (GetGame().IsServer() && !m_WaitToSyncJamChance )
+			{
+				float actual_chance_to_jam;
+				actual_chance_to_jam = m_WeaponInHand.GetChanceToJam();
+				if ( Math.AbsFloat(m_WeaponInHand.GetSyncChanceToJam() - m_WeaponInHand.GetChanceToJam()) > 0.001 )
+				{
+					DayZPlayerSyncJunctures.SendWeaponJamChance(m_player, m_WeaponInHand.GetChanceToJam());
+					m_WaitToSyncJamChance = true;
+				}
+			}
+		}
+			
 		if(m_readyToStart)
 		{
 			StartPendingAction();
@@ -629,10 +732,9 @@ class WeaponManager
 			}
 			else
 			{
-				InventoryLocation ilWeapon = new InventoryLocation;
-				ItemBase weapon = m_player.GetItemInHands();
-				weapon.GetInventory().GetCurrentInventoryLocation(ilWeapon);
-				m_player.GetInventory().ClearInventoryReservation(weapon,ilWeapon);
+				InventoryLocation il = new InventoryLocation;
+				il.SetHands(m_player,m_player.GetItemInHands());
+				m_player.GetInventory().ClearInventoryReservation(m_player.GetItemInHands(),il);
 						
 				if( m_PendingTargetMagazine )
 				{
@@ -646,7 +748,7 @@ class WeaponManager
 			}
 		}
 		
-		if(!m_justStart && m_player.IsRaised())
+		if(m_WeaponInHand && !m_justStart && m_player.IsRaised())
 		{
 			if(m_InIronSight)
 				m_player.SetIronsights(m_InIronSight);
@@ -663,7 +765,9 @@ class WeaponManager
 		m_PendingInventoryLocation = NULL;
 		m_TargetInventoryLocation = NULL;
 		m_PendingWeaponActionAcknowledgmentID = -1;
+		//m_WeaponInHand = NULL;
 		m_InProgress = false;
+		m_readyToStart = false;
 		m_WantContinue = true;
 		
 	}

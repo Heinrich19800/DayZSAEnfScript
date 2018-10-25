@@ -42,9 +42,8 @@ class ActionMineTree: ActionContinuousBase
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{	
 		Object targetObject = target.GetObject();
-		ActionMineTreeActionSwitch switch_action = ActionMineTreeActionSwitch.Cast( player.GetActionManager().GetAction( AT_MINE_TREE_ACTION_SWITCH ) );
 		
-		if ( switch_action.GetActualMineTreeAction() == MineTreeActions.MINE_TREE && targetObject.IsTree() )
+		if ( targetObject.IsTree() )
 		{ 
 			return true;
 		}

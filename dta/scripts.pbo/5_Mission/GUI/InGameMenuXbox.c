@@ -83,7 +83,14 @@ class InGameMenuXbox extends UIScriptedMenu
 		{
 			m_OnlineButton.Show( true );
 			
-			m_ServerInfoPanel = new PlayerListScriptedWidget( m_OnlineMenu.FindAnyWidget( "ServerInfoPanel" ), "SERVER PLAYERS" );
+			string header_text = "Server";
+			GetServersResultRow info = OnlineServices.GetCurrentServerInfo();
+			if( info )
+			{
+				header_text = info.m_Name + " - " + info.m_HostIp + ":" + info.m_HostPort;
+			}
+			
+			m_ServerInfoPanel = new PlayerListScriptedWidget( m_OnlineMenu.FindAnyWidget( "ServerInfoPanel" ), header_text );
 			
 			OnlineServices.m_PermissionsAsyncInvoker.Insert( OnPermissionsUpdate );
 			ClientData.SyncEvent_OnPlayerListUpdate.Insert( SyncEvent_OnRecievedPlayerList );
@@ -143,9 +150,9 @@ class InGameMenuXbox extends UIScriptedMenu
 		}
 		//
 		
-	#ifdef BULDOZER
-		delete restart_btn;
-	#endif
+		#ifdef BULDOZER
+			delete restart_btn;
+		#endif
 		
 		Mission mission = GetGame().GetMission();
 		if ( mission )
@@ -180,47 +187,59 @@ class InGameMenuXbox extends UIScriptedMenu
 		
 		Mission mission = GetGame().GetMission();
 
-		switch (w.GetUserID())
+		switch ( w.GetUserID() )
 		{
-		case IDC_MAIN_CONTINUE:
-			GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().GetMission().Continue);
-			return true;
-
-		case IDC_MAIN_OPTIONS:
-			EnterScriptedMenu(MENU_OPTIONS);
-			return true;
-		break;
-			
-		case BUTTON_XBOX_CONTROLS:
-			EnterScriptedMenu(MENU_XBOX_CONTROLS);
-			return true;
-
-		case IDC_MAIN_QUIT:
-			GetGame().GetUIManager().ShowDialog("EXIT", "Are you sure you want to exit?", IDC_INT_EXIT, DBT_YESNO, DBB_YES, DMT_QUESTION, NULL);
-			return true;
-		case IDC_INT_RETRY:
-			if ( !GetGame().IsMultiplayer() )
+			case IDC_MAIN_CONTINUE:
 			{
-				GetGame().GetUIManager().ShowDialog("#main_menu_restart", "Are you sure you want to restart?", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
+				GetGame().GetCallQueue(CALL_CATEGORY_GUI).Call(GetGame().GetMission().Continue);
+				return true;
 			}
-			else
+			case IDC_MAIN_OPTIONS:
 			{
-				GetGame().GetUIManager().ShowDialog("#main_menu_respawn", "#main_menu_respawn_question", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
+				EnterScriptedMenu(MENU_OPTIONS);
+				return true;
 			}
-			return true;
-		case IDC_MAIN_ONLINE:
-			m_OnlineMenu.Show( true );
-			layoutRoot.FindAnyWidget( "play_panel_root" ).Show( false );
-			layoutRoot.FindAnyWidget( "dayz_logo" ).Show( false );
-			layoutRoot.FindAnyWidget( "Select" ).Show( false );
-			m_ServerInfoPanel.FocusFirst();
-			return true;
-		case 117:
-			EnterScriptedMenu(MENU_TUTORIAL);
-			return true;
-		case IDC_MULTI_INVITE:
-			OnlineServices.ShowInviteScreen();
-			return true;
+			case BUTTON_XBOX_CONTROLS:
+			{
+				EnterScriptedMenu(MENU_XBOX_CONTROLS);
+				return true;
+			}
+			case IDC_MAIN_QUIT:
+			{
+				GetGame().GetUIManager().ShowDialog("EXIT", "Are you sure you want to exit?", IDC_INT_EXIT, DBT_YESNO, DBB_YES, DMT_QUESTION, NULL);
+				return true;
+			}
+			case IDC_INT_RETRY:
+			{
+				if ( !GetGame().IsMultiplayer() )
+				{
+					GetGame().GetUIManager().ShowDialog("#main_menu_restart", "Are you sure you want to restart?", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
+				}
+				else
+				{
+					GetGame().GetUIManager().ShowDialog("#main_menu_respawn", "#main_menu_respawn_question", IDC_INT_RETRY, DBT_YESNO, DBB_YES, DMT_QUESTION, this);
+				}
+				return true;
+			}
+			case IDC_MAIN_ONLINE:
+			{
+				m_OnlineMenu.Show( true );
+				layoutRoot.FindAnyWidget( "play_panel_root" ).Show( false );
+				layoutRoot.FindAnyWidget( "dayz_logo" ).Show( false );
+				layoutRoot.FindAnyWidget( "Select" ).Show( false );
+				m_ServerInfoPanel.FocusFirst();
+				return true;
+			}
+			case 117:
+			{
+				EnterScriptedMenu(MENU_TUTORIAL);
+				return true;
+			}
+			case IDC_MULTI_INVITE:
+			{
+				OnlineServices.ShowInviteScreen();
+				return true;
+			}
 		}
 
 		return false;

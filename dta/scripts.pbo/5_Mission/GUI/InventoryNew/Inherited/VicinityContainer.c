@@ -568,7 +568,7 @@ class VicinityContainer: CollapsibleContainer
 			bool showable_item = !objects.Get( i ).IsAnyInherited( { ScriptedEntity, Building, Camera, PlantSuper, PASReceiver, DayZAnimal, UndergroundStash } );
 			if ( player.GetInventory().IsPlaceholderEntity(obj) )
 				continue; // noproxy: ignore body placeholder
-			if (obj.GetParent())
+			if ( obj.GetParent() || ( EntityAI.Cast( obj ) && EntityAI.Cast( obj ).GetHierarchyParent() ) )
 				continue; // noproxy: ignore owned items
 
 			// Temporary solution for making GardenBase objects visible in vicinity

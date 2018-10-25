@@ -7,6 +7,7 @@ enum EPlayerSoundEventID
 	STAMINA_UP_LIGHT,
 	STAMINA_UP_HEAVY,
 	STAMINA_UP_END,
+	STAMINA_NORMAL_DUMMY,
 	TAKING_DMG_LIGHT,
 	TAKING_DMG_HEAVY,
 	SYMPTOM_COUGH,
@@ -47,6 +48,7 @@ class PlayerSoundEventHandler extends SoundEventHandler
 		RegisterState(new JumpSoundEvent());
 		RegisterState(new MeleeAttackLightEvent());
 		RegisterState(new MeleeAttackHeavyEvent());
+		RegisterState(new StaminaNormalDummy());
 	}
 	
 	void RegisterState(PlayerSoundEventBase state)
@@ -111,7 +113,12 @@ class PlayerSoundEventHandler extends SoundEventHandler
 		
 		if(m_CurrentState)
 		{
-		 	if(!m_CurrentState.IsSoundCallbackExist())
+			if( m_CurrentState.IsDummy())
+			{
+				if(m_CurrentState.IsDummyFinished())
+					delete m_CurrentState;
+			}
+		 	else if(!m_CurrentState.IsSoundCallbackExist())
 			{
 				delete m_CurrentState;
 			}
@@ -139,6 +146,7 @@ class PlayerSoundEventHandler extends SoundEventHandler
 			m_CurrentState = requested_state.ClassName().ToType().Spawn();
 			m_CurrentState.Init(m_Player);
 			m_CurrentState.Play();
+			m_CurrentState.OnPlay(m_Player);
 			return true;
 		}
 		return false;//should never get here

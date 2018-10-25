@@ -307,7 +307,7 @@ class ItemManager
 	{
 		if( item )
 		{
-			switch ( item.GetHealthLabel() )
+			switch ( item.GetHealthLevel() )
 			{
 				case -1 :
 					break;

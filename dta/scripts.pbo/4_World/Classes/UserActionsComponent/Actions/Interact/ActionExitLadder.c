@@ -38,6 +38,7 @@ class ActionExitLadder: ActionInteractBase
 	//! 
 	override void Start( ActionData action_data )
 	{
+		super.Start( action_data );
 	    HumanCommandLadder cl = action_data.m_Player.GetCommand_Ladder();
 		if (cl)
 		{

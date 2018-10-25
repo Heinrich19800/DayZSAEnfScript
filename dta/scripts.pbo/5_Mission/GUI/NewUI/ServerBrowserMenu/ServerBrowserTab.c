@@ -334,13 +334,13 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void PressX()
 	{
-		if( !m_Menu.IsRefreshing() != m_TabType )
+		if( m_Menu.IsRefreshing() == TabType.NONE )
 			RefreshList();
 	}
 	
 	void PressY()
 	{
-		if( m_Menu.IsRefreshing() == TabType.NONE )
+		if( m_Menu.IsRefreshing() != TabType.NONE )
 			return;
 
 		switch( m_SelectedPanel )
@@ -498,6 +498,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		#ifdef PLATFORM_CONSOLE
 		ScrollToEntry( server );
 		#endif
+		
 		m_SelectedServer = server;
 		
 		if (!m_Menu)
@@ -527,10 +528,12 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		{
 			m_TotalPages = result_list.m_Pages;
 			m_TotalServers = Math.Clamp( ( result_list.m_Pages - 1 ) * SERVER_BROWSER_PAGE_SIZE, 0, 10000000 );
+			#ifndef SB_TEST
 			for( int i = 1; i <= m_TotalPages; i++ )
 			{
 				m_Pages.Insert( new ServerBrowserPage( i, m_ServerList ) );
 			}
+			#endif
 			m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_TotalLoadedServers + "/" + m_TotalServers + " " +  "#server_browser_servers_desc" );
 		}
 		
@@ -541,8 +544,11 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		{
 			m_TotalServers += result_list.m_Results.Count();
 		}
+		
 		if( m_TotalPages > m_LastLoadedPage )
+		{
 			GetNextPage();
+		}
 		
 		if( !m_BegunLoading && m_TotalPages > 0 )
 		{
@@ -576,6 +582,13 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	{
 		int start_page	= Math.Clamp( pages_to_load.param1, 1, pages_to_load.param2 );
 		int end_page	= pages_to_load.param2;
+		
+		#ifdef SB_TEST
+		for( int p = start_page; p <= end_page; p++ )
+		{
+			m_Pages.Insert( new ServerBrowserPage( p, m_ServerList ) );
+		}
+		#endif
 		
 		for( int i = start_page; i <= end_page; i )
 		{

@@ -27,6 +27,7 @@ class Weapon_Base extends Weapon
 	protected ref array<string> m_ironsightsExcludingOptics = new array<string>; /// optics that go straight into optics view (skip ironsights)
 	ref array<float> m_DOFProperties = new array<float>;
 	ref array<float> m_ChanceToJam = new array<float>;
+	protected float m_ChanceToJamSync = 0;
 	protected ref PropertyModifiers m_PropertyModifierObject;
 	protected PhxInteractionLayers hit_mask = PhxInteractionLayers.CHARACTER | PhxInteractionLayers.BUILDING | PhxInteractionLayers.DOOR | PhxInteractionLayers.VEHICLE | PhxInteractionLayers.ROADWAY | PhxInteractionLayers.TERRAIN | PhxInteractionLayers.ITEM_SMALL | PhxInteractionLayers.ITEM_LARGE | PhxInteractionLayers.FENCE | PhxInteractionLayers.AI;
 
@@ -36,8 +37,10 @@ class Weapon_Base extends Weapon
 		
 		InitExcludedScopesArray(m_ironsightsExcludingOptics);
 		InitDOFProperties(m_DOFProperties);
-		InitReliability(m_ChanceToJam);
-		
+		if(GetGame().IsServer())
+		{
+			InitReliability(m_ChanceToJam);
+		}
 		InitStateMachine();
 	}
 
@@ -140,10 +143,8 @@ class Weapon_Base extends Weapon
 	}
 	int GetWeaponAnimState () { return m_weaponAnimState; }
 
-	override void EEFired (int muzzleType, int mode, string ammoType)
+	void EEFired (int muzzleType, int mode, string ammoType)
 	{
-		super.EEFired(muzzleType, mode, ammoType);
-		
 		ItemBase suppressor = GetAttachedSuppressor();
 		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
 		{
@@ -173,20 +174,20 @@ class Weapon_Base extends Weapon
 	
 	void JamCheck (int muzzleIndex )
 	{
-		return;
 		PlayerBase player = PlayerBase.Cast(GetHierarchyRootPlayer());
 		if ( player )
 		{
 			float rnd = player.GetRandomGeneratorSyncManager().GetRandom01(RandomGeneratorSyncUsage.RGSJam);
 			//Print("Random Jam - " + rnd);
-			if (rnd < GetChanceToJam())
+			if (rnd < GetSyncChanceToJam())
 				m_isJammed = true;
 		}
 	}
 	
-	bool IsJammed () { return false/*m_isJammed*/; }
+	bool IsJammed () { return m_isJammed; }
 	void SetJammed (bool value) { m_isJammed = value; }
-	float GetChanceToJam () { return m_ChanceToJam[GetHealthLabel()]; }
+	float GetChanceToJam () { return m_ChanceToJam[GetHealthLevel()]; }
+	float GetSyncChanceToJam () { return m_ChanceToJamSync; }
 	
 	void SyncSelectionState (bool has_bullet, bool has_mag)
 	{
@@ -630,6 +631,11 @@ class Weapon_Base extends Weapon
 			return true;
 		}
 		return false;
+	}
+	
+	void SetSyncJammingChance( float jamming_chance )
+	{
+		m_ChanceToJamSync = jamming_chance;
 	}
 };
 
