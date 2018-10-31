@@ -159,6 +159,28 @@ class CivilianSedan extends CarScript
 		return oldValue;
 	}
 	
+	override string GetAnimSourceFromSelection( string selection )
+	{
+		switch( selection )
+		{
+		case "doors_driver":
+			return "DoorsDriver";
+		case "doors_codriver":
+			return "DoorsCoDriver";
+		case "doors_cargo1":
+			return "DoorsCargo1";
+		case "doors_cargo2":
+			return "DoorsCargo2";
+		case "doors_hood":
+			return "DoorsHood";
+		case "doors_trunk":
+			return "DoorsTrunk";
+		}
+
+		return "";
+	}
+
+
 	override bool IsVitalTruckBattery()
 	{
 		return false;

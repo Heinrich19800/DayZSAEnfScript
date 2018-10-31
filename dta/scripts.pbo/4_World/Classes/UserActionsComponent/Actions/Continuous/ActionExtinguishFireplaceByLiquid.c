@@ -57,7 +57,7 @@ class ActionExtinguishFireplaceByLiquid: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnCancelServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{	
 		Object target_object = action_data.m_Target.GetObject();
 		FireplaceBase fireplace_target = FireplaceBase.Cast( target_object );

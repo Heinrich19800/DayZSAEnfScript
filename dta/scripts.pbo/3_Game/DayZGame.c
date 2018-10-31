@@ -1471,6 +1471,11 @@ class DayZGame extends CGame
 		return ( index >= 0 );
 	}
 	
+	void RefreshCurrentServerInfo()
+	{
+		OnlineServices.GetCurrentServerInfo( m_ConnectAddress, m_ConnectPort );
+	}
+	
 	void Connect()
 	{
 		DeleteTitleScreen();

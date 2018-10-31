@@ -105,33 +105,23 @@ class ActionWorldCraft: ActionContinuousBase
 		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(true);
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{
 		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(false);
 	}
 	
-	override void OnCancelServer( ActionData action_data )
-	{
-		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(false);
-	}
-	
-	override void OnCompleteClient( ActionData action_data )
-	{
-		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(false);
-	}
-	
-	override void OnCancelClient( ActionData action_data )
+	override void OnEndClient( ActionData action_data )
 	{
 		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(false);
 	}	
 	
 	override void OnFinishProgressServer( ActionData action_data )
 	{
-		if (!GetGame().IsMultiplayer())
+		/*if (!GetGame().IsMultiplayer())
 		{
 			ActionManagerClient am = ActionManagerClient.Cast(action_data.m_Player.GetActionManager());
 			am.UnlockInventory(action_data);
-		}
+		}*/
 		
 		WorldCraftActionData wcActionData;
 		PluginRecipesManager module_recipes_manager;
@@ -147,10 +137,10 @@ class ActionWorldCraft: ActionContinuousBase
 		}
 	}
 	
-	override void OnEndAnimationLoopClient( ActionData action_data )
+	override void OnFinishProgressClient( ActionData action_data )
 	{
-		ActionManagerClient am = ActionManagerClient.Cast(action_data.m_Player.GetActionManager());
-		am.UnlockInventory(action_data);
+		/*ActionManagerClient am = ActionManagerClient.Cast(action_data.m_Player.GetActionManager());
+		am.UnlockInventory(action_data);*/
 	}
 	
 	override void WriteToContext (ParamsWriteContext ctx, ActionData action_data)

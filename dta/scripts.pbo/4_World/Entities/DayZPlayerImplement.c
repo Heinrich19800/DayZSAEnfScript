@@ -447,7 +447,7 @@ class DayZPlayerImplement extends DayZPlayer
 
 		if (pInputs.IsFireModeChange())
 		{
-			weapon.SetNextMuzzleMode(weapon.GetCurrentMuzzle());
+			GetWeaponManager().SetNextMuzzleMode();
 		}
 		if (pInputs.IsZeroingUp())
 		{
@@ -495,7 +495,7 @@ class DayZPlayerImplement extends DayZPlayer
 			m_IsFireWeaponRaised = true;
 		
 		//! fire
-		if (!m_LiftWeapon_player && weapon && !weapon.IsDamageDestroyed() && weapon.CanProcessWeaponEvents() && !pInputs.IsMeleeFastAttackModifier())
+		if (!m_LiftWeapon_player && weapon && !weapon.IsDamageDestroyed() && weapon.CanProcessWeaponEvents() && (!pInputs.IsMeleeFastAttackModifier() || m_MovementState.m_iMovement == 0 ) )
 		{
 			bool autofire = weapon.GetCurrentModeAutoFire(weapon.GetCurrentMuzzle()) && weapon.IsCartridgeInChamber(weapon.GetCurrentMuzzle());
 			int burst = weapon.GetCurrentModeBurstSize(weapon.GetCurrentMuzzle());
@@ -766,11 +766,11 @@ class DayZPlayerImplement extends DayZPlayer
 			return false;
 		}
 		
-		/*if ( IsInFBEmoteState() )
+		if ( IsInFBEmoteState() )
 		{
 			m_fLastHeadingDiff = 0;
 			return false;
-		}*/
+		}
 		
 #ifdef DEVELOPER
 		int	actMenuValue = DiagMenu.GetValue(DayZPlayerConstants.DEBUG_TURNSLIDE);

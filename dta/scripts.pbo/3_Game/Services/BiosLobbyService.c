@@ -42,6 +42,16 @@ class GetServersResultRow
 	string	m_CreatedAt;
 	string	m_UpdatedAt;
 
+	//TODO - character alive
+	//TODO - steam friends
+	
+	int m_Ping;	
+  	string m_TimeOfDay;
+  	//! disable3rdPerson servers for mode regular/hardcore
+  	int m_Disable3rdPerson;  //1 for disabled, ie. hardcore
+	//! time multiplier of environment
+	float m_EnvironmentTimeMul;
+
 };
 
 
@@ -234,6 +244,51 @@ class GetServersInput
 	{
 		m_HostPort = hostPort;
 		m_UseHostPort = true;
+	}
+	
+	void SetFavorited()
+	{
+		m_SortBy += "F";		
+	}
+	
+	void SetFriendsPlaying()
+	{
+		m_SortBy += "P";
+	}
+	
+	void SetPreviouslyPlayed()
+	{
+		m_SortBy += "R";
+	}
+	
+	void SetProperVersionMatch()
+	{
+		m_SortBy += "V";
+	}
+	
+	void SetFullServer()
+	{
+		m_SortBy += "S";
+	}
+	
+	void SetThirdPerson()
+	{
+		m_SortBy += "3";
+	}
+	
+	void SetPublic()
+	{
+		m_SortBy += "L";
+	}
+	
+	void SetAcceleratedTime()
+	{
+		m_SortBy += "A";
+	}
+	
+	void SetLAN()
+	{
+		m_SortBy += "N";
 	}
 };
 

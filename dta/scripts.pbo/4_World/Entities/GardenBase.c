@@ -18,7 +18,7 @@ class GardenBase extends Building
 	
 	// slot names
 	private static const string SLOT_SELECTION_DIGGED_PREFIX 	= "slotDigged_";
-	private static const string SLOT_SELECTION_COVERED_PREFIX 	= "slotCovered_";
+	static const string SLOT_SELECTION_COVERED_PREFIX 	= "slotCovered_";
 	private static const string SLOT_COMPONENT_PREFIX 			= "slot_";
 	private static const string SLOT_MEMORY_POINT_PREFIX 		= "slot_";
 	
@@ -403,35 +403,50 @@ class GardenBase extends Building
 			
 			if ( !slot.NeedsWater() )
 			{
-				CreatePlant(slot);
+				SproutPlant(player, slot);
 			}
 		}
 		
 		return message;
 	}
 	
+	void SproutPlant (PlayerBase player, Slot slot)
+	{
+		ItemBase seed = slot.GetSeed();
+		
+		SproutLambda lambda = new SproutLambda(seed, slot.m_PlantType, player, this, slot);
+		lambda.SetTransferParams(true, true, true);
+		player.ServerReplaceItemWithNew(lambda);
+	}
+	
 	// Creates a plant
 	void CreatePlant(Slot slot )
 	{
+		// WIP!
+		
+		ItemBase seed = slot.GetSeed();
+		SproutLambda lambda = new SproutLambda(seed, slot.m_PlantType, NULL, this, slot);
+		lambda.SetTransferParams(true, true, true);
+		GetInventory().ReplaceItemWithNew(InventoryMode.SERVER, lambda);
+
 		//int slot_index = GetSlotBySelection(slot.GetSlotComponent()).GetSlotIndex();
 		int slot_index = slot.GetSlotIndex();
 		vector pos = GetSlotPosition(slot_index);
-		PlantBase plant = PlantBase.Cast( GetGame().CreateObject( slot.m_PlantType, pos ) );
-		plant.SetPosition(pos);
-		slot.SetPlant(plant);
+		//PlantBase plant = PlantBase.Cast( GetGame().CreateObject( slot.m_PlantType, pos ) );
+		//plant.SetPosition(pos);
+		//slot.SetPlant(plant);
 		slot.m_State = Slot.STATE_COVERED;
-		plant.Init( this, slot.m_Fertility, slot.m_HarvestingEfficiency, slot.GetWater() );
+		//plant.Init( this, slot.m_Fertility, slot.m_HarvestingEfficiency, slot.GetWater() );
 		ShowSelection(SLOT_SELECTION_COVERED_PREFIX + (slot_index + 1).ToStringLen(2));
 		
-		ItemBase seed = slot.GetSeed();
 		GetGame().ObjectDelete(seed);
 		
-		if ( GetGame().IsServer() )
+		/*if ( GetGame().IsServer() )
      		GetInventory().TakeEntityAsAttachmentEx( InventoryMode.SERVER, plant, slot.GetSlotId() );
 			//ServerTakeEntityAsAttachmentEx( plant,  slot.GetSlotId() );
 		else
      		GetInventory().TakeEntityAsAttachmentEx( InventoryMode.JUNCTURE, plant, slot.GetSlotId() );
-		
+		*/
 		Param1<ItemBase> param_seed = new Param1<ItemBase>(seed);
 		m_DeleteWithDelayTimer.Run(0.1, this, "DeleteWithDelay", param_seed, false);
 	}
@@ -645,7 +660,7 @@ class GardenBase extends Building
 			}
 			
 			slot.Init( m_BaseFertility );
-			slot.GiveWater( NULL, -9999 );
+			//slot.GiveWater( NULL, -9999 );
 			
 			HideSelection( SLOT_SELECTION_COVERED_PREFIX + (index + 1).ToStringLen(2) );
 		}
@@ -819,7 +834,7 @@ class GardenBase extends Building
 						
 						if (slot)
 						{
-							slot.GiveWater( NULL, slot.GetWaterUsage() );
+							//slot.GiveWater( NULL, slot.GetWaterUsage() );
 						}
 					}
 				}
@@ -827,3 +842,32 @@ class GardenBase extends Building
 		}
 	}
 }
+
+class SproutLambda : TurnItemIntoItemLambda
+{
+	GardenBase m_GB;
+	Slot m_Slot;
+
+	void SproutLambda (EntityAI old_item, string new_item_type, PlayerBase player, GardenBase gb = NULL, Slot slot = NULL) { m_GB = gb; m_Slot = slot; }
+
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
+	{
+		super.CopyOldPropertiesToNew(old_item, new_item);
+
+		if (new_item) 
+		{							
+			PlantBase plant = PlantBase.Cast(new_item);
+			
+			int slot_index = m_Slot.GetSlotIndex();
+			
+			m_Slot.SetPlant(plant);
+			m_Slot.m_State = Slot.STATE_COVERED;
+			plant.Init( m_GB, m_Slot.m_Fertility, m_Slot.m_HarvestingEfficiency, m_Slot.GetWater() );
+			m_GB.ShowSelection(GardenBase.SLOT_SELECTION_COVERED_PREFIX + (slot_index + 1).ToStringLen(2));
+		}
+		else
+		{
+			Debug.LogError("SproutLambda: failed to create new item", "static");
+		}
+	}
+};

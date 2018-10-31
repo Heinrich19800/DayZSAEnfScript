@@ -53,7 +53,7 @@ class ActionBurnSewSelf: ActionContinuousBase
 		}
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		const float ITEM_DAMAGE = 0.05;
 		const float SHOCK_AMOUNT = 1000;

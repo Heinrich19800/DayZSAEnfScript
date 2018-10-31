@@ -2,7 +2,9 @@
 class TransmitterBase extends ItemTransmitter
 {
 	//Sounds
-	const string SOUND_RADIO_START_NOISE 	= "radioStartNoise";
+	string SOUND_RADIO_TURNED_ON 		= "";
+
+	protected EffectSound m_SoundLoop;
 	
 	// --- SYSTEM EVENTS
 	override void OnStoreSave( ParamsWriteContext ctx )
@@ -22,7 +24,6 @@ class TransmitterBase extends ItemTransmitter
 		ctx.Read( tuned_frequency_idx );
 		SetFrequencyByIndex( tuned_frequency_idx );
 	}	
-		
 	
 	override bool IsTransmitter()
 	{
@@ -83,7 +84,7 @@ class TransmitterBase extends ItemTransmitter
 		SwitchOn ( true );
 		
 		//play sound
-		SoundRadioStartNoise();
+		SoundTurnedOnNoiseStart();
 	}
 
 	override void OnWorkStop()
@@ -95,15 +96,22 @@ class TransmitterBase extends ItemTransmitter
 		EnableBroadcast ( false );
 		EnableReceive ( false );
 		SwitchOn ( false );
+		
+		//stop sound
+		SoundTurnedOnNoiseStop();		
 	}
 	
-	//--- SOUNDS
-	//Radio start noise
-	protected void SoundRadioStartNoise()
+	//================================================================
+	// SOUNDS
+	//================================================================
+	//Static noise when the radio is turned on
+	protected void SoundTurnedOnNoiseStart()
 	{
-		if ( GetGame() && ( !GetGame().IsMultiplayer() || GetGame().IsClient() ) )
-		{
-			PlaySound( SOUND_RADIO_START_NOISE, 50 );
-		}
+		PlaySoundSetLoop( m_SoundLoop, SOUND_RADIO_TURNED_ON, 1.0, 1.0 );
 	}
+
+	protected void SoundTurnedOnNoiseStop()
+	{
+		StopSoundSet( m_SoundLoop );
+	}	
 }

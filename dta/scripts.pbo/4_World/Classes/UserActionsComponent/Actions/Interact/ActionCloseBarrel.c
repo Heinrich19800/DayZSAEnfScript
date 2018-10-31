@@ -47,7 +47,7 @@ class ActionCloseBarrel: ActionInteractBase
 		}
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{
 		Object target_object = action_data.m_Target.GetObject();
 		Barrel_ColorBase ntarget = Barrel_ColorBase.Cast( target_object );

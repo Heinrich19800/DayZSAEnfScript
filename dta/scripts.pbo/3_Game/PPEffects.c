@@ -283,7 +283,7 @@ class PPEffects
 	
 	static void ResetDOFOverride()
 	{
-		OverrideDOF(false,0,0,0,0,0);
+		OverrideDOF(false,0,0,0,0,1);
 	}
 	
 	static void ResetLensEffect()

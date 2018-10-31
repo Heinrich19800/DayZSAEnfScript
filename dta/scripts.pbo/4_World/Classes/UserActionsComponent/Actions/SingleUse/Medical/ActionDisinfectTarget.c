@@ -49,7 +49,7 @@ class ActionDisinfectTarget: ActionSingleUseBase
 		return "#disinfect";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{
 		//Print(action_data.m_Player.GetSoftSkillManager());
 		//RemoveModifiers(target, item); ?

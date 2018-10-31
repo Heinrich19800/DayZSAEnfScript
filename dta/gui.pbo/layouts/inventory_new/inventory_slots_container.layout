@@ -7,6 +7,7 @@ PanelWidgetClass height_wrapper {
  hexactsize 1
  vexactsize 1
  priority 8
+ userID -1
  style blank
  {
   PanelWidgetClass widget {
@@ -19,6 +20,7 @@ PanelWidgetClass height_wrapper {
    hexactsize 1
    vexactsize 1
    priority 8
+   userID -1
    draggable 0
    style blank
    {
@@ -34,6 +36,7 @@ PanelWidgetClass height_wrapper {
      hexactsize 0
      vexactsize 0
      priority 150
+     userID -1
      draggable 0
      {
       PanelWidgetClass PanelWidget0 {
@@ -388,6 +391,7 @@ PanelWidgetClass height_wrapper {
      hexactsize 0
      vexactsize 0
      priority 150
+     userID -1
      draggable 0
      {
       PanelWidgetClass PanelWidget1 {
@@ -741,6 +745,7 @@ PanelWidgetClass height_wrapper {
      hexactsize 0
      vexactsize 0
      priority 150
+     userID -1
      draggable 0
      {
       PanelWidgetClass PanelWidget2 {
@@ -1090,6 +1095,7 @@ PanelWidgetClass height_wrapper {
      hexactsize 0
      vexactsize 0
      priority 150
+     userID -1
      draggable 0
      {
       PanelWidgetClass PanelWidget3 {
@@ -1440,6 +1446,7 @@ PanelWidgetClass height_wrapper {
      hexactsize 0
      vexactsize 0
      priority 150
+     userID -1
      draggable 0
      {
       PanelWidgetClass PanelWidget4 {
@@ -1789,6 +1796,7 @@ PanelWidgetClass height_wrapper {
      hexactsize 0
      vexactsize 0
      priority 150
+     userID -1
      draggable 0
      {
       PanelWidgetClass PanelWidget5 {
@@ -2138,6 +2146,7 @@ PanelWidgetClass height_wrapper {
      hexactsize 0
      vexactsize 0
      priority 150
+     userID -1
      draggable 0
      {
       PanelWidgetClass PanelWidget6 {

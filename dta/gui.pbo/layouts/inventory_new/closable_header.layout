@@ -127,7 +127,7 @@ PanelWidgetClass closable_header_root {
      draggable 0
     }
     TextWidgetClass CargoCount {
-     visible 1
+     visible 0
      disabled 1
      clipchildren 0
      ignorepointer 1

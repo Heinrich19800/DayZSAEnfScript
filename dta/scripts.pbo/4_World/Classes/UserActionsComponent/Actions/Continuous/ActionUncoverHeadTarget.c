@@ -52,7 +52,7 @@ class ActionUncoverHeadTarget: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		//setaperture will be called from here, or from statemachine
 		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );

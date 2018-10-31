@@ -174,10 +174,11 @@ class Liquid
 	{
 		float energy = GetEnergy(liquid_type);
 		float nutritional_index = GetNutritionalIndex(liquid_type);
-		float volume = GetVolume(liquid_type);
+		float volume = GetFullness(liquid_type);
 		float water_content = GetWaterContent(liquid_type);
 		float toxicity = GetToxicity(liquid_type);
 		NutritionalProfile profile = new NutritionalProfile(energy, water_content, nutritional_index, volume, toxicity );
+		profile.MarkAsLiquid();
 		return profile;
 	}
 	
@@ -211,9 +212,9 @@ class Liquid
 		return Liquid.GetLiquidConfigProperty(liquid_type, "flammability").ToFloat();
 	}
 	
-	static float GetVolume(int liquid_type)
+	static float GetFullness(int liquid_type)
 	{
-		return Liquid.GetLiquidConfigProperty(liquid_type, "totalVolume", true).ToFloat();
+		return Liquid.GetLiquidConfigProperty(liquid_type, "fullnessIndex", true).ToFloat();
 	}
 	
 };

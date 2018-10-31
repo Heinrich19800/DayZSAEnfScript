@@ -67,10 +67,7 @@ class ActionBuildBasePart: ActionContinuousBase
 			//Debug
 			//base_building.GetConstruction().IsColliding( part_name );
 			
-			if ( !GetGame().IsMultiplayer() || GetGame().IsServer() )
-			{
-				construction_action_data.RefreshPartsToBuild( main_part_name );
-			}
+			construction_action_data.RefreshPartsToBuild( main_part_name );
 			ConstructionPart constrution_part = construction_action_data.GetCurrentBuildPart();
 			
 			if ( constrution_part && constrution_part.IsBase() && base_building.IsFacingBack( player ) )
@@ -92,7 +89,7 @@ class ActionBuildBasePart: ActionContinuousBase
 		if ( !construction.IsColliding( part_name ) && construction.CanBuildPart( part_name ) )
 		{
 			//build
-			construction.BuildPart( part_name, true, true );
+			construction.BuildPart( part_name, true );
 			
 			//add damage to tool
 			action_data.m_MainItem.DecreaseHealth ( 2 );

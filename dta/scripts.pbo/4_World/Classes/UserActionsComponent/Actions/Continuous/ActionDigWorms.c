@@ -63,7 +63,7 @@ class ActionDigWorms: ActionContinuousBase
 		return "#dig_up_worms";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		ItemBase worms;
 		Class.CastTo(worms,  GetGame().CreateObject("Worm", action_data.m_Player.GetPosition()) );

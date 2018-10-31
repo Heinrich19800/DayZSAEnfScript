@@ -51,7 +51,7 @@ class ActionMeasureTemperatureSelf: ActionContinuousBase
 		return "#measure_temperature";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		Thermometer thermometer = Thermometer.Cast(action_data.m_MainItem);
 		

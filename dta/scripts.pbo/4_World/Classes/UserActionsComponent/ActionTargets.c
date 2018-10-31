@@ -11,9 +11,9 @@ class VicinityObjects
 	//! stores VicinityObject to Hashmap - for storing of parent/child relationship
 	void StoreVicinityObject(Object object, Object parent = null)
 	{
-		// Do not store hologram items
+		//! completely remove items that are being placed or are holograms
 		ItemBase ib = ItemBase.Cast(object);
-		if(ib && !ib.IsTakeable()) 
+		if(ib && (ib.IsBeingPlaced() || ib.IsHologram()))
 			return;
 
 		if ( !m_VicinityObjects.Contains(object) )
@@ -43,6 +43,11 @@ class VicinityObjects
 		ref array<Object> vicinityObjects = new array<Object>;
 		for(int i = 0; i < m_VicinityObjects.Count(); i++)
 		{
+			//! filters out non-takeable items (won't be shown in vicinity)
+			ItemBase ib = ItemBase.Cast(GetObject(i));
+			if(ib && !ib.IsTakeable())
+				continue;
+
 			vicinityObjects.Insert(GetObject(i));
 		}
 		
@@ -250,7 +255,7 @@ class ActionTargets
 		if ( object && object.GetType() == string.Empty ) return false; // mainly ground
 		if ( object && (object.IsBuilding() || object.IsTransport() || object.IsStaticTransmitter()) ) return false;
 		if ( object && (object.IsTree() || object.IsBush())) return false;
-		if ( object && object.IsInherited(BaseBuildingBase) ) return false; // base building objects
+		if ( object && (object.IsInherited(BaseBuildingBase) || object.IsInherited(FenceKit) || object.IsInherited(WatchtowerKit)) ) return false; // base building objects
 
 		if ( object )
 		{

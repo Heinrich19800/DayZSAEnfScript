@@ -15,9 +15,7 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 	protected bool						m_Faded;
 
 	protected Widget					m_Root;
-	protected Widget					m_Container;
 	protected Widget 					m_ItemLeft;
-	ref AutoHeightSpacer				m_MainSpacer;
 	ref AutoHeightSpacer				m_HealthQuantitySpacer;
 	
 	// for KeyToUIElements conversion
@@ -86,12 +84,8 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 		m_Root.SetHandler(this);
 		m_Root.Show(false);
 
-		m_Container = w.FindAnyWidget("ia_container");
-		m_Container.GetScript(m_MainSpacer);
 		m_ItemLeft = w.FindAnyWidget("ia_item_left");
-		m_ItemLeft.GetScript(m_HealthQuantitySpacer);
-		m_Root.Update();
-		m_MainSpacer.Update();
+		m_ItemLeft.GetScript( m_HealthQuantitySpacer );
 		m_HealthQuantitySpacer.Update();
 		
 #ifdef PLATFORM_XBOX
@@ -139,7 +133,6 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 		SetActionWidget(m_Continuous, GetActionDesc(m_Continuous), "ia_continuous", "ia_continuous_action_name");
 		SetMultipleInteractAction("ia_interact_mlt_wrapper");
 		
-		m_MainSpacer.Update();
 		m_HealthQuantitySpacer.Update();
 	}
 		
@@ -177,27 +170,30 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 	// selects Action Group like in OptionsMenu
 	protected void GetActionGroup(int group_index)
 	{
-		g_Game.GetInput().GetActionGroupItems(group_index, m_ActionIndices);
-		string desc;
-
-		for (int i = 0; i < m_ActionIndices.Count(); i++)
+		if( g_Game && g_Game.GetInput() && m_ActionIndices )
 		{
-			int action_index = m_ActionIndices.Get(i);
-			g_Game.GetInput().GetActionDesc(action_index, desc);
-			m_Actions.Insert(desc);
+			g_Game.GetInput().GetActionGroupItems( group_index, m_ActionIndices );
+			string desc;
+	
+			for (int i = 0; i < m_ActionIndices.Count(); i++)
+			{
+				int action_index = m_ActionIndices.Get(i);
+				g_Game.GetInput().GetActionDesc(action_index, desc);
+				m_Actions.Insert(desc);
+			}
 		}
 	}
 	
 	// getters
     protected void GetPlayer()
 	{
-		Class.CastTo(m_Player, GetGame().GetPlayer());
+		Class.CastTo( m_Player, GetGame().GetPlayer() );
 	}
 
 	protected void GetActionManager()
 	{
 		if( m_Player && m_Player.IsPlayerSelected() )
-			Class.CastTo(m_AM, m_Player.GetActionManager());
+			Class.CastTo( m_AM, m_Player.GetActionManager() );
 		else
 			m_AM = null;
 	}

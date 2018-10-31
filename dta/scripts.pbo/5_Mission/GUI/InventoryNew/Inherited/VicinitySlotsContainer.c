@@ -329,8 +329,8 @@ class VicinitySlotsContainer: Container
 		this.RecomputeNumberOfContainers( items );
 
 		ItemPreviewWidget item_preview;
-		
-		for( int x=0;x < items.Count(); x++ )
+		int visible_items = 0;
+		for( int x=0; x < items.Count(); x++ )
 		{
 			EntityAI item = EntityAI.Cast( items.Get( x ) );
 			if( item.IsInherited(DayZAnimal) && item.IsAlive() )
@@ -341,6 +341,7 @@ class VicinitySlotsContainer: Container
 			{
 				continue;
 			}
+			visible_items++;
 			item_preview = ItemPreviewWidget.Cast( m_Container.Get( x / ITEMS_IN_ROW ).GetMainWidget().FindAnyWidget( "Icon" + x % ITEMS_IN_ROW ).FindAnyWidget( "Render" + x % ITEMS_IN_ROW ) );
 			item_preview.Show( true );
 			item_preview.GetParent().Show( true );
@@ -454,11 +455,12 @@ class VicinitySlotsContainer: Container
 			}
 		}
 		
-		for(int c = (items.Count() % ITEMS_IN_ROW); c < ITEMS_IN_ROW; c++)
+		for(int c = visible_items; c < ITEMS_IN_ROW; c++)
 		{
-			item_preview = ItemPreviewWidget.Cast( m_Container.Get( items.Count() / ITEMS_IN_ROW ).GetMainWidget().FindAnyWidget( "Icon" + c ).FindAnyWidget( "Render" + c ) );
+			int f = items.Count() / ITEMS_IN_ROW;
+			item_preview = ItemPreviewWidget.Cast( m_Container.Get( f ).GetMainWidget().FindAnyWidget( "Icon" + c ).FindAnyWidget( "Render" + c ) );
 			item_preview.Show(false);
-			item_preview.SetItem( NULL );
+			item_preview.SetItem( null );
 			item_preview.GetParent().Show(false);
 			TextWidget tw1 = TextWidget.Cast( m_Container.Get( x / ITEMS_IN_ROW ).GetMainWidget().FindAnyWidget( "ItemSize" + x % ITEMS_IN_ROW ) );
 			tw1.SetText( "" );

@@ -1,8 +1,10 @@
 enum EPlayerSoundEventType
 {
-	GENERAL,
-	STAMINA,
-	DAMAGE,
+	GENERAL = 1,
+	MELEE = 2,
+	STAMINA = 4,
+	DAMAGE = 8,
+	DUMMY = 16,
 }
 
 class PlayerSoundEventBase extends SoundEventBase
@@ -33,7 +35,7 @@ class PlayerSoundEventBase extends SoundEventBase
 		return m_SoundVoiceAnimEventClassID;
 	}
 	
-	bool ThisHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id)
+	bool IsCurrentHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id, EPlayerSoundEventType type)
 	{
 		return true;
 	}

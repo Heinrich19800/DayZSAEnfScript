@@ -1,7 +1,7 @@
 MetaFileClass {
- Name "{EB744B6401945B65}Gui/textures/infected.edds"
- Author "inv269"
- ChangeDate -1087183602
+ Name "{EB744B6401945B65}Gui/textures/infected.tga"
+ Author "inv3672"
+ ChangeDate 1377527129
  Configurations {
   TGAResourceClass PC {
    SourceFile "infected.tga"

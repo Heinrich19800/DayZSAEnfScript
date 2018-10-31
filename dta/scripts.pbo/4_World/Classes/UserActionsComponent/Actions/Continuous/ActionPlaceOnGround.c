@@ -47,7 +47,7 @@ class ActionPlaceOnGround: ActionContinuousBase
 		}
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		action_data.m_Player.DropItem(action_data.m_MainItem);
 	}

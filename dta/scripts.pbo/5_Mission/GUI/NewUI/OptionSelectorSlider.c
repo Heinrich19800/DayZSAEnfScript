@@ -80,7 +80,11 @@ class OptionSelectorSlider extends OptionSelectorBase
 	
 	override bool IsFocusable( Widget w )
 	{
-		return ( w == m_Parent || w == m_Slider );
+		if( w )
+		{
+			return ( w == m_Parent || w == m_Slider );
+		}
+		return false;
 	}
 	
 	float NormalizeInput( float value )

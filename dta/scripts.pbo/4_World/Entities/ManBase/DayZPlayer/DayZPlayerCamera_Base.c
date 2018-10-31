@@ -102,7 +102,12 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 
 			pAngleAdd	= Math.SmoothCD(pAngleAdd, 0, m_fUDAngleVel, 0.14, 1000, pDt);
 		}
+		
+		/*{
+			float change = m_pInput.GetAimChange()[1] * Math.RAD2DEG;
 
+			Print ("Script: Camera ud angle: " +  pAngle.ToString() + " change: " + change.ToString() );
+		}*/		
 
 		return Limit(pAngle + pAngleAdd, pMin, pMax);
 	}
@@ -129,10 +134,10 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 		return pAngle;
 	}
 
-	override void OnUpdate(float pDt, out DayZPlayerCameraResult pOutResult)
-	{
-		super.OnUpdate(pDt, pOutResult);
+	
 
+	void 	StdFovUpdate(float pDt, out DayZPlayerCameraResult pOutResult)
+	{
 		//! change abs FOV for naked eye zoom
 		if (m_pPlayer.IsEyeZoom())
 		{
@@ -150,6 +155,14 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 		{
 			pOutResult.m_fShootFromCamera = 0.0;
 		}
+	}
+
+
+	override void OnUpdate(float pDt, out DayZPlayerCameraResult pOutResult)
+	{
+		super.OnUpdate(pDt, pOutResult);
+
+		StdFovUpdate(pDt, pOutResult);
 	}
 
 	override void OnActivate(DayZPlayerCamera pPrevCamera, DayZPlayerCameraResult pPrevCameraResult)
@@ -179,7 +192,7 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 	{
 		PPEffects.ResetPPMask();
 		PPEffects.SetLensEffect(0, 0, 0, 0);
-		PPEffects.OverrideDOF(false, 0, 0, 0, 0, 0);
+		PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 		PPEffects.SetBlurOptics(0);
 	}
 	

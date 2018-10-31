@@ -39,7 +39,7 @@ class ActionUnplugThisByCord: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{	
 		ItemBase target_IB = ItemBase.Cast( action_data.m_Target.GetObject() ); // cast to ItemBase
 		target_IB.GetCompEM().UnplugThis();

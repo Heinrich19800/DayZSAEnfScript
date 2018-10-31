@@ -58,9 +58,4 @@ class ActionWashHandsWater: ActionContinuousBase
 		PluginLifespan module_lifespan = PluginLifespan.Cast( GetPlugin( PluginLifespan ) );
 		module_lifespan.UpdateBloodyHandsVisibility( action_data.m_Player, false );
 	}
-
-	override void OnCompleteServer( ActionData action_data )
-	{
-		OnFinishProgressServer(action_data);
-	}
 };

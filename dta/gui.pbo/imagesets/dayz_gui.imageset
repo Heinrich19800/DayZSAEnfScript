@@ -769,14 +769,14 @@ ImageSetClass {
     }
     ImageSetDefClass rpm {
      Name "rpm"
-     Pos 0 475
-     Size 284 251
+     Pos 0 474
+     Size 285 254
      Flags 0
     }
     ImageSetDefClass speed {
      Name "speed"
-     Pos 325 549
-     Size 246 182
+     Pos 325 548
+     Size 247 182
      Flags 0
     }
     ImageSetDefClass rpm_pointer {

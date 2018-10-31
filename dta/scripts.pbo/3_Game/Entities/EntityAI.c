@@ -502,7 +502,7 @@ class EntityAI extends Entity
 	 *
 	 * @note: return scriptConditionExecute(this, attachment, "CanReceiveAttachment");
 	 **/
-	bool CanReceiveAttachment (EntityAI attachment)
+	bool CanReceiveAttachment (EntityAI attachment, int slotId)
 	{
 		return true;
 	}
@@ -1099,11 +1099,15 @@ class EntityAI extends Entity
 		{
 			bool is_on = GetCompEM().IsSwitchedOn();
 			
-			if (is_on)
-				GetCompEM().SwitchOn();
-			else
-				GetCompEM().SwitchOff();
-			
+			if (is_on != GetCompEM().GetPreviousSwitchState())
+			{
+				if (is_on)
+					GetCompEM().SwitchOn();
+				else
+					GetCompEM().SwitchOff();
+				;
+			}
+				
 			GetCompEM().DeviceUpdate();
 			GetCompEM().StartUpdates();
 		}

@@ -51,13 +51,8 @@ class ActionConsume: ActionContinuousBase
 	{
 		return "#consume";
 	}
-
-	override void OnCancelServer(ActionData action_data)
-	{
-		OnEndAnimationLoopServer(action_data);
-	}
 	
-	override void OnEndAnimationLoopServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{	
 		if ( action_data.m_MainItem && action_data.m_MainItem.GetQuantity() <= 0.01 )
 		{

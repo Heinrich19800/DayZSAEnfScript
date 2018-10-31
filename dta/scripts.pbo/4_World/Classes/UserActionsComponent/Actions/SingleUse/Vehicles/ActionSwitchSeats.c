@@ -1,9 +1,6 @@
+
 class ActionSwitchSeats: ActionBase
 {
-	private Transport m_transport;
-	private int       m_nextSeatIdx;
-	private int       m_currSeatIdx;
-	
 	void ActionSwitchSeats()
 	{
 		//m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_STARTENGINE;
@@ -31,34 +28,32 @@ class ActionSwitchSeats: ActionBase
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{	
 		
-		m_transport = null;
-		m_nextSeatIdx   = -1;
+		Transport trans = null;
+		int nextSeatIdx = -1;
 		
 		HumanCommandVehicle vehCommand = player.GetCommand_Vehicle();
 
 		if ( !vehCommand  )
 			return false;
 		
-		int componentIndex = target.GetComponentIndex();		
+		int componentIndex = target.GetComponentIndex();
 
 		if ( !target )
 			return false;
 
-		if ( !Class.CastTo(m_transport, target.GetObject()) )
+		if ( !Class.CastTo(trans, target.GetObject()) )
 			return false;
 
-		m_nextSeatIdx = m_transport.CrewPositionIndex( componentIndex );
+		nextSeatIdx = trans.CrewPositionIndex( componentIndex );
 
-		if ( m_nextSeatIdx < 0 )
+		if ( nextSeatIdx < 0 )
 			return false;
 
-		Human crew = m_transport.CrewMember( m_nextSeatIdx );
+		Human crew = trans.CrewMember( nextSeatIdx );
 		if ( crew )
 			return false;
-		
-		m_currSeatIdx = m_transport.CrewMemberIndex( player );
-		
-		if ( !m_transport.CanReachSeatFromSeat( m_currSeatIdx, m_nextSeatIdx ) )
+
+		if ( !trans.CanReachSeatFromSeat( trans.CrewMemberIndex( player ), nextSeatIdx ) )
 			return false;
 
 		return true;
@@ -70,13 +65,20 @@ class ActionSwitchSeats: ActionBase
 		HumanCommandVehicle vehCommand = action_data.m_Player.GetCommand_Vehicle();
 		if ( vehCommand )
 		{
-			if ( m_transport )
+			Transport trans;
+			if ( Class.CastTo(trans, action_data.m_Target.GetObject()) )
 			{
-				int seat = m_transport.GetSeatAnimationType( m_nextSeatIdx );
+				int nextSeat = trans.CrewPositionIndex( action_data.m_Target.GetComponentIndex() );
+				int seat = trans.GetSeatAnimationType( nextSeat );
 				if ( seat >= 0 )
 				{
 					//pTransportPositionIndex, int pVehicleSeat
-					vehCommand.SwitchSeat( m_nextSeatIdx, seat );
+					vehCommand.SwitchSeat( nextSeat, seat );
+					if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )
+					{
+
+						action_data.m_Player.OnVehicleSwitchSeat( nextSeat );
+					}
 				}
 			}
 		}
@@ -89,10 +91,6 @@ class ActionSwitchSeats: ActionBase
 		{
 			if( !action_data.m_Player.GetCommand_Vehicle().IsSwitchSeat() )
 			{
-				if( !GetGame().IsMultiplayer() || GetGame().IsClient() )
-				{
-					action_data.m_Player.OnVehicleSwitchSeat( m_nextSeatIdx );
-				}
 				End(action_data);
 			}
 		}

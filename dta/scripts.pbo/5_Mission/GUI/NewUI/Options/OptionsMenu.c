@@ -391,7 +391,11 @@ class OptionsMenu extends UIScriptedMenu
 	
 	bool IsFocusable( Widget w )
 	{
-		return ( w == m_Apply || w == m_Back || w == m_Reset );
+		if( w )
+		{
+			return ( w == m_Apply || w == m_Back || w == m_Reset );
+		}
+		return false;
 	}
 	
 	override void Refresh()
@@ -443,7 +447,7 @@ class OptionsMenu extends UIScriptedMenu
 		
 		if( GetGame().GetInput().GetActionDown( UAUIBack, false ) )
 		{
-			Reset();
+			Back();
 		}
 	}
 	

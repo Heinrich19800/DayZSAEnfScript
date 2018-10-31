@@ -196,7 +196,11 @@ class MainMenuNewsfeed extends ScriptedWidgetEventHandler
 	
 	bool IsFocusable( Widget w )
 	{
-		return ( w == m_NewsMain || w == m_NewsSec1 || w == m_NewsSec2 || w == m_Feedback || w == m_DayZForum || w == m_Twitter || w == m_Youtube );
+		if( w )
+		{
+			return ( w == m_NewsMain || w == m_NewsSec1 || w == m_NewsSec2 || w == m_Feedback || w == m_DayZForum || w == m_Twitter || w == m_Youtube );
+		}
+		return false;
 	}
 	
 	//Coloring functions (Until WidgetStyles are useful)

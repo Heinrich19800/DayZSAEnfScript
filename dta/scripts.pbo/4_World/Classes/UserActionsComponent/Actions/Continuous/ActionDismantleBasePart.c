@@ -86,7 +86,7 @@ class ActionDismantleBasePart: ActionContinuousBase
 		if ( construction.CanDismantlePart( construction_part.GetPartName() ) )
 		{
 			//build
-			construction.DismantlePart( construction_part.GetPartName(), true, true );
+			construction.DismantlePart( construction_part.GetPartName(), true );
 			
 			//add damage to tool
 			action_data.m_MainItem.DecreaseHealth ( "", "", 2, true );

@@ -6,7 +6,7 @@ class Fence extends BaseBuildingBase
 	typename ATTACHMENT_CAMONET 			= CamoNet;
 	typename ATTACHMENT_COMBINATION_LOCK 	= CombinationLock;
 	
-	const string ATTACHMENT_SLOT_COMBINATION_LOCK = "Wall_CombinationLock";
+	const string ATTACHMENT_SLOT_COMBINATION_LOCK = "Att_CombinationLock";
 	
 	void Fence()
 	{
@@ -46,9 +46,9 @@ class Fence extends BaseBuildingBase
 	}
 	
 	//--- BUILD EVENTS
-	override void OnPartDismantled( string part_name, bool synchronize )
+	override void OnPartDismantled( string part_name )
 	{
-		super.OnPartDismantled( part_name, synchronize );
+		super.OnPartDismantled( part_name );
 		
 		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		//check gate state
@@ -63,7 +63,7 @@ class Fence extends BaseBuildingBase
 	}	
 		
 	//--- ATTACHMENT & CONDITIONS
-	override bool CanReceiveAttachment( EntityAI attachment )
+	override bool CanReceiveAttachment( EntityAI attachment, int slotId )
 	{
 		if ( attachment.Type() == ATTACHMENT_BARBED_WIRE || attachment.Type() == ATTACHMENT_CAMONET )
 		{

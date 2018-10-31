@@ -57,7 +57,7 @@ class ActionDisinfectPlant: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{
 		PlantBase plant;
 		if ( Class.CastTo(plant, action_data.m_Target.GetObject()) )

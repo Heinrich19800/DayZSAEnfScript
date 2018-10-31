@@ -888,70 +888,37 @@ class FireplaceBase extends ItemBase
 	//================================================================
 	// SOUNDS
 	//================================================================
-	//returns true if sound started, false if not
-	protected bool PlayFireSoundLoop( out EffectSound sound, string sound_set, float fade_in, float fade_out )
-	{
-		return PlayFireSound( sound, sound_set, fade_in, fade_out, true );
-	}
-	
-	protected bool PlayFireSound( out EffectSound sound, string sound_set, float fade_in, float fade_out, bool loop = false )
-	{
-		if ( !sound && GetGame() && ( !GetGame().IsMultiplayer() || GetGame().IsClient() ) )
-		{
-			sound = SEffectManager.PlaySoundOnObject( sound_set, this, fade_in, fade_out, loop );
-			sound.SetSoundAutodestroy( true );
-			
-			return true;
-		}
-		
-		return false;
-	}	
-	
-	//returns true if sound stopped, false if not
-	protected bool StopFireSound( out EffectSound sound )
-	{
-		if ( sound && GetGame() && ( !GetGame().IsMultiplayer() || GetGame().IsClient() ) )
-		{
-			sound.SoundStop();
-			sound = NULL;
-			
-			return true;
-		}
-		
-		return false;
-	}	
-	
 	//Burning
 	//Start
 	protected void SoundFireLightStart()
 	{
-		PlayFireSoundLoop( m_SoundFireLoop, SOUND_FIRE_LIGHT, 1.0, 1.0 );
+		PlaySoundSetLoop( m_SoundFireLoop, SOUND_FIRE_LIGHT, 1.0, 1.0 );
 	}
 	
 	protected void SoundFireHeavyStart()
 	{
-		PlayFireSoundLoop( m_SoundFireLoop, SOUND_FIRE_HEAVY, 1.0, 2.0 );
+		PlaySoundSetLoop( m_SoundFireLoop, SOUND_FIRE_HEAVY, 1.0, 2.0 );
 	}
 
 	protected void SoundFireNoFireStart()
 	{
-		PlayFireSoundLoop( m_SoundFireLoop, SOUND_FIRE_NO_FIRE, 2.0, 2.0 );
+		PlaySoundSetLoop( m_SoundFireLoop, SOUND_FIRE_NO_FIRE, 2.0, 2.0 );
 	}
 	
 	protected void SoundFireExtinguishedStart()
 	{
-		PlayFireSound( m_SoundFire, SOUND_FIRE_EXTINGUISHED, 0.1, 0.1 );
+		PlaySoundSet( m_SoundFire, SOUND_FIRE_EXTINGUISHED, 0.1, 0.1 );
 	}		
 
 	protected void SoundFireExtinguishingStart()
 	{
-		PlayFireSoundLoop( m_SoundFireLoop, SOUND_FIRE_EXTINGUISHING, 1.0, 0.5 );
+		PlaySoundSetLoop( m_SoundFireLoop, SOUND_FIRE_EXTINGUISHING, 1.0, 0.5 );
 	}
 	
 	//Stop
 	protected void SoundFireStop()
 	{
-		StopFireSound( m_SoundFireLoop );
+		StopSoundSet( m_SoundFireLoop );
 	}
 	
 	//================================================================

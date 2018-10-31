@@ -96,6 +96,10 @@ class DayZPlayerCameraIronsights extends DayZPlayerCameraBase
 		Math3D.YawPitchRollMatrix(aimChangeYPR, dynamics);
 		dynamics[3] = vector.Zero;
 		
+		vector aimingMatTM[4];
+		hia.WeaponGetAimingModelDirTm(aimingMatTM);
+		
+		//Math3D.MatrixMultiply4(dynamics, aimingMatTM, dynamics);
 		Math3D.MatrixMultiply4(dynamics, matTM, pOutResult.m_CameraTM);
 	
 		AdjustCameraParameters(pDt, pOutResult);
@@ -153,7 +157,7 @@ class DayZPlayerCameraIronsights extends DayZPlayerCameraBase
 		{
 			PPEffects.ResetPPMask();
 			PPEffects.SetLensEffect(0, 0, 0, 0);
-			PPEffects.OverrideDOF(false, 0, 0, 0, 0, 0);
+			PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 			PPEffects.SetBlurOptics(0);
 		}
 		else
@@ -170,7 +174,7 @@ class DayZPlayerCameraIronsights extends DayZPlayerCameraBase
 					PPEffects.OverrideDOF(temp_array[0],temp_array[1],temp_array[2],temp_array[3],temp_array[4],temp_array[5]);
 			}
 			else
-				PPEffects.OverrideDOF(false, 0, 0, 0, 0, 0);
+				PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 			PPEffects.SetBlurOptics(0);
 		}
 	}
@@ -302,7 +306,7 @@ class DayZPlayerCameraOptics : DayZPlayerCameraIronsights
 		{
 			PPEffects.ResetPPMask();
 			PPEffects.SetLensEffect(0, 0, 0, 0);
-			PPEffects.OverrideDOF(false, 0, 0, 0, 0, 0);
+			PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 			PPEffects.SetBlurOptics(0);
 		}
 		else
@@ -320,7 +324,7 @@ class DayZPlayerCameraOptics : DayZPlayerCameraIronsights
 						PPEffects.OverrideDOF(temp_array[0],temp_array[1],temp_array[2],temp_array[3],temp_array[4],temp_array[5]);
 				}
 				else
-					PPEffects.OverrideDOF(false, 0, 0, 0, 0, 0);
+					PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 			}
 			else
 			{
@@ -359,7 +363,7 @@ class DayZPlayerCameraOptics : DayZPlayerCameraIronsights
 				}
 				else
 				{
-					PPEffects.OverrideDOF(false, 0, 0, 0, 0, 0);
+					PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 				}
 				
 				//optics blur

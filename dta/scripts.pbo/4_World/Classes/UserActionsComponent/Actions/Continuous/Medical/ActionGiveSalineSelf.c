@@ -45,7 +45,7 @@ class ActionGiveSalineSelf: ActionContinuousBase
 		return "#give_saline";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{		
 		action_data.m_MainItem.TransferModifiers(action_data.m_Player);
 		Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );		

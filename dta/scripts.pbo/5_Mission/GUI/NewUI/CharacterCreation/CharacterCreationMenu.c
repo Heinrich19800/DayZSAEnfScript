@@ -122,6 +122,11 @@ class CharacterCreationMenu extends UIScriptedMenu
 		GetGame().GetUIManager().Back();
 	}
 	
+	void Back()
+	{
+		GetGame().GetUIManager().Back();
+	}
+	
 	void SetCharacter()
 	{
 		if (m_Scene.GetIntroCharacter())
@@ -241,7 +246,7 @@ class CharacterCreationMenu extends UIScriptedMenu
 		}
 		else if ( w == m_BackButton )
 		{
-			GetGame().GetUIManager().Back();
+			Back();
 			return true;
 		}
 		return false;
@@ -307,7 +312,11 @@ class CharacterCreationMenu extends UIScriptedMenu
 	
 	bool IsFocusable( Widget w )
 	{
-		return ( w == m_Apply || w == m_RandomizeCharacter || w == m_BackButton );
+		if( w )
+		{
+			return ( w == m_Apply || w == m_RandomizeCharacter || w == m_BackButton );
+		}
+		return false;
 	}
 	
 	void CheckNewOptions()
@@ -324,7 +333,6 @@ class CharacterCreationMenu extends UIScriptedMenu
 #ifdef PLATFORM_CONSOLE
 		SetFocus( m_Apply );
 #endif
-		
 		CheckNewOptions();
 		
 		if( m_Scene && m_Scene.GetIntroCamera() )
@@ -360,6 +368,14 @@ class CharacterCreationMenu extends UIScriptedMenu
 			version = "#main_menu_version" + " " + version;
 		#endif
 		m_Version.SetText( version );
+	}
+	
+	override void Update(float timeslice)
+	{
+		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
+		{
+			Back();
+		}
 	}
 	
 	override void OnHide()

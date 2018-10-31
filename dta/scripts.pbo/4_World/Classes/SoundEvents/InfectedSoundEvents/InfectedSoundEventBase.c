@@ -6,7 +6,6 @@ enum EInfectedSoundEventType
 class InfectedSoundEventBase extends SoundEventBase
 {
 	ZombieBase m_Infected;
-	ref EffectSound m_EffectSoundCallback;
 
 	void InfectedSoundEventBase()
 	{
@@ -15,21 +14,12 @@ class InfectedSoundEventBase extends SoundEventBase
 	
 	void ~InfectedSoundEventBase()
 	{
-		if(m_EffectSoundCallback != null)
-		{
-			SEffectManager.DestroySound(m_EffectSoundCallback);
-			m_EffectSoundCallback = null;
-		}
+		if(m_SoundSetCallback) m_SoundSetCallback.Stop();
 	}
 
 	void Init(ZombieBase pInfected)
 	{
 		m_Infected = pInfected;
-	}
-
-	bool IsLooped()
-	{
-		return true;
 	}
 	
 	void SoftStop()
@@ -43,11 +33,12 @@ class InfectedSoundEventBase extends SoundEventBase
 
 	override void Stop()
 	{
-		//super.Stop();
 		if (m_SoundSetCallback)
 		{
 			m_SoundSetCallback.Stop();
+			m_SoundSetCallback = null;
 		}
+
 		GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).RemoveByName(this, "PosUpdate");
 	}
 	
@@ -64,17 +55,10 @@ class InfectedSoundEventBase extends SoundEventBase
 		string soundset_name;
 			
 		soundset_name = m_Infected.ClassName() + "_" + m_SoundSetNameRoot + "_SoundSet";
-		//Print(soundset_name);
-		//m_EffectSoundCallback = m_Infected.PlayVoiceFX(soundset_name, IsLooped());
 		m_SoundSetCallback = m_Infected.ProcessVoiceFX(soundset_name);
 		if ( m_SoundSetCallback )
 		{
-			//m_SoundSetCallback.Loop(IsLooped());
-			if (IsLooped())
-			{
-				GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLaterByName(this, "PosUpdate", 0, true);
-			}
+			GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLaterByName(this, "PosUpdate", 0, true);
 		}
-		//Print("Base::Playing: " + m_SoundSetCallback);
 	}
 }

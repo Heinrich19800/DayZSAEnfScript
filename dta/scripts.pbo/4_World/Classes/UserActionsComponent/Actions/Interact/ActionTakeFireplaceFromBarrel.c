@@ -39,7 +39,7 @@ class ActionTakeFireplaceFromBarrel: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{
 		Object target_object = action_data.m_Target.GetObject();
 		BarrelHoles_ColorBase fireplace_barrel = BarrelHoles_ColorBase.Cast( target_object );

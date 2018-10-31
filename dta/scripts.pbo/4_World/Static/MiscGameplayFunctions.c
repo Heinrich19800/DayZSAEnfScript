@@ -400,12 +400,12 @@ class MiscGameplayFunctions
 		return speed;
 	}
 	
-	static string ObtainRestrainItemTargetClassname(EntityAI entity)
+	static string ObtainRestrainItemTargetClassname(notnull EntityAI entity)
 	{
 		return entity.ConfigGetString( "OnRestrainChange");
 	}
 	
-	static void TransformRestrainItem(EntityAI current_item, EntityAI tool, PlayerBase player, bool destroy = false)
+	static void TransformRestrainItem(EntityAI current_item, EntityAI tool, PlayerBase player_source, PlayerBase player_target, bool destroy = false)
 	{
 		bool type;
 		
@@ -418,7 +418,10 @@ class MiscGameplayFunctions
 
 		if( new_item_name != "" )
 		{
-			MiscGameplayFunctions.TurnItemIntoItemEx(player, new ReplaceAndDestroy(current_item, new_item_name, player, type));
+			if (player_target.IsAlive())
+				MiscGameplayFunctions.TurnItemIntoItemEx(player_source, new ReplaceAndDestroy(current_item, new_item_name, player_target, type));
+			else
+				MiscGameplayFunctions.TurnItemIntoItemEx(player_source, new DestroyItemInCorpsesHandsAndCreateNewOnGnd(current_item, new_item_name, player_target, type));
 		}
 		else
 		{
@@ -432,3 +435,23 @@ class MiscGameplayFunctions
 	}
 	
 };
+
+class DestroyItemInCorpsesHandsAndCreateNewOnGnd : ReplaceAndDestroy
+{
+	// @NOTE m_Player == target player - i.e. restrained one
+	void DestroyItemInCorpsesHandsAndCreateNewOnGnd (EntityAI old_item, string new_item_type, PlayerBase player, bool destroy = false)
+	{
+		InventoryLocation gnd = new InventoryLocation;
+		vector mtx[4];
+		Math3D.MatrixIdentity4(mtx);
+		mtx[3] = player.GetPosition();
+		gnd.SetGround(NULL, mtx);
+		OverrideNewLocation(gnd);
+	}
+	
+	protected override void RemoveOldItemFromLocation (notnull EntityAI old_item)
+	{
+		super.RemoveOldItemFromLocation(old_item);
+		m_Player.GetHumanInventory().OnEntityInHandsDestroyed(old_item);
+	}
+}

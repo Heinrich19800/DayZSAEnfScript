@@ -53,6 +53,8 @@ class ActionFillGeneratorTank: ActionContinuousBase
 		return false;
 	}
 	
+	// Temporarily commented out due to DAYZ-35988
+	/*
 	override void OnCompleteServer( ActionData action_data )
 	{
 		Object targetObject = action_data.m_Target.GetObject();
@@ -63,4 +65,5 @@ class ActionFillGeneratorTank: ActionContinuousBase
 
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
+	*/
 };

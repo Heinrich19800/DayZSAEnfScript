@@ -12,9 +12,13 @@ class FenceKit extends ItemBase
 	override void OnPlacementComplete( Man player )
 	{
 		//Create fence
+		PlayerBase player_base = PlayerBase.Cast( player );
+		vector position = player_base.GetLocalProjectionPosition();
+		vector orientation = player_base.GetLocalProjectionOrientation();
+		
 		Fence fence = Fence.Cast( GetGame().CreateObject( "Fence", GetPosition() ) );
-		fence.SetPosition( GetPosition() );
-		fence.SetOrientation( GetOrientation() );
+		fence.SetPosition( position );
+		fence.SetOrientation( orientation );
 		
 		//destroy construction kit
 		fence.DestroyConstructionKit( this );
@@ -39,5 +43,15 @@ class FenceKit extends ItemBase
 	{
 		AddProxyPhysics( "Inventory" );
 		RemoveProxyPhysics( "Placing" );		
+	}	
+	
+	override bool IsOneHandedBehaviour()
+	{
+		return true;
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
 	}	
 }

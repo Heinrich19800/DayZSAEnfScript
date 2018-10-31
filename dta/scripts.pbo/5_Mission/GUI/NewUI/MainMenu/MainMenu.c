@@ -310,12 +310,15 @@ class MainMenu extends UIScriptedMenu
 	
 	bool IsFocusable( Widget w )
 	{
-		if( w == m_Play || w == m_ChooseServer || w == m_CustomizeCharacter || w == m_StatButton || w == m_MessageButton || w == m_SettingsButton );
-			return true;
-		if( w == m_Exit || w == m_NewsFeedOpen || w == m_NewsFeedClose || m_PlayVideo );
-			return true;
-		if( w == m_CharacterStatsOpen || w == m_CharacterStatsClose || w == m_NewsMain || w == m_NewsSec1 || w == m_NewsSec2 || w == m_PrevCharacter || w == m_NextCharacter );
-			return true;
+		if( w )
+		{
+			if( w == m_Play || w == m_ChooseServer || w == m_CustomizeCharacter || w == m_StatButton || w == m_MessageButton || w == m_SettingsButton );
+				return true;
+			if( w == m_Exit || w == m_NewsFeedOpen || w == m_NewsFeedClose || w == m_PlayVideo );
+				return true;
+			if( w == m_CharacterStatsOpen || w == m_CharacterStatsClose || w == m_NewsMain || w == m_NewsSec1 || w == m_NewsSec2 || w == m_PrevCharacter || w == m_NextCharacter );
+				return true;
+		}
 		return false;
 	}
 	
@@ -371,18 +374,20 @@ class MainMenu extends UIScriptedMenu
 		//super.OnHide();
 	}
 
-#ifdef PLATFORM_CONSOLE
 	override void Update(float timeslice)
 	{
-		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
+		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) && g_Game.GetLoadState() != DayZGameState.CONNECTING )
 		{
-			g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
-			#ifndef PLATFORM_WINDOWS
-			GetGame().GetInput().ResetActiveGamepad();
+			#ifdef PLATFORM_CONSOLE
+				g_Game.SetLoadState( DayZLoadState.MAIN_MENU_START );
+				#ifndef PLATFORM_WINDOWS
+				GetGame().GetInput().ResetActiveGamepad();
+				#endif
+			#else
+				Exit();
 			#endif
 		}
 	}
-#endif
 	
 	void Play()
 	{
@@ -567,6 +572,9 @@ class MainMenu extends UIScriptedMenu
 	//Coloring functions (Until WidgetStyles are useful)
 	void ColorRed( Widget w )
 	{
+		if( !w )
+			return;
+		
 		SetFocus( w );
 		
 		ButtonWidget button = ButtonWidget.Cast( w );
@@ -597,6 +605,9 @@ class MainMenu extends UIScriptedMenu
 	
 	void ColorWhite( Widget w, Widget enterW )
 	{
+		if( !w )
+			return;
+		
 		#ifdef PLATFORM_WINDOWS
 		SetFocus( null );
 		#endif
@@ -607,8 +618,8 @@ class MainMenu extends UIScriptedMenu
 			button.SetTextColor( ARGB( 255, 255, 255, 255 ) );
 		}
 		
-		TextWidget text		= TextWidget.Cast(w.FindWidget( w.GetName() + "_text" ) );
-		TextWidget text2	= TextWidget.Cast(w.FindWidget( w.GetName() + "_text_1" ) );
+		TextWidget text		= TextWidget.Cast( w.FindWidget( w.GetName() + "_text" ) );
+		TextWidget text2	= TextWidget.Cast( w.FindWidget( w.GetName() + "_text_1" ) );
 		ImageWidget image	= ImageWidget.Cast( w.FindWidget( w.GetName() + "_image" ) );
 		
 		if( text )

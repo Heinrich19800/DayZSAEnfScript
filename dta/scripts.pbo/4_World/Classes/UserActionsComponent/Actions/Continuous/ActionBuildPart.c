@@ -92,7 +92,7 @@ class ActionBuildPart: ActionContinuousBase
 		if ( !construction.IsColliding( part_name ) && construction.CanBuildPart( part_name ) )
 		{
 			//build
-			construction.BuildPart( part_name, true, true );
+			construction.BuildPart( part_name, true );
 			
 			//add damage to tool
 			action_data.m_MainItem.DecreaseHealth ( 2 );

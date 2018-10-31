@@ -38,7 +38,7 @@ class ActionTakeFireplaceIndoor: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{
 		Object target_object = action_data.m_Target.GetObject();
 		FireplaceIndoor fireplace_indoor = FireplaceIndoor.Cast( target_object );

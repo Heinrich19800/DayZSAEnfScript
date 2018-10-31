@@ -98,7 +98,11 @@ class ActionRestrainTarget: ActionContinuousBase
 		EntityAI item_in_hands_target = target_player.GetHumanInventory().GetEntityInHands();
 		EntityAI item_in_hands_source = source_player.GetHumanInventory().GetEntityInHands();
 		
-		
+		if( !item_in_hands_source )
+		{
+			Error("Restraining target failed, nothing in hands");
+			return;
+		}
 
 		string new_item_name = MiscGameplayFunctions.ObtainRestrainItemTargetClassname(item_in_hands_source);
 		if (item_in_hands_target)

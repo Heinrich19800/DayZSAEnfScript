@@ -155,6 +155,10 @@ class CTKeyframe extends ScriptedWidgetEventHandler
 	
 	bool IsFocusable( Widget w )
 	{
-		return ( w == m_InterpTimeWidget || w == m_TotalTimeWidget || w == m_FOVWidget || w == m_DOFWidget );
+		if( w )
+		{
+			return ( w == m_InterpTimeWidget || w == m_TotalTimeWidget || w == m_FOVWidget || w == m_DOFWidget );
+		}
+		return false;
 	}
 }

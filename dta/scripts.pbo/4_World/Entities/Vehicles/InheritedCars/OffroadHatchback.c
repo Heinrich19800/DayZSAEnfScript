@@ -3,7 +3,9 @@ class OffroadHatchback extends CarScript
 	override void Init()
 	{
 		super.Init();
-		m_dmgContactCoef = 0.0095;
+		m_dmgContactCoef = 0.095;
+		m_enginePtcPos = "0 0.95 1.25";
+		m_coolantPtcPos = "0.30 0.95 1.60";
 	}
 
 	override int GetAnimInstance()
@@ -28,15 +30,37 @@ class OffroadHatchback extends CarScript
 		return 0;
 
 	}
-	
+
+	override void EEItemAttached ( EntityAI item, string slot_name ) 
+	{
+/*
+		if ( GetGame().IsServer() )
+		{
+			if ( slot_name == "CarRadiator" )
+			{
+				m_RadiatorHealth = 1;
+				//Leak( CarFluid.COOLANT, GetFluidFraction(CarFluid.COOLANT)*GetFluidCapacity(CarFluid.COOLANT) );
+			}
+		}
+*/
+	}
+
 	override void EEItemDetached(EntityAI item, string slot_name)
 	{
 		if ( GetGame().IsServer() )
 		{
+			//int slot_id = InventorySlots.GetSlotIdFromString(slot_name);
+			
 			if ( slot_name == "LightBulb" || slot_name == "CarBattery")
 			{
 				if ( IsLightsOn() )
 					SwitchLights();
+			}
+
+			if ( slot_name == "CarRadiator" )
+			{
+				m_RadiatorHealth = 0;
+				Leak( CarFluid.COOLANT, GetFluidFraction(CarFluid.COOLANT)*GetFluidCapacity(CarFluid.COOLANT) );
 			}
 		}
 	}
@@ -60,7 +84,13 @@ class OffroadHatchback extends CarScript
 		}
 		return true;
 	}
-
+	
+/*
+	override EEHealthLevelChanged(int oldLevel, int newLevel, string zone)
+	{
+		if ( newLevel == 4 )
+	}
+*/
 	override int GetCarDoorsState( string slotType )
 	{
 		CarDoor carDoor;

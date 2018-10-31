@@ -493,74 +493,50 @@ class ItemBase extends InventoryItem
 		m_IsHologram = is_hologram;
 	}
 	
-	float GetNutritionalEnergy()
+	protected float GetNutritionalEnergy()
 	{
-		if( !IsLiquidPresent() )
-		{
-			Edible_Base edible = Edible_Base.Cast( this );
-			return edible.GetFoodEnergy();
-		}
-		else
-		{
-			return Liquid.GetEnergy( GetLiquidType() );
-		}
+		Edible_Base edible = Edible_Base.Cast( this );
+		return edible.GetFoodEnergy();
 	}
 	
-	float GetNutritionalWaterContent()
+	protected float GetNutritionalWaterContent()
 	{
-		if( !IsLiquidPresent() )
-		{
-			Edible_Base edible = Edible_Base.Cast( this );
-			return edible.GetFoodWater();
-		}
-		else
-		{
-			return Liquid.GetWaterContent( GetLiquidType() );
-		}
+		Edible_Base edible = Edible_Base.Cast( this );
+		return edible.GetFoodWater();
 	}
 	
-	float GetNutritionalIndex()
+	protected float GetNutritionalIndex()
 	{
-		if( !IsLiquidPresent() )
-		{
-			Edible_Base edible = Edible_Base.Cast( this );
-			return edible.GetFoodNutritionalIndex();
-		}
-		else
-		{
-			return Liquid.GetNutritionalIndex( GetLiquidType() );
-		}
+		Edible_Base edible = Edible_Base.Cast( this );
+		return edible.GetFoodNutritionalIndex();
 	}
 	
-	float GetNutritionalFullnessIndex()
+	protected float GetNutritionalFullnessIndex()
 	{
-		if( !IsLiquidPresent() )
-		{
-			Edible_Base edible = Edible_Base.Cast( this );
-			return edible.GetFoodTotalVolume();
-		}
-		else
-		{
-			return Liquid.GetVolume( GetLiquidType() );
-		}
+		Edible_Base edible = Edible_Base.Cast( this );
+		return edible.GetFoodTotalVolume();
 	}
 	
-	float GetNutritionalToxicity()
+	protected float GetNutritionalToxicity()
 	{
-		if( !IsLiquidPresent() )
-		{
-			Edible_Base edible = Edible_Base.Cast( this );
-			return edible.GetFoodToxicity();
-		}
-		else
-		{
-			return Liquid.GetToxicity(GetLiquidType());
-		}
+		Edible_Base edible = Edible_Base.Cast( this );
+		return edible.GetFoodToxicity();
+
 	}
 
 	NutritionalProfile GetNutritionalProfile()
 	{
-		return new NutritionalProfile(GetNutritionalEnergy(),GetNutritionalWaterContent(),GetNutritionalIndex(),GetNutritionalFullnessIndex(), GetNutritionalToxicity());
+		NutritionalProfile profile; 
+		if( !IsLiquidPresent() )
+		{
+			profile = NutritionalProfile(GetNutritionalEnergy(),GetNutritionalWaterContent(),GetNutritionalIndex(),GetNutritionalFullnessIndex(), GetNutritionalToxicity());
+		}
+		else
+		{
+			int liquid_type = GetLiquidType();
+			profile = Liquid.GetNutritionalProfile(liquid_type);
+		}
+		return profile;
 		
 	}
 	

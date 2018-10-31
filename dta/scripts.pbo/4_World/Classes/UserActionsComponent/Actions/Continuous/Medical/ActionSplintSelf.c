@@ -44,7 +44,7 @@ class ActionSplintSelf: ActionContinuousBase
 		return "#apply_splint";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		action_data.m_MainItem.TransferModifiers(action_data.m_Player);
 		action_data.m_Player.ApplySplint();

@@ -79,6 +79,17 @@ class AdvancedCommunication extends EntityAI
 			hud.ShowWalkieTalkie( 3 );
 		}
 	}
+	
+	//control transmitter via user actions
+	void TurnOnTransmitter()
+	{
+		GetCompEM().SwitchOn();
+	}
+	
+	void TurnOffTransmitter()
+	{
+		GetCompEM().SwitchOff();
+	}
 }
 
 class PASReceiver extends AdvancedCommunication

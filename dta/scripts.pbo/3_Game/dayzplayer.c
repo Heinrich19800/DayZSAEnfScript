@@ -603,7 +603,7 @@ enum DayZPlayerConstants
 	CMD_ACTIONFB_FORCEFEED				= 62,		// erc,cro          [end]
 	CMD_ACTIONFB_BANDAGETARGET			= 63,		// erc,cro          [end]
 	CMD_ACTIONFB_SPRAYPLANT				= 64,		// cro     		    [end]
-	CMD_ACTIONFB_STARTFIREMATCH			= 65,		// cro			    [end]
+	CMD_ACTIONFB_STARTFIRE				= 65,		// cro			    [end]
 	CMD_ACTIONFB_ANIMALSKINNING			= 66,		// cro				[end]
 	CMD_ACTIONFB_WASHHANDSWELL			= 67,		// cro				[end]
 	CMD_ACTIONFB_WASHHANDSPOND			= 68,		// cro				[end]
@@ -613,11 +613,8 @@ enum DayZPlayerConstants
 	CMD_ACTIONFB_VOMIT					= 72,		// cro				[end]
 	CMD_ACTIONFB_UNRESTRAINTARGET		= 73,		// erc,cro			[end (finish cutting), end2 (cancel cutting)]
 	CMD_ACTIONFB_RESTRAINTARGET			= 74,		// erc,cro			[end (finish tying up), end2 (cancel tying up)]
-	CMD_ACTIONFB_STARTFIRETORCH			= 75,		// erc,cro			[end]
 	CMD_ACTIONFB_CHECKPULSE				= 76,		// cro				[end]
 	CMD_ACTIONFB_CLEANWOUNDSTARGET		= 78,		// erc, cro			[end]
-	CMD_ACTIONFB_STARTFIREDRILL			= 79,		// erc, cro			[end]
-	CMD_ACTIONFB_STARTFIRELIGHTER		= 80,		// erc, cro			[end]
 	CMD_ACTIONFB_COLLECTBLOODSELF		= 81,		// erc, cro			[end]
 	CMD_ACTIONFB_EMPTY_VESSEL			= 82,		// erc, cro			[end]
 	CMD_ACTIONFB_OPENITEM				= 83,		// pne				[end]
@@ -954,6 +951,9 @@ class DayZPlayer extends Human
 	proto native	void					ProcessMeleeHit(InventoryItem pMeleeWeapon, int pMeleeModeIndex, Object pTarget, int pComponentIndex, vector pHitWorldPos);
 	//! processes melee hit (uses component name)
 	proto native	void					ProcessMeleeHitName(InventoryItem pMeleeWeapon, int pMeleeModeIndex, Object pTarget, string pComponentName, vector pHitWorldPos);
+	
+	//! ---------------- release controls -------------------------
+	proto native	void					ReleaseNetworkControls();
 	
 	//! ---------------- sync stuff -------------------------
 	

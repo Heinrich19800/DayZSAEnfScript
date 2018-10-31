@@ -51,7 +51,7 @@ class ActionDefibrilateTarget: ActionContinuousBase
 		}
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		Defibrillator defib = Defibrillator.Cast( action_data.m_MainItem );
 		PlayerBase target_player = PlayerBase.Cast( action_data.m_Target.GetObject() );

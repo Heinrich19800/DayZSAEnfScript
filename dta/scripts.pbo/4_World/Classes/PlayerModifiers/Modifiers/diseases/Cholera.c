@@ -51,7 +51,7 @@ class CholeraMdfr: ModifierBase
 
 	override protected void OnTick(PlayerBase player, float deltaT)
 	{
-		float chance_of_vomit = player.GetStatStomachSolid().GetNormalized() / 10;
+		float chance_of_vomit = player.GetStatStomachVolume().GetNormalized() / 10;
 		if( Math.RandomFloat01() < chance_of_vomit && !m_IsVomiting )
 		{
 			SymptomBase symptom = player.GetSymptomManager().QueueUpPrimarySymptom(SymptomIDs.SYMPTOM_VOMIT);

@@ -23,9 +23,16 @@ class CarScript extends Car
 	protected float m_RadiatorHealth;
 	protected float m_FuelTankHealth;
 
-	protected bool m_EngineSmoke;
+	protected ref EffVehicleSmoke m_coolantFx;
+	protected ref EffVehicleSmoke m_engineFx;
+		
+	protected int m_enginePtcFx;
+	protected int m_coolantPtcFx;
 	
 	float m_dmgContactCoef;
+
+	protected vector m_enginePtcPos;
+	protected vector m_coolantPtcPos;
 
 	void CarScript()
 	{
@@ -41,12 +48,16 @@ class CarScript extends Car
 
 		// sets max health for all components at init
 		m_EngineHealth = 1;
-		m_RadiatorHealth = 1;
 		m_FuelTankHealth = 1;
-
-		m_EngineSmoke = false;
+		m_RadiatorHealth = -1;
+		
+		m_enginePtcFx = -1;
+		m_coolantPtcFx = -1;
 		
 		m_dmgContactCoef = 0;
+		
+		m_enginePtcPos = "0 0 0";
+		m_coolantPtcPos = "0 0 0";
 	}
 /*
 	here we should handle the damage dealt in OnContact event, but maybe we will react even in that event 
@@ -58,43 +69,121 @@ class CarScript extends Car
 		Print( source );
 		Print( component );
 		Print( damageResult.GetDamage("", "health") );
+	
+		if ( dmgZone == "Engine" && GetHealth("Engine","") < 0.1 )
+		{
+			if ( GetHealth01("engine", "") <= 0.1 )
+			{
+				if ( !m_EngineSmoke )
+				{
+					Print("Smoke");
+					EffVehicleSmoke engSmk = new EffEngineSmoke();
+					SEffectManager.PlayOnObject(engSmk, this, "0 0.95 1.25" );
+					// Particle is now playing on oject 'this'
+				}
+			}
+		}
 	}
 */
+
 	override void EOnPostSimulate(IEntity other, float timeSlice)
 	{
 		m_Time += timeSlice;
 		//! move it to constants.c const float CAR_UPDATE_INTERVAL = 1.0
-		if ( m_Time >= 1 )
+		if ( m_Time >= CARS_FLUIDS_TICK )
 		{
-			m_Time = 0;
 			CarPartsHealthCheck();
-			//! leaking of coolant from radiator when damaged
-			if( GetFluidFraction(CarFluid.COOLANT) > 0 && m_RadiatorHealth < 1 )
-				LeakFluid(CarFluid.COOLANT);
+			m_Time = 0;
 
-			//! leaking of fuel from damaged fuel tank
-			//if( GetFluidFraction(CarFluid.FUEL) > 0 && m_FuelTankHealth < 1 )
-			//	LeakFluid(CarFluid.FUEL);
-	
 			//! actions runned when the engine on
-			if ( IsEngineOn() )
+			if ( IsEngineOn() && GetGame().IsServer()  )
 			{
+				//! leaking of coolant from radiator when damaged
+				if ( IsVitalRadiator() )
+				{
+					if ( GetFluidFraction(CarFluid.COOLANT) > 0 && m_RadiatorHealth < 0.5 ) //CARS_LEAK_THRESHOLD
+						LeakFluid(CarFluid.COOLANT);
+				}
+	
+				if ( GetFluidFraction(CarFluid.FUEL) > 0 && m_FuelTankHealth < 0.5 )
+					LeakFluid(CarFluid.FUEL);
+				
+				if ( GetFluidFraction(CarFluid.BRAKE) > 0 && m_EngineHealth < 0.5 )
+					LeakFluid(CarFluid.BRAKE);
+				
+				if ( GetFluidFraction(CarFluid.OIL) > 0 && m_EngineHealth < 0.5 )
+					LeakFluid(CarFluid.OIL);
+				
+				if ( m_EngineHealth < 0.25 )
+				{
+					LeakFluid( CarFluid.OIL );
+				}
+
+				if ( GetFluidFraction(CarFluid.OIL) < 1 )
+				{
+					float dmg = ( 1 - GetFluidFraction(CarFluid.OIL) ) * Math.RandomFloat(0.02, 0.05);
+					DecreaseHealth( "Engine", "Health", dmg);
+				}
+				
+				if ( IsVitalRadiator() )
+				{
+				
+					if ( GetFluidFraction(CarFluid.COOLANT) < 0.5 )
+					{
+						if ( !SEffectManager.IsEffectExist(m_coolantPtcFx) )
+						{
+							m_coolantFx = new EffCoolantSteam();
+							m_coolantPtcFx = SEffectManager.PlayOnObject(m_coolantFx, this, m_coolantPtcPos );
+						}
+	
+						if ( GetFluidFraction(CarFluid.COOLANT) > 0 )
+						{
+							m_coolantFx.SetParticleStateLight();
+						}
+						else
+						{
+							m_coolantFx.SetParticleStateHeavy();
+							DecreaseHealth( "Engine", "Health", 1.0);
+						}
+					}
+					else
+					{
+						if ( SEffectManager.IsEffectExist(m_coolantPtcFx) )
+							SEffectManager.Stop(m_coolantPtcFx);
+					}
+				}
 			}
+			else
+			{
+				if ( IsVitalRadiator() && SEffectManager.IsEffectExist(m_coolantPtcFx) )
+					SEffectManager.Stop(m_coolantPtcFx);
+			}
+			
+
+		}
+		if ( !SEffectManager.IsEffectExist(m_enginePtcFx) && m_EngineHealth <= 0 )
+		{
+			m_engineFx = new EffEngineSmoke();
+			m_enginePtcFx = SEffectManager.PlayOnObject(m_engineFx, this, m_enginePtcPos );
+			//m_engineFx.SetParticleStateLight();
+			m_engineFx.SetParticleStateHeavy();
 		}
 	}
 
-	//override void EOnContact( IEntity other, Contact extra )
-	//{
-	//	//Print(" contact impulse = " + extra.Impulse);
-	//	//Print(" index of component of this car = " + extra.Index2);
-	//}
 	void OnContact( string zoneName, vector localPos, IEntity other, Contact data )
 	{
 
 		//Print(zoneName);
 
+		if ( zoneName == "" )
+		{
+			Print("CarScript >> ERROR >> OnContact dmg zone not defined!");
+			return;
+		}
+		
 		switch( zoneName )
 		{
+/*
 			case "dmgZone_lightsLF":
 				//Print("dmgZone_lightsLF");
 			break;
@@ -102,18 +191,26 @@ class CarScript extends Car
 			case "dmgZone_lightsRF":
 				//Print("dmgZone_lightsRF");
 			break;
-			
+*/
 			default:
-				if ( GetGame().IsServer() || !GetGame().IsMultiplayer() )
+				if ( GetGame().IsServer() && zoneName != "")
 				{
-					if ( data.Impulse > 1000 )
-					{
-						//Print("Velkej Impulse - give some dmg");
-						//DecreaseHealth("Engine", "Health", 400.0);
+					float dmgThreshold = 150;
+					float dmg = data.Impulse * m_dmgContactCoef;
 
-						float dmg = data.Impulse * m_dmgContactCoef;
-						Print( zoneName );
-						Print( dmg );
+					if ( dmg < dmgThreshold )
+					{					
+						if ( dmg > 100 )
+						{
+							//Print( GetType() + " >>> " + " SmallHit " + zoneName + " >>> " + dmg.ToString() );	
+							DecreaseHealth( zoneName, "Health", dmg);
+						}
+					}
+					else
+					{
+						
+						//Print( GetType() + " >>> " + " BIGHit " + zoneName + " >>> " + dmg.ToString() );
+						//Print( dmg );
 /*					
 						if ( dmg > 1000 )
 						{
@@ -132,11 +229,10 @@ class CarScript extends Car
 
 						//DecreaseHealth( zoneName, "Health", dmg);
 					}
+
 				}
 			break;
 		}
-
-
 
 		//Print(zoneName);
 		//Print(other);
@@ -201,6 +297,7 @@ class CarScript extends Car
 
 		\return true if the engine can start, false otherwise.
 	*/
+
 	bool OnBeforeEngineStart()
 	{
 		// todo :: check if the battery is plugged-in
@@ -277,11 +374,17 @@ class CarScript extends Car
 		switch (fluid)
 		{
 			case CarFluid.COOLANT:
-				Print(m_RadiatorHealth);
-				//! move this to constant.c
- 				//! CAR_COOLANT_LEAK_PER_SEC_MIN = 0.02; CAR_COOLANT_LEAK_PER_SEC_MAX = 0.12;
-				ammount = m_RadiatorHealth * Math.RandomFloat(0.02, 0.12);
-				Print("coolant is leaking for: " + ammount);
+				ammount = (1- m_RadiatorHealth) * Math.RandomFloat(0.02, 0.05);//CARS_LEAK_TICK_MIN; CARS_LEAK_TICK_MAX
+				Leak(fluid, ammount);
+			break;
+			
+			case CarFluid.OIL:
+				ammount =  10 * m_EngineHealth;//CARS_LEAK_OIL
+				Leak(fluid, ammount);
+			break;
+			
+			case CarFluid.FUEL:
+				ammount = ( 1 - m_FuelTankHealth ) * Math.RandomFloat(0.02, 0.05);//CARS_LEAK_TICK_MIN; CARS_LEAK_TICK_MAX
 				Leak(fluid, ammount);
 			break;
 		}
@@ -289,20 +392,23 @@ class CarScript extends Car
 
 	protected void CarPartsHealthCheck()
 	{
-		if ( GetGame().IsMultiplayer() && GetGame().IsServer() )
+		if ( GetGame().IsServer() )
 		{
-			m_RadiatorHealth = GetHealth01("radiator", "");
+			ItemBase radiator;
+			Class.CastTo( radiator, FindAttachmentBySlotName("CarRadiator"));
+			if ( radiator )
+			{
+				m_RadiatorHealth = radiator.GetHealth01("", "");
+			}
+			else
+			{
+				m_RadiatorHealth = 0;
+			}
 			
-			m_EngineHealth = GetHealth01("engine", "");
+			m_EngineHealth = GetHealth01("Engine", "");
+			
+			m_FuelTankHealth = GetHealth01("FuelTank", "");
 		}
-/*
-		if ( GetGame().IsMultiplayer() && GetGame().IsServer() )
-		{
-			m_EngineHealth = GetHealth01("engine", "");
-			Print("tst Car Script");
-			Print(m_EngineHealth);
-		}
-*/
 	}
 	
 	string GetAnimSourceFromSelection( string selection )
@@ -336,6 +442,11 @@ class CarScript extends Car
 	}
 	
 	bool IsVitalEngineBelt()
+	{
+		return true;
+	}
+	
+	bool IsVitalRadiator()
 	{
 		return true;
 	}

@@ -38,15 +38,8 @@ class Object extends IEntity
 		return NULL;
 	}
 	
-	/**
-	\brief Creates a explosion by ammoType in config of object. If object dont have this parameter ("ammoType" like grenade) explsotion is default "G_GrenadeHand"
-		\return \p void
-		@code
-			ItemBase item = GetGame().GetPlayer().CreateInInventory("GrenadeRGD5");
-			
-			item.Explode();
-		@endcode
-	*/
+	
+	//! Creates an explosion on this object by its ammoType in config.
 	void Explode(string ammoType = "")
 	{
 		if (ammoType == "")
@@ -60,31 +53,20 @@ class Object extends IEntity
 			SynchExplosion();
 			DamageSystem.ExplosionDamage(Class.Cast(this), NULL, ammoType, GetPosition());
 		}
-		
-		/*if ( !GetGame().IsMultiplayer()  ||  GetGame().IsServer() )
-		{
-			string path = "cfgAmmo " + ammoType + " particle";
-			string particle_path;
-			GetGame().ConfigGetText(path, particle_path);
-			
-			int particle_ID = ParticleList.GetParticleID(ParticleList.GetPathToParticles() + particle_path);
-			
-			if (particle_ID > 0)
-			{
-				Particle.Play(particle_ID, GetPosition());
-			}
-		}*/
-		
-		//GetGame().ObjectDelete(this);
 	}
 	
 	void SynchExplosion()
 	{
-		if ( GetGame().IsServer() )
+		if ( GetGame().IsServer()  &&  GetGame().IsMultiplayer() ) // Multiplayer server
 		{
 			Param1<EntityAI> p = new Param1<EntityAI>(NULL);
 			
 			GetGame().RPCSingleParam( this, ERPCs.RPC_EXPLODE_EVENT, p, true);
+		}
+		
+		if ( GetGame().IsServer()  &&  !GetGame().IsMultiplayer() ) // Singleplayer
+		{
+			OnExplodeClient();
 		}
 	}
 	
@@ -96,15 +78,31 @@ class Object extends IEntity
 		if (ammoType == "")
 			ammoType = "Dummy_Heavy";
 		
-		string path = "cfgAmmo " + ammoType + " particle";
-		string particle_path;
-		GetGame().ConfigGetText(path, particle_path);
+		// Handle spawn of particle
+		string particle_path = "cfgAmmo " + ammoType + " particle";
+		string particle_name;
+		GetGame().ConfigGetText(particle_path, particle_name);
 		
-		int particle_ID = ParticleList.GetParticleID(ParticleList.GetPathToParticles() + particle_path);
+		int particle_ID = ParticleList.GetParticleID(ParticleList.GetPathToParticles() + particle_name);
 		
 		if (particle_ID > 0)
 		{
 			Particle.Play(particle_ID, GetPosition());
+		}
+		
+		// Handle spawn of Effect, which allows more complex behavior
+		string effect_path = "cfgAmmo " + ammoType + " effect";
+		string effect_name;
+		
+		GetGame().ConfigGetText(effect_path, effect_name);
+		
+		typename effect_type_name = effect_name.ToType();
+		
+		if ( effect_type_name )
+		{
+			Effect eff = effect_type_name.Spawn();
+			
+			SEffectManager.PlayInWorld(eff, GetPosition() );
 		}
 	}
 	
@@ -762,6 +760,40 @@ class Object extends IEntity
 	SoundOnVehicle PlaySoundLoop(string sound_name, float range, bool create_local = true)
 	{
 		return GetGame().CreateSoundOnObject(this, sound_name, range, true, create_local);
+	}
+	
+	//! EffectSound - plays soundset on this object and returns state of the sound (true - played, false - not played)
+	bool PlaySoundSet( out EffectSound sound, string sound_set, float fade_in, float fade_out, bool loop = false )
+	{
+		if ( !sound && GetGame() && ( !GetGame().IsMultiplayer() || GetGame().IsClient() ) )
+		{
+			sound = SEffectManager.PlaySoundOnObject( sound_set, this, fade_in, fade_out, loop );
+			sound.SetSoundAutodestroy( true );
+			
+			return true;
+		}
+		
+		return false;
+	}	
+
+	//! EffectSound - plays soundset on this object in loop and returns state of the sound (true - played, false - not played)
+	bool PlaySoundSetLoop( out EffectSound sound, string sound_set, float fade_in, float fade_out )
+	{
+		return PlaySoundSet( sound, sound_set, fade_in, fade_out, true );
+	}
+	
+	//! EffectSound - stops soundset and returns state of the sound (true - stopped, false - not playing)
+	bool StopSoundSet( out EffectSound sound )
+	{
+		if ( sound && GetGame() && ( !GetGame().IsMultiplayer() || GetGame().IsClient() ) )
+		{
+			sound.SoundStop();
+			sound = NULL;
+			
+			return true;
+		}
+		
+		return false;
 	}
 	
 	void PostAreaDamageActions() {}

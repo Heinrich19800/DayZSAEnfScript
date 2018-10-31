@@ -51,7 +51,7 @@ class ActionMineTree: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{			
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 		// TODO switch WoodenPlank item for logs, once those are ready
@@ -62,7 +62,7 @@ class ActionMineTree: ActionContinuousBase
 		//action_data.m_Target.GetObject().SetOrigin("0 0 0");
 	}
 	
-	override void OnCompleteClient( ActionData action_data )
+	override void OnFinishProgressClient( ActionData action_data )
 	{
 		/*if (action_data && action_data.m_Target)
 		{

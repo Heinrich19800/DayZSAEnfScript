@@ -60,7 +60,6 @@ class PluginRecipesManagerBase extends PluginBase
 		RegisterRecipe(new CraftSalineBagIV);
 		RegisterRecipe(new PurifyWater);
 		RegisterRecipe(new CraftBloodBagIV);
-		RegisterRecipe(new CraftFenceBase);
 		RegisterRecipe(new CraftCamoNetShelter);
 		RegisterRecipe(new DeCraftCamoNetShelter);
 		RegisterRecipe(new FuelChainsaw);
@@ -88,6 +87,7 @@ class PluginRecipesManagerBase extends PluginBase
 		RegisterRecipe(new FillSyringe);
 		RegisterRecipe(new BloodTest);
 		RegisterRecipe(new SharpenMelee);
+		RegisterRecipe(new RepairEpoxy);
 		RegisterRecipe(new CraftArmbandRaincoat);
 		RegisterRecipe(new PaintSKS);
 		RegisterRecipe(new PaintMosin);

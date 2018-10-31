@@ -53,12 +53,12 @@ class ActionPlantSeed: ActionSingleUseBase
 		return false;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{
 		Process(action_data);
 	}
 	
-	override void OnCompleteClient( ActionData action_data )
+	override void OnExecuteClient( ActionData action_data )
 	{
 		Process(action_data);
 	}

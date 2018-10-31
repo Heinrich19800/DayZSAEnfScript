@@ -12,7 +12,7 @@ class EmoteCB : HumanCommandActionCallback
 	
 	bool IsEmoteCallback()
 	{
-		return true;
+		return IsGestureCallback();
 	}
 	
 	override void OnAnimationEvent(int pEventID)
@@ -25,7 +25,9 @@ class EmoteCB : HumanCommandActionCallback
 		{
 			if (m_player.GetItemInHands())
 				m_player.GetItemInHands().Delete();
-			else if ( m_player.GetCommand_Move() && m_player.GetCommand_Move().IsOnBack() )
+			/*else if ( m_player.GetCommand_Move() && m_player.GetCommand_Move().IsOnBack() ) //no surrender state on back, bugs out
+				return;*/
+			else
 				m_player.GetHumanInventory().CreateInHands("SurrenderDummyItem");
 		}
 	}
@@ -266,11 +268,11 @@ class EmoteManager
 			else
 			{
 				//TODO, HACK: fix this hack once inventory lock conditions have been sorted out
-				SetEmoteLockState(false);
-				if ( !m_Player.GetCommand_Move() || (m_Player.GetCommand_Move() && m_Player.GetCommand_Move().IsOnBack()) )
+				SetEmoteLockState(true);
+				/*if ( m_Player.GetCommand_Move() && m_Player.GetCommand_Move().IsOnBack() )
 				{
 					m_IsSurrendered = !m_IsSurrendered; //invalid position, surrender state cannot proceed
-				}
+				}*/
 			}
 		}
 		
@@ -1035,7 +1037,7 @@ class EmoteManager
 			}
 		}
 		
-		if ( m_Player.GetCommand_Move() && m_Player.GetCommand_Move().IsOnBack() )
+		if ( m_Player.GetCommand_Move() && m_Player.GetCommand_Move().IsOnBack() && id != ID_EMOTE_SURRENDER)
 		{
 			return false;
 		}

@@ -3,7 +3,7 @@ class V3S_Chassis extends CarScript
 	override void Init()
 	{
 		super.Init();
-		m_dmgContactCoef = 0.028;
+		m_dmgContactCoef = 0.018;
 	}
 	
 	override int GetAnimInstance()
@@ -23,7 +23,12 @@ class V3S_Chassis extends CarScript
 
 		return 0;
 	}
-
+/*
+	override void EEHealthLevelChanged(int oldLevel, int newLevel, string zone)
+	{
+		Print( zone );
+	}
+*/
 	override bool CrewCanGetThrough( int posIdx )
 	{
 		CarDoor carDoor;
@@ -130,6 +135,11 @@ class V3S_Chassis extends CarScript
 	}
 
 	override bool IsVitalEngineBelt()
+	{
+		return false;
+	}
+	
+	override bool IsVitalRadiator()
 	{
 		return false;
 	}

@@ -77,7 +77,7 @@ class ActionFillObject: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{
 		HescoBox hesco;
 		if ( Class.CastTo(hesco,action_data.m_Target.GetObject()) )

@@ -52,7 +52,7 @@ class ActionShaveTarget: ActionContinuousBase
 		return "#shave_target";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		PlayerBase man;
 		if ( action_data.m_Target && Class.CastTo(man, action_data.m_Target.GetObject()) )

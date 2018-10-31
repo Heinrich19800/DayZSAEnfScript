@@ -48,7 +48,7 @@ class ActionBurnSewTarget: ActionContinuousBase
 		return "#close_wounds";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		ntarget.m_ModifiersManager.DeactivateModifier(eModifiers.MDF_BLEEDING);

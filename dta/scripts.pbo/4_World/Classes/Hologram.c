@@ -25,7 +25,7 @@ class Hologram
 	protected const float 		SMALL_PROJECTION_GROUND 		= 2;
 	protected const float		DISTANCE_SMALL_PROJECTION		= 1;
 	protected const float		LARGE_PROJECTION_DISTANCE_LIMIT	= 6;
-	protected const float 		SLOPE_LIMIT 					= 0.05;
+	protected const float 		SLOPE_LIMIT 					= 0.25;
 	protected const float 		PROJECTION_TRANSITION			= 0.25;
 	protected const float 		LOOKING_TO_SKY					= 0.75;
 	

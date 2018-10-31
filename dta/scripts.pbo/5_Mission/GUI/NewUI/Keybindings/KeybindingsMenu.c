@@ -39,6 +39,45 @@ class KeybindingsMenu extends UIScriptedMenu
 			ImageWidget toolbar_b = layoutRoot.FindAnyWidget( "BackIcon" );
 			toolbar_b.LoadImageFile( 0, "set:playstation_buttons image:circle" );
 		#endif
+		
+		layoutRoot.FindAnyWidget( "Tabber" ).GetScript( m_Tabber );
+		
+		Input input = GetGame().GetInput();
+		int group_count = input.GetActionGroupsCount();
+		
+		for( int i = 0; i < group_count; i++ )
+		{
+			string group_name;
+			input.GetActionGroupName( i, group_name );
+			m_Tabber.AddTab( group_name );
+			Widget tab = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/options/keybindings_selectors/keybinding_group.layout", m_Tabber.GetTab( i ) );
+			for( int j = 0; j < 1; j++ )
+			{
+				Widget subgroup = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/options/keybindings_selectors/keybinding_subgroup.layout", tab.FindAnyWidget( "group_root" ) );
+				TextWidget subgroup_name = TextWidget.Cast( subgroup.FindAnyWidget( "group_text" ) );
+				subgroup_name.SetText( "TestSubgroup" );
+				Widget subgroup_content = subgroup.FindAnyWidget( "group_content" );
+				
+				TIntArray actions = new TIntArray;
+				input.GetActionGroupItems( i, actions );
+				for( int k = 0; k < actions.Count(); k++ )
+				{
+					int action_id = actions.Get( k );
+					Widget option = GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/options/keybindings_selectors/keybinding_option.layout", subgroup_content );
+					TextWidget option_name = TextWidget.Cast( option.FindAnyWidget( "setting_label" ) );
+					
+					string option_text;
+					input.GetActionDesc( action_id, option_text );
+					option_name.SetText( option_text );
+				}
+				subgroup_content.Update();
+				subgroup.Update();
+			}
+			tab.FindAnyWidget( "group_root" ).Update();
+		}
+		
+		m_Tabber.SelectTabControl( 0 );
+		m_Tabber.SelectTabPanel( 0 );
 		return layoutRoot;
 	}
 	

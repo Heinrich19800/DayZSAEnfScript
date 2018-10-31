@@ -55,7 +55,7 @@ class ActionDismantleOven: ActionContinuousBase
 		return false;
 	}
 		
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		Object target_object = action_data.m_Target.GetObject();
 		FireplaceBase fireplace_target = FireplaceBase.Cast( target_object );

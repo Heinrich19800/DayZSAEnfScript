@@ -64,7 +64,7 @@ class ActionDrinkPondContinuous: ActionContinuousBase
 		action_data.m_Player.Consume(NULL,amount, EConsumeType.ENVIRO_POND);
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{
 		OnFinishProgressServer(action_data);
 	}

@@ -7,51 +7,32 @@ class Watchtower extends BaseBuildingBase
 	{
 		CONSTRUCTION_KIT		= "WatchtowerKit";
 	}
-
-	//TODO
-	//Temporary solution to missing slot_id parameter in CanReceiveAttachment() method
-	override void EEItemAttached ( EntityAI item, string slot_name )
+	
+	//--- ATTACHMENT & CONDITIONS
+	override bool CanReceiveAttachment( EntityAI attachment, int slotId )
 	{
-		super.EEItemAttached ( item, slot_name );
-		
-		//drop materials if they are not supported by selected floor (or roof)
-		//level 2
-		if ( slot_name.Contains( "Material_L2" ) || slot_name.Contains( "Level_2" ) )
+		if (!super.CanReceiveAttachment(attachment, slotId))
+			return false;
+
+		string slot_name;
+		InventorySlots.GetSelectionForSlotId( slotId , slot_name );
+		slot_name.ToLower();
+		if ( slot_name.Contains( "material_l2" ) || slot_name.Contains( "level_2" ) )
 		{
 			if ( !GetConstruction().IsPartConstructed( "level_1_roof" ) )
 			{
-				//drop item on ground
-				if ( GetGame().IsMultiplayer() )
-				{
-					GetInventory().DropEntity( InventoryMode.PREDICTIVE, this, item );
-				}
-				else
-				{
-					GetInventory().DropEntity( InventoryMode.LOCAL, this, item );
-				}
+				return false;
 			}
 		}
 		//level 3
-		else if ( slot_name.Contains( "Material_L3" ) || slot_name.Contains( "Level_3" ) )
+		else if ( slot_name.Contains( "material_L3" ) || slot_name.Contains( "level_3" ) )
 		{
 			if ( !GetConstruction().IsPartConstructed( "level_2_roof" ) )
 			{
-				//drop item on ground
-				if ( GetGame().IsMultiplayer() )
-				{
-					GetInventory().DropEntity( InventoryMode.PREDICTIVE, this, item );
-				}
-				else
-				{
-					GetInventory().DropEntity( InventoryMode.LOCAL, this, item );
-				}
+				return false;
 			}			
 		}
-	}
-	
-	//--- ATTACHMENT & CONDITIONS
-	override bool CanReceiveAttachment( EntityAI attachment )
-	{
+		
 		if ( attachment.Type() == ATTACHMENT_BARBED_WIRE || attachment.Type() == ATTACHMENT_CAMONET )
 		{
 			if ( !HasBase() )

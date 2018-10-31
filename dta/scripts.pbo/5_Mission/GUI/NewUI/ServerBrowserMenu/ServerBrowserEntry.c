@@ -58,6 +58,11 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		m_Index					= index;
 		m_Tab					= tab;
 		
+		m_ServerTime.LoadImageFile( 0, "set:dayz_gui image:icon_sun" );
+		m_ServerTime.LoadImageFile( 1, "set:dayz_gui image:icon_sun_accel" );
+		m_ServerTime.LoadImageFile( 2, "set:dayz_gui image:icon_moon" );
+		m_ServerTime.LoadImageFile( 3, "set:dayz_gui image:icon_moon_accel" );
+		
 		float alpha = 0.1;
 		if( m_Index % 2 )
 		{
@@ -197,7 +202,11 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	bool IsFocusable( Widget w )
 	{
-		return ( w == m_Root || w == m_Favorite || w == m_Expand );
+		if( w )
+		{
+			return ( w == m_Root || w == m_Favorite || w == m_Expand );
+		}
+		return false;
 	}
 	
 	void FillInfo( GetServersResultRow server_info )
@@ -208,16 +217,16 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		SetPasswordLocked( server_info.m_IsPasswordProtected );
 		SetPopulation( server_info.m_CurrentNumberPlayers, server_info.m_MaxPlayers );
 		SetSlots( server_info.m_MaxPlayers );
-		SetPing( -1 );
-		SetTime( -1 );
+		SetPing( server_info.m_Ping );
+		SetTime( server_info.m_TimeOfDay, server_info.m_EnvironmentTimeMul );
 		#ifdef PLATFORM_WINDOWS
 		#ifndef PLATFORM_CONSOLE
 			SetShard( server_info.m_Official );
 			SetCharacterAlive( "Missing data" );
 			SetFriends( {"Missing data"} );
-			SetMode( server_info.m_ModeId );
+			SetMode( server_info.m_Disable3rdPerson );
 			SetBattleye( server_info.m_AntiCheat );
-			SetIP( server_info.m_HostIp + ":" + server_info.m_HostPort.ToString() );
+			SetIP( server_info.m_Id );
 		#endif
 		#endif
 	}
@@ -272,9 +281,29 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		m_ServerPing.SetText( ping.ToString() );
 	}
 	
-	void SetTime( int time )
+	void SetTime( string time, float multiplier )
 	{
-		//m_ServerTime.SetText( time.ToString() );
+		TStringArray arr	= new TStringArray;
+		
+		time.Split( ":", arr );
+		
+		int hour			= arr.Get( 0 ).ToInt();
+		int minute			= arr.Get( 1 ).ToInt();
+		
+		if( hour >= 19 || hour <= 5 )	//Night
+		{
+			if( multiplier > 1 )
+				m_ServerTime.SetImage( 3 );
+			else
+				m_ServerTime.SetImage( 2 );
+		}
+		else							//Day
+		{
+			if( multiplier > 1 )
+				m_ServerTime.SetImage( 1 );
+			else
+				m_ServerTime.SetImage( 0 );
+		}
 	}
 	
 	void SetShard( int shard )

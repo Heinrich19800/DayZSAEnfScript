@@ -1,4 +1,4 @@
-class ClosableContainer: Container
+class ClosableContainer extends Container
 {
 	protected bool m_Closed;
 	protected EntityAI m_Entity;

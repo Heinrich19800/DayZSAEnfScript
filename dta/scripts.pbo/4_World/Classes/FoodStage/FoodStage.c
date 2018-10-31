@@ -360,14 +360,14 @@ class FoodStage
 	{
 		switch( food_stage_type )
 		{
-			case FoodStageType.RAW: 	return "Raw";
-			case FoodStageType.BAKED: 	return "Baked";
-			case FoodStageType.BOILED: 	return "Boiled";
-			case FoodStageType.DRIED: 	return "Dried";
-			case FoodStageType.BURNED: 	return "Burned";
-			case FoodStageType.ROTTEN: 	return "Rotten";
+			case FoodStageType.RAW: 	return "#inv_inspect_raw";
+			case FoodStageType.BAKED: 	return "#inv_inspect_baked";
+			case FoodStageType.BOILED: 	return "#inv_inspect_boiled";
+			case FoodStageType.DRIED: 	return "#inv_inspect_dried";
+			case FoodStageType.BURNED: 	return "#inv_inspect_burned";
+			case FoodStageType.ROTTEN: 	return "#inv_inspect_rotten";
 		}
 		
-		return "Raw";
+		return "#inv_inspect_raw";
 	}
 }

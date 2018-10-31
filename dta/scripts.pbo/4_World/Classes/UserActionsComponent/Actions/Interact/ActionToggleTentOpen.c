@@ -96,7 +96,7 @@ class ActionToggleTentOpen: ActionInteractBase
 		}
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{
 		Object target_object = action_data.m_Target.GetObject();
 		TentBase ntarget = TentBase.Cast( target_object );

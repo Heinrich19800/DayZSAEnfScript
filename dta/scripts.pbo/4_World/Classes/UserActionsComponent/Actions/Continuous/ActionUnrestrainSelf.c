@@ -90,11 +90,6 @@ class ActionUnrestrainSelf: ActionContinuousBase
 		return "#struggle";
 	}
 	
-	override void OnCancelServer(ActionData action_data)
-	{
-
-	}
-	
 	override void OnEndAnimationLoopServer( ActionData action_data )
 	{	
 

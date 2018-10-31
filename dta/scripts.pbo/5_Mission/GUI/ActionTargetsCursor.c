@@ -56,6 +56,7 @@ class ActionTargetsCursor extends ObjectFollower
 	protected bool 							m_HealthEnabled;
 	protected bool							m_QuantityEnabled;	
 	protected bool							m_FixedOnPosition;
+	protected bool 							m_Hidden;
 
 	// for KeyToUIElements conversion
 	ref TIntArray 							m_ActionIndices;
@@ -75,6 +76,7 @@ class ActionTargetsCursor extends ObjectFollower
 		m_AM = null;
 		
 		m_CachedObject = new ATCCachedObject;
+		m_Hidden = false;
 		
 		m_ActionIndices = new TIntArray;
 		m_Keys = new TIntArray;
@@ -229,9 +231,9 @@ class ActionTargetsCursor extends ObjectFollower
 		GetActions();
 
 #ifdef PLATFORM_CONSOLE
-		if(m_Target && ((m_Interact || m_Single || m_Continuous) && m_AM.GetRunningAction() == null) && GetGame().GetUIManager().GetMenu() == null)
+		if(((m_Target && !m_Hidden) && ((m_Interact || m_Single || m_Continuous)) && m_AM.GetRunningAction() == null) && GetGame().GetUIManager().GetMenu() == null)
 #else
-		if(m_Target || ((m_Interact || m_Single || m_Continuous) && m_AM.GetRunningAction() == null) && GetGame().GetUIManager().GetMenu() == null)
+		if(((m_Target && !m_Hidden) || ((m_Interact || m_Single || m_Continuous)) && m_AM.GetRunningAction() == null) && GetGame().GetUIManager().GetMenu() == null)
 #endif
 		{
 			//! cursor with fixed position (environment interaction mainly)
@@ -578,6 +580,16 @@ class ActionTargetsCursor extends ObjectFollower
 		if(!m_AM) return;
 
 		m_Target = m_AM.FindActionTarget();
+		m_Hidden = false;
+
+		if (m_Target && m_Target.GetObject() && m_Target.GetObject().IsItemBase())
+		{
+			ItemBase item = Class.Cast(m_Target.GetObject());
+			if( !item.IsTakeable() )
+			{
+				m_Hidden = true;
+			}
+		}
 	}
 	
 	protected string GetActionDesc(ActionBase action)

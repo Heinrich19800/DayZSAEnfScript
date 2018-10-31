@@ -154,7 +154,9 @@ class StaminaSoundHandler
 		float stamina_delta = m_StaminaLastValue - m_Stamina;
 		eStaminaTendency stamina_tendency;
 		eStaminaZones stamina_zone;
+		
 		if( stamina_delta == 0 ) return;
+		
 		if( stamina_delta > 0 )
 		{
 			stamina_tendency = eStaminaTendency.DOWN;
@@ -171,9 +173,9 @@ class StaminaSoundHandler
 		
 		//EPlayerSoundEventID sound_event_id = GetPlayerSoundEventID();
 		/*
-		PrintString("stamina delta " +stamina_delta.ToString());
-		PrintString("stamina zone " +m_StaminaZone.ToString());
-		PrintString("stamina tendency " +m_StaminaTendency.ToString());
+		//PrintString("stamina delta " +stamina_delta.ToString());
+		//PrintString("stamina zone " +m_StaminaZone.ToString());
+		//PrintString("stamina tendency " +m_StaminaTendency.ToString());
 		*/
 		//PrintString(" sound event id " +sound_event_id.ToString());
 		

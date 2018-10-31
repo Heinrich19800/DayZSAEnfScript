@@ -381,7 +381,7 @@ class ContainerWithCargo: ClosableContainer
 			
 			Icon icon = m_IconsContainer.GetIcon( item.GetID() );
 			
-			if( icon )
+			if( icon && w && w.FindAnyWidget("Color") )
 			{
 				w.FindAnyWidget("Color").SetColor( ColorManager.BASE_COLOR );
 				icon.RefreshPos( x, y );

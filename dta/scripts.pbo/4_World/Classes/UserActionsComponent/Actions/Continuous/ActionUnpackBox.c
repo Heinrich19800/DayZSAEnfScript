@@ -85,13 +85,10 @@ class ActionUnpackBox: ActionContinuousBase
 				
 				//spawns wrapping Paper
 				ItemBase paper = ItemBase.Cast( GetGame().CreateObject("Paper", action_data.m_Player.GetPosition(), false) );
+				
+				action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 			}
 		}
-	}
-	
-	override void OnCompleteServer( ActionData action_data )
-	{	
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };
 

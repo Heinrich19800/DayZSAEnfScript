@@ -1,6 +1,6 @@
 class StuffedStomachMdfr: ModifierBase
 {
-	protected const int	 	STUFFED_TRESHOLD 			= 1000;
+	protected const int	 	STUFFED_TRESHOLD 			= 1500;
 	override void Init()
 	{
 		m_TrackActivatedTime = false;
@@ -16,8 +16,8 @@ class StuffedStomachMdfr: ModifierBase
 	
 	override bool ActivateCondition(PlayerBase player)
 	{
-		float stomachs = player.GetStatStomachSolid().Get() + player.GetStatStomachWater().Get();
-		if ( stomachs >= STUFFED_TRESHOLD )
+		float stomach = player.GetStatStomachVolume().Get();
+		if ( stomach >= STUFFED_TRESHOLD )
 		{
 			return true;
 		}
@@ -45,15 +45,7 @@ class StuffedStomachMdfr: ModifierBase
 
 	override bool DeactivateCondition(PlayerBase player)
 	{
-		float stomachs = player.GetStatStomachSolid().Get() + player.GetStatStomachWater().Get();
-		if ( stomachs < STUFFED_TRESHOLD )
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return !ActivateCondition(player);
 	}
 
 };

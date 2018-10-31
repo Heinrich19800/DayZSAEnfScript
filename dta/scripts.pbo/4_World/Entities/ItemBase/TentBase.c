@@ -33,11 +33,41 @@ class TentBase extends ItemBase
 		}
 	}
 	
+	override void OnStoreSave( ParamsWriteContext ctx )
+	{   
+		super.OnStoreSave( ctx );
+		
+		ctx.Write( m_State );
+	}
+	
+	override void OnStoreLoad( ParamsReadContext ctx )
+	{
+		super.OnStoreLoad( ctx );
+		
+		ctx.Read( m_State );
+		
+		if ( GetState() == PITCHED )
+		{
+			Pitch();
+		}
+		else
+		{
+			Pack();
+		}
+	}
+	
 	override void EEInit()
 	{
 		super.EEInit();
-
-		Pack();
+		
+		if ( GetState() == PITCHED )
+		{
+			Pitch();
+		}
+		else
+		{
+			Pack();
+		}
 	}
 	
 	override void OnItemLocationChanged(EntityAI old_owner, EntityAI new_owner)
@@ -54,7 +84,7 @@ class TentBase extends ItemBase
 	{
 		super.OnVariablesSynchronized();
 			
-		if ( m_State )
+		if ( GetState() == PITCHED )
 		{	
 			if ( IsManipulatedEntrance() && IsSoundSynchRemote() )
 			{						
@@ -152,7 +182,24 @@ class TentBase extends ItemBase
 		
 		if ( item.IsKindOf ( "CamoNet" ) ) 
 		{
-			SetAnimationPhase( "camonet", 0 );
+			SetAnimationPhase( "Camonet", 0 );
+			
+			if ( !IsKindOf ( "MediumTent" ) )
+			{
+				AddProxyPhysics( "camonet" );
+			}		
+		}
+		
+		if ( item.IsKindOf ( "XmasLights" ) ) 
+		{
+			SetAnimationPhase( "Xlights", 0 );
+			SetAnimationPhase( "Xlights_glass_r", 0 );
+			SetAnimationPhase( "Xlights_glass_g", 0 );
+			SetAnimationPhase( "Xlights_glass_b", 0 );
+			SetAnimationPhase( "Xlights_glass_y", 0 );
+			
+			XmasLights xlights = XmasLights.Cast( item );
+			xlights.AttachToObject( this );
 		}
 	}
 
@@ -162,7 +209,24 @@ class TentBase extends ItemBase
 				
 		if ( item.IsKindOf ( "CamoNet" ) ) 
 		{
-			SetAnimationPhase( "camonet", 1 );
+			SetAnimationPhase( "Camonet", 1 );
+			
+			if ( !IsKindOf ( "MediumTent" ) )
+			{
+				RemoveProxyPhysics( "camonet" );
+			}
+		}
+		
+		if ( item.IsKindOf ( "XmasLights" ) ) 
+		{
+			SetAnimationPhase( "Xlights", 1 );
+			SetAnimationPhase( "Xlights_glass_r", 1 );
+			SetAnimationPhase( "Xlights_glass_g", 1 );
+			SetAnimationPhase( "Xlights_glass_b", 1 );
+			SetAnimationPhase( "Xlights_glass_y", 1 );
+			
+			XmasLights xlights = XmasLights.Cast( item );
+			xlights.DetachFromObject( this );
 		}
 	}
 	
@@ -203,7 +267,7 @@ class TentBase extends ItemBase
 	
 	bool CanAttach( ItemBase item )
 	{
-		if ( item.IsKindOf ( "CamoNet" ) ) 
+		if ( item.IsKindOf ( "CamoNet" ) && GetState() == PITCHED ) 
 		{
 			return true;
 		}
@@ -220,19 +284,8 @@ class TentBase extends ItemBase
 		m_IsWindow = PACKED;
 		m_IsToggle = PACKED;
 		
-		string proxy_selection_name;
-		string animation_name;
-
-		for ( int i = 0; i < m_ShowAnimationsWhenPacked.Count(); i++ )
-		{
-			animation_name = m_ShowAnimationsWhenPacked.Get(i);
-		
-			SetAnimationPhase( animation_name, 0 );
-			proxy_selection_name = animation_name;
-			proxy_selection_name.ToLower();
-			AddProxyPhysics( proxy_selection_name );
-		}
-	
+		Refresh();
+				
 		GetInventory().LockInventory(HIDE_INV_FROM_SCRIPT);
 		
 		if ( update_navmesh ) 
@@ -256,30 +309,79 @@ class TentBase extends ItemBase
 		m_IsWindow = PITCHED;
 		m_IsToggle = PITCHED;
 		
-		
-		string proxy_selection_name;
-		string animation_name;
-		
-		for ( int i = 0; i < m_ShowAnimationsWhenPitched.Count(); i++ )
-		{
-			animation_name = m_ShowAnimationsWhenPitched.Get(i);
-			
-			SetAnimationPhase( animation_name, 0 );
-			proxy_selection_name = animation_name;
-			proxy_selection_name.ToLower();
-			AddProxyPhysics( proxy_selection_name );
-		}
+		Refresh();
 		
 		GetInventory().UnlockInventory(HIDE_INV_FROM_SCRIPT);
 		
 		if ( update_navmesh ) 
 		{
-			RegenerateNavmesh();	
+			RegenerateNavmesh();
 		}
 		
 		SetViewIndex( PITCHED );
 
 		SetSynchDirty();
+	}
+	
+	void UpdateVisuals()
+	{
+		string proxy_selection_name;
+		string animation_name;
+		
+		if ( GetState() == PITCHED )
+		{	
+			for ( int i = 0; i < m_ShowAnimationsWhenPitched.Count(); i++ )
+			{
+				animation_name = m_ShowAnimationsWhenPitched.Get(i);
+				
+				SetAnimationPhase( animation_name, 0 );
+			}
+		}
+		else
+		{	
+			for ( int j = 0; j < m_ShowAnimationsWhenPacked.Count(); j++ )
+			{
+				animation_name = m_ShowAnimationsWhenPacked.Get(j);
+				
+				SetAnimationPhase( animation_name, 0 );
+			}
+		}		
+	}
+	
+	void UpdatePhysics()
+	{
+		string proxy_selection_name;
+		string animation_name;
+		
+		if ( GetState() == PITCHED )
+		{	
+			for ( int i = 0; i < m_ShowAnimationsWhenPitched.Count(); i++ )
+			{
+				animation_name = m_ShowAnimationsWhenPitched.Get(i);
+				
+				proxy_selection_name = animation_name;
+				proxy_selection_name.ToLower();
+				AddProxyPhysics( proxy_selection_name );
+			}
+		}
+		else
+		{	
+			for ( int j = 0; j < m_ShowAnimationsWhenPacked.Count(); j++ )
+			{
+				animation_name = m_ShowAnimationsWhenPacked.Get(j);
+				
+				proxy_selection_name = animation_name;
+				proxy_selection_name.ToLower();
+				AddProxyPhysics( proxy_selection_name );
+			}
+		}	
+	}
+	
+	//refresh visual/physics state
+	void Refresh()
+	{
+		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( UpdateVisuals );
+		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( UpdatePhysics, 100, false );
 	}
 	
 	bool CanToggleAnimations( string selection )

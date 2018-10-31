@@ -186,7 +186,11 @@ class OptionsMenuControls extends ScriptedWidgetEventHandler
 	
 	bool IsFocusable( Widget w )
 	{
-		return ( w == m_Keybindings );
+		if( w )
+		{
+			return ( w == m_Keybindings );
+		}
+		return false;
 	}
 	
 	bool IsChanged()

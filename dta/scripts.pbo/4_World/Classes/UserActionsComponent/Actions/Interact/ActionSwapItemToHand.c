@@ -48,13 +48,13 @@ class ActionSwapItemToHands: ActionInteractBase
 		return false;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{
 		EntityAI eih = EntityAI.Cast(action_data.m_Player.GetItemInHands());
 		EntityAI ntarget = EntityAI.Cast(action_data.m_Target.GetObject());
 		action_data.m_Player.LocalSwapEntities(ntarget, eih);
 	}
-	override void OnCompleteClient( ActionData action_data )
+	override void OnExecuteClient( ActionData action_data )
 	{
 		EntityAI eih = EntityAI.Cast(action_data.m_Player.GetItemInHands());
 		EntityAI ntarget = EntityAI.Cast(action_data.m_Target.GetObject());

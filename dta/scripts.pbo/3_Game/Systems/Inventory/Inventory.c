@@ -921,8 +921,8 @@ class GameInventory
 		if (lambda.m_OldItem.GetInventory().GetCurrentInventoryLocation(src))
 		{
 			Print("[inv] I::ReplaceItemWithNew executing lambda=" + lambda + "on old_item=" + lambda.m_OldItem);
-			if (src.GetType() == InventoryLocationType.HANDS)
-				Error("[inv] I::ReplaceItemWithNew Source location == HANDS, player has to handle this");
+			if (src.GetType() == InventoryLocationType.HANDS && src.GetParent().IsAlive())
+				Error("[inv] I::ReplaceItemWithNew Source location == HANDS, alive player has to handle this");
 
 			lambda.Execute();
 			return true;
@@ -986,7 +986,7 @@ class ReplaceItemWithNewLambdaBase
 				return new_item;
 			else
 			{
-				Error("[inv] ReplaceItemWithNewLambdaBase Step B) wanted to create=" + m_NewItemType + ", but failed");
+				Error("[inv] ReplaceItemWithNewLambdaBase Step B) wanted to create=" + m_NewItemType + " at loc=" + m_NewLocation.DumpToString() + ", but failed");
 				return null;
 			}
 		}

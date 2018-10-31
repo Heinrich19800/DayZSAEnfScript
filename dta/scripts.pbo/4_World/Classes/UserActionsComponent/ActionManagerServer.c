@@ -265,7 +265,7 @@ class ActionManagerServer: ActionManagerBase
 						{
 							m_CurrentActionData.m_State = UA_START;
 							m_CurrentActionData.m_Action.Start(m_CurrentActionData);
-							if( m_CurrentActionData.m_Action.IsInstant() )
+							if( m_CurrentActionData.m_Action && m_CurrentActionData.m_Action.IsInstant() )
 								OnActionEnd();
 						}
 						else

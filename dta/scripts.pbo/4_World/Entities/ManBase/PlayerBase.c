@@ -3028,28 +3028,27 @@ class PlayerBase extends ManBase
 			if (!ctx.Read(slot_id))
 				return false;
 			
-			if (type == -1)//combine
+			if ( type == -1 && item1 && item2 )//combine
 			{
-				if ( item1 && item2 )
-					item1.CombineItems(item2, use_stack_max);
+				item1.CombineItems( item2, use_stack_max );
 			}
-			else if ( type == 1 )
+			else if ( type == 1 && item1 )
 			{
 				if ( use_stack_max )
 					item1.SplitIntoStackMax(item2, slot_id, this);
 				else
 					item1.SplitItem(this);
 			}
-			else if ( type == 2 )
+			else if ( type == 2 && item1 )
 			{
 				int row, col;
-				if (!ctx.Read(row))
+				if ( !ctx.Read( row ) )
 					return false;
-				if (!ctx.Read(col))
+				if ( !ctx.Read( col ) )
 					return false;
 				item1.SplitIntoStackMaxCargo( item2, slot_id, row, col );
 			}
-			else if ( type == 3 )
+			else if ( type == 3 && item1 )
 			{
 				item1.SplitIntoStackMaxHands( this );
 			}
@@ -3686,7 +3685,6 @@ class PlayerBase extends ManBase
 		{
 			if(source)
 			{
-				
 				plugin.TransmitAgents(source, this, AGT_UACTION_CONSUME, amount);
 				source.AddQuantity(-amount, false, false);
 				ProcessNutritions(source.GetNutritionalProfile(),amount);
@@ -3718,20 +3716,18 @@ class PlayerBase extends ManBase
 		float nutritions = profile.GetNutritionalIndex();
 		float fullness_index = profile.GetFullnessIndex();
 		float toxicity = profile.GetToxicity();
-		
-		float consumedwater = (consumedquantity * water_per_unit);
+		bool is_liquid = profile.IsLiquid();
 		
 		if ( consumedquantity > 0 )
 		{
 			float water_consumed = consumedquantity * water_per_unit;
-			float solids_consumed = consumedquantity - water_consumed;
+			GetStatStomachVolume().Add(consumedquantity * fullness_index );
 			GetStatStomachEnergy().Add( consumedquantity * energy_per_unit );
 			GetStatStomachWater().Add( water_consumed );
-			GetStatStomachSolid().Add(solids_consumed * fullness_index );
 		}
 		else
 		{
-			Print("ZERO VOLUME! Fix config");
+			Print("ProcessNutritions - ZERO VOLUME! Fix config");
 		}
 	}
 	
@@ -3990,7 +3986,7 @@ class PlayerBase extends ManBase
 		return m_ModifiersManager;
 	}
 
-	PlayerStat<float> GetStatStomachSolid()
+	PlayerStat<float> GetStatStomachVolume()
 	{
 		if( GetPlayerStats() ) 
 		{

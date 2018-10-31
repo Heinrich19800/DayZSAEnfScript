@@ -5,9 +5,9 @@ class DamageSoundEvents extends PlayerSoundEventBase
 		return true;
 	}
 	
-	override bool ThisHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id)
+	override bool IsCurrentHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id,EPlayerSoundEventType type )
 	{
-		if(PlayerSoundEventHandler.GetSoundEventType(other_state_id) != EPlayerSoundEventType.DAMAGE)
+		if(type != EPlayerSoundEventType.DAMAGE)
 		{
 			return true;
 		}

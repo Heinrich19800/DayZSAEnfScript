@@ -118,7 +118,7 @@ class ActionUnrestrainTarget: ActionContinuousBase
 		return false;
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		PlayerBase player_target = PlayerBase.Cast(action_data.m_Target.GetObject());
 		PlayerBase player_source = PlayerBase.Cast(action_data.m_Player);
@@ -130,7 +130,7 @@ class ActionUnrestrainTarget: ActionContinuousBase
 		
 		player_target.SetRestrained(false);
 		
-		MiscGameplayFunctions.TransformRestrainItem(restraining_item, unrestraining_tool, player_target);
+		MiscGameplayFunctions.TransformRestrainItem(restraining_item, unrestraining_tool, player_source, player_target);
 
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}

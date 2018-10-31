@@ -59,8 +59,8 @@ class ActionPickBerry: ActionInteractLoopBase
 	}
 
 	//deprecated
-	override void OnCompleteServer( ActionData action_data )
-	{
+	////override void OnCompleteServer( ActionData action_data )
+	//{
 		/*Object targetObject = action_data.m_Target.GetObject();
 		WoodBase ntarget = WoodBase.Cast( targetObject );
 		string drop_name = ntarget.GetMaterial(NULL);
@@ -72,5 +72,5 @@ class ActionPickBerry: ActionInteractLoopBase
 		drop.SetQuantity(drop_quantity, false);
 
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );*/
-	}
+	//}
 };

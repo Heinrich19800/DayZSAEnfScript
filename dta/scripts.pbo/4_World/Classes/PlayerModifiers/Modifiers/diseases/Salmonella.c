@@ -49,7 +49,7 @@ class SalmonellaMdfr: ModifierBase
 	override protected void OnTick(PlayerBase player, float deltaT)
 	{
 		//Log("Ticking OnTick influenza modifier "+ToString(player.GetSingleAgentCount(eAgents.INFLUENZA)));
-		float chance_of_vomit = player.GetStatStomachSolid().GetNormalized() / 10;
+		float chance_of_vomit = player.GetStatStomachVolume().GetNormalized() / 10;
 		if( Math.RandomFloat01() < chance_of_vomit )
 		{
 			SymptomBase symptom = player.GetSymptomManager().QueueUpPrimarySymptom(SymptomIDs.SYMPTOM_VOMIT);

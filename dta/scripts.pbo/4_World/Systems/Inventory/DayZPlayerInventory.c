@@ -393,7 +393,7 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 					e.m_Player.GetHumanInventory().PostHandEvent(e);
 				}
 				else
-					Error("OnInputData HandEvent - no inv loc");
+					Error("OnInputData HandEvent - no inv loc for entity=" + e.m_Entity.GetName() + "@" + this + " ev=" + e.DumpToString());
 				break;
 			}
 
@@ -556,7 +556,24 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 			Weapon_Base wpn = Weapon_Base.Cast(GetEntityInHands());
 			if (wpn)
 			{
-				wpn.OnEventFromRemote(ctx);
+				PlayerBase pb = PlayerBase.Cast(GetDayZPlayerOwner());
+
+				WeaponEventBase e = CreateWeaponEventFromContext(ctx);
+				if (pb && e)
+				{
+					pb.GetWeaponManager().SetRunning(true);
+		
+					fsmDebugSpam("[wpnfsm] recv event from remote: created event=" + e);
+					if (e.GetEventID() == WeaponEventID.HUMANCOMMAND_ACTION_ABORTED)
+					{
+						wpn.ProcessWeaponAbortEvent(e);
+					}
+					else
+					{
+						wpn.ProcessWeaponEvent(e);
+					}
+					pb.GetWeaponManager().SetRunning(false);
+				}
 			}
 			else
 				Error("OnEventFromRemoteWeapon - entity in hands, but not weapon. item=" + GetEntityInHands());

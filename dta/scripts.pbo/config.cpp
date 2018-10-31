@@ -1508,6 +1508,13 @@ class CfgSlots
 		selection="Material_MetalWire";
 		ghostIcon="metalwire";
 	};
+	class Slot_Att_CombinationLock
+	{
+		name="Att_CombinationLock";
+		displayName="Combination lock";
+		selection="att_combinationlock";
+		ghostIcon="enginebelt";
+	};
 	class Slot_Wall_Barbedwire_1
 	{
 		name="Wall_Barbedwire_1";
@@ -1528,13 +1535,6 @@ class CfgSlots
 		displayName="Camonet";
 		selection="wall_camonet";
 		ghostIcon="camonet";
-	};
-	class Slot_Wall_CombinationLock
-	{
-		name="Wall_CombinationLock";
-		displayName="Combination lock";
-		selection="wall_combinationlock";
-		ghostIcon="enginebelt";
 	};
 	class Slot_LargeBattery
 	{

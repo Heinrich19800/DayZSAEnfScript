@@ -21,6 +21,7 @@ class ComponentEnergyManager : Component
 	protected 		Shape			m_DebugPlugArrow;
 	
 	protected 		bool			m_IsSwichedOn;
+	protected 		bool			m_IsSwichedOnPreviousState; // Necesarry due to synchronization of m_IsSwichedOn
 	protected 		bool			m_IsPassiveDevice;
 	protected 		bool			m_IsWorking;
 	protected 		bool			m_CanWork;
@@ -264,6 +265,8 @@ class ComponentEnergyManager : Component
 	//! Energy manager: Switches ON the device so it starts doing its work if it has enough energy.
 	void SwitchOn()
 	{
+		m_IsSwichedOnPreviousState = m_IsSwichedOn;
+		
 		if ( GetGame().IsServer() )
 		{
 			if ( CanSwitchOn() )
@@ -293,6 +296,8 @@ class ComponentEnergyManager : Component
 	//! Energy manager: Switches OFF the device.
 	void SwitchOff()
 	{
+		m_IsSwichedOnPreviousState = m_IsSwichedOn;
+		
 		if ( GetGame().IsServer() )
 		{
 			if ( CanSwitchOff() )
@@ -680,6 +685,12 @@ class ComponentEnergyManager : Component
 		return IsSwitchedOn();
 	}
 
+	// Returns previous state of the switch.
+	bool GetPreviousSwitchState()
+	{
+		return m_IsSwichedOnPreviousState;
+	}
+	
 	//! Energy manager: Returns state of the switch. Whenever the device is working or not does not matter. Use IsWorking() to account for that as well.
 	bool IsSwitchedOn()
 	{

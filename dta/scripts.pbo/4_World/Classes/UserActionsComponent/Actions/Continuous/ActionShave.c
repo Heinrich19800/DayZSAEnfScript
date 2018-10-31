@@ -55,7 +55,7 @@ class ActionShave: ActionContinuousBase
 		return "#shave_myself";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		action_data.m_Player.ShavePlayer();
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );

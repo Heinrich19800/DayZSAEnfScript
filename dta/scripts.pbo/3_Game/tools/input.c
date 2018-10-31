@@ -143,7 +143,7 @@ class Input
 	@return true if action was released in that frame, false otherwise
 	@see GetActionDbl()
 	*/
-//	proto native bool	GetActionDbl(int action, bool check_focus = true);
+	proto native bool	GetActionDbl(int action, bool check_focus = true);
 
 	proto native void	BlockInput(int key);
 	

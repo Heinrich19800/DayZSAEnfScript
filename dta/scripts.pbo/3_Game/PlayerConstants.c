@@ -5,9 +5,9 @@ class PlayerConstants
 	static const float HIGH_TEMPERATURE_L = 38.5;
 	static const float HIGH_TEMPERATURE_H = 39.9;
 	//-------------------------------------------------------
-	static const float STOMACH_ENERGY_TRANSFERED_PER_SEC 		= 1;	//amount of kcal transfered to energy per second(this should ideally be higher than what player burns under high metabolic load[sprint])
-	static const float STOMACH_WATER_TRANSFERED_PER_SEC 		= 4;	//amount of ml transfered to water per second(this should ideally be higher than what player burns under high metabolic load[sprint])
-	static const float STOMACH_SOLID_EMPTIED_PER_SEC 			= 1;	//amount of g/ml emptied from stomach per second
+	static const float STOMACH_ENERGY_TRANSFERED_PER_SEC 		= 3;	//amount of kcal transfered to energy per second(this should ideally be higher than what player burns under high metabolic load[sprint])
+	static const float STOMACH_WATER_TRANSFERED_PER_SEC 		= 6;	//amount of ml transfered to water per second(this should ideally be higher than what player burns under high metabolic load[sprint])
+	static const float STOMACH_SOLID_EMPTIED_PER_SEC 			= 7;	//amount of g/ml emptied from stomach per second
 	//static const float STOMACH_EMPTIED_LIQUID_PER_SEC	 		= Playerstatic constants.WATER_TRANSFERED_PER_SEC;
 	static const float LOW_WATER_THRESHOLD 						= 250;	//threshold from which water affects health
 	static const float WATER_DECREMENT_PER_SEC 				= STOMACH_WATER_TRANSFERED_PER_SEC / 4; //used in poisoning for now

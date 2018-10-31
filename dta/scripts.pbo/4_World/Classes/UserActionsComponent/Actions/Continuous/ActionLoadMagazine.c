@@ -85,11 +85,6 @@ class ActionLoadMagazine: ActionContinuousBase
 			//trg.SetSynchDirty();
 		//itm.SetSynchDirty();
 	}
-
-	override void OnCompleteServer( ActionData action_data )
-	{
-		//OnRepeat(action_data);
-	}
 	
 	override bool CanBePerformedFromQuickbar()
 	{

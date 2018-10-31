@@ -573,3 +573,15 @@ const string DEFAULT_CHARACTER_NAME = "Survivor";
   * \ misc
  */
 const float DEBUG_QUICK_UNRESTRAIN_TIME = 1.0;
+
+/**
+ * \defgroup Cars Fluids 
+ * \desc Constants for car fluids
+ * @{
+ */
+const int CARS_FLUIDS_TICK 		= 1;
+const int CARS_LEAK_TICK_MIN 	= 0.02;
+const int CARS_LEAK_TICK_MAX 	= 0.05;
+const int CARS_LEAK_THRESHOLD	= 0.5;
+
+/** @}*/

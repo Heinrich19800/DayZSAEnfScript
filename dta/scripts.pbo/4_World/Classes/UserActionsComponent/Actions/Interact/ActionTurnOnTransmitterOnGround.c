@@ -4,8 +4,8 @@ class ActionTurnOnTransmitterOnGround: ActionInteractBase
 	{
 		m_CommandUID        = DayZPlayerConstants.CMD_ACTIONMOD_OPENDOORFW;
 		m_StanceMask        = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
-		m_MessageSuccess = "I have turned it on.";
-		m_MessageFail = "Cannot turn on the device without power source.";
+		m_MessageSuccess 	= "I have turned it on.";
+		m_MessageFail 		= "Cannot turn on the device without power source.";
 	}
 
 	override int GetType()
@@ -26,7 +26,7 @@ class ActionTurnOnTransmitterOnGround: ActionInteractBase
 			EntityAI target_entity = EntityAI.Cast( target_object );
 			string selection = target_object.GetActionComponentName( target.GetComponentIndex() );
 			
-			if ( target_entity.HasEnergyManager() && !target_entity.GetCompEM().IsWorking() && selection == "power_panel" )
+			if ( target_entity.HasEnergyManager() && target_entity.GetCompEM().CanSwitchOn() && selection == "power_panel" )
 			{
 				AdvancedCommunication transmitter = AdvancedCommunication.Cast( target_object );
 				transmitter.DisplayRadioInfo( "OFF", player );
@@ -38,9 +38,9 @@ class ActionTurnOnTransmitterOnGround: ActionInteractBase
 		return false;
 	}
 		
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{
-		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
-		target_entity.GetCompEM().SwitchOn();
+		AdvancedCommunication transmitter = AdvancedCommunication.Cast( action_data.m_Target.GetObject() );
+		transmitter.TurnOnTransmitter();
 	}
 }

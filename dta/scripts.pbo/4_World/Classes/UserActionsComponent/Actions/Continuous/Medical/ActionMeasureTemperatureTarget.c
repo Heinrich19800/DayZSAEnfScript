@@ -39,7 +39,7 @@ class ActionMeasureTemperatureTarget : ActionContinuousBase
 		return "#measure_temperature";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		PlayerBase ntarget = PlayerBase.Cast( action_data.m_Target.GetObject() );
 		Thermometer thermometer = Thermometer.Cast(action_data.m_MainItem);

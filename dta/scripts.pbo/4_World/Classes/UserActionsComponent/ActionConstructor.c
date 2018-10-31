@@ -207,6 +207,8 @@ class ActionConstructor
 		actions.Insert(new ActionDialCombinationLockOnTarget);
 		actions.Insert(new ActionBuildBasePart);
 		actions.Insert(new ActionDismantleBasePart);
+		actions.Insert(new ActionFillCoolant);
+		actions.Insert(new ActionFillOil);
 		
 		// Interact actions
 		actions.Insert(new ActionPullOutPlug);

@@ -1,9 +1,13 @@
 class StaminaSoundEventBase extends PlayerSoundEventBase
 {
-	override bool ThisHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id)
+	override bool IsCurrentHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id, EPlayerSoundEventType type)
 	{
-		if(PlayerSoundEventHandler.GetSoundEventType(other_state_id) == EPlayerSoundEventType.STAMINA)
+		if(type == EPlayerSoundEventType.STAMINA)
 		{
+			if( other_state_id == EPlayerSoundEventID.STAMINA_UP_END )
+			{
+				return false;
+			}
 			return true;
 		}
 		return false;
@@ -65,7 +69,12 @@ class StaminaUpEnd extends StaminaSoundEventBase
 	{
 		m_Type = EPlayerSoundEventType.STAMINA;
 		m_ID = EPlayerSoundEventID.STAMINA_UP_END;
-		m_SoundVoiceAnimEventClassID = 5;
+		m_SoundVoiceAnimEventClassID = 26;
+	}
+	
+	override void OnPlay(PlayerBase player)
+	{
+		int i = 2 + 1;
 	}
 }
 
@@ -73,7 +82,7 @@ class StaminaNormalDummy extends StaminaSoundEventBase
 {
 	void StaminaNormalDummy()
 	{
-		m_Type = EPlayerSoundEventType.STAMINA;
+		m_Type = EPlayerSoundEventType.DUMMY;
 		m_ID = EPlayerSoundEventID.STAMINA_NORMAL_DUMMY;
 		m_IsDummyType = true;
 		m_DummySoundLength = 3000;//in ms

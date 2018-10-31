@@ -207,8 +207,6 @@ class ContainerWithCargoAndAttachments: ClosableContainer
 
 	void MouseClick2( Widget w, int x, int y, int button )
 	{
-		bool inventory_locked = GetGame().GetPlayer().GetInventory().IsInventoryLocked();
-		ItemManager.GetInstance().SetWidgetDraggable( w, !inventory_locked );
 		string name = w.GetName();
 		name.Replace( "PanelWidget", "Render" );
 		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
@@ -218,6 +216,8 @@ class ContainerWithCargoAndAttachments: ClosableContainer
 			return;
 		}
 		
+		bool inventory_locked = GetGame().GetPlayer().GetInventory().IsInventoryLocked();
+		ItemManager.GetInstance().SetWidgetDraggable( w, !inventory_locked );
 		EntityAI item = item_preview.GetItem();
 		InventoryItem itemAtPos = InventoryItem.Cast( item );
 		

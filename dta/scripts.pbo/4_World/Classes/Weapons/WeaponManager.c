@@ -305,6 +305,11 @@ class WeaponManager
 	{
 		return StartAction(AT_WPN_EJECT_BULLET, NULL, NULL, NULL);
 	}
+	
+	bool SetNextMuzzleMode ()
+	{
+		return StartAction(AT_WPN_SET_NEXT_MUZZLE_MODE, NULL, NULL, NULL);
+	}
 //-------------------------------------------------------------------------------------	
 // Synchronize - initialize from client side
 //-------------------------------------------------------------------------------------
@@ -512,6 +517,11 @@ class WeaponManager
 					accepted = true;
 					break;
 				}
+				case AT_WPN_SET_NEXT_MUZZLE_MODE:
+				{
+					accepted = true;
+					break;
+				}
 				default:
 					Error("unknown actionID=" + m_PendingWeaponAction);
 					return false;
@@ -609,6 +619,11 @@ class WeaponManager
 			case AT_WPN_EJECT_BULLET:
 			{
 				m_player.GetDayZPlayerInventory().PostWeaponEvent( new WeaponEventMechanism(m_player, NULL) );
+				break;
+			}
+			case AT_WPN_SET_NEXT_MUZZLE_MODE:
+			{
+				m_player.GetDayZPlayerInventory().PostWeaponEvent( new WeaponEventSetNextMuzzleMode(m_player, NULL) );
 				break;
 			}
 			default:

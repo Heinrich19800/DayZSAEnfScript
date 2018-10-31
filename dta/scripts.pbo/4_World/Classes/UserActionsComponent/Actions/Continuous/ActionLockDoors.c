@@ -65,7 +65,7 @@ class ActionLockDoors: ActionContinuousBase
 		}
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{
 		LockDoor(action_data.m_Target);
 	}

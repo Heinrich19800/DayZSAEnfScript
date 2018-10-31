@@ -342,7 +342,7 @@ class ActionBase
 	void Start( ActionData action_data ) //Setup on start of action
 	{
 		action_data.m_State = UA_START;
-/*		if( GetGame().IsServer() )
+		if( GetGame().IsServer() )
 		{
 			OnStartServer(action_data);
 		}
@@ -350,11 +350,10 @@ class ActionBase
 		{
 			OnStartClient(action_data);
 		}	
-		*/	
 		InformPlayers(action_data.m_Player,action_data.m_Target,UA_START);	
 	}
 	
-	void End( ActionData action_data, int state = -1 )
+	void End( ActionData action_data )
 	{
 		if( action_data.m_Player )
 			action_data.m_Player.GetActionManager().OnActionEnd();
@@ -762,6 +761,18 @@ class ActionBase
 			}
 		}
 	}
+	
+	void OnStartClient(ActionData action_data)
+	{}
+	
+	void OnStartServer(ActionData action_data)
+	{}
+	
+	void OnEndClient(ActionData action_data)
+	{}
+	
+	void OnEndServer(ActionData action_data)
+	{}
 
 	// SOFT SKILLS ------------------------------------------------
 	float GetSpecialtyWeight()

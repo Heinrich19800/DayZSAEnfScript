@@ -1,5 +1,10 @@
 const int MAX_FAVORITES = 50;
+
+#ifdef PLATFORM_CONSOLE
 const int SERVER_BROWSER_PAGE_SIZE = 50;
+#else
+const int SERVER_BROWSER_PAGE_SIZE = 1;
+#endif
 
 class ServerBrowserMenuNew extends UIScriptedMenu
 {
@@ -101,7 +106,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			}
 			else if ( w == m_Back )
 			{
-				ReturnMainMenu();
+				Back();
 				return true;
 			}
 			else if ( w == m_CustomizeCharacter )
@@ -178,6 +183,12 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 				#endif
 			}
 		}
+	}
+	
+	void Back()
+	{
+		SaveData();
+		GetGame().GetUIManager().Back();
 	}
 	
 	void FilterFocus( bool focus )
@@ -301,11 +312,6 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			GetSelectedTab().PressY();
 		}
 		
-		if( GetGame().GetInput().GetActionDown( UAUINextDown, false ) )
-		{
-			
-		}		
-		
 		if( GetGame().GetInput().GetActionDown( UAUILeft, false ) )
 		{
 			GetSelectedTab().Left();
@@ -325,6 +331,11 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		{
 			GetSelectedTab().Down();
 		}
+
+		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
+		{
+			Back();
+		}
 		
 		GetSelectedTab().Update( timeslice );
 		
@@ -333,7 +344,11 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	
 	bool IsFocusable( Widget w )
 	{
-		return ( w == m_Play || w == m_CustomizeCharacter || w == m_Back );
+		if( w )
+		{
+			return ( w == m_Play || w == m_CustomizeCharacter || w == m_Back );
+		}
+		return false;
 	}
 	
 	void LoadData()
@@ -368,12 +383,6 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		{
 			g_Game.ConnectFromServerBrowser( m_SelectedServer.GetIP(), m_SelectedServer.GetPort(), "" );
 		}
-	}
-
-	void ReturnMainMenu()
-	{
-		SaveData();
-		GetGame().GetUIManager().Back();
 	}
 	
 	void CustomizeCharacter()
@@ -414,7 +423,7 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	
 	void OnTabSwitch()
 	{
-		SetRefreshing( -1 );
+		SetRefreshing( TabType.NONE );
 		if( GetSelectedTab().IsNotInitialized() )
 			GetSelectedTab().RefreshList();
 		GetSelectedTab().Focus();

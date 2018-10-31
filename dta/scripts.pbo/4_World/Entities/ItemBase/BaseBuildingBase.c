@@ -18,6 +18,8 @@ class BaseBuildingBase extends ItemBase
 	int 	m_SyncParts01;									//synchronization for already built parts (32)
 	int 	m_SyncParts02;									//synchronization for already built parts (64)
 	
+	ref map<string, ref AreaDamageRegularDeferred> m_DamageTriggers;
+	
 	// Constructor
 	void BaseBuildingBase() 
 	{
@@ -28,6 +30,8 @@ class BaseBuildingBase extends ItemBase
 		m_DmgTriggers = new array<BarbedWireTrigger>;
 		m_BarbedWires = new map<string,BarbedWire>;
 		*/
+		
+		m_DamageTriggers = new ref map<string, ref AreaDamageRegularDeferred>;
 		
 		//synchronized variables
 		RegisterNetSyncVariableInt( "m_SyncParts01" );
@@ -40,9 +44,11 @@ class BaseBuildingBase extends ItemBase
 		if ( GetGame().IsServer() )
 		{
 			SetSynchDirty();
-		
-			//Refresh visuals (server)
-			Refresh();
+			
+			if ( GetGame().IsMultiplayer() )
+			{
+				Refresh();
+			}
 		}
 	}
 	
@@ -50,7 +56,7 @@ class BaseBuildingBase extends ItemBase
 	void Refresh()
 	{
 		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( UpdateVisuals );
-		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( UpdatePhysics );
+		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( UpdatePhysics, 100, false );
 	}
 	
 	override void OnVariablesSynchronized()
@@ -64,9 +70,8 @@ class BaseBuildingBase extends ItemBase
 		Refresh();
 	}
 	
-	//TODO add support for more than 32 parts
 	//parts synchronization
-	void RegisterPartForSync( int part_id, bool synchronize )
+	void RegisterPartForSync( int part_id )
 	{
 		if ( part_id >= 1 )		//part_id must starts from index = 1
 		{
@@ -90,14 +95,11 @@ class BaseBuildingBase extends ItemBase
 				m_SyncParts01 = m_SyncParts01 | mask;
 			}
 			
-			if ( synchronize ) 
-			{
-				Synchronize();
-			}
+			Synchronize();
 		}
 	}
 	
-	void UnregisterPartForSync( int part_id, bool synchronize )
+	void UnregisterPartForSync( int part_id )
 	{
 		if ( part_id >= 1 )		//part_id must starts from index = 1
 		{
@@ -121,10 +123,7 @@ class BaseBuildingBase extends ItemBase
 				m_SyncParts01 = m_SyncParts01 & ~mask;
 			}
 			
-			if ( synchronize ) 
-			{
-				Synchronize();
-			}
+			Synchronize();
 		}		
 	}	
 	
@@ -179,14 +178,14 @@ class BaseBuildingBase extends ItemBase
 			{
 				if ( !value.IsBuilt() )
 				{
-					GetConstruction().BuildPart( key, false, false );
+					GetConstruction().BuildPart( key, false );
 				}
 			}
 			else
 			{
 				if ( value.IsBuilt() )
 				{
-					GetConstruction().DismantlePart( key, false, false );
+					GetConstruction().DismantlePart( key, false );
 				}
 			}
 		}
@@ -280,7 +279,7 @@ class BaseBuildingBase extends ItemBase
 		super.OnItemLocationChanged( old_owner, new_owner );
 		
 		//update visuals after location change
-		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( UpdatePhysics );
+		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( UpdatePhysics, 100, false );
 	}
 	
 	override void EEItemAttached ( EntityAI item, string slot_name )
@@ -300,7 +299,7 @@ class BaseBuildingBase extends ItemBase
 	}
 	
 	//CONSTRUCTION EVENTS
-	void OnPartBuilt( string part_name, bool synchronize )
+	void OnPartBuilt( string part_name )
 	{
 		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		
@@ -322,15 +321,11 @@ class BaseBuildingBase extends ItemBase
 			SetGateState( true );
 		}
 	
-		//register on server only
-		if ( GetGame().IsServer() )
-		{
-			//register constructed parts for synchronization
-			RegisterPartForSync( constrution_part.GetId(), synchronize );
-		}
+		//register constructed parts for synchronization
+		RegisterPartForSync( constrution_part.GetId() );		
 	}
 	
-	void OnPartDismantled( string part_name, bool synchronize )
+	void OnPartDismantled( string part_name )
 	{
 		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		
@@ -347,12 +342,8 @@ class BaseBuildingBase extends ItemBase
 			SetGateState( false );
 		}		
 		
-		//register on server only
-		if ( GetGame().IsServer() )
-		{
-			//register constructed parts for synchronization
-			UnregisterPartForSync( constrution_part.GetId(), synchronize );
-		}
+		//register constructed parts for synchronization
+		UnregisterPartForSync( constrution_part.GetId() );
 	}
 	
 	// --- UPDATE
@@ -367,7 +358,7 @@ class BaseBuildingBase extends ItemBase
 			EntityAI attachment = FindAttachmentBySlotName( slot_name );
 			string slot_name_mounted = slot_name + "_Mounted";
 		
-			if ( attachment && !IsAttachmentSlotLocked( attachment ) )
+			if ( attachment )
 			{
 				if ( attachment.IsInherited( BarbedWire ) )
 				{
@@ -376,22 +367,36 @@ class BaseBuildingBase extends ItemBase
 					{
 						SetAnimationPhase( slot_name, 1 );
 						SetAnimationPhase( slot_name_mounted, 0 );
+						
+						CreateAreaDamage( slot_name_mounted );			//create damage trigger if barbed wire is mounted
 					}
 					else
 					{
 						SetAnimationPhase( slot_name_mounted, 1 );
 						SetAnimationPhase( slot_name, 0 );
+						
+						DestroyAreaDamage( slot_name_mounted );			//destroy damage trigger if barbed wire is not mounted
 					}
 				}
 				else
 				{
-					SetAnimationPhase( slot_name, 0 );					
+					if ( IsAttachmentSlotLocked( attachment ) )
+					{
+						SetAnimationPhase( slot_name_mounted, 1 );
+						SetAnimationPhase( slot_name, 1 );						
+					}
+					else
+					{
+						SetAnimationPhase( slot_name, 0 );
+					}			
 				}
 			}
 			else
 			{
 				SetAnimationPhase( slot_name_mounted, 1 );
 				SetAnimationPhase( slot_name, 1 );
+				
+				DestroyAreaDamage( slot_name_mounted );			//try to destroy damage trigger if barbed wire is not present
 			}
 		}	
 	
@@ -419,7 +424,7 @@ class BaseBuildingBase extends ItemBase
 			EntityAI attachment = FindAttachmentBySlotName( slot_name );
 			string slot_name_mounted = slot_name + "_Mounted";
 			
-			if ( attachment && !IsAttachmentSlotLocked( attachment ) )
+			if ( attachment )
 			{
 				if ( attachment.IsInherited( BarbedWire ) )
 				{
@@ -432,12 +437,20 @@ class BaseBuildingBase extends ItemBase
 					else
 					{
 						RemoveProxyPhysics( slot_name_mounted );
-						AddProxyPhysics( slot_name );						
+						AddProxyPhysics( slot_name );
 					}
 				}
 				else
 				{
-					AddProxyPhysics( slot_name );
+					if ( IsAttachmentSlotLocked( attachment ) )
+					{
+						RemoveProxyPhysics( slot_name_mounted );
+						RemoveProxyPhysics( slot_name );
+					}
+					else
+					{
+						AddProxyPhysics( slot_name );
+					}
 				}
 			}
 			else
@@ -509,7 +522,7 @@ class BaseBuildingBase extends ItemBase
 	
 	//--- INVENTORY/ATTACHMENTS CONDITIONS
 	//attachments
-	override bool CanReceiveAttachment( EntityAI attachment )
+	override bool CanReceiveAttachment( EntityAI attachment, int slotId )
 	{
 		return true;
 	}
@@ -571,5 +584,60 @@ class BaseBuildingBase extends ItemBase
 	{
 		CreateConstructionKit();
 		GetGame().ObjectDelete( this );
+	}
+	
+	//Damage triggers (barbed wire)
+	void CreateAreaDamage( string slot_name )
+	{
+		if ( GetGame() && GetGame().IsServer() )
+		{
+			//destroy area damage if some already exists
+			DestroyAreaDamage( slot_name );
+			
+			//create new area damage
+			AreaDamageRegularDeferred area_damage = new AreaDamageRegularDeferred( this );
+			
+			vector min_max[2];
+			min_max[0] = GetMemoryPointPos( slot_name + "_min" );
+			min_max[1] = GetMemoryPointPos( slot_name + "_max" );
+			
+			/*
+			vector egde_length = GetConstruction().GetCollisionBoxSize( min_max );
+			vector min;
+			min[0] = -egde_length[0] / 2;
+			min[1] = -egde_length[1] / 2;
+			min[2] = -egde_length[2] / 2;
+			vector max;
+			max[0] = egde_length[0] / 2;
+			max[1] = egde_length[1] / 2;
+			max[2] = egde_length[2] / 2;
+			area_damage.SetExtents( min_max[0], min_max[1] );
+			*/
+			area_damage.SetExtents( "-2 -1 -2", "2 1 2" );
+			area_damage.SetLoopInterval( 0.5 );
+			area_damage.SetDeferInterval( 0.5 );
+			area_damage.SetHitZones( { "Head","Torso","LeftHand","LeftLeg","LeftFoot","RightHand","RightLeg","RightFoot" } );
+			area_damage.SetAmmoName( "MeleeDamage" );
+			area_damage.Spawn();
+			
+			m_DamageTriggers.Insert( slot_name, area_damage );
+		}
+	}
+	
+	void DestroyAreaDamage( string slot_name )
+	{
+		if ( GetGame() && GetGame().IsServer() )
+		{
+			AreaDamageRegularDeferred area_damage;
+			if ( m_DamageTriggers.Find( slot_name, area_damage ) ) 
+			{
+				if ( area_damage )
+				{
+					area_damage.DestroyDamageTrigger();
+				}
+				
+				m_DamageTriggers.Remove( slot_name );
+			}
+		}
 	}
 }

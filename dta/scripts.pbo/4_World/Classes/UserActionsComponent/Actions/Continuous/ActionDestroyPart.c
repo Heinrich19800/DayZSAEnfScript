@@ -86,7 +86,7 @@ class ActionDestroyPart: ActionContinuousBase
 		if ( construction.CanDestroyPart( construction_part.GetPartName() ) )
 		{
 			//build
-			construction.DestroyPart( construction_part.GetPartName(), false );
+			construction.DestroyPart( construction_part.GetPartName() );
 			
 			//add damage to tool
 			action_data.m_MainItem.DecreaseHealth ( "", "", 2, true );

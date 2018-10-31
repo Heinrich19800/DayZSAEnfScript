@@ -56,11 +56,6 @@ class ActionCPR: ActionContinuousBase
 		PlayerBase other_player = PlayerBase.Cast(target.GetObject());
 		return other_player.IsUnconscious();
 	}
-
-	override void OnCompleteServer( ActionData action_data )
-	{	
-
-	}
 	
 	override void OnFinishProgressClient(ActionData action_data)
 	{

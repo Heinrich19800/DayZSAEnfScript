@@ -4,7 +4,7 @@ class ActionRaiseMegaphoneCB : ActionContinuousBaseCB
 	
 	override void CreateActionComponent()
 	{
-		m_ActionData.m_ActionComponent = new CAContinuousRepeat( REPEAT_AFTER_SEC );
+		m_ActionData.m_ActionComponent = new CAContinuousTime( -1 );
 	}
 }
 
@@ -73,13 +73,7 @@ class ActionRaiseMegaphone: ActionContinuousBase
 		megaphone.SetCanSpeak( true );
 	}
 		
-	override void OnCancelServer( ActionData action_data )
-	{
-		ItemMegaphone megaphone = ItemMegaphone.Cast( action_data.m_MainItem );
-		megaphone.SetCanSpeak( false );
-	}
-	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{
 		ItemMegaphone megaphone = ItemMegaphone.Cast( action_data.m_MainItem );
 		megaphone.SetCanSpeak( false );

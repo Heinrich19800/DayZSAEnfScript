@@ -38,6 +38,7 @@ class ZombieBase extends DayZInfected
 	//! synced variable(s) handler
 	override void OnVariablesSynchronized()
 	{
+		DebugSound("[Infected @ " + this + "][OnVariablesSynchronized]");
 		HandleSoundEvents();
 	}
 
@@ -345,14 +346,6 @@ class ZombieBase extends DayZInfected
 		DebugSound("[Infected @ " + this + "][MindState]" + typename.EnumToString(DayZInfectedConstants, m_MindState));
 		DebugSound("[Infected @ " + this + "][SoundEventID]" + typename.EnumToString(EInfectedSoundEventID, m_InfectedSoundEventHandler.GetCurrentStateEventID()));
 	}
-
-	/*
-	// TO BE Removed
-	EffectSound PlayVoiceFX(string pSoundSetName, bool pLooped = false)
-	{
-		return SEffectManager.PlaySoundOnObject(pSoundSetName, this, 0, 0, pLooped);
-	}
-	*/
 
 	AbstractWave ProcessVoiceFX(string pSoundSetName)
 	{

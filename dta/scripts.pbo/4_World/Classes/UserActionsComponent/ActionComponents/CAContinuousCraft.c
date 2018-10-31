@@ -12,7 +12,11 @@ class CAContinuousCraft : CAContinuousTime
 		{	
 			m_SpentUnits.param1 = 0;
 		}
-		int recipeID = action_data.m_Player.GetCraftingRecipeID();		
+		
+		WorldCraftActionData action_data_wc;
+		Class.CastTo(action_data_wc, action_data);
+		
+		int recipeID = action_data_wc.m_RecipeID;		
 		
 		PluginRecipesManager module_recipes_manager;
 		Class.CastTo(module_recipes_manager, GetPlugin(PluginRecipesManager));

@@ -50,7 +50,7 @@ class InspectMenuNew extends UIScriptedMenu
 	{
 		if (item)
 		{
-			UpdateItemInfo(layoutRoot, item);
+			InspectMenuNew.UpdateItemInfo(layoutRoot, item);
 	
 			if (!m_item_widget)
 			{
@@ -168,13 +168,13 @@ class InspectMenuNew extends UIScriptedMenu
 		}
 	
 		WidgetTrySetText(root_widget, "ItemNameWidget", item.GetDisplayName());
-		UpdateItemInfoDamage(root_widget, item);
-		UpdateItemInfoLiquidType(root_widget, item);
-		UpdateItemInfoTemperature(root_widget, item);
-		UpdateItemInfoWetness(root_widget, item);
-		UpdateItemInfoQuantity(root_widget, item);
-		UpdateItemInfoWeight(root_widget, item);
-		UpdateItemInfoFoodStage(root_widget, item);
+		InspectMenuNew.UpdateItemInfoDamage(root_widget, item);
+		InspectMenuNew.UpdateItemInfoLiquidType(root_widget, item);
+		InspectMenuNew.UpdateItemInfoTemperature(root_widget, item);
+		InspectMenuNew.UpdateItemInfoWetness(root_widget, item);
+		InspectMenuNew.UpdateItemInfoQuantity(root_widget, item);
+		InspectMenuNew.UpdateItemInfoWeight(root_widget, item);
+		InspectMenuNew.UpdateItemInfoFoodStage(root_widget, item);
 	}
 
 	//--------------------------------------------------------------------------

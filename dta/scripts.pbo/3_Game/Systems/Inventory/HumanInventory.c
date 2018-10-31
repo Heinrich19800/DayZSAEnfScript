@@ -386,6 +386,7 @@ class HumanInventory : GameInventory
 						return true;
 					}
 
+					hndDebugPrint("[inv] HumanInventory::ReplaceItemInHandsWithNewImpl DEAD_owner=" + GetInventoryOwner().GetName() +"="+ GetInventoryOwner());
 					Error("HumanInventory::ReplaceItemInHandsWithNewImpl TODO"); // replace-with-new in corpse's hands, not implemented
 					return false;
 				}

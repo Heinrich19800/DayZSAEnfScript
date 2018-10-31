@@ -251,7 +251,7 @@ class AttachmentCategoriesRow: ClosableContainer
 				item.SplitIntoStackMaxClient( m_Entity, receiver.GetUserID() );
 			}
 		}
-		else
+		else if( receiver.GetUserID() != -1 )
 		{
 			if ( receiver_item )
 			{
@@ -353,7 +353,8 @@ class AttachmentCategoriesRow: ClosableContainer
 		{
 			return;
 		}
-			
+		
+		ItemBase item;
 		ItemBase receiver_item;
 		name = receiver.GetName();
 		name.Replace("PanelWidget", "Render");
@@ -384,9 +385,25 @@ class AttachmentCategoriesRow: ClosableContainer
 				ColorManager.GetInstance().SetColor( w, ColorManager.RED_COLOR );
 			}
 		}
+		else if( receiver.GetUserID() != -1 )
+		{
+			item = ItemBase.Cast( iw.GetItem() );
+			
+			if( m_Entity.GetInventory().CanAddAttachmentEx( item, receiver.GetUserID() ) )
+			{
+				ItemManager.GetInstance().HideDropzones();
+				ItemManager.GetInstance().GetRootWidget().FindAnyWidget( "LeftPanel" ).FindAnyWidget( "DropzoneX" ).SetAlpha( 1 );
+				ColorManager.GetInstance().SetColor( w, ColorManager.GREEN_COLOR );
+			}
+			else
+			{
+				ItemManager.GetInstance().ShowSourceDropzone( iw.GetItem() );
+				ColorManager.GetInstance().SetColor( w, ColorManager.RED_COLOR );
+			}
+		}
 		else
 		{
-			ItemBase item = ItemBase.Cast( iw.GetItem() );
+			item = ItemBase.Cast( iw.GetItem() );
 			InventoryLocation inv_loc_src = new InventoryLocation;
 			InventoryLocation inv_loc_dst = new InventoryLocation;
 			item.GetInventory().GetCurrentInventoryLocation( inv_loc_src );

@@ -32,7 +32,7 @@ class ActionTurnOnWhileOnGround: ActionInteractBase
 		}
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{
 		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
 		

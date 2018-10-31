@@ -225,8 +225,11 @@ class InGameMenu extends UIScriptedMenu
 	
 	bool IsFocusable( Widget w )
 	{
-		if( m_ContinueButton || w == m_ExitButton || w == m_RestartButton || w == m_OptionsButton );
-			return true;
+		if( w )
+		{
+			if( w == m_ContinueButton || w == m_ExitButton || w == m_RestartButton || w == m_OptionsButton );
+				return true;
+		}
 		return false;
 	}
 	

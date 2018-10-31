@@ -178,7 +178,11 @@ class OptionSelector extends OptionSelectorBase
 	
 	override bool IsFocusable( Widget w )
 	{
-		return ( w == m_Parent || w == m_NextOption || w == m_PreviousOption );
+		if( w )
+		{
+			return ( w == m_Parent || w == m_NextOption || w == m_PreviousOption );
+		}
+		return false;
 	}
 	
 	override void Enable()

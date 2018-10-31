@@ -2,6 +2,7 @@
 class LogoutMenu extends UIScriptedMenu
 {	
 	private TextWidget m_LogoutTimetext;
+	private TextWidget m_Info;
 	private ButtonWidget m_bLogoutNow;
 	private ButtonWidget m_bCancel;
 	private int m_iTime;
@@ -22,9 +23,19 @@ class LogoutMenu extends UIScriptedMenu
 		layoutRoot = GetGame().GetWorkspace().CreateWidgets("gui/layouts/day_z_logout_dialog.layout");
 		
 		m_LogoutTimetext = TextWidget.Cast( layoutRoot.FindAnyWidget("logoutTimeText") );
+		m_Info = TextWidget.Cast( layoutRoot.FindAnyWidget("txtInfo") );
 		m_bLogoutNow = ButtonWidget.Cast( layoutRoot.FindAnyWidget("bLogoutNow") );
 		m_bCancel = ButtonWidget.Cast( layoutRoot.FindAnyWidget("bCancel") );
-
+		
+		UpdateInfo();
+		
+		// player should sit down if possible
+		PlayerBase player = PlayerBase.Cast(GetGame().GetPlayer());
+		if (player.GetEmoteManager() && !player.IsRestrained() && !player.IsUnconscious()) 
+		{
+			player.GetEmoteManager().CreateEmoteCBFromMenu(ID_EMOTE_SITA);
+		}
+		
 		return layoutRoot;
 	}
 
@@ -94,6 +105,7 @@ class LogoutMenu extends UIScriptedMenu
 	
 	void UpdateTime()
 	{
+		
 		if (m_iTime > 0)
 		{
 			m_iTime -= 1;
@@ -102,6 +114,21 @@ class LogoutMenu extends UIScriptedMenu
 		else
 		{
 			Exit();
+		}
+	}
+	
+	void UpdateInfo()
+	{
+		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
+		if (player.IsRestrained() || player.IsUnconscious())
+		{
+			// display killInfo
+			m_Info.SetText("#layout_logout_dialog_note_killed");
+		}
+		else
+		{
+			// hide killInfo
+			m_Info.SetText("#layout_logout_dialog_note");
 		}
 	}
 

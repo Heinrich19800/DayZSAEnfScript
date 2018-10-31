@@ -115,6 +115,10 @@ class MissionServer extends MissionBase
 				{
 					identity = player.GetIdentity();
 				}
+				
+				// disable reconnecting to old char
+				GetGame().RemoveFromReconnectCache(info.param2);
+	
 				PlayerDisconnected(player, identity, info.param2);
 					
 				m_LogoutPlayers.RemoveElement(i);
@@ -207,10 +211,11 @@ class MissionServer extends MissionBase
 				
 			Class.CastTo(logoutCancelParams, params);				
 			Class.CastTo(player, logoutCancelParams.param1);
-			
 			identity = player.GetIdentity();
 			if (identity)
 			{
+				// disable reconnecting to old char
+				GetGame().RemoveFromReconnectCache(identity.GetId());
 				Print("[Logout]: Player " + identity.GetId() + " cancelled"); 
 			}
 			else
@@ -218,6 +223,7 @@ class MissionServer extends MissionBase
 				Print("[Logout]: Player cancelled"); 
 			}
 			m_LogoutPlayers.Remove(player);
+			
 			break;
 		}
 	}
@@ -374,9 +380,9 @@ class MissionServer extends MissionBase
 		// using database and no saving if authorization failed
 		if (GetHive() && !authFailed)
 		{			
-			if (!m_LogoutPlayers.Contains(player))
-			{
-				if (player.IsAlive() && !player.IsRestrained() && !player.IsUnconscious())
+			if (player.IsAlive())
+			{	
+				if (!m_LogoutPlayers.Contains(player))
 				{
 					Print("[Logout]: New player " + identity.GetId() + " with logout time " + queueTime.ToString());
 					
@@ -387,9 +393,13 @@ class MissionServer extends MissionBase
 					LogoutInfo params = new LogoutInfo(GetGame().GetTime() + queueTime * 1000, identity.GetId());
 					m_LogoutPlayers.Insert(player, params);
 					
+					// allow reconnecting to old char
+					GetGame().AddToReconnectCache(identity);
+					
 					// wait until logout timer runs out
 					disconnectNow = false;		
 				}
+				return;
 			}		
 		}
 		
@@ -400,7 +410,6 @@ class MissionServer extends MissionBase
 			// inform client about instant logout
 			GetGame().SendLogoutTime(player, 0);
 			
-
 			PlayerDisconnected(player, identity, identity.GetId());
 		}
 	}
@@ -413,7 +422,6 @@ class MissionServer extends MissionBase
 			Print("[Logout]: Skipping player " + uid + ", already removed");
 			return;
 		}
-		
 		Print("[Logout]: Player " + uid + " finished");
 
 		if (GetHive())
@@ -425,6 +433,8 @@ class MissionServer extends MissionBase
 			GetHive().CharacterExit(player);		
 		}
 		
+		// handle player's existing char in the world
+		player.ReleaseNetworkControls();
 		HandleBody(player);
 		
 		// remove player from server

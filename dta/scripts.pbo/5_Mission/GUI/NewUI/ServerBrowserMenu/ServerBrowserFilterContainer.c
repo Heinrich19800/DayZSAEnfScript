@@ -41,9 +41,8 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		m_FullServerFilter			= new OptionSelector( root.FindAnyWidget( "full_server_setting_option" ), 0, this, false );
 		m_AcceleratedTimeFilter		= new OptionSelector( root.FindAnyWidget( "accelerated_time_setting_option" ), 0, this, false );
 		
-		m_PingFilter.Disable();
 		m_FriendsPlayingFilter.Disable();
-		m_AcceleratedTimeFilter.Disable();
+		//m_PingFilter.Disable();
 		
 		#ifdef PLATFORM_CONSOLE
 			m_SortingFilter			= new OptionSelectorMultistate( root.FindAnyWidget( "sort_setting_option" ), 0, this, false, sort_options );
@@ -61,7 +60,6 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 				m_CharacterAliveFilter.Disable();
 				m_VersionMatchFilter.Disable();
 				m_ThirdPersonFilter.Disable();
-				m_PublicFilter.Disable();
 			#endif
 		#endif
 		LoadFilters();
@@ -282,12 +280,29 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 					string ip_text = m_SearchByIP.GetText();
 					if( ip_text != "" )
 					{
-						//input.SetIPFilter( ip_text );
+						TStringArray arr	= new TStringArray;
+						ip_text.Split( ":", arr );
+						string ip;
+						int port;
+						ip					= arr.Get( 0 );
+				
+						if( arr.Count() > 1 )
+							port			= arr.Get( 1 ).ToInt();
+						
+						#ifdef PLATFORM_CONSOLE
+						input.SetHostIp( ip );
+						if( port > 0 )
+							input.SetHostPort( port );
+						#else
+						input.SetHostIp( ip_text );
+						if( port > 0 )
+							input.SetHostPort( port );
+						#endif
 					}
 				}
 				if( m_PublicFilter.IsSet() )
 				{
-					input.SetJoinableFilter( m_PublicFilter.IsEnabled() );
+					input.SetPublic();
 				}
 				if( m_CharacterAliveFilter.IsSet() )
 				{

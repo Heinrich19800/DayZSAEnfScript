@@ -290,6 +290,26 @@ class CGame
 	\note Works only on server
 	*/
 	proto native void		DisconnectPlayer(PlayerIdentity identity, string uid);
+	
+	/**
+  	\brief Add player to reconnect cache to be able to rejoin character still existing in the world
+	\note Works only on server and no database requests are sent
+	@param identity of player
+	*/
+	proto native void		AddToReconnectCache(PlayerIdentity identity);
+	
+	/**
+  	\brief Remove player from reconnect cache
+	\note Works only on server
+	@param uid of the player
+	*/
+	proto native void		RemoveFromReconnectCache(string uid);
+	
+	/**
+  	\brief Remove all player from reconnect cache
+	\note Works only on server
+	*/
+	proto native void		ClearReconnectCache();
 
 	/**
   	\brief Returns current daytime on server

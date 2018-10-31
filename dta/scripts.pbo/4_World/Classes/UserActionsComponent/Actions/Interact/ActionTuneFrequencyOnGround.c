@@ -34,7 +34,7 @@ class ActionTuneFrequencyOnGround : ActionInteractBase
 		return false;
 	}
 		
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{
 		Land_Radio_PanelBig transmitter = Land_Radio_PanelBig.Cast( action_data.m_Target.GetObject() );
 		transmitter.SetNextFrequency( action_data.m_Player );

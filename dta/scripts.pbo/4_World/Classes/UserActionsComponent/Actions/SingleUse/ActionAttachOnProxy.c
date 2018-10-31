@@ -32,14 +32,16 @@ class ActionAttachOnProxy: ActionSingleUseBase
 			
 			if ( tent.CanAttach( item ) )
 			{
-				return true;
+				//return true;
+				//Temporary disabled
+				return false;
 			}
 		}
 		
 		return false;
 	}
 		
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{		
 		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetParent() );
 		EntityAI item_entity = EntityAI.Cast( action_data.m_MainItem );
@@ -49,11 +51,11 @@ class ActionAttachOnProxy: ActionSingleUseBase
 		
 		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
 		{
-			action_data.m_Player.LocalTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
+			action_data.m_Player.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
 		}
 	}
 	
-	override void OnCompleteClient( ActionData action_data )
+	override void OnExecuteClient( ActionData action_data )
 	{
 		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetParent() );
 		EntityAI item_entity = EntityAI.Cast( action_data.m_MainItem );
@@ -63,7 +65,7 @@ class ActionAttachOnProxy: ActionSingleUseBase
 		
 		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
 		{
-			action_data.m_Player.LocalTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
+			action_data.m_Player.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
 		}
 	}
 }

@@ -107,6 +107,14 @@ class HandEventBase
 		}
 		return b;
 	}
+	
+	string DumpToString ()
+	{
+		string res = "{ HandEv id=" + typename.EnumToString(HandEventID, GetEventID());
+		res = res + " pl=" + m_Player + " e= " + m_Entity;
+		res = res + " }";
+		return res;
+	}
 };
 
 class HandEventTake extends HandEventBase

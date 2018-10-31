@@ -1,6 +1,6 @@
 class JumpEventsBase extends PlayerSoundEventBase
 {
-	override bool ThisHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id)
+	override bool IsCurrentHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id, EPlayerSoundEventType type)
 	{
 		return true;
 	}

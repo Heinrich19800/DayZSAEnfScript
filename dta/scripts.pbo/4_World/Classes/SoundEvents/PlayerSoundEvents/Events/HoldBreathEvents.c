@@ -21,7 +21,7 @@ class HoldBreathSoundEvent extends HoldBreathSoundEventBase
 		m_SoundVoiceAnimEventClassID = 20;
 	}
 	
-	override bool ThisHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id)
+	override bool IsCurrentHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id, EPlayerSoundEventType type)
 	{
 		if( other_state_id == EPlayerSoundEventID.RELEASE_BREATH)
 		{
@@ -40,7 +40,7 @@ class ReleaseBreathSoundEvent extends HoldBreathSoundEventBase
 		m_SoundVoiceAnimEventClassID = 21;
 	}
 	
-	override bool ThisHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id)
+	override bool IsCurrentHasPriority(PlayerBase player, EPlayerSoundEventID other_state_id, EPlayerSoundEventType type)
 	{
 		if( other_state_id == EPlayerSoundEventID.HOLD_BREATH)
 		{

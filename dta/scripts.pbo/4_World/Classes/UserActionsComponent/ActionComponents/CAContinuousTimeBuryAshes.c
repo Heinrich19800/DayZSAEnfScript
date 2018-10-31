@@ -54,7 +54,8 @@ class CAContinuousTimeBuryAshes : CAContinuousBase
 				string reason = GetReasonToCancel( action_data.m_Target, action_data.m_MainItem );
 				if ( reason != "" )
 				{
-					m_BuryAshesAction.SetReasonToCancel( reason );
+					BuryAshesActionData ba_action_data = BuryAshesActionData.Cast(action_data);
+					ba_action_data.m_ReasonToCancel = reason;
 					
 					return UA_CANCEL;
 				}

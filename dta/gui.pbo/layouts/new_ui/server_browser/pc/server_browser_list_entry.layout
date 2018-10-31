@@ -54,6 +54,9 @@ GridSpacerWidgetClass server_browser_list_entry_root {
        image0 "set:dayz_gui image:icon_favourite_off"
        mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
+       filter 1
       }
       ImageWidgetClass unfavorite_image {
        visible 0
@@ -68,6 +71,9 @@ GridSpacerWidgetClass server_browser_list_entry_root {
        image0 "set:dayz_gui image:icon_favourite_on"
        mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
+       filter 1
       }
      }
     }
@@ -93,6 +99,9 @@ GridSpacerWidgetClass server_browser_list_entry_root {
        image0 "set:dayz_gui image:icon_collapse"
        mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
+       filter 1
       }
       ImageWidgetClass collapse_image {
        visible 0
@@ -107,6 +116,9 @@ GridSpacerWidgetClass server_browser_list_entry_root {
        image0 "set:dayz_gui image:icon_expand"
        mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
+       filter 1
       }
      }
     }
@@ -133,6 +145,8 @@ GridSpacerWidgetClass server_browser_list_entry_root {
        image0 "set:dayz_gui image:icon_player"
        mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
        filter 1
       }
      }
@@ -161,6 +175,9 @@ GridSpacerWidgetClass server_browser_list_entry_root {
        image0 "set:dayz_gui image:icon_locked_sb"
        mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
+       filter 1
       }
      }
     }

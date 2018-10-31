@@ -117,7 +117,7 @@ class ActionDigStash: ActionContinuousBase
 	}
 	
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{
 		Object targetObject = action_data.m_Target.GetObject();
 		EntityAI targetEntity = EntityAI.Cast(targetObject);

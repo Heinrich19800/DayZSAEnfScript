@@ -12,9 +12,13 @@ class WatchtowerKit extends ItemBase
 	override void OnPlacementComplete( Man player )
 	{
 		//Create watchtower
+		PlayerBase player_base = PlayerBase.Cast( player );
+		vector position = player_base.GetLocalProjectionPosition();
+		vector orientation = player_base.GetLocalProjectionOrientation();
+		
 		Watchtower watchtower = Watchtower.Cast( GetGame().CreateObject( "Watchtower", GetPosition() ) );
-		watchtower.SetPosition( GetPosition() );
-		watchtower.SetOrientation( GetOrientation() );
+		watchtower.SetPosition( position );
+		watchtower.SetOrientation( orientation );
 		
 		//destroy construction kit
 		watchtower.DestroyConstructionKit( this );
@@ -40,4 +44,14 @@ class WatchtowerKit extends ItemBase
 		AddProxyPhysics( "Inventory" );
 		RemoveProxyPhysics( "Placing" );		
 	}
+	
+	override bool IsOneHandedBehaviour()
+	{
+		return true;
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}	
 }

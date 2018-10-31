@@ -33,7 +33,7 @@ class ActionBaseCB : HumanCommandActionCallback
 			AnimatedActionBase action = AnimatedActionBase.Cast(m_ActionData.m_Action);
 			
 			if(action)
-				action.End(m_ActionData, m_ActionData.m_State);
+				action.End(m_ActionData);
 			
 		}
 
@@ -133,26 +133,12 @@ class AnimatedActionBase : ActionBase
 
 	
 	// Server version call on single too
-	protected void OnStartServer( ActionData action_data ) //setup of action parameters, called before performing action
+	/*protected void OnStartServer( ActionData action_data ) //setup of action parameters, called before performing action
 	{
 	}
 	protected void OnStartClient( ActionData action_data ) //setup of action parameters, called before performing action
 	{
-	}
-
-	protected void OnCancelServer( ActionData action_data  ) //method called when player stops inputing
-	{
-	}
-	protected void OnCancelClient( ActionData action_data  ) //method called when player stops inputing
-	{
-	}
-	
-	protected void OnInterruptServer( ActionData action_data  ) //method called when player can no longer continue action
-	{
-	}
-	protected void OnInterruptClient( ActionData action_data  ) //method called when player can no longer continue action
-	{
-	}
+	}*/
 	
 	protected void OnAlternativeEndServer( PlayerBase player ) //method called when action has not met conditions in action component
 	{
@@ -160,11 +146,11 @@ class AnimatedActionBase : ActionBase
 	protected void OnAlternativeEndClient( PlayerBase player ) //method called when action has not met conditions in action component
 	{
 	}
-
-	protected void OnCompleteServer( ActionData action_data ) //method called on succesful finishing of action (after out animation)
+	
+	protected void OnInterruptServer( PlayerBase player ) //method called when action has not met conditions in action component
 	{
 	}
-	protected void OnCompleteClient( ActionData action_data ) //method called on succesful finishing of action (after out animation)
+	protected void OnInterruptClient( PlayerBase player ) //method called when action has not met conditions in action component
 	{
 	}
 	
@@ -426,14 +412,14 @@ class AnimatedActionBase : ActionBase
 				case UA_CANCEL:
 					InformPlayers(action_data.m_Player,action_data.m_Target,UA_CANCEL);
 					action_data.m_Callback.EndActionComponent();
-					if ( GetGame().IsServer() )  
+					/*if ( GetGame().IsServer() )  
 					{
 						OnInterruptServer(action_data);
 					}
 					else
 					{
 						OnInterruptClient(action_data);
-					}
+					}*/
 					break;	
 				
 				case UA_INITIALIZE:
@@ -452,71 +438,18 @@ class AnimatedActionBase : ActionBase
 	}
 	
 	// called from ActionBaseCB.c 
-	override void End( ActionData action_data, int state = -1 )
+	override void End( ActionData action_data )
 	{
-		if( state == -1 )
-			state = action_data.m_State;
-		
 		if ( action_data.m_Player ) 
 		{
-			switch ( state )
+			if ( GetGame().IsServer() )
 			{
-				case UA_FINISHED:		
-					if ( GetGame().IsServer() )
-					{
-						OnCompleteServer(action_data);
-						ApplyModifiers(action_data);
-					}
-					else
-					{
-						OnCompleteClient(action_data);					
-					}
-					InformPlayers(action_data.m_Player,action_data.m_Target,UA_FINISHED);
-					break;
-				//case UA_INTERRUPT:	
-				case UA_CANCEL:
-					if ( GetGame().IsServer() )
-					{
-						OnCancelServer(action_data);
-					}
-					else
-					{
-						OnCancelClient(action_data);					
-					}
-					InformPlayers(action_data.m_Player,action_data.m_Target,UA_CANCEL);
-					break;
-				case UA_INTERRUPT:
-					if ( GetGame().IsServer() )
-					{
-						OnInterruptServer(action_data);
-					}
-					else
-					{
-						OnInterruptClient(action_data);					
-					}
-					InformPlayers(action_data.m_Player,action_data.m_Target,UA_INTERRUPT);
-					break;
-				case UA_PROCESSING:
-				case UA_REPEAT:
-				case UA_START:
-				case UA_STARTT:
-					if ( GetGame().IsServer() )
-					{
-						OnCompleteServer(action_data);
-						ApplyModifiers(action_data);
-					}
-					else
-					{
-						OnCompleteClient(action_data);					
-					}
-					InformPlayers(action_data.m_Player,action_data.m_Target,UA_FINISHED);
-					break;
-				
-					break;
-				default:
-					Print("ActionBase.c | End | ACTION COMPONENT RETURNED WRONG VALUE");
-					action_data.m_Callback.Interrupt();
-				break;
+				OnEndServer(action_data);
+				//ApplyModifiers(action_data);
+			}
+			else
+			{
+				OnEndClient(action_data);
 			}
 			action_data.m_Player.GetActionManager().OnActionEnd();
 		}

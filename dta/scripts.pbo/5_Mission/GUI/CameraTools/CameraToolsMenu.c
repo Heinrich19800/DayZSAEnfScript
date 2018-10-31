@@ -818,7 +818,11 @@ class CameraToolsMenu extends UIScriptedMenu
 	
 	bool IsFocusable( Widget w )
 	{
-		return ( w == m_SaveKeyframe  || w == m_DeleteKeyframe || w == m_ViewKeyframe || w == m_SaveEvent || w == m_DeleteEvent || w == m_ViewEvent || w == m_AddKeyframe || w == m_AddEvent || w == m_Play || w == m_Stop || w == m_Save || w == m_Load || w == m_InterpTypeCombo );
+		if( w )
+		{
+			return ( w == m_SaveKeyframe  || w == m_DeleteKeyframe || w == m_ViewKeyframe || w == m_SaveEvent || w == m_DeleteEvent || w == m_ViewEvent || w == m_AddKeyframe || w == m_AddEvent || w == m_Play || w == m_Stop || w == m_Save || w == m_Load || w == m_InterpTypeCombo );
+		}
+		return false;
 	}
 	
 	override bool OnKeyPress(Widget w, int x, int y, int key)

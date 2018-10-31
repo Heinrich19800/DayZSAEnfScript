@@ -70,7 +70,7 @@ class PlayerSoundEventHandler extends SoundEventHandler
 		return m_ConfigIDToScriptIDmapping.Get(anim_id);
 	}
 	
-	override static int GetSoundEventType(int id)
+	override static EPlayerSoundEventType GetSoundEventType(int id)
 	{
 		return m_AvailableStates[id].GetSoundEventType();
 	}
@@ -126,29 +126,20 @@ class PlayerSoundEventHandler extends SoundEventHandler
 		
 		if(m_CurrentState)
 		{
-			
-			if( m_CurrentState.ThisHasPriority(m_Player, id) )
+			if( requested_state.IsDummy() )
+				return false;
+			if( !m_CurrentState.IsDummy() && m_CurrentState.IsCurrentHasPriority(m_Player, id, PlayerSoundEventHandler.GetSoundEventType(id)) )
 			{
 				// do nothing
 				return false;
 			}
-			else
-			{
-				m_CurrentState.Stop();
-				m_CurrentState = requested_state.ClassName().ToType().Spawn();
-				m_CurrentState.Init(m_Player);
-				m_CurrentState.Play();
-				return true;
-			}
+			m_CurrentState.Stop();
 		}
-		else
-		{
-			m_CurrentState = requested_state.ClassName().ToType().Spawn();
-			m_CurrentState.Init(m_Player);
-			m_CurrentState.Play();
-			m_CurrentState.OnPlay(m_Player);
-			return true;
-		}
-		return false;//should never get here
+		
+		m_CurrentState = requested_state.ClassName().ToType().Spawn();
+		m_CurrentState.Init(m_Player);
+		m_CurrentState.Play();
+		m_CurrentState.OnPlay(m_Player);
+		return true;
 	}
 }

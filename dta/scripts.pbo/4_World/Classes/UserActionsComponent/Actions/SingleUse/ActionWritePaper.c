@@ -49,7 +49,7 @@ class ActionWritePaper: ActionContinuousBase
 		return "#write_note";
 	}
 
-	override void OnCompleteClient( ActionData action_data )
+	override void OnFinishProgressClient( ActionData action_data )
 	{
 		//which is pen and which paper
 		if (action_data.m_Target.GetObject().ConfigIsExisting("writingColor"))
@@ -65,7 +65,7 @@ class ActionWritePaper: ActionContinuousBase
 		action_data.m_Player.enterNoteMenuWrite = true;
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}

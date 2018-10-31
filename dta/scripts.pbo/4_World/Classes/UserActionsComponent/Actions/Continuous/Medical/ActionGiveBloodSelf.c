@@ -66,7 +66,7 @@ class ActionGiveBloodSelf: ActionContinuousBase
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 	
-	override void OnFinishProgressServer(ActionData action_data)
+	override void OnEndServer(ActionData action_data)
 	{
 		Param1<float> nacdata = Param1<float>.Cast( action_data.m_ActionComponent.GetACData() );
 		float delta = nacdata.param1;
@@ -87,11 +87,6 @@ class ActionGiveBloodSelf: ActionContinuousBase
 		{
 			action_data.m_MainItem.SetQuantity(0, false, false);
 		}
-	}
-	
-	override void OnCancelServer(ActionData action_data)
-	{
-		OnFinishProgressServer(action_data);
 	}
 };
 

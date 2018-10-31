@@ -33,7 +33,7 @@ class VomitSymptom extends SymptomBase
 	{
 		//timer.Run(10, this, "Destroy");
 		Debug.Log("OnGetActivated VomitSymptom called", "PlayerSymptom");
-		player.GetStatStomachSolid().Set(0);
+		player.GetStatStomachVolume().Set(0);
 		player.GetStatStomachWater().Set(0);
 		player.GetStatStomachEnergy().Set(0);
 		PlayAnimation(DayZPlayerConstants.CMD_ACTIONFB_VOMIT,DayZPlayerConstants.STANCEMASK_CROUCH, GetDuration() );

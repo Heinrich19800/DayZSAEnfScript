@@ -44,6 +44,11 @@ class FirearmActionAttachMagazine : FirearmActionBase
 		return false;
 	}
 	
+	override bool ActionConditionContinue( ActionData action_data )
+	{
+		return true;
+	}
+	
 	override void Start( ActionData action_data )
 	{
 		super.Start( action_data );

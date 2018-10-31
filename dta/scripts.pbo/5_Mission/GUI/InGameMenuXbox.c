@@ -89,13 +89,17 @@ class InGameMenuXbox extends UIScriptedMenu
 			{
 				header_text = info.m_Name + " - " + info.m_HostIp + ":" + info.m_HostPort;
 			}
+			else
+			{
+				g_Game.RefreshCurrentServerInfo();
+			}
 			
 			m_ServerInfoPanel = new PlayerListScriptedWidget( m_OnlineMenu.FindAnyWidget( "ServerInfoPanel" ), header_text );
 			
 			OnlineServices.m_PermissionsAsyncInvoker.Insert( OnPermissionsUpdate );
 			ClientData.SyncEvent_OnPlayerListUpdate.Insert( SyncEvent_OnRecievedPlayerList );
 			
-			m_ServerInfoPanel.Reload( ClientData.m_PlayerList );
+			m_ServerInfoPanel.Reload( CreateFakePlayerList( 100 ) );
 			m_ServerInfoPanel.ReloadLocal( OnlineServices.GetMuteList() );
 			
 			TextWidget mute_text = TextWidget.Cast( layoutRoot.FindAnyWidget( "Mute" ).FindAnyWidget( "MuteText" ) );
@@ -127,6 +131,11 @@ class InGameMenuXbox extends UIScriptedMenu
 					layoutRoot.FindAnyWidget( "Mute" ).Show( false );
 				}
 			}
+		}
+		else
+		{
+			layoutRoot.FindAnyWidget( "onlinebtn" ).Show( false );
+			layoutRoot.FindAnyWidget( "invitebtn" ).Show( false );
 		}
 		
 		layoutRoot.FindAnyWidget( "Gamercard" ).Show( false );
@@ -309,6 +318,20 @@ class InGameMenuXbox extends UIScriptedMenu
 		if( GetGame().GetUserManager() )
 			local_uid = GetGame().GetUserManager().GetSelectedUser().GetUid();
 		return ( uid == local_uid );
+	}
+	
+	SyncPlayerList CreateFakePlayerList( int player_count )
+	{
+		ref SyncPlayerList player_list = new SyncPlayerList;
+		player_list.m_PlayerList = new array<ref SyncPlayer>;
+		for( int i = 0; i < player_count; i++ )
+		{
+			ref SyncPlayer sync_player = new SyncPlayer;
+			sync_player.m_UID = "uid" + i;
+			sync_player.m_PlayerName = "Player " + i;
+			player_list.m_PlayerList.Insert( sync_player );
+		}
+		return player_list;
 	}
 	
 	override void Update( float timeslice )
@@ -574,8 +597,11 @@ class InGameMenuXbox extends UIScriptedMenu
 	
 	bool IsFocusable( Widget w )
 	{
-		if( m_ContinueButton || w == m_ExitButton || w == m_RestartButton || w == m_OptionsButton || w == m_ControlsButton || w == m_OnlineButton || w == m_TutorialsButton );
-			return true;
+		if( w )
+		{
+			if( w == m_ContinueButton || w == m_ExitButton || w == m_RestartButton || w == m_OptionsButton || w == m_ControlsButton || w == m_OnlineButton || w == m_TutorialsButton );
+				return true;
+		}
 		return false;
 	}
 	

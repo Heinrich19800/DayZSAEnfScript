@@ -179,7 +179,6 @@ class OnlineServices
 	{
 		if( !ErrorCaught( error ) )
 		{
-			m_ServersAsyncInvoker.Invoke( result_list, error, response );
 			if( m_CurrentServerIP != "" && m_CurrentServerPort > 0 )
 			{
 				foreach( GetServersResultRow result : result_list.m_Results )
@@ -192,6 +191,7 @@ class OnlineServices
 					}
 				}
 			}
+			m_ServersAsyncInvoker.Invoke( result_list, error, response );
 		}
 		else
 		{

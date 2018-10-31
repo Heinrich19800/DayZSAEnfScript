@@ -108,6 +108,13 @@ class Weapon_Base extends Weapon
 	bool ProcessWeaponEvent (WeaponEventBase e)
 	{
 		SyncEventToRemote(e);
+		
+		// @NOTE: synchronous events not handled by fsm
+		if (e.GetEventID() == WeaponEventID.SET_NEXT_MUZZLE_MODE)
+		{
+			SetNextMuzzleMode(GetCurrentMuzzle());
+			return true;
+		}
 
 		if (m_fsm.ProcessEvent(e) == ProcessEventResult.FSM_OK)
 			return true;
@@ -411,28 +418,6 @@ class Weapon_Base extends Weapon
 			}
 		}
 		return true;
-	}
-
-	void OnEventFromRemote (ParamsReadContext ctx)
-	{
-		WeaponEventBase e = CreateWeaponEventFromContext(ctx);
-		if (e)
-		{
-			PlayerBase player = PlayerBase.Cast(GetHierarchyParent());
-			player.GetWeaponManager().SetRunning(true);
-
-			fsmDebugSpam("[wpnfsm] recv event from remote: created event=" + e);
-			if(e.GetEventID() == WeaponEventID.HUMANCOMMAND_ACTION_ABORTED)
-			{
-				ProcessEventResult aa;
-				m_fsm.ProcessAbortEvent(e, aa);
-			}
-			else
-			{
-				m_fsm.ProcessEvent(e);
-			}
-			player.GetWeaponManager().SetRunning(false);
-		}
 	}
 
 	void SyncEventToRemote (WeaponEventBase e)

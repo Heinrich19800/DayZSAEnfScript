@@ -44,7 +44,7 @@ class ActionCollectBloodSelf: ActionContinuousBase
 		return "#collect_blood";
 	}
 
-	override void OnCompleteServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{
 		Param1<float> nacdata;
 		Class.CastTo(nacdata,  action_data.m_ActionComponent.GetACData() );
@@ -52,11 +52,6 @@ class ActionCollectBloodSelf: ActionContinuousBase
 		
 		ActionCollectBloodTargetLambda lambda = new ActionCollectBloodTargetLambda(action_data.m_MainItem, "BloodBagFull", action_data.m_Player, m_SpecialtyWeight, action_data.m_Player, delta);
 		action_data.m_Player.ServerReplaceItemInHandsWithNew(lambda);
-	}
-	
-	override void OnCancelServer( ActionData action_data )
-	{
-		OnCompleteServer(action_data);
 	}
 };
 

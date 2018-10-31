@@ -39,12 +39,12 @@ class ActionDetachPowerSourceFromPanel: ActionInteractBase
 		return false;
 	}
 	
-	override void OnCompleteClient( ActionData action_data )
+	override void OnExecuteClient( ActionData action_data )
 	{
 		Process(action_data);
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnExecuteServer( ActionData action_data )
 	{
 		Process(action_data);
 	}

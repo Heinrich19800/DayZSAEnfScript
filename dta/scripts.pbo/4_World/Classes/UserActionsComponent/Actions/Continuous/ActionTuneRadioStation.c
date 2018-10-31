@@ -64,10 +64,6 @@ class ActionTuneRadioStation: ActionContinuousBase
 	{	
 		Radio radio = Radio.Cast( action_data.m_MainItem );
 		radio.TuneNextStation();
-	}
-
-	override void OnCompleteServer( ActionData action_data )
-	{
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }

@@ -1508,8 +1508,9 @@ class CfgWorlds
 			class VolFog
 			{
 				CameraFog=0;
-				Item1[]={900,0.029999999,0.89999998,0.059999999,1};
-				Item2[]={1300,0.0099999998,0.89999998,0.029999999,1};
+				Item1[]={200,0.5,0.93000001,0.69999999,1};
+				Item2[]={900,0.029999999,0.89999998,0.059999999,1};
+				Item3[]={1300,0.0099999998,0.89999998,0.029999999,1};
 			};
 			class Overcast: Overcast
 			{
@@ -2050,10 +2051,10 @@ class cfgLiquidDefinitions
 		class Nutrition
 		{
 			fullnessIndex=1;
-			energy=350;
-			water=30;
+			energy=-10;
+			water=1;
 			nutritionalIndex=55;
-			toxicity=50;
+			toxicity=75;
 		};
 	};
 	class Vodka
@@ -2065,9 +2066,9 @@ class cfgLiquidDefinitions
 		{
 			fullnessIndex=1;
 			energy=231;
-			water=100;
+			water=15;
 			nutritionalIndex=75;
-			toxicity=50;
+			toxicity=30;
 		};
 	};
 	class Beer
@@ -2093,9 +2094,9 @@ class cfgLiquidDefinitions
 		{
 			fullnessIndex=100;
 			energy=-10;
-			water=100;
+			water=0;
 			nutritionalIndex=75;
-			toxicity=5;
+			toxicity=50;
 		};
 	};
 	class Diesel
@@ -2107,9 +2108,9 @@ class cfgLiquidDefinitions
 		{
 			fullnessIndex=1;
 			energy=-10;
-			water=100;
+			water=0;
 			nutritionalIndex=75;
-			toxicity=5;
+			toxicity=50;
 		};
 	};
 	class Saline
@@ -2121,7 +2122,7 @@ class cfgLiquidDefinitions
 		{
 			fullnessIndex=1;
 			energy=0;
-			water=100;
+			water=0;
 			nutritionalIndex=75;
 			toxicity=-10;
 		};
@@ -2134,7 +2135,7 @@ class cfgLiquidDefinitions
 		class Nutrition
 		{
 			fullnessIndex=1;
-			energy=350;
+			energy=5;
 			water=30;
 			nutritionalIndex=55;
 			toxicity=5;
@@ -2148,7 +2149,7 @@ class cfgLiquidDefinitions
 		class Nutrition
 		{
 			fullnessIndex=1;
-			energy=350;
+			energy=5;
 			water=30;
 			nutritionalIndex=55;
 			toxicity=5;
@@ -2162,7 +2163,7 @@ class cfgLiquidDefinitions
 		class Nutrition
 		{
 			fullnessIndex=1;
-			energy=350;
+			energy=5;
 			water=30;
 			nutritionalIndex=55;
 			toxicity=5;
@@ -2176,7 +2177,7 @@ class cfgLiquidDefinitions
 		class Nutrition
 		{
 			fullnessIndex=1;
-			energy=350;
+			energy=5;
 			water=30;
 			nutritionalIndex=55;
 			toxicity=5;
@@ -2190,7 +2191,7 @@ class cfgLiquidDefinitions
 		class Nutrition
 		{
 			fullnessIndex=1;
-			energy=350;
+			energy=5;
 			water=30;
 			nutritionalIndex=55;
 			toxicity=5;
@@ -2204,7 +2205,7 @@ class cfgLiquidDefinitions
 		class Nutrition
 		{
 			fullnessIndex=1;
-			energy=350;
+			energy=5;
 			water=30;
 			nutritionalIndex=55;
 			toxicity=5;
@@ -2218,7 +2219,7 @@ class cfgLiquidDefinitions
 		class Nutrition
 		{
 			fullnessIndex=1;
-			energy=350;
+			energy=5;
 			water=30;
 			nutritionalIndex=55;
 			toxicity=5;
@@ -2232,7 +2233,7 @@ class cfgLiquidDefinitions
 		class Nutrition
 		{
 			fullnessIndex=1;
-			energy=350;
+			energy=5;
 			water=30;
 			nutritionalIndex=55;
 			toxicity=5;
@@ -2842,6 +2843,7 @@ class CfgVehicles
 	class Light: HouseNoDestruct
 	{
 		scope=2;
+		carveNavmesh=0;
 		model="\DZ\data\lightpoint.p3d";
 		overrideDrawArea="500.0";
 		class PointLights
@@ -2952,14 +2954,6 @@ class CfgVehicles
 		inventorySlot="tripWireAttachment";
 		unpinAction="unpinGrenade";
 		havePin=1;
-		internalResources[]=
-		{
-			
-			{
-				"internalenergy",
-				0.1
-			}
-		};
 	};
 	class Book_Base: Inventory_Base
 	{
@@ -4291,7 +4285,7 @@ class cfgAmmo
 		hit=1;
 		indirectHit=1;
 		indirectHitRange=1;
-		particle="explosion_landmine_01";
+		effect="LandmineExplosion";
 		explosive=1;
 		typicalSpeed=3;
 		initSpeed=3;

@@ -1,4 +1,4 @@
-class LayoutHolder: ScriptedWidgetEventHandler
+class LayoutHolder extends ScriptedWidgetEventHandler
 {
 	protected Widget				m_MainWidget;
 	protected Widget				m_ParentWidget;

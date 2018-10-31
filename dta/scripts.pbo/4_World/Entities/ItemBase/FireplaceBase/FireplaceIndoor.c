@@ -162,7 +162,7 @@ class FireplaceIndoor extends FireplaceBase
 	//================================================================
 	// ATTACHMENTS
 	//================================================================	
-	override bool CanReceiveAttachment( EntityAI attachment )
+	override bool CanReceiveAttachment( EntityAI attachment, int slotId )
 	{
 		ItemBase item = ItemBase.Cast( attachment );
 		

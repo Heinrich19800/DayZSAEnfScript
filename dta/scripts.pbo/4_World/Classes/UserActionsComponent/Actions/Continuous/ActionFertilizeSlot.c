@@ -60,7 +60,7 @@ class ActionFertilizeSlot: ActionContinuousBase
 		return false;
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{
 		// The functionality is in the Execute event of this user action's component.
 	}

@@ -35,7 +35,7 @@ class IngameHud extends Hud
 	protected TextWidget						m_VehiclePanelPrevGearValue;
 	protected ImageWidget						m_VehiclePanelEngineHealth;
 	protected bool								m_InVehicleAsDriver;
-	protected Car								m_CurrentVehicle;
+	protected CarScript							m_CurrentVehicle;
 	
 	protected Widget							m_Notifiers;
 	protected Widget							m_Badges;
@@ -770,7 +770,7 @@ class IngameHud extends Hud
 			
 			if ( hcv && hcv.GetVehicleSeat() == DayZPlayerConstants.VEHICLESEAT_DRIVER )
 			{
-				Car car = Car.Cast( hcv.GetTransport() );
+				CarScript car = CarScript.Cast( hcv.GetTransport() );
 				if( car )
 				{
 					m_InVehicleAsDriver	= true;
@@ -779,7 +779,8 @@ class IngameHud extends Hud
 					TFloatArray gears	= new TFloatArray;
 					
 					GetGame().ConfigGetFloatArray( "CfgVehicles " + m_CurrentVehicle.GetType() + " SimulationModule Gearbox ratios" , gears );
-
+					m_VehicleRPMMax = GetGame().ConfigGetFloat( "CfgVehicles " + m_CurrentVehicle.GetType() + " SimulationModule Engine rpmRedline" );
+					
 					m_VehicleGearCount	= gears.Count() + 1;
 					
 					m_HudPanelWidget.FindAnyWidget("PlayerPanel").Show( false );
@@ -787,22 +788,13 @@ class IngameHud extends Hud
 					m_StancePanel.Show( false );
 					
 					m_VehiclePanel.Show( true );
-					
-					float vehicle_hud_offset;
-					float x, y;
-					m_VehiclePanel.GetSize( x, vehicle_hud_offset );
-					
-					m_HudPanelWidget.FindAnyWidget("ItemActions").GetPos( x, y );
-					m_HudPanelWidget.FindAnyWidget("ItemActions").SetPos( x, y + vehicle_hud_offset - 50 );
-					
-					m_HudPanelWidget.GetParent().FindAnyWidget("ChatFrameWidget").GetPos( x, y );
-					m_HudPanelWidget.GetParent().FindAnyWidget("ChatFrameWidget").SetPos( x, y + 0.12 );
 				}
 			}
 		}
 	}
 	
 	int m_VehicleGearCount = -1;
+	int m_VehicleRPMMax = 1;
 	
 	override void HideVehicleInfo()
 	{
@@ -812,25 +804,23 @@ class IngameHud extends Hud
 		
 		m_VehiclePanel.Show( false );
 		
-		float vehicle_hud_offset;
-		float x, y;
-		m_VehiclePanel.GetSize( x, vehicle_hud_offset );
-		
-		m_HudPanelWidget.FindAnyWidget("ItemActions").GetPos( x, y );
-		m_HudPanelWidget.FindAnyWidget("ItemActions").SetPos( x, y - vehicle_hud_offset + 50 );
-		
-		m_HudPanelWidget.GetParent().FindAnyWidget("ChatFrameWidget").GetPos( x, y );
-		m_HudPanelWidget.GetParent().FindAnyWidget("ChatFrameWidget").SetPos( x, y - 0.12 );
-		
 		m_CurrentVehicle = null;
 		m_VehicleGearCount = -1;
+	}
+	
+	void BlinkEngineFailure()
+	{
+		if ( m_CurrentVehicle )
+		{
+			//m_CurrentVehicle.GetInventory().Slot
+		}
 	}
 	
 	void RefreshVehicleHud()
 	{
 		if ( m_CurrentVehicle )
 		{
-			float rpm_value = ( m_CurrentVehicle.GetEngineRPM() / 7000 ) ;
+			float rpm_value = ( m_CurrentVehicle.GetEngineRPM() / m_VehicleRPMMax ) ;
 			
 			m_VehiclePanelRPMPointer.SetRotation( 0, 0, rpm_value * 100 - 20, true );
 			m_VehiclePanelSpeedValue.SetText( Math.Floor( m_CurrentVehicle.GetSpeedometer() ).ToString() );
@@ -855,7 +845,8 @@ class IngameHud extends Hud
 				m_VehiclePanelEngineHealth.Show( true );
 				int color = ItemManager.GetInstance().GetItemHealthColor( m_CurrentVehicle );
 				
-				m_VehiclePanelEngineHealth.FindAnyWidget( "CheckEngineIcon" ).SetColor( color );
+				m_VehiclePanelEngineHealth.SetColor( color );
+				m_VehiclePanelEngineHealth.SetAlpha( 1 );
 			}
 			else
 			{

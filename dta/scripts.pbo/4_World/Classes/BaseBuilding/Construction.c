@@ -37,7 +37,7 @@ class Construction
 	// Construction process
 	//============================================
 	//constructed parts
-	void AddToConstructedParts( string part_name, bool synchronize )
+	void AddToConstructedParts( string part_name )
 	{
 		ConstructionPart constrution_part = GetConstructionPart( part_name );
 		
@@ -47,7 +47,7 @@ class Construction
 		}
 	}
 	
-	void RemoveFromConstructedParts( string part_name, bool synchronize )
+	void RemoveFromConstructedParts( string part_name )
 	{
 		ConstructionPart constrution_part = GetConstructionPart( part_name );
 		
@@ -58,7 +58,7 @@ class Construction
 	}
 	
 	//BuildPart
-	void BuildPart( string part_name, bool take_materials = true, bool synchronize = false )
+	void BuildPart( string part_name, bool take_materials )
 	{
 		//remove materials
 		if ( take_materials )
@@ -67,39 +67,32 @@ class Construction
 		}
 
 		//add part to constructed parts
-		AddToConstructedParts( part_name, synchronize );
+		AddToConstructedParts( part_name );
 		
 		//destroy build collision check trigger
 		DestroyCollisionTrigger();
 		
 		//call event
-		GetParent().OnPartBuilt( part_name, synchronize );
+		GetParent().OnPartBuilt( part_name );
 	}
 	
 	//DismantlePart
-	void DismantlePart( string part_name, bool receive_materials = true, bool synchronize = false )
+	void DismantlePart( string part_name, bool receive_materials )
 	{
 		//receive materials
 		ReceiveMaterials( part_name, receive_materials );
 		
 		//add part to constructed parts
-		RemoveFromConstructedParts( part_name, synchronize );
+		RemoveFromConstructedParts( part_name );
 			
 		//call event
-		GetParent().OnPartDismantled( part_name, synchronize );
+		GetParent().OnPartDismantled( part_name );
 	}
 	
 	//DestroyPart
-	void DestroyPart( string part_name, bool synchronize = false )
+	void DestroyPart( string part_name )
 	{
-		//receive materials
-		ReceiveMaterials( part_name, false );
-	
-		//add part to constructed parts
-		RemoveFromConstructedParts( part_name, synchronize );
-			
-		//call event
-		GetParent().OnPartDismantled( part_name, synchronize );
+		DismantlePart( part_name, false );
 	}	
 	
 	//============================================
@@ -507,20 +500,27 @@ class Construction
 				int slot_id;
 				
 				//material still attached
-				if ( lockable )
+				if ( lockable )			//if lockable 
 				{
 					InventoryLocation inventory_location = new InventoryLocation;
 					attachment.GetInventory().GetCurrentInventoryLocation( inventory_location );
 					GetParent().GetInventory().SetSlotLock( inventory_location.GetSlot() , false );
 					
-					//detach
-					if ( GetGame().IsMultiplayer() )
+					if ( receive_materials )		//drop attachment if true
 					{
-						GetParent().GetInventory().DropEntity( InventoryMode.PREDICTIVE, GetParent(), attachment );
+						//detach
+						if ( GetGame().IsMultiplayer() )
+						{
+							GetParent().GetInventory().DropEntity( InventoryMode.PREDICTIVE, GetParent(), attachment );
+						}
+						else
+						{
+							GetParent().GetInventory().DropEntity( InventoryMode.LOCAL, GetParent(), attachment );
+						}
 					}
 					else
 					{
-						GetParent().GetInventory().DropEntity( InventoryMode.LOCAL, GetParent(), attachment );
+						GetGame().ObjectDelete( attachment );		//delete object if not
 					}
 				}
 				else

@@ -124,7 +124,7 @@ class ActionViewOptics : ActionContinuousBase
 		}
 	}
 	
-	override void OnInterruptClient( ActionData action_data )
+	override void OnEndClient( ActionData action_data )
 	{
 		ItemOptics optic;
 		if( Class.CastTo(optic, action_data.m_MainItem) )
@@ -133,25 +133,7 @@ class ActionViewOptics : ActionContinuousBase
 		}
 	}
 	
-	override void OnInterruptServer( ActionData action_data )
-	{
-		ItemOptics optic;
-		if( Class.CastTo(optic, action_data.m_MainItem) )
-		{
-			ExitOptics(optic, action_data.m_Player);
-		}
-	}
-	
-	override void OnCancelClient( ActionData action_data )
-	{
-		ItemOptics optic;
-		if( Class.CastTo(optic, action_data.m_MainItem) )
-		{
-			ExitOptics(optic, action_data.m_Player);
-		}
-	}
-	
-	override void OnCancelServer( ActionData action_data )
+	override void OnEndServer( ActionData action_data )
 	{
 		ItemOptics optic;
 		if( Class.CastTo(optic, action_data.m_MainItem) )
@@ -178,16 +160,6 @@ class ActionViewOptics : ActionContinuousBase
 		{
 			ExitOptics(optic, action_data.m_Player);
 		}
-	}
-	
-	override void OnCompleteClient( ActionData action_data )
-	{
-		OnEndAnimationLoopClient( action_data );
-	}
-	
-	override void OnCompleteServer( ActionData action_data )
-	{
-		OnEndAnimationLoopServer( action_data );
 	}
 	
 	bool CanWork(ItemBase item)

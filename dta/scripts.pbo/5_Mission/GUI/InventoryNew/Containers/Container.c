@@ -1,4 +1,4 @@
-class Container: LayoutHolder
+class Container extends LayoutHolder
 {
 	protected ref array<ref LayoutHolder>	m_Body;
 	protected ref array<ref LayoutHolder>	m_OpenedContainers;
@@ -100,6 +100,18 @@ class Container: LayoutHolder
 		{
 			m_MainWidget.FindAnyWidget("SelectedContainer").Show(active);
 		}
+		else
+		{
+			if( active )
+			{
+				m_MainWidget.SetColor( ARGB( 255, 160, 160, 160 ) );
+			}
+			else
+			{
+				m_MainWidget.SetColor( ARGB( 255, 115, 115, 115 ) );
+			}
+		}
+		
 		if( active )
 		{
 			if( this.IsInherited( ContainerWithCargo ) )

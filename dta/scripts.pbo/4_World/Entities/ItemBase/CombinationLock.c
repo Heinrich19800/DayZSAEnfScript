@@ -13,6 +13,28 @@ class CombinationLock extends ItemBase
 		RegisterNetSyncVariableInt( "m_CombinationLocked", 	0, combination_length - 1 );
 	}
 	
+	override void EEInit()
+	{
+		super.EEInit();
+		
+		//set visual on init
+		UpdateVisuals();
+	}	
+	
+	void UpdateVisuals()
+	{
+		if ( IsLocked() )
+		{
+			SetAnimationPhase( "Combination_Lock_Item", 1 );
+			SetAnimationPhase( "Combination_Lock_Attached", 0 );
+		}
+		else
+		{
+			SetAnimationPhase( "Combination_Lock_Item", 0 );
+			SetAnimationPhase( "Combination_Lock_Attached", 1 );			
+		}
+	}	
+	
 	// --- EVENTS
 	override void OnStoreSave( ParamsWriteContext ctx )
 	{   
@@ -38,6 +60,8 @@ class CombinationLock extends ItemBase
 		if ( GetGame().IsServer() )
 		{
 			SetSynchDirty();
+			
+			UpdateVisuals();
 		}
 	}
 	

@@ -813,7 +813,8 @@ class HumanMovementState
 	int 		m_CommandTypeId;	//! current command's id 
 	int 		m_iStanceIdx;		//! current stance (DayZPlayer.STANCEIDX_ERECT, ...), only if the command has a stance
 	int 		m_iMovement;		//! current movement (0 idle, 1 walk, 2-run, 3-sprint), only if the command has a movement 
-
+	float		m_fLeaning;			//! leaning state (not all commands need to have all movements)
+	
 	//! 
 	bool		IsRaised()
 	{

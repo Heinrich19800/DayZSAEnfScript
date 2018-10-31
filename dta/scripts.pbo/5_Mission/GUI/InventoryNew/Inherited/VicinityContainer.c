@@ -1,9 +1,9 @@
 class VicinityContainer: CollapsibleContainer
 {
-	ref VicinitySlotsContainer m_VicinityIconsContainer;
-	ref map<EntityAI, ref Container> m_ShowedItems = new ref map<EntityAI, ref Container>;
-	ref map<int, ref Container> m_ShowedItemsIDs = new ref map<int, ref Container>;
-	ref array<Object> m_ShowedItemIcons = new array<Object>;
+	ref VicinitySlotsContainer			m_VicinityIconsContainer;
+	ref map<EntityAI, ref Container>	m_ShowedItems				= new ref map<EntityAI, ref Container>;
+	ref map<int, ref Container>			m_ShowedItemsIDs			= new ref map<int, ref Container>;
+	ref array<Object>					m_ShowedItemIcons			= new array<Object>;
 
 	void VicinityContainer( LayoutHolder parent )
 	{
@@ -428,6 +428,7 @@ class VicinityContainer: CollapsibleContainer
 			name.Replace( "PanelWidget", "Render" );
 			ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
 		}
+		
 		if( !ipw )
 		{
 			ipw = ItemPreviewWidget.Cast( w );
@@ -439,7 +440,7 @@ class VicinityContainer: CollapsibleContainer
 		}
 		
 		EntityAI item = ipw.GetItem();
-		bool equal_typed = item.GetType() != receiver_item.GetType();
+		bool equal_typed = item.GetType() == receiver_item.GetType();
 		if( !receiver_item.IsInherited( ItemBase ) || item == NULL || !equal_typed )
 		{
 			return;
@@ -459,6 +460,7 @@ class VicinityContainer: CollapsibleContainer
 		{
 			player.PredictiveDropEntity( item );
 		}
+		
 		ItemManager.GetInstance().SetIsDragging( false );
 		ItemManager.GetInstance().PrepareTooltip( item );
 
@@ -561,19 +563,19 @@ class VicinityContainer: CollapsibleContainer
 		array<Object> showable_items = new array<Object>;
 		int m_OldShowedItemIconsCount = m_ShowedItemIcons.Count();
 		m_ShowedItemIcons.Clear();
-
+		
 		for( i = 0; i < objects.Count(); i++ )
 		{
 			Object obj = objects.Get( i );
-			bool showable_item = !objects.Get( i ).IsAnyInherited( { ScriptedEntity, Building, Camera, PlantSuper, PASReceiver, DayZAnimal, UndergroundStash } );
+			bool showable_item = !objects.Get( i ).IsAnyInherited( { ScriptedEntity, Building, Camera, PlantSuper, PASReceiver, DayZAnimal, UndergroundStash, GardenBase } );
 			if ( player.GetInventory().IsPlaceholderEntity(obj) )
 				continue; // noproxy: ignore body placeholder
 			if ( obj.GetParent() || ( EntityAI.Cast( obj ) && EntityAI.Cast( obj ).GetHierarchyParent() ) )
 				continue; // noproxy: ignore owned items
 
 			// Temporary solution for making GardenBase objects visible in vicinity
-			if (!showable_item )
-				showable_item = objects.Get( i ).IsAnyInherited( { GardenBase } );
+			//if (!showable_item )
+				//showable_item = objects.Get( i ).IsAnyInherited( { GardenBase } );
 
 			if( showable_item )
 			{
@@ -710,7 +712,7 @@ class VicinityContainer: CollapsibleContainer
 			RecomputeOpenedContainers();
 			m_VicinityIconsContainer.ShowItemsInContainers( m_ShowedItemIcons );
 			
-			if(m_ShowedItemIcons.Count() < m_OldShowedItemIconsCount )
+			if( m_ShowedItemIcons.Count() < m_OldShowedItemIconsCount )
 			{
 				Inventory in = Inventory.Cast( GetRoot() );
 				if( in )

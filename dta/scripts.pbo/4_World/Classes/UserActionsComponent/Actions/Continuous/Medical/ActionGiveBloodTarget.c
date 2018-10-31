@@ -83,7 +83,7 @@ class ActionGiveBloodTarget: ActionContinuousBase
 		}
 	}
 	
-	override void OnCancelServer(ActionData action_data)
+	override void OnEndServer(ActionData action_data)
 	{
 		OnFinishProgressServer(action_data);
 	}

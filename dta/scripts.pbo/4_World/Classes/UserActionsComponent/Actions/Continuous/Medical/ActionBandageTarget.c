@@ -45,7 +45,7 @@ class ActionBandageTarget: ActionContinuousBase
 		return other_player.IsBleeding();
 	}
 	
-	override void OnCompleteServer( ActionData action_data )
+	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		PlayerBase ntarget = PlayerBase.Cast(action_data.m_Target.GetObject());
 		if (ntarget.GetBleedingManagerServer() )
