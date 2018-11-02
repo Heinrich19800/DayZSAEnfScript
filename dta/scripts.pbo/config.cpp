@@ -769,6 +769,20 @@ class CfgSlots
 		displayName="LightBulb";
 		ghostIcon="lightbulb";
 	};
+	class Slot_Reflector_1_1
+	{
+		name="Reflector_1_1";
+		displayName="Reflector";
+		selection="Reflector_1_1";
+		ghostIcon="lightbulb";
+	};
+	class Slot_Reflector_2_1
+	{
+		name="Reflector_2_1";
+		displayName="Reflector";
+		selection="Reflector_2_1";
+		ghostIcon="lightbulb";
+	};
 	class Slot_TruckRadiator
 	{
 		name="TruckRadiator";

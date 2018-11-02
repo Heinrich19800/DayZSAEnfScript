@@ -253,7 +253,7 @@ class ActionManagerClient: ActionManagerBase
 		}
 			
 		
-		if ( (m_PrimaryActionEnabled || m_SecondaryActionEnabled || m_TertiaryActionEnabled) )
+		if ( (m_PrimaryActionEnabled || m_SecondaryActionEnabled || m_TertiaryActionEnabled ) && !GetRunningAction() )
 		{
 			ActionBase action;
 			ActionTarget 	target;
@@ -508,7 +508,7 @@ class ActionManagerClient: ActionManagerBase
 		//}
 	}
 	
-	protected void ActionStart(ActionBase action, ActionTarget target, ItemBase item , Param extraData = NULL )
+	protected void ActionStart(ActionBase action, ActionTarget target, ItemBase item, Param extra_data = NULL )
 	{
 		if ( action ) 
 		{	
@@ -521,7 +521,9 @@ class ActionManagerClient: ActionManagerBase
 				}
 			}
 			
-			if( !action.SetupAction(m_Player, target, item, m_CurrentActionData, extraData))
+			Debug.Log("[Action DEBUG] Start time stamp ++: " + m_Player.GetSimulationTimeStamp());
+			
+			if( !action.SetupAction(m_Player, target, item, m_CurrentActionData, extra_data ))
 			{
 				Print("Can not inicialize action - ActionManagerClient");
 				m_CurrentActionData = NULL;
@@ -654,7 +656,7 @@ class ActionManagerClient: ActionManagerBase
 	
 	
 	//Instant Action (Debug Actions) ---------------------------------
-	override void OnInstantAction(int user_action_id, Param data)
+	override void OnInstantAction(int user_action_id, Param data = NULL)
 	{
 		ActionStart(GetAction(user_action_id),NULL,NULL, data);
 	}

@@ -11,7 +11,7 @@ class ActionNextCombinationLockDialOnTarget: ActionInteractBase
 	override void CreateConditionComponents()  
 	{
 		m_ConditionItem = new CCINone;
-		m_ConditionTarget = new CCTNone;
+		m_ConditionTarget = new CCTNonRuined( UAMaxDistances.DEFAULT );
 	}
 
 	override int GetType()

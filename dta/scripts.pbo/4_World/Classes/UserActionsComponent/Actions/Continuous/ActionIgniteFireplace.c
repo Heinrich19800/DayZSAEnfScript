@@ -25,7 +25,7 @@ class ActionIgniteFireplace: ActionContinuousBase
 	
 	override ActionData CreateActionData()
 	{
-		ActionData action_data = new BuryAshesActionData;
+		ActionData action_data = new IgniteFireplaceActionData;
 		return action_data;
 	}
 	

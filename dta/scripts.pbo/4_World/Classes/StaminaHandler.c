@@ -53,8 +53,10 @@ class StaminaConsumers
 				return false;
 			}
 			
-			if( curStamina <= sc.GetThreshold() && sc.GetState() )
+			if( curStamina < sc.GetThreshold() && sc.GetState() )
+			{
 				return true;
+			}
 	
 			if( curStamina >= sc.GetThreshold() )
 			{
@@ -237,6 +239,9 @@ class StaminaHandler
 			break;
 			case DayZPlayerConstants.COMMANDID_SWIM:
 				StaminaProcessor_Swimming(m_State);
+			break;
+			case DayZPlayerConstants.COMMANDID_FALL:	//! processed on event
+			case DayZPlayerConstants.COMMANDID_MELEE2:  //! processed on event
 			break;
 			default:
 				m_StaminaDelta = STAMINA_GAIN_IDLE_PER_SEC;
@@ -440,7 +445,7 @@ class StaminaHandler
 		m_IsInCooldown = true;
 		if( m_CooldownTimer.IsRunning() )
 			m_CooldownTimer.Stop();
-		m_CooldownTimer.Run(time, this, "ResetCooldown", NULL);
+		m_CooldownTimer.Run(time, this, "ResetCooldown", null);
 	}
 	
 	protected void ResetCooldown()

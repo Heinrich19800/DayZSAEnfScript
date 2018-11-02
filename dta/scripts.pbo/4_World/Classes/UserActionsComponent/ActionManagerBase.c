@@ -87,8 +87,10 @@ class ActionManagerBase
 	
 	ActionBase GetRunningAction()
 	{
-		if( m_CurrentActionData )
+		if ( m_CurrentActionData )
+		{
 			return m_CurrentActionData.m_Action;
+		}
 		return NULL;
 	}
 	
@@ -317,7 +319,7 @@ class ActionManagerBase
 	{
 	}
 
-	void OnInstantAction(int user_action_id, Param data)
+	void OnInstantAction(int user_action_id, Param data = NULL)
 	{
 	}
 	
@@ -327,15 +329,6 @@ class ActionManagerBase
 		m_CurrentActionData = NULL;
 		
 		m_Player.ResetActionEndInput();
-	}
-	
-	void OnWeaponFsmEnd()
-	{
-		FirearmActionBase weapon_action = FirearmActionBase.Cast(GetRunningAction());
-		if(weapon_action)
-		{
-			weapon_action.End(m_CurrentActionData);
-		}
 	}
 	
 	void OnJumpStart()
@@ -359,5 +352,10 @@ class ActionManagerBase
 		if(m_CurrentActionData)
 			return m_CurrentActionData.m_Action.GetState(m_CurrentActionData);
 		return UA_NONE;
+	}
+	
+	ActionReciveData GetReciveData()
+	{
+		return NULL;
 	}
 };

@@ -1,5 +1,15 @@
+class ActionReciveData
+{
+	ref ActionTarget					m_Target;
+}
+
 class ActionData
 {
+	void ActionData()
+	{
+		m_State = UA_NONE;
+	}
+	
 	ActionBase							m_Action;
 	ItemBase							m_MainItem;
 	ActionBaseCB 						m_Callback;
@@ -66,7 +76,7 @@ class ActionBase
 		m_Sounds = new TStringArray;
 	}
 	
-	bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extraData = NULL)
+	bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extra_data = NULL )
 	{
 		action_data = CreateActionData();
 		action_data.m_Action = this;
@@ -77,6 +87,12 @@ class ActionBase
 		action_data.m_ReservedInventoryLocations = new array<ref InventoryLocation>;
 		action_data.m_RefreshReservationTimer = 150;
 		action_data.m_WasExecuted = false;
+		
+		ActionReciveData action_recive_data = player.GetActionManager().GetReciveData();
+		if ( action_recive_data )
+		{
+			HandleReciveData(action_recive_data,action_data);
+		}
 		
 		if ( (!GetGame().IsMultiplayer() || GetGame().IsClient()) && !IsInstant() )
 		{
@@ -237,7 +253,6 @@ class ActionBase
 			}
 
 			ctx.Write(proxyBoneIdx);
-			
 			targetParent = action_data.m_Target.GetParent();
 			ctx.Write(targetParent);
 			componentIndex = action_data.m_Target.GetComponentIndex();
@@ -245,8 +260,12 @@ class ActionBase
 		}
 	}
 	
-	bool ReadFromContext(ParamsReadContext ctx, ActionData action_data )
+	bool ReadFromContext(ParamsReadContext ctx, out ActionReciveData action_recive_data )
 	{
+		if( !action_recive_data )
+		{
+			action_recive_data = new ActionReciveData;
+		}
 		Object actionTargetObject = null;
 		Object actionTargetParent = null;
 		int componentIndex = -1;
@@ -267,7 +286,7 @@ class ActionBase
 			
 			target = new ActionTarget(actionTargetObject, actionTargetParent, componentIndex, vector.Zero, 0);
 						
-			action_data.m_Target = target;
+			action_recive_data.m_Target = target;
 		}
 		else if( HasTarget() && IsUsingProxies() )
 		{
@@ -297,10 +316,18 @@ class ActionBase
 			
 			target = new ActionTarget(actionTargetObject, actionTargetParent, componentIndex, vector.Zero, 0);
 						
-			action_data.m_Target = target;		
+			action_recive_data.m_Target = target;		
 		}
 
 		return true;
+	}
+	
+	void HandleReciveData(ActionReciveData action_recive_data, ActionData action_data)
+	{
+		if(HasTarget())
+		{
+			action_data.m_Target = action_recive_data.m_Target;
+		}
 	}
 	
 	//----------------------------------------------------------------------------------------------
@@ -488,14 +515,13 @@ class ActionBase
 			InventoryLocation il;
 			for ( int i = 0; i < action_data.m_ReservedInventoryLocations.Count(); i++)
 			{
-				Print("-");
 				il = action_data.m_ReservedInventoryLocations.Get(i);
 				EntityAI entity = il.GetItem();
 				action_data.m_Player.GetInventory().ExtendInventoryReservation( il.GetItem() , il, 10000 );
 			}
 		}
 	}
-		
+
 	// MESSAGES --------------------------------------------------------------------
 	string GetMessageText( int state ) //returns text of action based on given id
 	{

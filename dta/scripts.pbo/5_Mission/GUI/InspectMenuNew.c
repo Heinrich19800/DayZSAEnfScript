@@ -522,40 +522,37 @@ class InspectMenuNew extends UIScriptedMenu
 			
 			ref FoodStage food_stage = food_item.GetFoodStage();
 			FoodStageType food_stage_type = food_stage.GetFoodStageType();
-			
-			string food_stage_name = food_stage.GetFoodStageName( food_stage_type );
-			food_stage_name.ToUpper();
-			
+					
 			switch( food_stage_type )
-			{
+			{				
 				case FoodStageType.RAW:
 				{
-					WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, Colors.COLOR_RAW );
+					WidgetTrySetText( root_widget, "ItemFoodStageWidget", "#inv_inspect_raw", Colors.COLOR_RAW );
 					break;
 				}
 				case FoodStageType.BAKED:
 				{
-					WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, Colors.COLOR_BAKED );
+					WidgetTrySetText( root_widget, "ItemFoodStageWidget", "#inv_inspect_baked", Colors.COLOR_BAKED );
 					break;
 				}
 				case FoodStageType.BOILED:
 				{
-					WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, Colors.COLOR_BOILED );
+					WidgetTrySetText( root_widget, "ItemFoodStageWidget", "#inv_inspect_boiled", Colors.COLOR_BOILED );
 					break;
 				}
 				case FoodStageType.DRIED:
 				{
-					WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, Colors.COLOR_DRIED );
+					WidgetTrySetText( root_widget, "ItemFoodStageWidget", "#inv_inspect_dried", Colors.COLOR_DRIED );
 					break;
 				}
 				case FoodStageType.BURNED:
 				{
-					WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, Colors.COLOR_BURNED );
+					WidgetTrySetText( root_widget, "ItemFoodStageWidget", "#inv_inspect_burned", Colors.COLOR_BURNED );
 					break;
 				}
 				case FoodStageType.ROTTEN:
 				{
-					WidgetTrySetText( root_widget, "ItemFoodStageWidget", food_stage_name, Colors.COLOR_ROTTEN );
+					WidgetTrySetText( root_widget, "ItemFoodStageWidget", "#inv_inspect_rotten", Colors.COLOR_ROTTEN );
 					break;
 				}
 			}

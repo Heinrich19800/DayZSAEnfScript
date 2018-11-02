@@ -28,9 +28,9 @@ class ActionEmptyMagazine: ActionContinuousBase
 
 	}
 	
-	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extraData = NULL)
+	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extra_data = NULL)
 	{
-		if( super.SetupAction( player, target, item, action_data, extraData))
+		if( super.SetupAction( player, target, item, action_data, extra_data))
 		{
 			EmptyMagazineActionData emActionData = EmptyMagazineActionData.Cast(action_data);
 			emActionData.m_magazinePile = NULL;

@@ -1654,6 +1654,8 @@ class CfgWorlds
 		hazeFogCoef=1;
 		satelliteNormalBlendStart=100;
 		satelliteNormalBlendEnd=500;
+		flareMinDistance=2;
+		flareMinDistanceLerp=1;
 	};
 };
 class CfgMaterials

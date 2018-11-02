@@ -637,7 +637,7 @@ enum DayZPlayerConstants
 	CMD_ACTIONFB_CUTBARK				= 105,		// erc,cro			[end, end2]
 	CMD_ACTIONFB_VIEWNOTE				= 106,		// erc,cro,pne		[end]
 	CMD_ACTIONFB_SEARCHINVENTORY		= 107,		// pne				[end]
-	CMD_GESTUREFB_LOOKOPTICS				= 108,		// erc,cro,pne		[end]
+	CMD_GESTUREFB_LOOKOPTICS			= 108,		// erc,cro,pne		[end]
 	CMD_ACTIONFB_MINEROCK				= 109,		// erc				[end, end2]
 	CMD_ACTIONFB_RAISEITEM				= 110,		// pne 				[end]
 	CMD_ACTIONFB_RESTRAINEDSTRUGGLE		= 111,		// ,pne 			[end, end2]

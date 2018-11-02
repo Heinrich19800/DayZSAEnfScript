@@ -5,8 +5,13 @@
 
 class ActionManagerServer: ActionManagerBase
 {		
+	protected ActionBase 				m_PendingAction;
+	ref ActionReciveData				m_PendingActionReciveData;
+	
 	void ActionManagerServer(PlayerBase player)
 	{
+		m_PendingAction = NULL;
+		m_PendingActionReciveData = NULL;
 		//ActionManagerBase(player);
 	}
 	
@@ -88,35 +93,12 @@ class ActionManagerServer: ActionManagerBase
 				if (!recvAction)
 					return false;
 				
-				switch (actionID)
+				if (!recvAction.ReadFromContext(ctx, m_PendingActionReciveData))
 				{
-					/*case AT_DEBUG:
-					{
-						ItemBase targetItem = null;
-						if ( !ctx.Read(targetItem) ) //jtomasik - proc ho nenacte?
-							return false;
-
-						int debugActionID = 0;
-						if ( !ctx.Read(debugActionID) ) //jtomasik - proc ho nenacte?
-							return false;
-						
-						targetItem.OnAction(debugActionID, m_Player, NULL);
-						break;
-					}*/
-					
-					default:
-						ref ActionTarget target = new ActionTarget(NULL, NULL, -1, vector.Zero, 0);
-						if (!recvAction.SetupAction(m_Player,target,m_Player.GetItemInHands(),m_CurrentActionData))
-						{
-							success = false;
-						}
-						Debug.Log("[AM] Action data created (" + m_Player + ")");
-						if (!recvAction.ReadFromContext(ctx, m_CurrentActionData))
-						{
-							success = false;
-						}
-						Debug.Log("[AM] Action data synced (" + m_Player + ")");
+					success = false;
 				}
+				
+				m_PendingAction = recvAction;
 					
 				if (recvAction.UseAcknowledgment())
 				{
@@ -127,7 +109,6 @@ class ActionManagerServer: ActionManagerBase
 					m_PendingActionAcknowledgmentID = AckID;
 				}
 					
-				m_CurrentActionData.m_State = UA_AM_PENDING;
 				break;
 			}
 			default:
@@ -147,7 +128,7 @@ class ActionManagerServer: ActionManagerBase
 			//m_CurrentActionData = NULL;
 			return false;
 		}
-		StartDeliveredAction();
+		//StartDeliveredAction();
 		return true;
 		
 	}
@@ -249,13 +230,51 @@ class ActionManagerServer: ActionManagerBase
 	override void Update(int pCurrentCommandID)
 	{
 		super.Update(pCurrentCommandID);
+		
+		if (m_PendingAction)
+		{
+			if ( m_CurrentActionData )
+			{
+				DayZPlayerSyncJunctures.SendActionAcknowledgment(m_Player, m_PendingActionAcknowledgmentID, false);
+			}
+			else
+			{
+				ref ActionTarget target = new ActionTarget(NULL, NULL, -1, vector.Zero, 0); 
+				bool success = true;
+						
+				Debug.Log("[Action DEBUG] Start time stamp ++: " + m_Player.GetSimulationTimeStamp());
+				if (!m_PendingAction.SetupAction(m_Player,target,m_Player.GetItemInHands(),m_CurrentActionData))
+				{
+					success = false;
+				}
+				Debug.Log("[AM] Action data synced (" + m_Player + ")");
+			
+				if (success)
+				{
+					StartDeliveredAction();
+				}	
+				else
+				{
+					if (m_PendingAction.UseAcknowledgment())
+					{
+						DayZPlayerSyncJunctures.SendActionAcknowledgment(m_Player, m_PendingActionAcknowledgmentID, false);
+					}
+					else
+					{
+						DayZPlayerSyncJunctures.SendActionInterrupt(m_Player);
+					}
+				}
+			}
+			m_PendingAction = NULL;
+			m_PendingActionReciveData = NULL;
+		}
 	
 		if (m_CurrentActionData)
 		{
 			switch (m_CurrentActionData.m_State)
 			{
 				case UA_AM_PENDING:
-					return;
+					break;
 			
 				case UA_AM_ACCEPTED:
 					// check pCurrentCommandID before start or reject 
@@ -278,7 +297,7 @@ class ActionManagerServer: ActionManagerBase
 						OnActionEnd();
 					}
 					m_PendingActionAcknowledgmentID = -1;
-					return;
+					break;
 				
 				case UA_AM_REJECTED:
 					OnActionEnd();
@@ -312,4 +331,9 @@ class ActionManagerServer: ActionManagerBase
 	{
 		DayZPlayerSyncJunctures.SendActionInterrupt(m_Player);
 	}*/
+	
+	override ActionReciveData GetReciveData()
+	{
+		return m_PendingActionReciveData;
+	}
 };

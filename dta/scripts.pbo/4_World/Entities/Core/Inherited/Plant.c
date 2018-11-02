@@ -45,7 +45,7 @@ class TreeHard extends PlantSuper
 		else if ( item && item.KindOf("Axe") )
 		{
 			output_map.Insert("FireWood",1);
-			output_map.Insert("WoodenStick",1);
+			//output_map.Insert("WoodenStick",1);
 		}
 	}
 	
@@ -106,7 +106,7 @@ class TreeSoft extends PlantSuper
 		else if ( item && item.KindOf("Axe") )
 		{
 			output_map.Insert("FireWood",1);
-			output_map.Insert("WoodenStick",1);
+			//output_map.Insert("WoodenStick",1);
 		}
 	}
 	
@@ -168,7 +168,7 @@ class BushHard extends PlantSuper
 		else if ( item && item.KindOf("Axe") )
 		{
 			output_map.Insert("LongWoodenStick",1);
-			output_map.Insert("WoodenStick",1);
+			//output_map.Insert("WoodenStick",1);
 		}
 	}
 	

@@ -494,8 +494,20 @@ class DayZPlayerImplement extends DayZPlayer
 		else
 			m_IsFireWeaponRaised = true;
 		
+		
+		#ifdef PLATFORM_XBOX
+			if ( !pInputs.IsMeleeFastAttackModifier() )
+			{
+		#else
+		#ifdef PLATFORM_PS4
+			if ( !pInputs.IsMeleeFastAttackModifier() )
+			{
+		#endif
+		#endif
+		
+		
 		//! fire
-		if (!m_LiftWeapon_player && weapon && !weapon.IsDamageDestroyed() && weapon.CanProcessWeaponEvents() && (!pInputs.IsMeleeFastAttackModifier() || m_MovementState.m_iMovement == 0 ) )
+		if (!m_LiftWeapon_player && weapon && !weapon.IsDamageDestroyed() && weapon.CanProcessWeaponEvents() )
 		{
 			bool autofire = weapon.GetCurrentModeAutoFire(weapon.GetCurrentMuzzle()) && weapon.IsCartridgeInChamber(weapon.GetCurrentMuzzle());
 			int burst = weapon.GetCurrentModeBurstSize(weapon.GetCurrentMuzzle());
@@ -514,6 +526,14 @@ class DayZPlayerImplement extends DayZPlayer
 				}
 			}
 		}
+				
+		#ifdef PLATFORM_XBOX
+			}
+		#else
+		#ifdef PLATFORM_PS4
+			}
+		#endif
+		#endif
 	}
 	
 	void HandleOptic (notnull ItemOptics optic, bool inHands, HumanInputController pInputs, out bool pExitOptics)
@@ -766,11 +786,11 @@ class DayZPlayerImplement extends DayZPlayer
 			return false;
 		}
 		
-		if ( IsInFBEmoteState() )
+		/*if ( IsInFBEmoteState() )
 		{
 			m_fLastHeadingDiff = 0;
 			return false;
-		}
+		}*/
 		
 #ifdef DEVELOPER
 		int	actMenuValue = DiagMenu.GetValue(DayZPlayerConstants.DEBUG_TURNSLIDE);

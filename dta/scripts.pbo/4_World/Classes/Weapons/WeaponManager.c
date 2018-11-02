@@ -732,11 +732,7 @@ class WeaponManager
 		if ( !m_InProgress )
 			return;
 		
-		if(m_ControlAction)
-		{
-			m_player.GetActionManager().OnWeaponFsmEnd();
-		}
-		else
+		if (!m_ControlAction)
 		{
 			if(GetGame().IsServer() && GetGame().IsMultiplayer())
 			{

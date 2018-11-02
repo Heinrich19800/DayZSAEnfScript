@@ -775,22 +775,6 @@ class PlayerBase extends ManBase
 		return m_IsRestrained;
 	}
 	
-	void OnWeaponActionEnd()
-	{
-		//m_WeaponManager.OnWeaponActionEnd();
-		ActionManagerClient am = ActionManagerClient.Cast(m_ActionManager);
-		am.OnWeaponFsmEnd();
-	}
-	/*CraftingMeta GetCraftingMeta()
-	{
-		return m_CraftingMeta;		
-	}
-
-	void CreateCraftingMeta(int id, EntityAI item1,EntityAI item2, vector init_pos, float length, float specialty_weight)
-	{
-		m_CraftingMeta = new CraftingMeta(id,item1, item2, init_pos, length, specialty_weight);
-	}*/
-	
 	int GetCraftingRecipeID()
 	{
 		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )

@@ -1,3 +1,8 @@
+class ActionTakeItemReciveData : ActionReciveData
+{
+	ref InventoryLocation		m_InventoryLocation;
+}
+
 class ActionTakeItem: ActionInteractBase
 {
 	string m_ItemName = "";
@@ -65,21 +70,32 @@ class ActionTakeItem: ActionInteractBase
 		il.WriteToContext(ctx);
 	}
 	
-	override bool ReadFromContext(ParamsReadContext ctx, ActionData action_data)
+	override bool ReadFromContext(ParamsReadContext ctx, out ActionReciveData action_recive_data )
 	{
-		if(super.ReadFromContext(ctx, action_data))
+		if(!action_recive_data)
 		{
-			InventoryLocation il;
-			il = new InventoryLocation;
-			if(il.ReadFromContext(ctx))
+			action_recive_data = new ActionTakeItemReciveData;
+		}
+		
+		if(super.ReadFromContext(ctx, action_recive_data))
+		{
+			ActionTakeItemReciveData recive_data_ti = Class.Cast(action_recive_data);
+			recive_data_ti.m_InventoryLocation = new InventoryLocation;
+			if(recive_data_ti.m_InventoryLocation.ReadFromContext(ctx))
 			{
-				action_data.m_ReservedInventoryLocations.Insert(il);
 				return true;
 			}
 		}
 			
 		return false;
 	}
+	
+	override void HandleReciveData(ActionReciveData action_recive_data, ActionData action_data)
+	{
+		super.HandleReciveData(action_recive_data, action_data);
+		ActionTakeItemReciveData recive_data_ti = Class.Cast(action_recive_data);
+		action_data.m_ReservedInventoryLocations.Insert(recive_data_ti.m_InventoryLocation);
+	} 
 	
 	
 	

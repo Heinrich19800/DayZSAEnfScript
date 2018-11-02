@@ -514,7 +514,7 @@ void DayZPlayerTypeRegisterItems(DayZPlayerType pType)
 		pType.AddItemInHandsProfileIK("Handcuffs", "dz/anims/workspaces/player/player_main/props/player_main_1h_handcuffs.asi", toolsOneHanded,			"dz/anims/anm/player/ik/gear/handcuffs.anm");
 		pType.AddItemInHandsProfileIK("HandcuffKeys", "dz/anims/workspaces/player/player_main/props/player_main_1h_keys.asi", toolsOneHanded,			"dz/anims/anm/player/ik/gear/handcuff_keys.anm");
 		pType.AddItemInHandsProfileIK("Cassette", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded,							"dz/anims/anm/player/ik/gear/cassette.anm");
-		pType.AddItemInHandsProfileIK("FieldShovel", "dz/anims/workspaces/player/player_main/weapons/player_main_1h_pipe.asi", toolsOneHanded,			"dz/anims/anm/player/ik/gear/CSLA_Field_Shovel.anm");
+		pType.AddItemInHandsProfileIK("FieldShovel", "dz/anims/workspaces/player/player_main/props/player_main_1h_handshovel.asi", toolsOneHanded,			"dz/anims/anm/player/ik/gear/CSLA_Field_Shovel.anm");
 		pType.AddItemInHandsProfileIK("Crowbar", "dz/anims/workspaces/player/player_main/weapons/player_main_1h_pipe.asi", toolsOneHanded,				"dz/anims/anm/player/ik/gear/crowbar.anm");
 		pType.AddItemInHandsProfileIK("Hammer", "dz/anims/workspaces/player/player_main/weapons/player_main_1h_pipe.asi", toolsOneHanded,				"dz/anims/anm/player/ik/gear/hammer_ik.anm");
 		pType.AddItemInHandsProfileIK("MeatTenderizer", "dz/anims/workspaces/player/player_main/weapons/player_main_1h_pipe.asi", toolsOneHanded,		"dz/anims/anm/player/ik/gear/meat_tenderizer.anm");
@@ -1013,7 +1013,7 @@ void DayZPlayerTypeRegisterItems(DayZPlayerType pType)
 	
 	//! Surrender items (dummy!)
 	{
-		pType.AddItemInHandsProfileIK("SurrenderDummyItem", "dz/anims/workspaces/player/player_main/player_main_surrender.asi", surrender, 						"dz/anims/anm/player/ik/gear/handcuffslocked.anm");
+		pType.AddItemInHandsProfileIK("SurrenderDummyItem", "dz/anims/workspaces/player/player_main/player_main_surrender.asi", surrender, 						"");
 	}
 
 	//!===========================================================

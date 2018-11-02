@@ -1,3 +1,9 @@
+class PlaceObjectActionReciveData : ActionReciveData
+{
+	vector m_Position;
+	vector m_Orientation;
+}
+
 class PlaceObjectActionData : ActionData
 {
 	vector m_Position;
@@ -126,11 +132,11 @@ class ActionDeployObject: ActionContinuousBase
 		return action_data;
 	}
 	
-	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extraData = NULL)
+	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extra_data = NULL)
 	{	
 		SetupAnimation( item );
 		
-		if( super.SetupAction(player, target, item, action_data, extraData ))
+		if( super.SetupAction(player, target, item, action_data, extra_data ))
 		{
 			PlaceObjectActionData poActionData;
 			poActionData = Class.Cast(action_data);
@@ -291,10 +297,14 @@ class ActionDeployObject: ActionContinuousBase
 		ctx.Write( poActionData.m_Orientation );
 	}
 	
-	override bool ReadFromContext(ParamsReadContext ctx, ActionData action_data )
+	override bool ReadFromContext(ParamsReadContext ctx, out ActionReciveData action_recive_data )
 	{
-		PlaceObjectActionData poActionData;
-		poActionData = Class.Cast(action_data);
+		if(!action_recive_data)
+		{
+			action_recive_data = new PlaceObjectActionReciveData;
+		}
+		super.ReadFromContext(ctx, action_recive_data );
+		PlaceObjectActionReciveData action_data_po = Class.Cast(action_recive_data);
 		
 		vector entity_position = "0 0 0";
 		vector entity_orientation = "0 0 0";
@@ -303,10 +313,21 @@ class ActionDeployObject: ActionContinuousBase
 		if (!ctx.Read(entity_orientation))
 			return false;
 		
-		poActionData.m_Position = entity_position;
-		poActionData.m_Orientation = entity_orientation;
+		action_data_po.m_Position = entity_position;
+		action_data_po.m_Orientation = entity_orientation;
 		
 		return true;
+	}
+	
+	override void HandleReciveData(ActionReciveData action_recive_data, ActionData action_data)
+	{
+		super.HandleReciveData(action_recive_data, action_data);
+		
+		PlaceObjectActionReciveData recive_data_po = Class.Cast(action_recive_data);
+		PlaceObjectActionData action_data_po = Class.Cast(action_data);
+		
+		action_data_po.m_Position = recive_data_po.m_Position;
+		action_data_po.m_Orientation = recive_data_po.m_Orientation;
 	}
 			
 	void MoveEntityToFinalPosition( ActionData action_data, vector position, vector orientation )

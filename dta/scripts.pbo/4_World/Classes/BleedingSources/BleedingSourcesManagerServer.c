@@ -47,6 +47,7 @@ class BleedingSourcesManagerServer extends BleedingSourcesManagerBase
 		float dmg_max = m_Player.GetMaxHealth(zone, "Blood");
 		float dmg = damage;
 		float bleed_threshold = GetGame().ConfigGetFloat( "CfgAmmo " + ammo + " DamageApplied " + "bleedThreshold" );
+		bleed_threshold = Math.Clamp(bleed_threshold,0,1);
 		//Print("dmg_max = " + dmg_max);
 		//Print("dmg = " + dmg);
 		//Print("bleed_threshold = " + bleed_threshold);

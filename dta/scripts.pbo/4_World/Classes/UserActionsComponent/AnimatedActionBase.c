@@ -253,16 +253,7 @@ class AnimatedActionBase : ActionBase
 	{
 		super.Start( action_data );
 		//Debug.Log("[Action DEBUG] Start time stamp: " + action_data.m_Player.GetSimulationTimeStamp());
-		if( GetGame().IsServer() )
-		{
-			OnStartServer(action_data);
-		}
-		else
-		{
-			OnStartClient(action_data);
-		}
-		
-		InformPlayers(action_data.m_Player,action_data.m_Target,UA_START);	
+
 		if( !IsInstant() )
 		{
 		//player.GetActionManager().DisableActions();

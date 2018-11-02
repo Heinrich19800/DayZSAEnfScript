@@ -15,11 +15,6 @@ class ActionContinuousBaseCB : ActionBaseCB
 		{
 			return DefaultCancelCondition();
 		}
-		if ( !m_ActionData )
-		{
-			return DefaultCancelCondition();
-		}
-		
 		if ( !m_Interrupted && (GetState() == STATE_LOOP_LOOP || GetState() == STATE_LOOP_LOOP2 || m_inLoop) )
 		{
 			ActionContinuousBase actionS = ActionContinuousBase.Cast(m_ActionData.m_Action);	

@@ -26,8 +26,8 @@ class ActionDialCombinationLockOnTarget: ActionContinuousBase
 	
 	override void CreateConditionComponents()  
 	{	
-		m_ConditionTarget = new CCTNonRuined( UAMaxDistances.DEFAULT );
 		m_ConditionItem = new CCINotPresent;
+		m_ConditionTarget = new CCTNonRuined( UAMaxDistances.DEFAULT );
 	}
 	
 	override bool HasProneException()

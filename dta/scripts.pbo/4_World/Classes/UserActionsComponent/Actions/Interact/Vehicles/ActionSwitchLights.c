@@ -55,6 +55,10 @@ class ActionSwitchLights: ActionInteractBase
 
 							return true;
 						}
+						else
+						{
+							return true;
+						}
 					}
 				}
 			}

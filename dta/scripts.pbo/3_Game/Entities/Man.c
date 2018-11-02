@@ -54,7 +54,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveDropEntity input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveDropEntity input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -76,7 +76,7 @@ class Man extends EntityAI
 
 	protected bool DropEntityImpl (InventoryMode mode, notnull EntityAI owner, notnull EntityAI item)
 	{
-		syncDebugPrint("[inv] Man@" + this + " ::DropEntity(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::DropEntity(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		bool code = GetHumanInventory().DropEntity(mode, owner, item);
 		UpdateInventoryMenu();
 		return code;
@@ -99,7 +99,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityToHands input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityToHands input data not sent yet, cannot allow another input action");
 			return;
 		}
 
@@ -121,7 +121,7 @@ class Man extends EntityAI
 
 	protected void TakeEntityToHandsImpl (InventoryMode mode, EntityAI item)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2Hands(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2Hands(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		EntityAI itemInHands = GetHumanInventory().GetEntityInHands();
 		if (itemInHands == null)
 			GetHumanInventory().HandEvent(mode, new HandEventTake(this, item));
@@ -133,14 +133,14 @@ class Man extends EntityAI
 
 	void LocalDestroyEntityInHands ()
 	{
-		syncDebugPrint("[inv] (Man@" + this + ") Destroy IH=" + GetHumanInventory().GetEntityInHands());
+		syncDebugPrint("[inv] (" + GetSimulationTimeStamp() + " Man@" + this + ") Destroy IH=" + GetHumanInventory().GetEntityInHands());
 		GetHumanInventory().LocalDestroyEntity(GetHumanInventory().GetEntityInHands());
 		UpdateInventoryMenu();
 	}
 
 	void PredictiveMoveItemFromHandsToInventory ()
 	{
-		syncDebugPrint("[inv] (Man@" + this + ") Stash IH=" + GetHumanInventory().GetEntityInHands());
+		syncDebugPrint("[inv] (" + GetSimulationTimeStamp() + " Man@" + this + ") Stash IH=" + GetHumanInventory().GetEntityInHands());
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
 			Print("[inv] PredictiveMoveItemFromHandsToInventory input data not sent yet, cannot allow another input action");
@@ -154,7 +154,7 @@ class Man extends EntityAI
 	///@{ !hand replace
 	protected bool ReplaceItemWithNewImpl (InventoryMode mode, ReplaceItemWithNewLambdaBase lambda)
 	{
-		syncDebugPrint("[inv] (Man@" + this + ") Replace !HND lambda=" + lambda.DumpToString());
+		syncDebugPrint("[inv] (" + GetSimulationTimeStamp() + " Man@" + this + ") Replace !HND lambda=" + lambda.DumpToString());
 		bool code = GetHumanInventory().ReplaceItemWithNew(mode, lambda);
 		UpdateInventoryMenu();
 		return code;
@@ -174,7 +174,7 @@ class Man extends EntityAI
 	///@{ hand replace
 	protected bool ReplaceItemInHandsWithNewImpl (InventoryMode mode, ReplaceItemWithNewLambdaBase lambda)
 	{
-		syncDebugPrint("[inv] (Man@" + this + ") Replace HND->HND lambda=" + lambda.DumpToString());
+		syncDebugPrint("[inv] (" + GetSimulationTimeStamp() + " Man@" + this + ") Replace HND->HND lambda=" + lambda.DumpToString());
 		bool code = GetHumanInventory().ReplaceItemInHandsWithNew(mode, lambda);
 		UpdateInventoryMenu();
 		return code;
@@ -194,7 +194,7 @@ class Man extends EntityAI
 	///@{ hand replace2
 	protected bool ReplaceItemInHandsWithNewElsewhereImpl (InventoryMode mode, ReplaceItemWithNewLambdaBase lambda)
 	{
-		syncDebugPrint("[inv] (Man@" + this + ") Replace HND->elsewhere lambda=" + lambda.DumpToString());
+		syncDebugPrint("[inv] (" + GetSimulationTimeStamp() + " Man@" + this + ") Replace HND->elsewhere lambda=" + lambda.DumpToString());
 		bool code = GetHumanInventory().ReplaceItemInHandsWithNewElsewhere(mode, lambda);
 		UpdateInventoryMenu();
 		return code;
@@ -221,7 +221,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityToInventory input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityToInventory input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -243,7 +243,7 @@ class Man extends EntityAI
 
 	protected bool TakeEntityToInventoryImpl (InventoryMode mode, FindInventoryLocationType flags, notnull EntityAI item)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2Inv(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2Inv(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		bool code = GetHumanInventory().TakeEntityToInventory(mode, flags, item);
 		UpdateInventoryMenu();
 		return code;
@@ -260,7 +260,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityToCargo input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityToCargo input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -282,7 +282,7 @@ class Man extends EntityAI
 
 	protected bool TakeEntityToCargoImpl (InventoryMode mode, notnull EntityAI item)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2Cgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2Cgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		bool code = GetHumanInventory().TakeEntityToCargo(mode, item);
 		UpdateInventoryMenu();
 		return code;
@@ -299,7 +299,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityAsAttachment input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityAsAttachment input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -321,7 +321,7 @@ class Man extends EntityAI
 
 	protected bool TakeEntityAsAttachmentImpl (InventoryMode mode, notnull EntityAI item)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2Att(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2Att(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		bool code = GetHumanInventory().TakeEntityAsAttachment(mode, item);
 		UpdateInventoryMenu();
 		return code;
@@ -338,7 +338,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityAsAttachmentEx input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityAsAttachmentEx input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -360,7 +360,7 @@ class Man extends EntityAI
 
 	protected bool TakeEntityAsAttachmentExImpl (InventoryMode mode, notnull EntityAI item, int slot)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2AttEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2AttEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		bool code = GetHumanInventory().TakeEntityAsAttachmentEx(mode, item, slot);
 		UpdateInventoryMenu();
 		return code;
@@ -379,7 +379,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveSwapEntities input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveSwapEntities input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -404,7 +404,7 @@ class Man extends EntityAI
 	protected bool SwapEntitiesImpl (InventoryMode mode, notnull EntityAI item1, notnull EntityAI item2)
 	{
 		bool code;
-		syncDebugPrint("[inv] Man@" + this + "::SwapImpl(" + typename.EnumToString(InventoryMode, mode) + ") item1=" + item1 + " item2=" + item2);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::SwapImpl(" + typename.EnumToString(InventoryMode, mode) + ") item1=" + item1 + " item2=" + item2);
 		if (GameInventory.CanSwapEntities(item1, item2))
 			code = GetHumanInventory().SwapEntities(mode, item1, item2);
 		else
@@ -415,7 +415,7 @@ class Man extends EntityAI
 		}
 		UpdateInventoryMenu();
     if (!code)
-      syncDebugPrint("[inv] (Man@" + this + ") SwapEntitiesImpl - cannot swap or forceswap");
+      syncDebugPrint("[inv] (" + GetSimulationTimeStamp() + " Man@" + this + ") SwapEntitiesImpl - cannot swap or forceswap");
 		return code;
 	}
 	///@} swap juncture
@@ -430,7 +430,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityToTargetInventory input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityToTargetInventory input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -447,7 +447,7 @@ class Man extends EntityAI
 
 	protected bool TakeEntityToTargetInventoryImpl (InventoryMode mode, notnull EntityAI target, FindInventoryLocationType flags, notnull EntityAI item)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2TargetInv(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2TargetInv(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		bool code = GetInventory().TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.ANY, item);
 		UpdateInventoryMenu();
 		return code;
@@ -464,7 +464,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityToTargetCargoEx input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityToTargetCargoEx input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -486,7 +486,7 @@ class Man extends EntityAI
 
 	protected bool TakeEntityToTargetCargoExImpl (InventoryMode mode, notnull EntityAI target, notnull EntityAI item, int idx, int row, int col)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2TargetCgoEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2TargetCgoEx(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		bool code = GetInventory().TakeEntityToTargetCargoEx(mode, target, item, idx, row, col);
 		UpdateInventoryMenu();
 		return code;
@@ -503,7 +503,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityToTargetCargo input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityToTargetCargo input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -528,7 +528,7 @@ class Man extends EntityAI
 
 	protected bool TakeEntityToTargetCargoImpl (InventoryMode mode, notnull EntityAI target, notnull EntityAI item)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2TargetCgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2TargetCgo(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 
 		bool code = GetInventory().TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.CARGO, item);
   		UpdateInventoryMenu();
@@ -546,7 +546,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityToTargetAttachmentEx input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityToTargetAttachmentEx input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -568,7 +568,7 @@ class Man extends EntityAI
 
 	protected bool TakeEntityToTargetAttachmentExImpl (InventoryMode mode, notnull EntityAI target, notnull EntityAI item, int slot)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2TargetAtt(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2TargetAtt(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		bool code = GetInventory().TakeEntityAsTargetAttachmentEx(mode, target, item, slot);
 		UpdateInventoryMenu();
 		return code;
@@ -585,7 +585,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeEntityToTargetAttachment input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeEntityToTargetAttachment input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -607,7 +607,7 @@ class Man extends EntityAI
 
 	protected bool TakeEntityToTargetAttachmentImpl (InventoryMode mode, notnull EntityAI target, notnull EntityAI item)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2TargetAtt(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2TargetAtt(" + typename.EnumToString(InventoryMode, mode) + ") item=" + item);
 		bool code = GetInventory().TakeEntityToTargetInventory(mode, target, FindInventoryLocationType.ATTACHMENT, item);
 		UpdateInventoryMenu();
 		return code;
@@ -624,7 +624,7 @@ class Man extends EntityAI
 	{
 		if (!ScriptInputUserData.CanStoreInputUserData())
 		{
-			Print("[inv] Man@" + this + " ::PredictiveTakeToDst input data not sent yet, cannot allow another input action");
+			Print("[inv] " + GetSimulationTimeStamp() + " Man@" + this + " ::PredictiveTakeToDst input data not sent yet, cannot allow another input action");
 			return false;
 		}
 
@@ -646,7 +646,7 @@ class Man extends EntityAI
 
 	protected bool TakeToDstImpl (InventoryMode mode, notnull InventoryLocation src, notnull InventoryLocation dst)
 	{
-		syncDebugPrint("[inv] Man@" + this + "::Take2Dst(" + typename.EnumToString(InventoryMode, mode) + ") src=" + src.DumpToString() + " dst=" + dst.DumpToString());
+		syncDebugPrint("[inv] " + GetSimulationTimeStamp() + " Man@" + this + "::Take2Dst(" + typename.EnumToString(InventoryMode, mode) + ") src=" + src.DumpToString() + " dst=" + dst.DumpToString());
 		bool code = GetHumanInventory().TakeToDst(mode, src, dst);
 		UpdateInventoryMenu();
 		return code;

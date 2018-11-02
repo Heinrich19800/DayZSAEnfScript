@@ -78,7 +78,7 @@ class CAContinuousMineWood : CAContinuousBase
 						SetACData(m_SpentUnits);	
 					}
 					if ( targetObject.IsTree() )
-						ItemBase wooden_logs = ItemBase.Cast(GetGame().CreateObject("WoodenPlank",action_data.m_Player.GetPosition(), false));
+						ItemBase wooden_logs = ItemBase.Cast(GetGame().CreateObject("WoodenLog",action_data.m_Player.GetPosition(), false));
 					
 					targetObject.OnTreeCutDown( action_data.m_MainItem );
 					OnCompletePogress(action_data);

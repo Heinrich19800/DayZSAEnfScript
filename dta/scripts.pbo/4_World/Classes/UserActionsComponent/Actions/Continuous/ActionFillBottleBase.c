@@ -77,11 +77,11 @@ class ActionFillBottleBase: ActionContinuousBase
 		return false;
 	}
 	
-	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extraData = NULL)
+	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extra_data = NULL)
 	{	
 		SetupStance( player );
 	
-		if( super.SetupAction(player, target, item, action_data, extraData ))
+		if( super.SetupAction(player, target, item, action_data, extra_data ))
 		{
 			if ( target.GetObject() )
 			{
@@ -107,16 +107,16 @@ class ActionFillBottleBase: ActionContinuousBase
 		}
 	}
 	
-	override bool ReadFromContext(ParamsReadContext ctx, ActionData action_data )
+	override bool ReadFromContext(ParamsReadContext ctx, out ActionReciveData action_recive_data )
 	{		
-		super.ReadFromContext(ctx, action_data);
+		super.ReadFromContext(ctx, action_recive_data);
 		
 		if( HasTarget() )
 		{
 			vector cursor_position;
 			if ( !ctx.Read(cursor_position) )
 				return false;
-			action_data.m_Target.SetCursorHitPos(cursor_position);
+			action_recive_data.m_Target.SetCursorHitPos(cursor_position);
 		}
 		return true;
 	}

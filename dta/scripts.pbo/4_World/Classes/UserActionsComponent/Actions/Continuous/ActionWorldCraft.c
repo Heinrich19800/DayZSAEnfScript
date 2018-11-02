@@ -1,3 +1,8 @@
+class WorldCraftActionReciveData : ActionReciveData
+{
+	ItemBase	m_MainItem;
+	int 		m_RecipeID;
+}
 class WorldCraftActionData : ActionData
 {
 	int m_RecipeID;
@@ -88,20 +93,24 @@ class ActionWorldCraft: ActionContinuousBase
 		return true;		
 	}
 	
+	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extra_data = NULL )
+	{
+		if (super.SetupAction(player, target, item, action_data, extra_data ))
+		{
+			if (GetGame().IsClient() || !GetGame().IsMultiplayer())
+			{
+				WorldCraftActionData action_data_wc;
+				Class.CastTo(action_data_wc, action_data);
+				action_data_wc.m_RecipeID = action_data.m_Player.GetCraftingRecipeID();
+			}
+			return true;
+		}
+		return false;
+	}
+	
 	override void Start( ActionData action_data ) //Setup on start of action
 	{
 		super.Start(action_data);
-		
-		WorldCraftActionData wcActionData;
-		Class.CastTo(wcActionData, action_data);
-		
-		if( GetGame().IsClient() || !GetGame().IsMultiplayer() )
-		{
-			wcActionData.m_RecipeID = action_data.m_Player.GetCraftingRecipeID();
-		/*	ref ActionTarget newTarget;
-			newTarget = new ActionTarget(action_data.m_Player.GetCraftingManager().m_item2, null, -1, vector.Zero, 0);		
-			action_data.m_Callback.SetActionData( action_data ); */
-		}
 		if ( action_data.m_MainItem ) action_data.m_MainItem.SetInvisible(true);
 	}
 	
@@ -123,17 +132,17 @@ class ActionWorldCraft: ActionContinuousBase
 			am.UnlockInventory(action_data);
 		}*/
 		
-		WorldCraftActionData wcActionData;
+		WorldCraftActionData action_data_wc;
 		PluginRecipesManager module_recipes_manager;
 		ItemBase item2;
 		
-		Class.CastTo(wcActionData, action_data);
+		Class.CastTo(action_data_wc, action_data);
 		Class.CastTo(module_recipes_manager,  GetPlugin(PluginRecipesManager) );
 		Class.CastTo(item2,  action_data.m_Target.GetObject() );
 		
 		if( action_data.m_MainItem && item2 )
 		{
-			module_recipes_manager.PerformRecipeServer( wcActionData.m_RecipeID, action_data.m_MainItem, item2, action_data.m_Player );
+			module_recipes_manager.PerformRecipeServer( action_data_wc.m_RecipeID, action_data.m_MainItem, item2, action_data.m_Player );
 		}
 	}
 	
@@ -147,14 +156,21 @@ class ActionWorldCraft: ActionContinuousBase
 	{
 		PlayerBase player;
 		Class.CastTo(player, GetGame().GetPlayer());
+		WorldCraftActionData action_data_wc;
+		Class.CastTo(action_data_wc, action_data);
 
-		ctx.Write(player.GetCraftingManager().m_item1);
-		ctx.Write(player.GetCraftingManager().m_item2);
-		ctx.Write(player.GetCraftingRecipeID());
+		ctx.Write(action_data_wc.m_MainItem);
+		ctx.Write(action_data_wc.m_Target.GetObject());
+		ctx.Write(action_data_wc.m_RecipeID);
 	}
 	
-	override bool ReadFromContext(ParamsReadContext ctx, ActionData action_data )
+	override bool ReadFromContext(ParamsReadContext ctx, out ActionReciveData action_recive_data )
 	{
+		if(!action_recive_data)
+		{
+			action_recive_data = new WorldCraftActionReciveData;
+		}
+		WorldCraftActionReciveData recive_data_wc = Class.Cast(action_recive_data);
 		ItemBase item1 = null;
 		ItemBase item2 = null;
 		int recipeID = -1;
@@ -170,17 +186,25 @@ class ActionWorldCraft: ActionContinuousBase
 			return false;
 		}
 		
-		WorldCraftActionData wcActionData;
-		Class.CastTo(wcActionData, action_data);
-		
 		ref ActionTarget target;
 		target = new ActionTarget(item2 , NULL, -1,vector.Zero, 0);
-						
-		wcActionData.m_MainItem = item1;
-		wcActionData.m_Target = target;
-		wcActionData.m_RecipeID = recipeID;
-		wcActionData.m_Player.SetCraftingRecipeID(recipeID);//TODO remove this after refactor will work
+					
+		recive_data_wc.m_MainItem = item1;
+		recive_data_wc.m_Target = target;
+		recive_data_wc.m_RecipeID = recipeID;
 		return true;
 	}
+	
+	override void HandleReciveData(ActionReciveData action_recive_data, ActionData action_data)
+	{
+		
+		WorldCraftActionReciveData recive_data_wc = Class.Cast(action_recive_data);
+		WorldCraftActionData action_data_wc = Class.Cast(action_data);
+		
+		action_data_wc.m_MainItem = recive_data_wc.m_MainItem;
+		action_data_wc.m_Target = recive_data_wc.m_Target;
+		action_data_wc.m_RecipeID = recive_data_wc.m_RecipeID;
+	}
+	
 };
 

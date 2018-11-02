@@ -341,10 +341,10 @@ const int	STAMINA_DRAIN_SWIM_FAST_PER_SEC = 7; //in units (how much fast swimmin
 const int	STAMINA_DRAIN_LADDER_FAST_PER_SEC = 10; //in units (how much fast ladder climb depletes stamina)
 
 const float	STAMINA_DRAIN_HOLD_BREATH = 0.2; //in units (how much holding breath depletes stamina)
-const int	STAMINA_DRAIN_JUMP = 20;		// in units (how much jumping depletes stamina)
-const int	STAMINA_DRAIN_MELEE_LIGHT = 5; //in units (how much light melee punch depletes stamina)
+const float	STAMINA_DRAIN_JUMP = 20;		// in units (how much jumping depletes stamina)
+const float	STAMINA_DRAIN_MELEE_LIGHT = 5; //in units (how much light melee punch depletes stamina)
 const float	STAMINA_DRAIN_MELEE_HEAVY = 20; //in units (how much heavy melee punch depletes stamina)
-const int	STAMINA_DRAIN_MELEE_EVADE = 8; // in units (how much evade depletes stamina)
+const float	STAMINA_DRAIN_MELEE_EVADE = 8; // in units (how much evade depletes stamina)
 	
 const int 	STAMINA_GAIN_JOG_PER_SEC = 2; //in units (how much of stamina units is gained while jogging)
 const int 	STAMINA_GAIN_WALK_PER_SEC = 4; //in units (how much of stamina units is gained while walking)
