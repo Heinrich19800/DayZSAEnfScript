@@ -170,7 +170,7 @@ class ActionWorldCraft: ActionContinuousBase
 		{
 			action_recive_data = new WorldCraftActionReciveData;
 		}
-		WorldCraftActionReciveData recive_data_wc = Class.Cast(action_recive_data);
+		WorldCraftActionReciveData recive_data_wc = WorldCraftActionReciveData.Cast(action_recive_data);
 		ItemBase item1 = null;
 		ItemBase item2 = null;
 		int recipeID = -1;
@@ -198,8 +198,8 @@ class ActionWorldCraft: ActionContinuousBase
 	override void HandleReciveData(ActionReciveData action_recive_data, ActionData action_data)
 	{
 		
-		WorldCraftActionReciveData recive_data_wc = Class.Cast(action_recive_data);
-		WorldCraftActionData action_data_wc = Class.Cast(action_data);
+		WorldCraftActionReciveData recive_data_wc = WorldCraftActionReciveData.Cast(action_recive_data);
+		WorldCraftActionData action_data_wc = WorldCraftActionData.Cast(action_data);
 		
 		action_data_wc.m_MainItem = recive_data_wc.m_MainItem;
 		action_data_wc.m_Target = recive_data_wc.m_Target;

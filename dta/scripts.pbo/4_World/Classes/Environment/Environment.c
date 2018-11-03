@@ -526,7 +526,7 @@ class Environment
 			attachment = m_Player.GetInventory().GetAttachmentFromIndex(attIdx);
 			if ( attachment.IsItemBase() )
 			{
-				item = Class.Cast(attachment);
+				item = ItemBase.Cast(attachment);
 				int attachmentSlot = attachment.GetInventory().GetSlotId(0);
 
 				for (int i = 0; i < pSlotIds.Count(); i++)
@@ -560,7 +560,7 @@ class Environment
 			attachment = m_Player.GetInventory().GetAttachmentFromIndex(attIdx);
 			if ( attachment && attachment.IsItemBase() )
 			{
-				item = Class.Cast(attachment);
+				item = ItemBase.Cast(attachment);
 				ApplyDrynessToItem(item);
 			}
 		}
@@ -699,7 +699,7 @@ class Environment
 			attachment = m_Player.GetInventory().GetAttachmentFromIndex(attIdx);
 			if ( attachment.IsClothing() )
 			{
-				item = Class.Cast(attachment);
+				item = ItemBase.Cast(attachment);
 				int attachmentSlot = attachment.GetInventory().GetSlotId(0);
 
 				//! go through all body parts we've defined for that zone (ex.: head, body, feet)

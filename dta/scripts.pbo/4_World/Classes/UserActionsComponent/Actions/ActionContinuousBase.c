@@ -39,23 +39,30 @@ class ActionContinuousBaseCB : ActionBaseCB
 	
 	override void OnAnimationEvent(int pEventID)	
 	{
-		AnimatedActionBase action = AnimatedActionBase.Cast(m_ActionData.m_Action);
+		if (m_ActionData)
+		{
+			AnimatedActionBase action = AnimatedActionBase.Cast(m_ActionData.m_Action);
 #ifdef DEVELOPER
-		Print("ActionInteractBase.c | OnAnimationEvent | OnAnimationEvent called");
+			Print("ActionInteractBase.c | OnAnimationEvent | OnAnimationEvent called");
 #endif
-		if ( !m_Interrupted && pEventID == UA_IN_START ) 
-		{
-			m_inLoop = true;
+			if ( !m_Interrupted && pEventID == UA_IN_START ) 
+			{
+				m_inLoop = true;
 			//ActionContinuousBase.Cast(action).OnStartLoop( m_ActionData );
-		}else if ( !m_Interrupted && pEventID == UA_IN_END ) 
-		{
+			}else if ( !m_Interrupted && pEventID == UA_IN_END ) 
+			{
 			
-			m_inLoop = false;
-			//ActionContinuousBase.Cast(action).OnCompleteLoop( m_ActionData );
-		}else if ( !m_Interrupted && pEventID == UA_ANIM_EVENT ) 
+				m_inLoop = false;
+				//ActionContinuousBase.Cast(action).OnCompleteLoop( m_ActionData );
+			}else if ( !m_Interrupted && pEventID == UA_ANIM_EVENT ) 
+			{
+				action.OnAnimationEvent( m_ActionData );
+				//action.OnCompleteLoop( m_ActionData );
+			}
+		}
+		else
 		{
-			action.OnAnimationEvent( m_ActionData );
-			//action.OnCompleteLoop( m_ActionData );
+			//Debug.LogError("Call OnAnimationEvent ")
 		}
 	}
 	

@@ -75,18 +75,18 @@ class LightItemOnFire extends RecipeBase
 		ItemBase item_source, item_target;
 		
 		// Due to an edge case with Torch, it is sometimes necesarry to swap item_source with item_target.
-		ItemBase potential_item_source = Class.Cast(ingredients[0]);
-		ItemBase potential_item_target = Class.Cast(ingredients[1]);
+		ItemBase potential_item_source = ItemBase.Cast(ingredients[0]);
+		ItemBase potential_item_target = ItemBase.Cast(ingredients[1]);
 		
 		if (potential_item_source.CanIgniteItem(potential_item_target))
 		{
-			item_source = Class.Cast(ingredients[0]);
-			item_target = Class.Cast(ingredients[1]);
+			item_source = ItemBase.Cast(ingredients[0]);
+			item_target = ItemBase.Cast(ingredients[1]);
 		}
 		else if (potential_item_target.CanIgniteItem(potential_item_source))
 		{
-			item_source = Class.Cast(ingredients[1]);
-			item_target = Class.Cast(ingredients[0]);
+			item_source = ItemBase.Cast(ingredients[1]);
+			item_target = ItemBase.Cast(ingredients[0]);
 		}
 		
 		// item_source & item_target are now correctly defined.
@@ -127,18 +127,18 @@ class LightItemOnFire extends RecipeBase
 		ItemBase item_source, item_target;
 		
 		// Due to an edge case with Torch, it is sometimes necesarry to swap item_source with item_target.
-		ItemBase potential_item_source = Class.Cast(ingredients[0]);
-		ItemBase potential_item_target = Class.Cast(ingredients[1]);
+		ItemBase potential_item_source = ItemBase.Cast(ingredients[0]);
+		ItemBase potential_item_target = ItemBase.Cast(ingredients[1]);
 		
 		if (potential_item_source.CanIgniteItem(potential_item_target))
 		{
-			item_source = Class.Cast(ingredients[0]);
-			item_target = Class.Cast(ingredients[1]);
+			item_source = ItemBase.Cast(ingredients[0]);
+			item_target = ItemBase.Cast(ingredients[1]);
 		}
 		else if (potential_item_target.CanIgniteItem(potential_item_source))
 		{
-			item_source = Class.Cast(ingredients[1]);
-			item_target = Class.Cast(ingredients[0]);
+			item_source = ItemBase.Cast(ingredients[1]);
+			item_target = ItemBase.Cast(ingredients[0]);
 		}
 		
 		// item_source & item_target are now correctly defined.

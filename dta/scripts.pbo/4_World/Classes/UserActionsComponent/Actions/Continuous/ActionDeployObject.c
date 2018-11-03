@@ -139,7 +139,7 @@ class ActionDeployObject: ActionContinuousBase
 		if( super.SetupAction(player, target, item, action_data, extra_data ))
 		{
 			PlaceObjectActionData poActionData;
-			poActionData = Class.Cast(action_data);
+			poActionData = PlaceObjectActionData.Cast(action_data);
 			poActionData.m_AlreadyPlaced = false;
 			if (!GetGame().IsMultiplayer() || GetGame().IsClient() )
 			{
@@ -189,7 +189,7 @@ class ActionDeployObject: ActionContinuousBase
 		{
 			EntityAI entity_for_placing = EntityAI.Cast( action_data.m_MainItem );
 			PlaceObjectActionData poActionData;
-			poActionData = Class.Cast(action_data);
+			poActionData = PlaceObjectActionData.Cast(action_data);
 			
 			poActionData.m_Player.SetLocalProjectionPosition( poActionData.m_Position );
 			poActionData.m_Player.SetLocalProjectionOrientation( poActionData.m_Orientation );
@@ -208,7 +208,7 @@ class ActionDeployObject: ActionContinuousBase
 	override void OnFinishProgressClient( ActionData action_data )
 	{
 		PlaceObjectActionData poActionData;
-		poActionData = Class.Cast(action_data);
+		poActionData = PlaceObjectActionData.Cast(action_data);
 		EntityAI entity_for_placing = EntityAI.Cast( action_data.m_MainItem );
 		vector position = action_data.m_Player.GetLocalProjectionPosition();
 		vector orientation = action_data.m_Player.GetLocalProjectionOrientation();
@@ -220,7 +220,7 @@ class ActionDeployObject: ActionContinuousBase
 	override void OnFinishProgressServer( ActionData action_data )
 	{	
 		PlaceObjectActionData poActionData;
-		poActionData = Class.Cast(action_data);
+		poActionData = PlaceObjectActionData.Cast(action_data);
 		EntityAI entity_for_placing = EntityAI.Cast( action_data.m_MainItem );
 		vector position = action_data.m_Player.GetLocalProjectionPosition();
 		vector orientation = action_data.m_Player.GetLocalProjectionOrientation();
@@ -255,7 +255,7 @@ class ActionDeployObject: ActionContinuousBase
 	override void OnEndClient( ActionData action_data  )
 	{
 		PlaceObjectActionData poActionData;
-		poActionData = Class.Cast(action_data);
+		poActionData = PlaceObjectActionData.Cast(action_data);
 		if ( !poActionData.m_AlreadyPlaced )
 		{
 			action_data.m_Player.PlacingCancelLocal();
@@ -268,7 +268,7 @@ class ActionDeployObject: ActionContinuousBase
 	override void OnEndServer( ActionData action_data  )
 	{
 		PlaceObjectActionData poActionData;
-		poActionData = Class.Cast(action_data);
+		poActionData = PlaceObjectActionData.Cast(action_data);
 		if ( !poActionData.m_AlreadyPlaced )
 		{
 			EntityAI entity_for_placing = EntityAI.Cast( action_data.m_MainItem );
@@ -291,7 +291,7 @@ class ActionDeployObject: ActionContinuousBase
 	override void WriteToContext(ParamsWriteContext ctx, ActionData action_data)
 	{
 		PlaceObjectActionData poActionData;
-		poActionData = Class.Cast(action_data);
+		poActionData = PlaceObjectActionData.Cast(action_data);
 
 		ctx.Write( poActionData.m_Position );
 		ctx.Write( poActionData.m_Orientation );
@@ -304,7 +304,7 @@ class ActionDeployObject: ActionContinuousBase
 			action_recive_data = new PlaceObjectActionReciveData;
 		}
 		super.ReadFromContext(ctx, action_recive_data );
-		PlaceObjectActionReciveData action_data_po = Class.Cast(action_recive_data);
+		PlaceObjectActionReciveData action_data_po = PlaceObjectActionReciveData.Cast(action_recive_data);
 		
 		vector entity_position = "0 0 0";
 		vector entity_orientation = "0 0 0";
@@ -323,8 +323,8 @@ class ActionDeployObject: ActionContinuousBase
 	{
 		super.HandleReciveData(action_recive_data, action_data);
 		
-		PlaceObjectActionReciveData recive_data_po = Class.Cast(action_recive_data);
-		PlaceObjectActionData action_data_po = Class.Cast(action_data);
+		PlaceObjectActionReciveData recive_data_po = PlaceObjectActionReciveData.Cast(action_recive_data);
+		PlaceObjectActionData action_data_po = PlaceObjectActionData.Cast(action_data);
 		
 		action_data_po.m_Position = recive_data_po.m_Position;
 		action_data_po.m_Orientation = recive_data_po.m_Orientation;

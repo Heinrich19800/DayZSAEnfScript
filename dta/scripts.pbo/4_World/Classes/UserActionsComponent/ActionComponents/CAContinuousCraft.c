@@ -13,7 +13,7 @@ class CAContinuousCraft : CAContinuousTime
 			m_SpentUnits.param1 = 0;
 		}
 		
-		WorldCraftActionData action_data_wc = Class.Cast(action_data);	
+		WorldCraftActionData action_data_wc = WorldCraftActionData.Cast(action_data);	
 		
 		PluginRecipesManager module_recipes_manager;
 		Class.CastTo(module_recipes_manager, GetPlugin(PluginRecipesManager));

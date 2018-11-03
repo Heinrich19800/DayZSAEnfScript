@@ -48,11 +48,6 @@ class ActionSwitchLights: ActionInteractBase
 							if ( !neededItem || (neededItem && neededItem.IsRuined()) )
 								return false;
 
-							neededItem = null;
-							neededItem = car.FindAttachmentBySlotName("LightBulb");
-							if ( !neededItem || (neededItem && neededItem.IsRuined()) )
-								return false;
-
 							return true;
 						}
 						else

@@ -25,12 +25,15 @@ class CarScript extends Car
 
 	protected ref EffVehicleSmoke m_coolantFx;
 	protected ref EffVehicleSmoke m_engineFx;
+	protected ref EffVehicleSmoke m_exhaustFx;
 		
 	protected int m_enginePtcFx;
 	protected int m_coolantPtcFx;
+	protected int m_exhaustPtcFx;
 	
 	float m_dmgContactCoef;
 
+	protected vector m_exhaustPtcPos;
 	protected vector m_enginePtcPos;
 	protected vector m_coolantPtcPos;
 
@@ -53,11 +56,13 @@ class CarScript extends Car
 		
 		m_enginePtcFx = -1;
 		m_coolantPtcFx = -1;
+		m_exhaustPtcFx = -1;
 		
 		m_dmgContactCoef = 0;
 		
 		m_enginePtcPos = "0 0 0";
 		m_coolantPtcPos = "0 0 0";
+		m_exhaustPtcPos = "0 0 0";
 	}
 /*
 	here we should handle the damage dealt in OnContact event, but maybe we will react even in that event 
@@ -96,38 +101,59 @@ class CarScript extends Car
 			m_Time = 0;
 
 			//! actions runned when the engine on
-			if ( IsEngineOn() && GetGame().IsServer()  )
+			if ( IsEngineOn()  )
 			{
-				//! leaking of coolant from radiator when damaged
-				if ( IsVitalRadiator() )
+				if ( GetGame().IsServer() )
 				{
-					if ( GetFluidFraction(CarFluid.COOLANT) > 0 && m_RadiatorHealth < 0.5 ) //CARS_LEAK_THRESHOLD
-						LeakFluid(CarFluid.COOLANT);
-				}
+					//! leaking of coolant from radiator when damaged
+					if ( IsVitalRadiator() )
+					{
+						if ( GetFluidFraction(CarFluid.COOLANT) > 0 && m_RadiatorHealth < 0.5 ) //CARS_LEAK_THRESHOLD
+							LeakFluid(CarFluid.COOLANT);
+					}
+		
+					if ( GetFluidFraction(CarFluid.FUEL) > 0 && m_FuelTankHealth < 0.5 )
+						LeakFluid(CarFluid.FUEL);
+					
+					if ( GetFluidFraction(CarFluid.BRAKE) > 0 && m_EngineHealth < 0.5 )
+						LeakFluid(CarFluid.BRAKE);
+					
+					if ( GetFluidFraction(CarFluid.OIL) > 0 && m_EngineHealth < 0.5 )
+						LeakFluid(CarFluid.OIL);
+					
+					if ( m_EngineHealth < 0.25 )
+					{
+						LeakFluid( CarFluid.OIL );
+					}
 	
-				if ( GetFluidFraction(CarFluid.FUEL) > 0 && m_FuelTankHealth < 0.5 )
-					LeakFluid(CarFluid.FUEL);
-				
-				if ( GetFluidFraction(CarFluid.BRAKE) > 0 && m_EngineHealth < 0.5 )
-					LeakFluid(CarFluid.BRAKE);
-				
-				if ( GetFluidFraction(CarFluid.OIL) > 0 && m_EngineHealth < 0.5 )
-					LeakFluid(CarFluid.OIL);
-				
-				if ( m_EngineHealth < 0.25 )
-				{
-					LeakFluid( CarFluid.OIL );
+					if ( GetFluidFraction(CarFluid.OIL) < 1 )
+					{
+						float dmg = ( 1 - GetFluidFraction(CarFluid.OIL) ) * Math.RandomFloat(0.02, 0.05);
+						DecreaseHealth( "Engine", "Health", dmg);
+					}
+					
+					if ( IsVitalRadiator() )
+					{
+					
+						if ( GetFluidFraction(CarFluid.COOLANT) < 0.5 && GetFluidFraction(CarFluid.COOLANT) > 0 )
+							DecreaseHealth( "Engine", "Health", 1.0);
+					}
 				}
+				
+				//FX only on Client and in Single
+				if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )
+				{
+					if ( !SEffectManager.IsEffectExist(m_exhaustPtcFx) )
+					{
+						m_exhaustFx = new EffExhaustSmoke();
+						m_exhaustPtcFx = SEffectManager.PlayOnObject(m_exhaustFx, this, m_exhaustPtcPos );
+					}
 
-				if ( GetFluidFraction(CarFluid.OIL) < 1 )
-				{
-					float dmg = ( 1 - GetFluidFraction(CarFluid.OIL) ) * Math.RandomFloat(0.02, 0.05);
-					DecreaseHealth( "Engine", "Health", dmg);
-				}
+					m_exhaustFx.SetParticleStateLight();
 				
-				if ( IsVitalRadiator() )
-				{
-				
+					if ( IsVitalRadiator() && SEffectManager.IsEffectExist(m_coolantPtcFx) )
+						SEffectManager.Stop(m_coolantPtcFx);
+					
 					if ( GetFluidFraction(CarFluid.COOLANT) < 0.5 )
 					{
 						if ( !SEffectManager.IsEffectExist(m_coolantPtcFx) )
@@ -143,7 +169,6 @@ class CarScript extends Car
 						else
 						{
 							m_coolantFx.SetParticleStateHeavy();
-							DecreaseHealth( "Engine", "Health", 1.0);
 						}
 					}
 					else
@@ -155,18 +180,25 @@ class CarScript extends Car
 			}
 			else
 			{
-				if ( IsVitalRadiator() && SEffectManager.IsEffectExist(m_coolantPtcFx) )
-					SEffectManager.Stop(m_coolantPtcFx);
+				//FX only on Client and in Single
+				if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )
+				{
+					if ( SEffectManager.IsEffectExist(m_exhaustPtcFx) )
+						SEffectManager.Stop(m_exhaustPtcFx);
+				}
 			}
-			
-
 		}
-		if ( !SEffectManager.IsEffectExist(m_enginePtcFx) && m_EngineHealth <= 0 )
+
+		//FX only on Client and in Single
+		if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )
 		{
-			m_engineFx = new EffEngineSmoke();
-			m_enginePtcFx = SEffectManager.PlayOnObject(m_engineFx, this, m_enginePtcPos );
-			//m_engineFx.SetParticleStateLight();
-			m_engineFx.SetParticleStateHeavy();
+			if ( !SEffectManager.IsEffectExist(m_enginePtcFx) && m_EngineHealth <= 0 )
+			{
+				m_engineFx = new EffEngineSmoke();
+				m_enginePtcFx = SEffectManager.PlayOnObject(m_engineFx, this, m_enginePtcPos );
+				//m_engineFx.SetParticleStateLight();
+				m_engineFx.SetParticleStateHeavy();
+			}
 		}
 	}
 
@@ -195,36 +227,48 @@ class CarScript extends Car
 			default:
 				if ( GetGame().IsServer() && zoneName != "")
 				{
-					float dmgThreshold = 150;
+					float dmgMin = 120.0;	
+					float dmgThreshold = 200.0;
+					float dmgKillCrew = 2000.0;
 					float dmg = data.Impulse * m_dmgContactCoef;
 
 					if ( dmg < dmgThreshold )
 					{					
-						if ( dmg > 100 )
+						if ( dmg > dmgMin )
 						{
-							//Print( GetType() + " >>> " + " SmallHit " + zoneName + " >>> " + dmg.ToString() );	
+							Print( GetType() + " >>> " + " SmallHit " + zoneName + " >>> " + dmg.ToString() + " >>> " + localPos);
 							DecreaseHealth( zoneName, "Health", dmg);
 						}
 					}
 					else
 					{
 						
-						//Print( GetType() + " >>> " + " BIGHit " + zoneName + " >>> " + dmg.ToString() );
+						Print( GetType() + " >>> " + " BIGHit " + zoneName + " >>> " + dmg.ToString() + " >>> " + localPos );
 						//Print( dmg );
-/*					
-						if ( dmg > 1000 )
+
+						if ( dmg > dmgKillCrew )
 						{
 							for( int i =0; i < CrewSize(); i++ )
 							{
-								Human crew = CrewMember( m_nextSeatIdx );
+								Human crew = CrewMember( i );
 								if ( crew )
 								{
-									crew. ProcessDirectDamage( 3, null, zoneName, "EnviroDmg", "0 0 0", dmg );	
+									PlayerBase player;
+									if ( Class.CastTo(player, crew ) )
+									{
+										player.SetHealth(0.0);
+										//crew.ProcessDirectDamage( 3, null, zoneName, "EnviroDmg", "0 0 0", dmg );
+									}
 								}
 							}
 						}
-*/			
-					
+						else
+						{
+							//deal shock to player
+							//crew.ProcessDirectDamage( 3, null, zoneName, "EnviroDmg", "0 0 0", dmg );
+						}
+
+
 						ProcessDirectDamage( 3, null, zoneName, "EnviroDmg", "0 0 0", dmg );
 
 						//DecreaseHealth( zoneName, "Health", dmg);

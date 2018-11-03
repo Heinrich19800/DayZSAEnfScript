@@ -73,7 +73,7 @@ class ActionDebug : ActionInstantBase
 			action_recive_data = new ActionDebugReciveData;
 		}
 		
-		ActionDebugReciveData action_recive_data_d = Class.Cast(action_recive_data);
+		ActionDebugReciveData action_recive_data_d = ActionDebugReciveData.Cast(action_recive_data);
 		
 		ItemBase item;
 		int debugActionID;
@@ -90,8 +90,8 @@ class ActionDebug : ActionInstantBase
 	
 	override void HandleReciveData(ActionReciveData action_recive_data, ActionData action_data)
 	{
-		ActionDebugReciveData action_recive_data_d = Class.Cast(action_recive_data);
-		ActionDebugData action_data_d = Class.Cast(action_data);
+		ActionDebugReciveData action_recive_data_d = ActionDebugReciveData.Cast(action_recive_data);
+		ActionDebugData action_data_d = ActionDebugData.Cast(action_data);
 		
 		action_data_d.m_MainItem = action_recive_data_d.m_Item;
 		action_data_d.m_DebugActionID = action_recive_data_d.m_DebugActionID;

@@ -63,7 +63,7 @@ class ActionTakeItem: ActionInteractBase
 		return false;
 	}
 	
-	override void WriteToContext(ParamsWriteContext ctx, ActionData action_data)
+	/*override void WriteToContext(ParamsWriteContext ctx, ActionData action_data)
 	{
 		super.WriteToContext(ctx, action_data);
 		InventoryLocation il = action_data.m_ReservedInventoryLocations.Get(0);
@@ -79,7 +79,7 @@ class ActionTakeItem: ActionInteractBase
 		
 		if(super.ReadFromContext(ctx, action_recive_data))
 		{
-			ActionTakeItemReciveData recive_data_ti = Class.Cast(action_recive_data);
+			ActionTakeItemReciveData recive_data_ti = ActionTakeItemReciveData.Cast(action_recive_data);
 			recive_data_ti.m_InventoryLocation = new InventoryLocation;
 			if(recive_data_ti.m_InventoryLocation.ReadFromContext(ctx))
 			{
@@ -93,9 +93,9 @@ class ActionTakeItem: ActionInteractBase
 	override void HandleReciveData(ActionReciveData action_recive_data, ActionData action_data)
 	{
 		super.HandleReciveData(action_recive_data, action_data);
-		ActionTakeItemReciveData recive_data_ti = Class.Cast(action_recive_data);
+		ActionTakeItemReciveData recive_data_ti = ActionTakeItemReciveData.Cast(action_recive_data);
 		action_data.m_ReservedInventoryLocations.Insert(recive_data_ti.m_InventoryLocation);
-	} 
+	} */
 	
 	
 	
@@ -130,6 +130,9 @@ class ActionTakeItem: ActionInteractBase
 	
 	override void OnExecuteServer( ActionData action_data )
 	{
+		if (GetGame().IsMultiplayer())
+			return;
+		
 		//Debug.Log("[Action DEBUG] Start time stamp: " + action_data.m_Player.GetSimulationTimeStamp());
 		ItemBase ntarget = ItemBase.Cast(action_data.m_Target.GetObject());	
 		InventoryLocation il = action_data.m_ReservedInventoryLocations.Get(0);	

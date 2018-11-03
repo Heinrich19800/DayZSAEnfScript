@@ -1,13 +1,3 @@
-class AttachOnSelectionActionReciveData : ActionReciveData
-{
-	int m_AttSlot;
-}
-
-class AttachOnSelectionActionData : ActionData
-{
-	int m_AttSlot;
-}
-
 class ActionAttachOnSelection: ActionSingleUseBase
 {
 	void ActionAttachOnSelection()
@@ -34,7 +24,7 @@ class ActionAttachOnSelection: ActionSingleUseBase
 	
 	override ActionData CreateActionData()
 	{
-		AttachOnSelectionActionData action_data = new AttachOnSelectionActionData;
+		AttachActionData action_data = new AttachActionData;
 		return action_data;
 	}
 	
@@ -44,7 +34,7 @@ class ActionAttachOnSelection: ActionSingleUseBase
 		{
 			if (!GetGame().IsMultiplayer() || GetGame().IsClient())
 			{
-				AttachOnSelectionActionData action_data_os = AttachOnSelectionActionData.Cast(action_data);
+				AttachActionData action_data_a = AttachActionData.Cast(action_data);
 			
 				EntityAI target_entity = EntityAI.Cast( target.GetObject() );
 				EntityAI item_entity = EntityAI.Cast( item );
@@ -66,7 +56,7 @@ class ActionAttachOnSelection: ActionSingleUseBase
 
 						if ( carId == itmSlotId )
 						{
-							action_data_os.m_AttSlot = itmSlotId;
+							action_data_a.m_AttSlot = itmSlotId;
 							return true;
 						}
 					}
@@ -78,22 +68,22 @@ class ActionAttachOnSelection: ActionSingleUseBase
 		return false;
 	}
 	
-	override void WriteToContext (ParamsWriteContext ctx, ActionData action_data)
+	/*override void WriteToContext (ParamsWriteContext ctx, ActionData action_data)
 	{
 		super.WriteToContext(ctx, action_data);
-		AttachOnSelectionActionData action_data_os = AttachOnSelectionActionData.Cast(action_data);
-		ctx.Write(action_data_os.m_AttSlot);
+		AttachActionData action_data_a = AttachActionData.Cast(action_data);
+		ctx.Write(action_data_a.m_AttSlot);
 	}
 	
 	override bool ReadFromContext(ParamsReadContext ctx, out ActionReciveData action_recive_data )
 	{
 		if(!action_recive_data)
 		{
-			action_recive_data = new AttachOnSelectionActionReciveData;
+			action_recive_data = new AttachActionReciveData;
 		}
 		if (super.ReadFromContext(ctx, action_recive_data ))
 		{
-			AttachOnSelectionActionReciveData recive_data_a = Class.Cast(action_recive_data);
+			AttachActionReciveData recive_data_a = Class.Cast(action_recive_data);
 			if (ctx.Read(recive_data_a.m_AttSlot))
 				return true;
 		} 
@@ -104,11 +94,11 @@ class ActionAttachOnSelection: ActionSingleUseBase
 	{
 		super.HandleReciveData(action_recive_data, action_data);
 		
-		AttachOnSelectionActionReciveData recive_data_os = Class.Cast(action_recive_data);
-		AttachOnSelectionActionData action_data_os = Class.Cast(action_recive_data);
+		AttachActionReciveData recive_data_a = Class.Cast(action_recive_data);
+		AttachActionData action_data_a = Class.Cast(action_data);
 		
-		action_data_os.m_AttSlot = recive_data_os.m_AttSlot;
-	}
+		action_data_a.m_AttSlot = recive_data_a.m_AttSlot;
+	}*/
 	
 	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -152,12 +142,15 @@ class ActionAttachOnSelection: ActionSingleUseBase
 
 	override void OnExecuteServer( ActionData action_data )
 	{
+		if (GetGame().IsMultiplayer())
+			return;
+		
 		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
 		EntityAI item_entity = EntityAI.Cast( action_data.m_MainItem );
 		
-		AttachOnSelectionActionData osActionData = AttachOnSelectionActionData.Cast(action_data);
+		AttachActionData action_data_a = AttachActionData.Cast(action_data);
 		
-		action_data.m_Player.PredictiveTakeEntityToTargetAttachmentEx(target_entity, item_entity, osActionData.m_AttSlot );
+		action_data.m_Player.PredictiveTakeEntityToTargetAttachmentEx(target_entity, item_entity, action_data_a.m_AttSlot );
 		//target_entity.PredictiveTakeEntityAsAttachmentEx( item_entity, m_AttSlot );
 
 	}
@@ -167,9 +160,9 @@ class ActionAttachOnSelection: ActionSingleUseBase
 		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
 		EntityAI item_entity = EntityAI.Cast( action_data.m_MainItem );
 		
-		AttachOnSelectionActionData osActionData = AttachOnSelectionActionData.Cast(action_data);
+		AttachActionData action_data_a = AttachActionData.Cast(action_data);
 		
-		action_data.m_Player.PredictiveTakeEntityToTargetAttachmentEx(target_entity, item_entity, osActionData.m_AttSlot );
+		action_data.m_Player.PredictiveTakeEntityToTargetAttachmentEx(target_entity, item_entity, action_data_a.m_AttSlot );
 		//target_entity.PredictiveTakeEntityAsAttachmentEx( item_entity, m_AttSlot );
 
 	}

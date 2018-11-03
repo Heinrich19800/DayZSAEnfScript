@@ -338,7 +338,7 @@ class SymptomManager
 	{
 		if( m_AvailableSymptoms.Get(symptom_id) )
 		{
-			SymptomBase Symptom = m_AvailableSymptoms.Get(symptom_id).ClassName().ToType().Spawn();
+			SymptomBase Symptom = SymptomBase.Cast(m_AvailableSymptoms.Get(symptom_id).ClassName().ToType().Spawn());
 			if(uid == -1)
 			{
 				uid = CreateUniqueID();

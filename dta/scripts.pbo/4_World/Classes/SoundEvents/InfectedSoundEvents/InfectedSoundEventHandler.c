@@ -107,14 +107,14 @@ class InfectedSoundEventHandler extends SoundEventHandler
 		if(m_CurrentState)
 		{
 			m_CurrentState.SoftStop();
-			m_CurrentState = requested_state.ClassName().ToType().Spawn();
+			m_CurrentState = InfectedSoundEventBase.Cast(requested_state.ClassName().ToType().Spawn());
 			m_CurrentState.Init(m_Infected);
 			m_CurrentState.Play();
 			return true;
 		}
 		else
 		{
-			m_CurrentState = requested_state.ClassName().ToType().Spawn();
+			m_CurrentState = InfectedSoundEventBase.Cast(requested_state.ClassName().ToType().Spawn());
 			m_CurrentState.Init(m_Infected);
 			m_CurrentState.Play();
 			return true;

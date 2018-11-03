@@ -103,7 +103,7 @@ class PluginManager
 				m_PluginsPtrs.Remove( plugin_type );
 			}
 			
-			PluginBase module_new = plugin_type.Spawn();
+			PluginBase module_new = PluginBase.Cast(plugin_type.Spawn());
 			m_PluginsPtrs.Set(plugin_type, module_new);
 		}
 		

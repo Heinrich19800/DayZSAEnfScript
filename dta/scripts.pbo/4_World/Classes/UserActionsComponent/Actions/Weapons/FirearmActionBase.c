@@ -39,7 +39,7 @@ class FirearmActionBase : ActionBase
 	override void OnUpdate( ActionData action_data )
 	{
 		super.OnUpdate( action_data );
-		Weapon_Base wpn = Class.Cast(action_data.m_MainItem);
+		Weapon_Base wpn = Weapon_Base.Cast(action_data.m_MainItem);
 		
 		if ( !wpn || action_data.m_Player.GetItemInHands()!=wpn || !action_data.m_Player.GetWeaponManager().IsRunning() )
 		{

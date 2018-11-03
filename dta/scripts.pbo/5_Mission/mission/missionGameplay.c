@@ -556,14 +556,14 @@ class MissionGameplay extends MissionBase
 				else if(input.GetActionDown(UAUIBack, false))
 				{
 					m_UIManager.Back();
-					GetGame().GetMission().PlayerControlEnable();
+					PlayerControlEnable();
 				}
 				
 			}
 			else if (input.GetActionDown(UAUIMenu, false))
 			{
 				Pause();
-				GetGame().GetMission().PlayerControlDisable();
+				PlayerControlDisable();
 			}
 		}
 		
@@ -935,7 +935,7 @@ class MissionGameplay extends MissionBase
 			return;
 		}
 
-		GetGame().GetMission().PlayerControlEnable();		
+		PlayerControlEnable();
 		GetUIManager().CloseMenu(MENU_INGAME);
 	}
 	

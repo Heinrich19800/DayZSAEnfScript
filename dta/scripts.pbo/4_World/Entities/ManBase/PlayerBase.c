@@ -1925,6 +1925,7 @@ class PlayerBase extends ManBase
 		if ( GetItemInHands() ) GetItemAccessor().HideItemInHands(true);
 		if( GetInventory() ) GetInventory().LockInventory(LOCK_FROM_SCRIPT);
 		CloseInventoryMenu();
+		GetGame().GetMission().PlayerControlEnable();
 	}
 	
 	void OnSwimmingStop()

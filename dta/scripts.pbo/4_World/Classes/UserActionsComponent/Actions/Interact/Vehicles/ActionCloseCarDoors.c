@@ -39,7 +39,7 @@ class ActionCloseCarDoors: ActionInteractBase
 		{
 			array<string> selections = new array<string>();
 
-			CarDoor carDoor = Class.Cast(target.GetObject());
+			CarDoor carDoor = CarDoor.Cast(target.GetObject());
 			if (carDoor)
 			{
 				carDoor.GetActionComponentNameList(target.GetComponentIndex(), selections);

@@ -69,7 +69,7 @@ class Torch : ItemBase
 		if ( !GetCompEM().CheckWetness() )
 			return false;
 		
-		ItemBase rag = Class.Cast( GetAttachmentByType(Rag) );
+		ItemBase rag = ItemBase.Cast( GetAttachmentByType(Rag) );
 		
 		if (rag)
 		{
@@ -125,7 +125,7 @@ class Torch : ItemBase
 	
 	bool ConsumeRag()
 	{
-		ItemBase rag = Class.Cast(GetAttachmentByType(Rag));
+		ItemBase rag = ItemBase.Cast(GetAttachmentByType(Rag));
 		
 		if (rag)
 		{
@@ -178,7 +178,7 @@ class Torch : ItemBase
 	
 	void RuinRags()
 	{
-		ItemBase rag = Class.Cast(GetAttachmentByType(Rag));
+		ItemBase rag = ItemBase.Cast(GetAttachmentByType(Rag));
 		
 		if (rag)
 		{
@@ -223,7 +223,7 @@ class Torch : ItemBase
 			float q_max = GetCompEM().GetEnergyMax() + m_BurnTimePerRag * 6; // TO DO: Replace 6 by max rag quantity
 			float q_min = GetCompEM().GetEnergy();
 			
-			ItemBase rag = Class.Cast( GetAttachmentByType(Rag) );
+			ItemBase rag = ItemBase.Cast( GetAttachmentByType(Rag) );
 			
 			if (rag)
 			{

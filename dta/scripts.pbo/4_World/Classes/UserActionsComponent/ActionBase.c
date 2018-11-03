@@ -238,7 +238,7 @@ class ActionBase
 		{
 			//! get proxy bone idx from parent and selection we are looking at
 			//! ID is used for synchronisation to server where it's translated back to object
-			Entity entParent = Class.Cast(action_data.m_Target.GetParent());
+			Entity entParent = Entity.Cast(action_data.m_Target.GetParent());
 			if (entParent)
 			{
 				action_data.m_Target.GetObject().GetActionComponentNameList(action_data.m_Target.GetComponentIndex(), selectionNames);
@@ -302,7 +302,7 @@ class ActionBase
 			//! create target object from proxyBoneIdx synced from client
 			if ( proxyBoneIdx > -1 )
 			{
-				Entity entParent = Class.Cast(actionTargetParent);
+				Entity entParent = Entity.Cast(actionTargetParent);
 
 				if (entParent)
 				{

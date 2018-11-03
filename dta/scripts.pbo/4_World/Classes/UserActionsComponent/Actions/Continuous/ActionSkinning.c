@@ -99,9 +99,12 @@ class ActionSkinning: ActionContinuousBase
 		body.SetAsSkinned();
 		
 		if (body.IsInherited(PlayerBase))
-		{	
+		{
 			// This section drops all clothes (and attachments) from the dead player before deleting their body
 			PlayerBase body_PB = PlayerBase.Cast(body);
+			
+			if (body_PB.IsRestrained())
+				MiscGameplayFunctions.TransformRestrainItem(body_PB.GetHumanInventory().GetEntityInHands(), action_data.m_Player.GetHumanInventory().GetEntityInHands(), action_data.m_Player, body_PB);
 			
 			DropEquipAndDestroyRootLambda lambda(body_PB, "", action_data.m_Player);
 			action_data.m_Player.ServerReplaceItemWithNew(lambda);

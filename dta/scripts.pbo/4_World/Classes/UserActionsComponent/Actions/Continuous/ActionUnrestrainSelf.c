@@ -104,45 +104,15 @@ class ActionUnrestrainSelf: ActionContinuousBase
 		if(item_in_hands)
 		{
 			player.SetRestrained(false);
-			string new_item_name = MiscGameplayFunctions.ObtainRestrainItemTargetClassname(item_in_hands);
-			vector m4[4];
-			Math3D.MatrixIdentity4(m4);
-			GameInventory.PrepareDropEntityPos(player, item_in_hands, m4);
-			InventoryLocation target_gnd = new InventoryLocation;
-			target_gnd.SetGround(null, m4);
-			
-			EntityAI item = GameInventory.LocationCreateEntity(target_gnd, new_item_name);
-			
-			
-			player.LocalDestroyEntityInHands();
+			string new_item_name = MiscGameplayFunctions.ObtainRestrainItemTargetClassname(item_in_hands);			
+			MiscGameplayFunctions.TurnItemInHandsIntoItemEx(player, new UnrestrainSelfPlayer(item_in_hands, new_item_name));
 		}
 	}
-	
-	/*
-	override void OnCompleteServer( ActionData action_data )
-	{
-		PlayerBase player = PlayerBase.Cast(action_data.m_Player);
-		EntityAI item_in_hands = action_data.m_MainItem;
-		player.SetRestrained(false);
-		
-		string new_item_name = MiscGameplayFunctions.ObtainRestrainItemTargetClassname(item_in_hands);
-		
-		vector m4[4];
-		Math3D.MatrixIdentity4(m4);
-		GameInventory.PrepareDropEntityPos(player, item_in_hands, m4);
-		InventoryLocation target_gnd = new InventoryLocation;
-		target_gnd.SetGround(null, m4);
-		
-		EntityAI item = GameInventory.LocationCreateEntity(target_gnd, new_item_name);
-		
-		player.ServerSwapEntities(item, item_in_hands);
-		
-		if(item_in_hands) item_in_hands.Delete();
-	}
-	*/
 	
 	override bool CanBeUsedInRestrain()
 	{
 		return true;
 	}
 };
+
+class UnrestrainSelfPlayer : ReplaceItemWithNewLambdaBase { };

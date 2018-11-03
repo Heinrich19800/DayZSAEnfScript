@@ -51,7 +51,7 @@ class Object extends IEntity
 		if ( GetGame().IsServer() )
 		{
 			SynchExplosion();
-			DamageSystem.ExplosionDamage(Class.Cast(this), NULL, ammoType, GetPosition());
+			DamageSystem.ExplosionDamage(EntityAI.Cast(this), NULL, ammoType, GetPosition());
 		}
 	}
 	
@@ -100,7 +100,8 @@ class Object extends IEntity
 		
 		if ( effect_type_name )
 		{
-			Effect eff = effect_type_name.Spawn();
+			Effect eff; 
+			Class.CastTo(eff, effect_type_name.Spawn());
 			
 			SEffectManager.PlayInWorld(eff, GetPosition() );
 		}

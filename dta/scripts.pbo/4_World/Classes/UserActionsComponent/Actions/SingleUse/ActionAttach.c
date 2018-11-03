@@ -1,3 +1,9 @@
+class AttachActionData : ActionData
+{
+	int m_AttSlot;
+}
+
+
 class ActionAttach: ActionSingleUseBase
 {
 	void ActionAttach()
@@ -23,6 +29,35 @@ class ActionAttach: ActionSingleUseBase
 		return "#attach";
 	}
 	
+	override ActionData CreateActionData()
+	{
+		AttachActionData action_data = new AttachActionData;
+		return action_data;
+	}
+	
+	override bool SetupAction(PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extra_data = NULL)
+	{
+		ref InventoryLocation il = new InventoryLocation;
+		if (!GetGame().IsMultiplayer() || GetGame().IsClient())
+		{
+			EntityAI target_entity = EntityAI.Cast( target.GetObject() );
+			if(!target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item.GetType(), FindInventoryLocationType.ATTACHMENT, il ))
+				return false;
+		}
+			
+		if ( super.SetupAction( player, target, item, action_data, extra_data))
+		{
+			if (!GetGame().IsMultiplayer() || GetGame().IsClient())
+			{
+				AttachActionData action_data_a = AttachActionData.Cast(action_data);
+				action_data_a.m_AttSlot = il.GetSlot();
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
 	{
 		EntityAI target_entity = EntityAI.Cast( target.GetObject() );
@@ -40,29 +75,24 @@ class ActionAttach: ActionSingleUseBase
 
 	override void OnExecuteServer( ActionData action_data )
 	{
-		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
-		EntityAI item_entity = EntityAI.Cast( action_data.m_MainItem );
+		if (GetGame().IsMultiplayer())
+			return;
 		
-		//find inventory location for attachment
-		InventoryLocation target_location = new InventoryLocation;
-		
-		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
+		AttachActionData action_data_a = AttachActionData.Cast(action_data);
+		EntityAI target_EAI = EntityAI.Cast( action_data_a.m_Target.GetObject() ); // cast to ItemBase
+		if (target_EAI && action_data_a.m_MainItem)
 		{
-			action_data.m_Player.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
+			action_data_a.m_Player.PredictiveTakeEntityToTargetAttachmentEx(target_EAI, action_data_a.m_MainItem,action_data_a.m_AttSlot);
 		}
 	}
 	
 	override void OnExecuteClient( ActionData action_data )
 	{
-		EntityAI target_entity = EntityAI.Cast( action_data.m_Target.GetObject() );
-		EntityAI item_entity = EntityAI.Cast( action_data.m_MainItem );
-		
-		//find inventory location for attachment
-		InventoryLocation target_location = new InventoryLocation;
-		
-		if( target_entity.GetInventory().FindFirstFreeLocationForNewEntity( item_entity.GetType(), FindInventoryLocationType.ATTACHMENT, target_location ) )
+		AttachActionData action_data_a = AttachActionData.Cast(action_data);
+		EntityAI target_EAI = EntityAI.Cast( action_data_a.m_Target.GetObject() ); // cast to ItemBase
+		if (target_EAI && action_data_a.m_MainItem)
 		{
-			action_data.m_Player.PredictiveTakeEntityToTargetAttachmentEx( target_entity, item_entity, target_location.GetSlot() );
+			action_data_a.m_Player.PredictiveTakeEntityToTargetAttachmentEx(target_EAI, action_data_a.m_MainItem, action_data_a.m_AttSlot);
 		}
 	}
 }

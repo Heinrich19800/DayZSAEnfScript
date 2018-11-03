@@ -57,7 +57,7 @@ void DayZPlayerTypeCreate(DayZPlayerType pType)
 	hmcs.m_fHeadingChangeLimiterWalk 	= 2000;				//!<
 	hmcs.m_fHeadingChangeLimiterRun		= 1500;				//!<
 	
-	hmcs.m_fLeaningSpeed				= 3;				//!<
+	hmcs.m_fLeaningSpeed				= 4.5;				//!<
 
 
 	// swim settings
@@ -70,7 +70,20 @@ void DayZPlayerTypeCreate(DayZPlayerType pType)
     // VIKTOR, JOHNNY, PETERN - nastaveni speedu animaci
 
 	// DayZPlayerUtils.DebugOverrideAnimationSpeed("dz/anims/anm/player/moves/rifles/p_rfl_erc_runF_low.anm", 2.0);
-	// DayZPlayerUtils.DebugOverrideAnimationTranslation("dz/anims/anm/player/moves/rifles/p_rfl_erc_runF_low.anm", "0 0 10" );
+	//DayZPlayerUtils.DebugOverrideAnimationTranslation("dz/anims/anm/player/moves/rifles/p_rfl_erc_runF_low.anm", "0 0 10" );
+	
+	//Melee evades
+	//LEFT
+	//DayZPlayerUtils.DebugOverrideAnimationSpeed("dz/anims/anm/player/moves/unarmed/p_erc_evadeL_ras.anm", 2.0);
+	//DayZPlayerUtils.DebugOverrideAnimationTranslation("dz/anims/anm/player/moves/unarmed/p_erc_evadeL_ras.anm", "0 0 10");
+	
+	//RIGHT
+	//DayZPlayerUtils.DebugOverrideAnimationSpeed("dz/anims/anm/player/moves/unarmed/p_erc_evadeR_ras.anm", 1);
+	//DayZPlayerUtils.DebugOverrideAnimationTranslation("dz/anims/anm/player/moves/unarmed/p_erc_evadeR_ras.anm", "2 0 0");
+	
+	//BACK
+	//DayZPlayerUtils.DebugOverrideAnimationSpeed("dz/anims/anm/player/moves/unarmed/p_erc_evadeB_ras.anm", 2.0);
+	//DayZPlayerUtils.DebugOverrideAnimationTranslation("dz/anims/anm/player/moves/unarmed/p_erc_evadeB_ras.anm", "0 0 10");
 
 }
 
@@ -592,8 +605,10 @@ void DayZPlayerTypeRegisterItems(DayZPlayerType pType)
 		pType.AddItemInHandsProfileIK("PowerGenerator", "dz/anims/workspaces/player/player_main/props/player_main_heavy_generator.asi", heavyItemBehaviour, "dz/anims/anm/player/ik/heavy/generator.anm");
 		pType.AddItemInHandsProfileIK("HescoBox", "dz/anims/workspaces/player/player_main/props/player_main_heavy_generator.asi", heavyItemBehaviour, 		"dz/anims/anm/player/ik/heavy/hesco_box.anm");
 		pType.AddItemInHandsProfileIK("Fence", "dz/anims/workspaces/player/player_main/player_main_heavy.asi", heavyItemBehaviour, 							"dz/anims/anm/player/ik/heavy/fence.anm");
-		pType.AddItemInHandsProfileIK("WoodenLog", "dz/anims/workspaces/player/player_main/player_main_heavy.asi", heavyItemBehaviour, 						"dz/anims/anm/player/ik/heavy/fence.anm");
+		pType.AddItemInHandsProfileIK("WoodenLog", "dz/anims/workspaces/player/player_main/player_main_heavy.asi", heavyItemBehaviour, 						"dz/anims/anm/player/ik/heavy/wooden_log.anm");
 		pType.AddItemInHandsProfileIK("MetalPlate", "dz/anims/workspaces/player/player_main/player_main_heavy.asi", heavyItemBehaviour,				 		"dz/anims/anm/player/ik/heavy/metal_sheet.anm");
+		pType.AddItemInHandsProfileIK("SeaChest", "dz/anims/workspaces/player/player_main/player_main_heavy.asi", heavyItemBehaviour,				 		"dz/anims/anm/player/ik/heavy/sea_chest.anm");
+	
 
 
 	}	
@@ -858,7 +873,7 @@ void DayZPlayerTypeRegisterItems(DayZPlayerType pType)
 		pType.AddItemInHandsProfileIK("Bottle_Base", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded,						"dz/anims/anm/player/ik/gear/banana.anm"); // Not configured
 		pType.AddItemInHandsProfileIK("BandageDressing", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded,					"dz/anims/anm/player/ik/gear/bandage_dressing.anm");
 		pType.AddItemInHandsProfileIK("DisinfectantSpray", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded, 				"dz/anims/anm/player/ik/gear/DesinfectantSpray.anm");
-		pType.AddItemInHandsProfileIK("DisinfectantAlcohol", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded,				"dz/anims/anm/player/ik/gear/banana.anm"); // Not configured
+		pType.AddItemInHandsProfileIK("DisinfectantAlcohol", "dz/anims/workspaces/player/player_main/player_main_1h.asi", toolsOneHanded,				"dz/anims/anm/player/ik/gear/disinfectant_alcohol.anm");
 		pType.AddItemInHandsProfileIK("PurificationTablets", "dz/anims/workspaces/player/player_main/props/player_main_1h_tablets.asi", toolsOneHanded,	"dz/anims/anm/player/ik/gear/Water_purification_tablets.anm");
 		pType.AddItemInHandsProfileIK("CharcoalTablets", "dz/anims/workspaces/player/player_main/props/player_main_1h_tablets.asi", toolsOneHanded,		"dz/anims/anm/player/ik/gear/charcoal_tablets.anm");
 		pType.AddItemInHandsProfileIK("PainkillerTablets", "dz/anims/workspaces/player/player_main/props/player_main_1h_tablets.asi", toolsOneHanded,	"dz/anims/anm/player/ik/gear/painkillers2.anm");

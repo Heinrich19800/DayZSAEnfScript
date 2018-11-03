@@ -77,7 +77,57 @@ class CarWheel extends InventoryItemSuper
 		dBodyApplyImpulse( iePrnt, "0 1 0");
 	}
 */
+
+	override void EEKilled(Object killer)
+	{
+		string newWheel = "";
+		switch( GetType() )
+		{
+			case "HatchbackWheel":
+				newWheel = "HatchbackWheel_Ruined";
+			break;
+			
+			case "V3SWheel":
+				newWheel = "V3SWheel_Ruined";
+			break;
+			
+			case "V3SWheelDouble":
+				newWheel = "V3SWheelDouble_Ruined";
+			break;
+
+			case "CivSedanWheel":
+				newWheel = "CivSedanWheel_Ruined";
+			break;	
+		}
+		
+		if ( newWheel != "" )
+		{
+			ReplaceWheelLambda lambda = new ReplaceWheelLambda ( this, newWheel, NULL);
+			lambda.SetTransferParams(true, true, true);
+			GetInventory().ReplaceItemWithNew(InventoryMode.SERVER, lambda);
+		}
+	}
+
 };
+
+class ReplaceWheelLambda : TurnItemIntoItemLambda
+{
+	vector m_oldOri;
+	void ReplaceWheelLambda (EntityAI old_item, string new_item_type, PlayerBase player) {}
+
+	override void CopyOldPropertiesToNew (notnull EntityAI old_item, EntityAI new_item)
+	{
+		super.CopyOldPropertiesToNew(old_item, new_item);
+		m_oldOri = old_item.GetOrientation();
+	}
+	
+	override protected void OnNewEntityCreated (EntityAI new_item)
+	{
+		super.OnNewEntityCreated( new_item );
+		if (new_item)
+			new_item.SetOrientation( m_oldOri );
+	}
+}
 
 class HatchbackWheel extends CarWheel {};
 
@@ -115,6 +165,34 @@ class CarDoor extends InventoryItemSuper
 
 class CarRadiator extends InventoryItemSuper
 {
+
+	override void OnWasDetached ( EntityAI parent, int slot_id )
+	{
+		if ( parent )
+		{
+			Car car;
+		 	Class.CastTo( car, parent );
+
+			if ( car )
+			{
+				car.Leak( CarFluid.COOLANT, car.GetFluidFraction(CarFluid.COOLANT)*car.GetFluidCapacity(CarFluid.COOLANT) );
+			}
+		}
+	}
+	
+	override void EEKilled(Object killer)
+	{
+		Car car;
+		EntityAI parent = GetHierarchyParent();
+		
+		Class.CastTo( car, parent );
+
+		if ( car )
+		{
+			car.Leak( CarFluid.COOLANT, car.GetFluidFraction(CarFluid.COOLANT)*car.GetFluidCapacity(CarFluid.COOLANT) );
+		}
+	}
+
 };
 
 

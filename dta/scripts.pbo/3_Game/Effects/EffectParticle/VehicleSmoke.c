@@ -21,7 +21,7 @@ class EffVehicleSmoke : EffectParticle
 	void SetParticleState( int state )
 	{
 		bool was_playing = IsPlaying();
-		
+	
 		Stop();
 		
 		SetParticleID(state);
@@ -29,6 +29,6 @@ class EffVehicleSmoke : EffectParticle
 		if (was_playing)
 		{
 			Start(); // resume effect
-		}		
+		}
 	}
 }

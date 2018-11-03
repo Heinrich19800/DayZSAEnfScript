@@ -6,6 +6,7 @@ class OffroadHatchback extends CarScript
 		m_dmgContactCoef = 0.095;
 		m_enginePtcPos = "0 0.95 1.25";
 		m_coolantPtcPos = "0.30 0.95 1.60";
+		m_exhaustPtcPos = "-0.63 0.58 -1.98";
 	}
 
 	override int GetAnimInstance()
@@ -51,16 +52,10 @@ class OffroadHatchback extends CarScript
 		{
 			//int slot_id = InventorySlots.GetSlotIdFromString(slot_name);
 			
-			if ( slot_name == "LightBulb" || slot_name == "CarBattery")
+			if ( slot_name == "CarBattery")
 			{
 				if ( IsLightsOn() )
 					SwitchLights();
-			}
-
-			if ( slot_name == "CarRadiator" )
-			{
-				m_RadiatorHealth = 0;
-				Leak( CarFluid.COOLANT, GetFluidFraction(CarFluid.COOLANT)*GetFluidCapacity(CarFluid.COOLANT) );
 			}
 		}
 	}

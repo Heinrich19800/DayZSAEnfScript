@@ -4,6 +4,7 @@ class V3S_Chassis extends CarScript
 	{
 		super.Init();
 		m_dmgContactCoef = 0.018;
+		m_enginePtcPos = "0 1.346 2.205";
 	}
 	
 	override int GetAnimInstance()
@@ -23,12 +24,12 @@ class V3S_Chassis extends CarScript
 
 		return 0;
 	}
-/*
+
 	override void EEHealthLevelChanged(int oldLevel, int newLevel, string zone)
 	{
 		Print( zone );
 	}
-*/
+
 	override bool CrewCanGetThrough( int posIdx )
 	{
 		CarDoor carDoor;
@@ -36,14 +37,18 @@ class V3S_Chassis extends CarScript
 		{
 			case 0:
 				if ( GetCarDoorsState( "V3SDriverDoors" ) == CarDoorState.DOORS_CLOSED )
+				{
 					return false;
+				}
 			
 				return true;
 			break;
 			
 			case 1:
 				if ( GetCarDoorsState( "V3SCoDriverDoors" ) == CarDoorState.DOORS_CLOSED )
+				{
 					return false;
+				}
 			
 				return true;
 			break;
@@ -96,6 +101,50 @@ class V3S_Chassis extends CarScript
 		}
 
 		return oldValue;
+	}
+	
+	override int GetCarDoorsState( string slotType )
+	{
+		CarDoor carDoor;
+		
+		switch( slotType )
+		{
+			case "V3SDriverDoors":
+				Class.CastTo( carDoor, FindAttachmentBySlotName( slotType ) );
+				if ( carDoor )
+				{
+					if ( GetAnimationPhase("DoorsDriver") > 0.5 )
+					{
+						return CarDoorState.DOORS_OPEN;
+					}
+					else
+					{
+						return CarDoorState.DOORS_CLOSED;
+					}
+				}
+
+				return CarDoorState.DOORS_MISSING;
+			break;
+			
+			case "V3SCoDriverDoors":
+				Class.CastTo( carDoor, FindAttachmentBySlotName( slotType ) );
+				if ( carDoor )
+				{
+					if ( GetAnimationPhase("DoorsCoDriver") > 0.5 )
+					{
+						return CarDoorState.DOORS_OPEN;
+					}
+					else
+					{
+						return CarDoorState.DOORS_CLOSED;
+					}
+				}
+
+				return CarDoorState.DOORS_MISSING;
+			break;
+		}
+		
+		return CarDoorState.DOORS_MISSING;
 	}
 
 	override string GetAnimSourceFromSelection( string selection )

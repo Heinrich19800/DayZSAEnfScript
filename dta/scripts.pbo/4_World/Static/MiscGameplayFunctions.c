@@ -190,6 +190,16 @@ class MiscGameplayFunctions
 		player.ServerReplaceItemWithNew(lambda);
 	}
 
+	static void TurnItemInHandsIntoItem (notnull ItemBase old_item, string new_item_type, notnull PlayerBase player)
+	{
+		TurnItemInHandsIntoItemEx(player, new TurnItemIntoItemLambda(old_item, new_item_type, player));
+	}
+	
+	static void TurnItemInHandsIntoItemEx (notnull PlayerBase player, ReplaceItemWithNewLambdaBase lambda)
+	{
+		player.ServerReplaceItemInHandsWithNew(lambda);
+	}
+
 	static array<ItemBase> CreateItemBasePiles(string item_name, vector ground_position, float quantity,  float health )
 	{
 		ref array<ItemBase>	items;
@@ -419,7 +429,7 @@ class MiscGameplayFunctions
 		if( new_item_name != "" )
 		{
 			if (player_target.IsAlive())
-				MiscGameplayFunctions.TurnItemIntoItemEx(player_source, new ReplaceAndDestroy(current_item, new_item_name, player_target, type));
+				MiscGameplayFunctions.TurnItemIntoItemEx(player_target, new ReplaceAndDestroy(current_item, new_item_name, player_target, type));
 			else
 				MiscGameplayFunctions.TurnItemIntoItemEx(player_source, new DestroyItemInCorpsesHandsAndCreateNewOnGnd(current_item, new_item_name, player_target, type));
 		}

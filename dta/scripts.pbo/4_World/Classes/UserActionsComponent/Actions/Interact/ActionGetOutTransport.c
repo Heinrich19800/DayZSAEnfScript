@@ -41,7 +41,7 @@ class ActionGetOutTransport: ActionInteractBase
 			{
 				m_crewIdx = m_transport.CrewMemberIndex( player );
 				if ( m_crewIdx >= 0 && m_transport.CrewCanGetThrough( m_crewIdx ) )
-				return true;
+					return true;
 			}
 		}
 

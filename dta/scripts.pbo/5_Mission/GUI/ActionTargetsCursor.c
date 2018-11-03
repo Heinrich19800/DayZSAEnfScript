@@ -584,7 +584,7 @@ class ActionTargetsCursor extends ObjectFollower
 
 		if (m_Target && m_Target.GetObject() && m_Target.GetObject().IsItemBase())
 		{
-			ItemBase item = Class.Cast(m_Target.GetObject());
+			ItemBase item = ItemBase.Cast(m_Target.GetObject());
 			if( !item.IsTakeable() )
 			{
 				m_Hidden = true;
