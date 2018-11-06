@@ -21,19 +21,42 @@ class CombinationLock extends ItemBase
 		UpdateVisuals();
 	}	
 	
+	// --- VISUALS
 	void UpdateVisuals()
 	{
 		if ( IsLocked() )
 		{
-			SetAnimationPhase( "Combination_Lock_Item", 1 );
-			SetAnimationPhase( "Combination_Lock_Attached", 0 );
+			GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( HideItem, 		0, false );
+			GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( ShowAttached, 	0, false );
 		}
 		else
 		{
-			SetAnimationPhase( "Combination_Lock_Item", 0 );
-			SetAnimationPhase( "Combination_Lock_Attached", 1 );			
+			GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( ShowItem, 		0, false );
+			GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( HideAttached, 	0, false );
 		}
+	}
+	
+	//TODO
+	protected void ShowItem()
+	{
+		SetAnimationPhase( "Combination_Lock_Item", 0 );
+	}
+	
+	protected void HideItem()
+	{
+		SetAnimationPhase( "Combination_Lock_Item", 1 );
+	}
+	
+	protected void ShowAttached()
+	{
+		SetAnimationPhase( "Combination_Lock_Attached", 0 );
+	}
+	
+	protected void HideAttached()
+	{
+		SetAnimationPhase( "Combination_Lock_Attached", 1 );
 	}	
+	// ---
 	
 	// --- EVENTS
 	override void OnStoreSave( ParamsWriteContext ctx )

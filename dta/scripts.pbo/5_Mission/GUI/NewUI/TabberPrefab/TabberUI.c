@@ -1,6 +1,7 @@
 class TabberUI extends ScriptedWidgetEventHandler
 {
-	protected Widget m_Root;
+	protected bool		m_FirstInit = true;
+	protected Widget	m_Root;
 	
 	protected ref map<int, Widget> m_TabControls;
 	protected ref map<int, Widget> m_Tabs;
@@ -152,6 +153,13 @@ class TabberUI extends ScriptedWidgetEventHandler
 				
 				m_SelectedIndex = index;
 				m_OnTabSwitch.Invoke( m_SelectedIndex );
+				
+				if( m_FirstInit )
+				{
+					AlignTabbers( m_Root.FindAnyWidget( "TabControls" ) );
+					m_FirstInit = false;
+				}
+				
 				return true;
 			}
 		}

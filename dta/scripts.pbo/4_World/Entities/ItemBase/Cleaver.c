@@ -1,6 +1,6 @@
-class WoodAxe2 extends ToolBase
+class Cleaver extends ToolBase
 {
-	void WoodAxe2()
+	void Cleaver()
 	{
 	}
 }

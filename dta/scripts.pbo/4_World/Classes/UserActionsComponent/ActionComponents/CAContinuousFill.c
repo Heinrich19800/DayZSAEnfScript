@@ -31,7 +31,8 @@ class CAContinuousFill : CAContinuousBase
 		}
 		
 		m_ItemQuantity = action_data.m_MainItem.GetQuantity();
-		m_TargetUnits = action_data.m_MainItem.GetQuantityMax() - action_data.m_MainItem.GetQuantity();	
+		EntityAI pg = EntityAI.Cast(action_data.m_Target.GetObject()); // get power generator
+		m_TargetUnits = pg.GetCompEM().GetEnergyMax() - pg.GetCompEM().GetEnergy();
 		m_AdjustedQuantityFilledPerSecond = action_data.m_Player.GetSoftSkillManager().AddSpecialtyBonus( m_QuantityFilledPerSecond, m_Action.GetSpecialtyWeight(), true );
 	}
 	
@@ -42,7 +43,9 @@ class CAContinuousFill : CAContinuousBase
 			return UA_ERROR;
 		}
 		
-		if ( action_data.m_MainItem.GetQuantity() >= action_data.m_MainItem.GetQuantityMax() )
+		PowerGenerator pg = PowerGenerator.Cast(action_data.m_Target.GetObject()); // get power generator
+		
+		if ( pg.GetFuel() >= pg.GetMaxFuel() )
 		{
 			return UA_FINISHED;
 		}
@@ -99,23 +102,23 @@ class CAContinuousFill : CAContinuousBase
 	
 	void CalcAndSetQuantity( ActionData action_data )
 	{
+		
 		m_SpentQuantity_total += m_SpentQuantity;
+	
+		if ( m_SpentUnits )
+		{
+			m_SpentUnits.param1 = m_SpentQuantity;
+			SetACData(m_SpentUnits);
+		}
+		
+		
 		if ( GetGame().IsServer() )
 		{
-			if ( m_SpentUnits )
-			{
-				m_SpentUnits.param1 = m_SpentQuantity;
-				SetACData(m_SpentUnits);
-			}
-			
-			bool inject_agents = true;
-			
-			if(action_data.m_Target.GetObject() && action_data.m_Target.GetObject().IsWell())
-			{
-				inject_agents = false;
-			}
-			Liquid.FillContainerEnviro(action_data.m_MainItem, m_liquid_type, m_SpentQuantity, inject_agents);
+			PowerGenerator pg = PowerGenerator.Cast(action_data.m_Target.GetObject()); // get power generator
+			int consumed_fuel = pg.AddFuel( m_SpentQuantity );
+			action_data.m_MainItem.AddQuantity( -consumed_fuel );
 		}
+		
 		m_SpentQuantity = 0;
 	}
 };

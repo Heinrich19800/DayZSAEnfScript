@@ -20,19 +20,24 @@ class PowerGenerator extends ItemBase
 	// Constructor
 	void PowerGenerator()
 	{
-		/*if ( !GetGame().IsMultiplayer() ) // Temporal sparkplug spawn for testing
-		{
-			ItemBase sparkplug = GetGame().CreateObject("Sparkplug", GetPosition());
-			
-			if (sparkplug)
-			{
-				TakeEntityAsAttachment(sparkplug);
-			}
-		}*/
+		SetEventMask(EntityEvent.INIT); // Enable EOnInit event
+		
 		m_FuelPercentage = 100;
 		RegisterNetSyncVariableInt("m_FuelPercentage");
 	}
 
+	override void EOnInit( IEntity other, int extra)
+	{
+		if ( GetGame().IsServer() )
+		{
+			m_FuelPercentage = GetCompEM().GetEnergy0To100();
+			SetSynchDirty();
+		}
+		
+		
+		UpdateFuelMeter();
+	}
+	
 	override bool IsHeavyBehaviour()
 	{
 		return true;
@@ -207,6 +212,8 @@ class PowerGenerator extends ItemBase
 		{
 			m_FuelToEnergyRatio = GetCompEM().GetEnergyMax() / m_FuelTankCapacity;
 			GetCompEM().SetEnergy(fuel_amount * m_FuelToEnergyRatio);
+			m_FuelPercentage = GetCompEM().GetEnergy0To100();
+			SetSynchDirty();
 			UpdateFuelMeter();
 		}
 		else
@@ -281,5 +288,12 @@ class PowerGenerator extends ItemBase
 		}
 		
 		return false;
+	}
+	
+	override void OnVariablesSynchronized()
+	{
+		super.OnVariablesSynchronized();
+		
+		UpdateFuelMeter();
 	}
 }

@@ -244,7 +244,7 @@ class ContainerWithCargo: ClosableContainer
 
 		m_CargoGrid = new UICargoGrid( entity, m_IconsContainer );
 		m_CargoGrid.SetParent(this);
-		( Container.Cast( m_Parent) ).Insert(this);
+		( Container.Cast( m_Parent ) ).Insert(this);
 		
 		if( m_Entity.GetInventory().IsInventoryLockedForLockType( HIDE_INV_FROM_SCRIPT ) || m_Closed )
 		{

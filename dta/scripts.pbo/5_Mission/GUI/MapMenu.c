@@ -2,7 +2,7 @@ class MapMenu extends UIScriptedMenu
 {
 	void ~MapMenu()
 	{
-		CloseMap();
+		//CloseMap();
 	}
 	
 	override Widget Init()
@@ -33,6 +33,7 @@ class MapMenu extends UIScriptedMenu
 		return false;
 	}
 	
+//currently unused
 	void CloseMap()
 	{
 		PlayerBase player = PlayerBase.Cast(g_Game.GetPlayer());
@@ -41,12 +42,19 @@ class MapMenu extends UIScriptedMenu
 		
 		ScriptInputUserData ctx = new ScriptInputUserData;
 		//player.m_MapOpen = false;
-		player.m_hac.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END);
-		if (GetGame().IsMultiplayer() && GetGame().IsClient() && ctx.CanStoreInputUserData())
+		if (ctx.CanStoreInputUserData())
 		{
-			ctx.Write(INPUT_UDT_STANDARD_ACTION);
-			ctx.Write(DayZPlayerConstants.CMD_ACTIONINT_END);
-			ctx.Send();
+			player.m_hac.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END);
+			if (GetGame().IsMultiplayer() && GetGame().IsClient())
+			{
+				ctx.Write(INPUT_UDT_STANDARD_ACTION);
+				ctx.Write(DayZPlayerConstants.CMD_ACTIONINT_END);
+				ctx.Send();
+			}
+			if (GetGame().IsClient())
+			{
+				GetGame().GetMission().PlayerControlEnable();
+			}
 		}
 	}
 }

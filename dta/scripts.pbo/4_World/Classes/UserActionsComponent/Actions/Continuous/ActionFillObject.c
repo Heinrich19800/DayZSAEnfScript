@@ -80,6 +80,7 @@ class ActionFillObject: ActionContinuousBase
 	override void OnFinishProgressServer( ActionData action_data )
 	{
 		HescoBox hesco;
+		
 		if ( Class.CastTo(hesco,action_data.m_Target.GetObject()) )
 		{
 			const float ITEM_DAMAGE = 0.05;
@@ -96,5 +97,22 @@ class ActionFillObject: ActionContinuousBase
 		}
 
 		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+	}
+	
+	override void OnFinishProgressClient( ActionData action_data )
+	{
+		HescoBox hesco;
+		
+		if ( Class.CastTo(hesco,action_data.m_Target.GetObject()) )
+		{
+			if ( hesco.GetState() == HescoBox.UNFOLDED )
+			{
+				hesco.Fill();
+			}
+			else if ( hesco.GetState() == HescoBox.FILLED )
+			{
+				hesco.Unfold();
+			}
+		}
 	}
 };

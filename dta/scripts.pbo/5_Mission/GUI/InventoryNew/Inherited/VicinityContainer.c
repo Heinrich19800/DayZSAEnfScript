@@ -331,18 +331,25 @@ class VicinityContainer: CollapsibleContainer
 		{
 			return;
 		}
+		
 		ItemPreviewWidget ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( "Render" ) );
 		if( !ipw )
 		{
-		  string name = w.GetName();
-		  name.Replace( "PanelWidget", "Render" );
-		  ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
+			string name = w.GetName();
+			name.Replace( "PanelWidget", "Render" );
+			ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
 		}
-		if( !ipw )
+		
+		if( !ipw && ItemPreviewWidget.Cast( w ) )
 		{
-		  ipw = ItemPreviewWidget.Cast( w );
+			ipw = ItemPreviewWidget.Cast( w );
 		}
-		if( !ipw || !ipw.IsInherited( ItemPreviewWidget ) || !ipw.GetItem() )
+		else
+		{
+			return;
+		}
+
+		if( !ipw || !ipw.GetItem() )
 		{
 			return;
 		}
@@ -374,17 +381,17 @@ class VicinityContainer: CollapsibleContainer
 			name.Replace( "PanelWidget", "Render" );
 			ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
 		}
-		if( !ipw )
+		
+		if( !ipw && ItemPreviewWidget.Cast( w ) )
 		{
 			ipw = ItemPreviewWidget.Cast( w );
 		}
-
-		if( !ipw || !ipw.IsInherited( ItemPreviewWidget ) )
+		else
 		{
 			return;
 		}
 
-		if( !receiver_item.IsInherited( ItemBase ) || !ipw.GetItem() )
+		if( !ItemBase.Cast( receiver_item ) || !ipw.GetItem() )
 		{
 			return;
 		}
@@ -429,12 +436,16 @@ class VicinityContainer: CollapsibleContainer
 			ipw = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
 		}
 		
-		if( !ipw )
+		if( !ipw && ItemPreviewWidget.Cast( w ) )
 		{
 			ipw = ItemPreviewWidget.Cast( w );
 		}
+		else
+		{
+			return;
+		}
 
-		if( !ipw.IsInherited( ItemPreviewWidget ) )
+		if( !ItemBase.Cast( receiver_item ) || !ipw.GetItem() )
 		{
 			return;
 		}

@@ -32,6 +32,7 @@ class MissionGameplay extends MissionBase
 	protected int					m_ActionDownTime;
 	protected int					m_ActionUpTime;
 	protected bool 					m_InitOnce;
+	protected bool 					m_ControlDisabled;
 	
 	void MissionGameplay()
 	{
@@ -233,6 +234,7 @@ class MissionGameplay extends MissionBase
 		UpdateDummyScheduler();//for external entities
 		UIScriptedMenu menu = m_UIManager.GetMenu();
 		InventoryMenu inventory = InventoryMenu.Cast( m_UIManager.FindMenu(MENU_INVENTORY) );
+		MapMenu mapmenu = MapMenu.Cast( m_UIManager.FindMenu(MENU_MAP) );
 		//m_InventoryMenu = inventory;
 		InspectMenuNew inspect = InspectMenuNew.Cast( m_UIManager.FindMenu(MENU_INSPECT) );
 		Input input = GetGame().GetInput();
@@ -558,6 +560,10 @@ class MissionGameplay extends MissionBase
 					m_UIManager.Back();
 					PlayerControlEnable();
 				}
+				else if(menu == mapmenu && !m_ControlDisabled)
+				{
+					PlayerControlDisable();
+				}
 				
 			}
 			else if (input.GetActionDown(UAUIMenu, false))
@@ -581,7 +587,7 @@ class MissionGameplay extends MissionBase
 		//temporary
 		//Gestures [.]
 #ifdef DEVELOPER
-		if ( key == KeyCode.KC_PERIOD )
+		/*if ( key == KeyCode.KC_PERIOD )
 		{
 			//open gestures menu
 			if ( !GetUIManager().IsMenuOpen( MENU_GESTURES ) )
@@ -589,7 +595,7 @@ class MissionGameplay extends MissionBase
 				//TODO reconnect when appropriate
 				GesturesMenu.OpenMenu();
 			}
-		}
+		}*/
 #endif
 		/*
 		//temporary
@@ -617,6 +623,32 @@ class MissionGameplay extends MissionBase
 			}
 		}
 		
+		/*if ( key == KeyCode.KC_P )
+		{
+			if (!player)
+				player = PlayerBase.Cast(GetGame().GetPlayer());
+			player.SetHealth("Brain","Health",0);
+			player.SetHealth("","Health",0);
+		}*/
+		
+		/*if ( key == KeyCode.KC_P )
+		{
+			if (!player)
+				player = PlayerBase.Cast(GetGame().GetPlayer());
+			int slot_id = InventorySlots.GetSlotIdFromString("Legs"); 
+ 			EntityAI players_legs = player.GetInventory().FindPlaceholderForSlot( slot_id );
+			Print("--attachment type = " + players_legs.GetType());
+		}*/
+		
+		/*if ( key == KeyCode.KC_P )
+		{
+			if (!player)
+				player = PlayerBase.Cast(GetGame().GetPlayer());
+			if (player && player.m_EmoteManager && player.GetItemInHands())
+			{
+				player.DropItem(player.GetItemInHands());
+			}
+		}*/
 		
 		if ( key == KeyCode.KC_Q )
 		{
@@ -634,7 +666,7 @@ class MissionGameplay extends MissionBase
 		//temporary
 		//Gestures [.]
 #ifdef DEVELOPER
-		if ( key == KeyCode.KC_PERIOD )
+		/*if ( key == KeyCode.KC_PERIOD )
 		{
 			//close gestures menu
 			if ( GetUIManager().IsMenuOpen( MENU_GESTURES ) )
@@ -642,7 +674,7 @@ class MissionGameplay extends MissionBase
 				//TODO reconnect when appropriate
 				GesturesMenu.CloseMenu();
 			}
-		}
+		}*/
 #endif
 		/*
 		//temporary
@@ -741,19 +773,28 @@ class MissionGameplay extends MissionBase
 	
 	override void PlayerControlEnable()
 	{
+		//Print("Enabling Controls");
 #ifdef WIP_INPUTS
 		GetUApi().ActivateGroup("infantry");
-#endif		
+#endif	
+		m_ControlDisabled = false;	
 	}
 
 	override void PlayerControlDisable()
 	{
+		//Print("Disabling Controls");
 #ifdef WIP_INPUTS
 			GetUApi().ActivateExclude("inventory");
 			GetUApi().ActivateGroup("infantry");
-#endif		
+#endif
+		m_ControlDisabled = true;
 	}
 
+	bool IsControlDisabled()
+	{
+		return m_ControlDisabled;
+	}
+	
 	void CloseAllMenus()
 	{
 		HideInventory();

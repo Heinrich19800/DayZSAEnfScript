@@ -158,22 +158,33 @@ class MiscGameplayFunctions
 	
 	static void UnlimitedAmmoDebugCheck(Weapon_Base weapon)
 	{
-		if ((ItemBase.GetDebugActionsMask() & DebugActionType.UNLIMITED_AMMO) && GetGame().IsServer())
+		if ( ItemBase.GetDebugActionsMask() & DebugActionType.UNLIMITED_AMMO )
 		{
-			int currentMuzzle = weapon.GetCurrentMuzzle();
-			float ammoDamage = 0.0;
-			string ammoTypeName = weapon.GetChamberAmmoTypeName(currentMuzzle);
-			
-			Magazine magazine = weapon.GetMagazine(currentMuzzle);
-			if(magazine)
+			Magazine magazine;
+			if ( GetGame().IsServer() )
 			{
-				if (magazine.GetAmmoCount() <= 1)
+				magazine = weapon.GetMagazine(weapon.GetCurrentMuzzle());
+			
+				if(magazine)
 				{
-					for(int i = 0; i < magazine.GetAmmoMax();i++)
+					if (magazine.GetAmmoCount() <= 5)
 					{
-						magazine.ServerStoreCartridge(ammoDamage, ammoTypeName);
+						magazine.ServerSetAmmoMax();
 					}
 				}
+			}
+			else
+			{
+				magazine = weapon.GetMagazine(weapon.GetCurrentMuzzle());
+			
+				if(magazine)
+				{
+					if (magazine.GetAmmoCount() <= 5)
+					{
+						magazine.LocalSetAmmoMax();
+					}
+				}
+			
 			}
 		}
 	}

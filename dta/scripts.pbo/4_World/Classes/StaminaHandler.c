@@ -53,12 +53,12 @@ class StaminaConsumers
 				return false;
 			}
 			
-			if( curStamina < sc.GetThreshold() && sc.GetState() )
+			if( curStamina <= sc.GetThreshold() && sc.GetState() )
 			{
 				return true;
 			}
 	
-			if( curStamina >= sc.GetThreshold() )
+			if( curStamina > sc.GetThreshold() )
 			{
 				sc.SetState(true);
 				return true;

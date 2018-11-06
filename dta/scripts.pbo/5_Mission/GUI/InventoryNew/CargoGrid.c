@@ -529,7 +529,7 @@ class UICargoGrid
 			}
 			
 			//END - Remove removed item Icons
-			TextWidget tw		= TextWidget.Cast( GetParent().GetMainWidget().FindAnyWidget("CargoCount") );
+			TextWidget tw	= TextWidget.Cast( GetParent().GetMainWidget().FindAnyWidget("CargoCount") );
 			
 			int capacity;
 			int occupied_cargo;
@@ -549,7 +549,7 @@ class UICargoGrid
 			#endif
 			#endif
 			
-			if(tw)
+			if( tw )
 				tw.SetText( occupied_cargo.ToString() + "/" + capacity.ToString() );
 			m_ShowedItems = showed_items;
 		}

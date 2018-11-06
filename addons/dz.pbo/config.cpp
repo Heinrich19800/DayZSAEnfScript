@@ -2882,7 +2882,6 @@ class CfgVehicles
 		inventoryCondition="false";
 		openable=0;
 		itemsCargoSize[]={5,8};
-		itemsCargo[]={};
 	};
 	class Powered_Base: Inventory_Base
 	{
@@ -4351,7 +4350,7 @@ class cfgWeapons
 		SingleUseActions[]={558,559,579,580};
 		itemSize[]={6,3};
 		spawnDamageRange[]={0,0.60000002};
-		damagePerShot=0.1;
+		damagePerShot=0.050000001;
 		barrelArmor=400;
 		unjamTime[]={6,10};
 		autoReload=0;
@@ -4496,7 +4495,7 @@ class cfgWeapons
 		};
 		class Reliability
 		{
-			ChanceToJam[]={0,0.0099999998,0.029999999,0.1,1};
+			ChanceToJam[]={0,0.001,0.0049999999,0.050000001,1};
 		};
 	};
 	class Shotgun_Base: Rifle_Base

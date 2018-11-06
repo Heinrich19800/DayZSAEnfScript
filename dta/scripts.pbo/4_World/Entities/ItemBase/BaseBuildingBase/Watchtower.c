@@ -42,6 +42,12 @@ class Watchtower extends BaseBuildingBase
 		}
 			
 		return true;
+	}
+
+	//can put into hands
+	override bool CanPutIntoHands( EntityAI parent )
+	{
+		return false;
 	}	
 	
 	//TODO - add proper direction conditions to IsFacingBack and IsFacingFront

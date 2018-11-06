@@ -368,7 +368,8 @@ class BaseBuildingBase extends ItemBase
 						SetAnimationPhase( slot_name, 1 );
 						SetAnimationPhase( slot_name_mounted, 0 );
 						
-						CreateAreaDamage( slot_name_mounted );			//create damage trigger if barbed wire is mounted
+						//TODO - add damage trigger once triggers are fixed
+						//CreateAreaDamage( slot_name_mounted );			//create damage trigger if barbed wire is mounted
 					}
 					else
 					{
@@ -383,7 +384,7 @@ class BaseBuildingBase extends ItemBase
 					if ( IsAttachmentSlotLocked( attachment ) )
 					{
 						SetAnimationPhase( slot_name_mounted, 1 );
-						SetAnimationPhase( slot_name, 1 );						
+						SetAnimationPhase( slot_name, 1 );
 					}
 					else
 					{
@@ -598,8 +599,15 @@ class BaseBuildingBase extends ItemBase
 			AreaDamageRegularDeferred area_damage = new AreaDamageRegularDeferred( this );
 			
 			vector min_max[2];
-			min_max[0] = GetMemoryPointPos( slot_name + "_min" );
-			min_max[1] = GetMemoryPointPos( slot_name + "_max" );
+			
+			if ( MemoryPointExists( slot_name + "_min" ) )
+			{
+				min_max[0] = GetMemoryPointPos( slot_name + "_min" );
+			}
+			if ( MemoryPointExists( slot_name + "_max" ) )
+			{
+				min_max[0] = GetMemoryPointPos( slot_name + "_max" );
+			}
 			
 			/*
 			vector egde_length = GetConstruction().GetCollisionBoxSize( min_max );

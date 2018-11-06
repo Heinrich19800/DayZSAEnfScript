@@ -21,9 +21,9 @@ class ActionSawPlanks: ActionContinuousBase
 		m_MessageFail = "I've stopped sawing the planks.";
 		m_MessageCancel = "I've stopped sawing the planks.";
 		//m_Animation = "startFire";
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CRAFTING;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DISASSEMBLE;
 		m_FullBody = true;
-		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_MEDIUM;
 	}
 	

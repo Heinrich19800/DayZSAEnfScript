@@ -4,7 +4,8 @@ class HescoBox extends Inventory_Base
 	static const int UNFOLDED 		= 1;
 	static const int FILLED 		= 2;
 	
-	static ref array<string> m_SurfaceForSetup;
+	static ref array<string> 		m_SurfaceForSetup;
+	ref Timer 						m_Timer;
 
 	protected int m_State;
 	
@@ -115,8 +116,13 @@ class HescoBox extends Inventory_Base
 		
 		SetState( FOLDED );
 		RefreshPhysics();
-		Synchronize();
-		DecreaseHealth( "", "", 5 ); //TODO Daniel implement soft skill bonus via useraction
+		
+		if ( GetGame().IsServer() )
+		{
+			SetAllowDamage(true);
+			Synchronize();
+			DecreaseHealth( "", "", 5 ); //TODO Daniel implement soft skill bonus via useraction
+		}
 	}
 
 	void Unfold()
@@ -128,8 +134,13 @@ class HescoBox extends Inventory_Base
 		InsertMaterialForSetup();
 		SetState( UNFOLDED );
 		RefreshPhysics();
-		Synchronize();
-		DecreaseHealth( "", "", 5 ); //TODO Daniel implement soft skill bonus via useraction
+		
+		if ( GetGame().IsServer() )
+		{
+			SetAllowDamage(true);
+			Synchronize();
+			DecreaseHealth( "", "", 5 ); //TODO Daniel implement soft skill bonus via useraction
+		}
 	}
 
 	override void EEItemLocationChanged (notnull InventoryLocation oldLoc, notnull InventoryLocation newLoc)
@@ -139,31 +150,41 @@ class HescoBox extends Inventory_Base
 		RefreshPhysics();
 	}
 	
+	void RefreshPhysicsDelayed()
+	{
+		if ( this  &&  !ToDelete() )
+		{
+			RemoveProxyPhysics( "inventory" );
+			RemoveProxyPhysics( "placing" );
+			RemoveProxyPhysics( "filled" );
+			
+			int state = GetState();
+			
+			switch (state)
+			{
+				case UNFOLDED:
+					//ShowSelection( "placing" );
+					AddProxyPhysics( "placing" ); 
+					
+				return;
+				
+				case FOLDED:
+					AddProxyPhysics( "inventory" ); 
+				return;
+				
+				case FILLED:
+					AddProxyPhysics( "filled" ); 
+				return;
+			}
+		}
+	}
+	
 	void RefreshPhysics()
 	{
-		RemoveProxyPhysics( "inventory" );
-		RemoveProxyPhysics( "placing" );
-		RemoveProxyPhysics( "filled" );
+		if (!m_Timer)
+			m_Timer = new Timer( CALL_CATEGORY_GAMEPLAY );
 		
-		int state = GetState();
-		
-		switch (state)
-		{
-			case UNFOLDED:
-				//ShowSelection( "placing" );
-				AddProxyPhysics( "placing" ); 
-				
-			return;
-			
-			case FOLDED:
-				AddProxyPhysics( "inventory" ); 
-			return;
-			
-			case FILLED:
-				AddProxyPhysics( "filled" ); 
-			return;
-			
-		}
+		m_Timer.Run(0.1, this, "RefreshPhysicsDelayed");
 	}
 	
 	void InsertMaterialForSetup()
@@ -190,7 +211,48 @@ class HescoBox extends Inventory_Base
 		
 		SetState( FILLED );
 		RefreshPhysics();
-		Synchronize();
-		DecreaseHealth( "", "", 5 ); //TODO Daniel implement soft skill bonus via useraction
+		
+		if ( GetGame().IsServer() )
+		{
+			Synchronize();
+			DecreaseHealth( "", "", 5 ); //TODO Daniel implement soft skill bonus via useraction
+			SetAllowDamage(false);
+		}
+	}
+	
+	override void OnStoreSave(ParamsWriteContext ctx)
+	{   
+		super.OnStoreSave(ctx);
+		
+		// Save state
+		ctx.Write( m_State );
+	}
+
+	override void OnStoreLoad(ParamsReadContext ctx)
+	{   
+		super.OnStoreLoad(ctx);
+		
+		// Load folded/unfolded state
+		int state = FOLDED;
+		ctx.Read(state);
+		
+		switch (state)
+		{
+			case FOLDED:
+			{
+				Fold();
+				break;
+			}
+			case UNFOLDED:
+			{
+				Unfold();
+				break;
+			}
+			case FILLED:
+			{
+				Fill();
+				break;
+			}
+		}
 	}
 }

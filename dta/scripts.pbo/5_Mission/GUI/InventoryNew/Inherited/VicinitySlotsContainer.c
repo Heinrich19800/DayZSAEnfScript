@@ -664,6 +664,7 @@ class VicinitySlotsContainer: Container
 		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( w.FindAnyWidget( name ) );
 		EntityAI item = item_preview.GetItem();
 		bool draggable = !GetGame().GetPlayer().GetInventory().HasInventoryReservation( item, NULL );
+		draggable = draggable && item.CanPutIntoHands( GetGame().GetPlayer() );
 		ItemManager.GetInstance().SetWidgetDraggable( w, draggable );
 	}
 	

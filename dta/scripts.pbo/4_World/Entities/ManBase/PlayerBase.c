@@ -1744,9 +1744,7 @@ class PlayerBase extends ManBase
 		//map closing - feel free to move to different "update" if it does not belong here
 		if ( (!GetGame().IsMultiplayer() || GetGame().IsClient()) && m_hac && !GetGame().GetUIManager().IsMenuOpen(MENU_MAP) && m_MapOpen)
 		{
-			m_hac.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END);
-			//Print("fallback");
-			m_MapOpen = false;
+			CloseMap();
 		}
 #ifdef BOT
 		if (m_Bot)
@@ -1758,7 +1756,26 @@ class PlayerBase extends ManBase
 		OnCommandHandlerTick(pDt, pCurrentCommandID);
 	}
 	
-	
+	//! terminates map animation callback and re-enables controls
+	void CloseMap()
+	{
+		ScriptInputUserData ctx = new ScriptInputUserData;
+		if (ctx.CanStoreInputUserData())
+		{
+			m_hac.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END);
+			if (GetGame().IsMultiplayer() && GetGame().IsClient())
+			{
+				ctx.Write(INPUT_UDT_STANDARD_ACTION);
+				ctx.Write(DayZPlayerConstants.CMD_ACTIONINT_END);
+				ctx.Send();
+			}
+			if (!GetGame().IsMultiplayer() || GetGame().IsClient())
+			{
+				GetGame().GetMission().PlayerControlEnable();
+			}
+			m_MapOpen = false;
+		}
+	}
 	
 	
 	void AirTemperatureCheck()

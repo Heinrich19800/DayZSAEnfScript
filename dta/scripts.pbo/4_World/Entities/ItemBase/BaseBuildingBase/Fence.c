@@ -96,6 +96,22 @@ class Fence extends BaseBuildingBase
 		}
 	}
 	
+	//hands
+	override bool CanPutIntoHands( EntityAI parent )
+	{
+		if( !super.CanPutIntoHands( parent ) )
+		{
+			return false;
+		}
+		
+		if ( HasBase() )
+		{
+			return false;
+		}
+		
+		return true;
+	}	
+	
 	//--- OPEN/CLOSE ACTIONS
 	bool CanOpenFence()
 	{

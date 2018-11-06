@@ -350,6 +350,7 @@ class PluginDiagMenu extends PluginBase
 			{
 				SendUnlimitedRPC(true);
 				m_EnableUnlimitedAmmo = true;
+				ItemBase.SetDebugActionsMask( ItemBase.GetDebugActionsMask() | DebugActionType.UNLIMITED_AMMO );
 			}
 		}
 		else
@@ -358,6 +359,7 @@ class PluginDiagMenu extends PluginBase
 			{
 				SendUnlimitedRPC(false);
 				m_EnableUnlimitedAmmo = false;
+				ItemBase.SetDebugActionsMask( ItemBase.GetDebugActionsMask() & (~DebugActionType.UNLIMITED_AMMO) );
 			}
 		}
 	}	

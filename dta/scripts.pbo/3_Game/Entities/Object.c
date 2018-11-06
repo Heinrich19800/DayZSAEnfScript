@@ -275,6 +275,7 @@ class Object extends IEntity
 	proto native int GetMemoryPointIndex(string memoryPointName);
 	proto native vector GetMemoryPointPos(string memoryPointName);
 	proto native vector GetMemoryPointPosByIndex(int pointIndex);
+	proto native bool MemoryPointExists(string memoryPoint);
 
 	//! Called when tree is chopped down.
 	void OnTreeCutDown( EntityAI cutting_tool )

@@ -645,8 +645,15 @@ class Construction
 		
 		if ( collision_data.Count() > 0 )
 		{
-			min_max[0] = GetParent().GetMemoryPointPos( collision_data[0] );
-			min_max[1] = GetParent().GetMemoryPointPos( collision_data[1] );
+			if ( GetParent().MemoryPointExists( collision_data[0] ) )
+			{
+				min_max[0] = GetParent().GetMemoryPointPos( collision_data[0] );
+			}
+			if ( GetParent().MemoryPointExists( collision_data[1] ) )
+			{
+				min_max[1] = GetParent().GetMemoryPointPos( collision_data[1] );
+			}
+			
 			center = GetBoxCenter( min_max );
 		}
 	}

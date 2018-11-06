@@ -54,7 +54,27 @@ class BarbedWire extends ItemBase
 			SetSynchDirty();
 		}
 	}	
+
+	// --- EVENTS
+	override void OnStoreSave( ParamsWriteContext ctx )
+	{   
+		super.OnStoreSave( ctx );
+		
+		//sync parts 01
+		ctx.Write( m_IsMounted );
+	}
 	
+	override void OnStoreLoad( ParamsReadContext ctx )
+	{
+		super.OnStoreLoad( ctx );
+		
+		//Restore synced parts data
+		bool mounted_state;
+		ctx.Read( mounted_state );
+		SetMountedState( mounted_state );
+	}
+	
+	// ---
 	override void OnWorkStart()
 	{
 		SoundBuzzLoopStart();

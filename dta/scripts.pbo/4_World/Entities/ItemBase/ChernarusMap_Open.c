@@ -6,13 +6,6 @@ class ChernarusMap_Open extends ItemMap
 	{
 		super.OnItemLocationChanged(old_owner,new_owner);
 		
-		// item dropped and destroyed
-		if (!new_owner)
-		{
-			Delete();
-			return;
-		}
-		
 		PlayerBase player = PlayerBase.Cast(old_owner);
 		if (player && !m_ItemChanged && GetGame().IsServer())
 		{
