@@ -2842,7 +2842,7 @@ class CfgVehicles
 		model="\DZ\data\lightpoint.p3d";
 		ammoType="Explosion_NonLethal";
 	};
-	class Light: HouseNoDestruct
+	class Light: Inventory_Base
 	{
 		scope=2;
 		carveNavmesh=0;

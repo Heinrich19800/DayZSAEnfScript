@@ -120,12 +120,12 @@ class Particle extends ScriptedEntity
 		if (m_ParticleEffect)
 		{
 			int repeat = false;
-			string emitors_array[];
+			string emitors_array[30];
 			
 			int emitors = GetParticleEmitors(m_ParticleEffect, emitors_array, 30);
 			
 			for (int i = 0; i < emitors; i++)
-			{	
+			{
 				GetParticleParm(m_ParticleEffect, i, EmitorParam.REPEAT, repeat);
 				
 				if (repeat)
@@ -148,7 +148,7 @@ class Particle extends ScriptedEntity
 	{
 		if (m_ParticleEffect)
 		{
-			string emitors_array[];
+			string emitors_array[20];
 			
 			int emitors = GetParticleEmitors(m_ParticleEffect, emitors_array, 20);
 			
@@ -166,7 +166,7 @@ class Particle extends ScriptedEntity
 	{
 		if (m_ParticleEffect)
 		{
-			string emitors_array[];
+			string emitors_array[20];
 			
 			int emitors = GetParticleEmitors(m_ParticleEffect, emitors_array, 20);
 			

@@ -19,6 +19,7 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	protected TextWidget				m_ServerMode;
 	protected TextWidget				m_ServerBattleye;
 	protected TextWidget				m_ServerIP;
+	protected TextWidget				m_ServerAcceleration;
 	
 	protected bool						m_IsExpanded;
 	protected bool						m_IsFavorited;
@@ -54,6 +55,7 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		m_ServerMode			= TextWidget.Cast( m_Root.FindAnyWidget( "mode_text" ) );
 		m_ServerBattleye		= TextWidget.Cast( m_Root.FindAnyWidget( "battlleye_text" ) );
 		m_ServerIP				= TextWidget.Cast( m_Root.FindAnyWidget( "ip_text" ) );
+		m_ServerAcceleration	= TextWidget.Cast( m_Root.FindAnyWidget( "server_acceleration_text" ) );
 		
 		m_Index					= index;
 		m_Tab					= tab;
@@ -222,11 +224,12 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		#ifdef PLATFORM_WINDOWS
 		#ifndef PLATFORM_CONSOLE
 			SetShard( server_info.m_Official );
-			SetCharacterAlive( "Missing data" );
-			SetFriends( {"Missing data"} );
+			SetCharacterAlive( server_info.m_CharactersAlive );
+			SetFriends( server_info.m_SteamFriends );
 			SetMode( server_info.m_Disable3rdPerson );
 			SetBattleye( server_info.m_AntiCheat );
 			SetIP( server_info.m_Id );
+			SetAcceleration( server_info.m_EnvironmentTimeMul );
 		#endif
 		#endif
 	}
@@ -283,26 +286,32 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	void SetTime( string time, float multiplier )
 	{
-		TStringArray arr	= new TStringArray;
-		
-		time.Split( ":", arr );
-		
-		int hour			= arr.Get( 0 ).ToInt();
-		int minute			= arr.Get( 1 ).ToInt();
-		
-		if( hour >= 19 || hour <= 5 )	//Night
+		if( time != "" )
 		{
-			if( multiplier > 1 )
-				m_ServerTime.SetImage( 3 );
-			else
-				m_ServerTime.SetImage( 2 );
-		}
-		else							//Day
-		{
-			if( multiplier > 1 )
-				m_ServerTime.SetImage( 1 );
-			else
-				m_ServerTime.SetImage( 0 );
+			TStringArray arr	= new TStringArray;
+			
+			time.Split( ":", arr );
+			
+			if( arr.Count() == 2 )
+			{
+				int hour		= arr.Get( 0 ).ToInt();
+				int minute		= arr.Get( 1 ).ToInt();
+				
+				if( hour >= 19 || hour <= 5 )	//Night
+				{
+					if( multiplier > 1 )
+						m_ServerTime.SetImage( 3 );
+					else
+						m_ServerTime.SetImage( 2 );
+				}
+				else							//Day
+				{
+					if( multiplier > 1 )
+						m_ServerTime.SetImage( 1 );
+					else
+						m_ServerTime.SetImage( 0 );
+				}
+			}
 		}
 	}
 	
@@ -330,17 +339,8 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 		m_ServerCharacterAlive.SetText( char_alive );
 	}
 	
-	void SetFriends( array<string> friends )
+	void SetFriends( string friends_text )
 	{
-		string friends_text;
-		if( friends && friends.Count() > 0 )
-		{
-			friends_text = friends.Get( 0 );
-			for( int i = 1; i < friends.Count(); i++ )
-			{
-				friends_text += ", " + friends.Get( i );
-			}
-		}
 		m_ServerFriends.SetText( friends_text );
 	}
 	
@@ -401,6 +401,19 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	{
 		m_IsFavorited = favorite;
 		m_Root.FindAnyWidget( "unfavorite_image" ).Show( m_IsFavorited );
+	}
+	
+	void SetAcceleration( float mult )
+	{
+		if( mult > 1 )
+		{
+			m_ServerAcceleration.Show( true );
+			m_ServerAcceleration.SetText( mult.ToString() + "x" );
+		}
+		else
+		{
+			m_ServerAcceleration.Show( false );
+		}
 	}
 	
 	bool ToggleFavorite()

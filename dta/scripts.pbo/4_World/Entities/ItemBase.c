@@ -55,13 +55,13 @@ class ItemBase extends InventoryItem
 	static int m_LastRegisteredWeaponID = 0;
 	
 	// Overheating effects
-	bool 					m_IsOverheatingEffectActive;
-	float					m_OverheatingShots;
-	ref Timer 				m_CheckOverheating;
-	int 					m_ShotsToStartOverheating = 0; // After these many shots, the overheating effect begins
-	int 					m_MaxOverheatingValue = 0; // Limits the number of shots that will be tracked
-	float 					m_OverheatingDecayInterval = 1; // Timer's interval for decrementing overheat effect's lifespan
-	ref array <Particle> 	m_OverheatingParticles;
+	bool 								m_IsOverheatingEffectActive;
+	float								m_OverheatingShots;
+	ref Timer 							m_CheckOverheating;
+	int 								m_ShotsToStartOverheating = 0; // After these many shots, the overheating effect begins
+	int 								m_MaxOverheatingValue = 0; // Limits the number of shots that will be tracked
+	float 								m_OverheatingDecayInterval = 1; // Timer's interval for decrementing overheat effect's lifespan
+	ref array <ref OverheatingParticle> m_OverheatingParticles;
 	
 	// -------------------------------------------------------------------------
 	void ItemBase()
@@ -225,15 +225,14 @@ class ItemBase extends InventoryItem
 	
 	void CheckOverheating(ItemBase weapon = null, string ammoType = "", ItemBase muzzle_owner = null, ItemBase suppressor = null, string config_to_search = "")
 	{
+		if (m_OverheatingShots >= m_ShotsToStartOverheating  &&  IsOverheatingEffectActive())
+			UpdateOverheating(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
+		
 		if (m_OverheatingShots >= m_ShotsToStartOverheating  &&  !IsOverheatingEffectActive())
-		{
 			StartOverheating(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
-		}
 		
 		if (m_OverheatingShots < m_ShotsToStartOverheating  &&  IsOverheatingEffectActive())
-		{
 			StopOverheating(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
-		}
 		
 		if (m_OverheatingShots > m_MaxOverheatingValue)
 		{
@@ -273,18 +272,78 @@ class ItemBase extends InventoryItem
 		ItemBase.PlayOverheatingParticles(this, ammoType, this, suppressor, "CfgWeapons" );
 	}
 	
+	void UpdateOverheating(ItemBase weapon = null, string ammoType = "", ItemBase muzzle_owner = null, ItemBase suppressor = null, string config_to_search = "")
+	{
+		KillAllOverheatingParticles();
+		ItemBase.UpdateOverheatingParticles(this, ammoType, this, suppressor, "CfgWeapons" );
+		UpdateAllOverheatingParticles();
+	}
+	
 	void StopOverheating(ItemBase weapon = null, string ammoType = "", ItemBase muzzle_owner = null, ItemBase suppressor = null, string config_to_search = "")
 	{
 		m_IsOverheatingEffectActive = false;
 		ItemBase.StopOverheatingParticles(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
 	}
 	
-	void RegisterOverheatingParticle(Particle p)
+	void RegisterOverheatingParticle(Particle p, float min_heat_coef, float max_heat_coef, int particle_id, Object parent, vector local_pos, vector local_ori)
 	{
 		if (!m_OverheatingParticles)
-			m_OverheatingParticles = new array <Particle>;
+			m_OverheatingParticles = new array <ref OverheatingParticle>;
 		
-		m_OverheatingParticles.Insert(p);
+		OverheatingParticle OP = new OverheatingParticle();
+		OP.RegisterParticle(p);
+		OP.SetOverheatingLimitMin(min_heat_coef);
+		OP.SetOverheatingLimitMax(max_heat_coef);
+		OP.SetParticleParams(particle_id, parent, local_pos, local_ori);
+		
+		m_OverheatingParticles.Insert(OP);
+		Print(m_OverheatingParticles);
+	}
+	
+	float GetOverheatingCoef()
+	{
+		if (m_MaxOverheatingValue > 0)
+			return (m_OverheatingShots - m_ShotsToStartOverheating) / m_MaxOverheatingValue;
+		
+		return -1;
+	}
+	
+	void UpdateAllOverheatingParticles()
+	{
+		if (m_OverheatingParticles)
+		{
+			float overheat_coef = GetOverheatingCoef();
+			Print(m_OverheatingParticles);
+			Print(overheat_coef);
+			int count = m_OverheatingParticles.Count();
+			
+			for (int i = count; i > 0; --i)
+			{
+				int id = i - 1;
+				OverheatingParticle OP = m_OverheatingParticles.Get(id);
+				Particle p = OP.GetParticle();
+				
+				float overheat_min = OP.GetOverheatingLimitMin();
+				float overheat_max = OP.GetOverheatingLimitMax();
+				
+				if (false  ||  overheat_coef >= overheat_min  &&  overheat_coef < overheat_max)
+				{
+					/*if (!p)
+					{
+						p = Particle.Play(OP.GetParticleID(), OP.GetParticleParent(), OP.GetParticlePos(), OP.GetParticleOri());
+						OP.RegisterParticle(p);
+					}*/
+				}
+				else
+				{
+					if (p)
+					{
+						p.Stop();
+						OP.RegisterParticle(NULL);
+					}
+				}
+			}
+		}
 	}
 	
 	void KillAllOverheatingParticles()
@@ -294,11 +353,18 @@ class ItemBase extends InventoryItem
 			for (int i = m_OverheatingParticles.Count(); i > 0; i--)
 			{
 				int id = i - 1;
-				Particle p = m_OverheatingParticles.Get(id);
+				OverheatingParticle OP = m_OverheatingParticles.Get(id);
 				
-				if (p)
+				if (OP)
 				{
-					p.Stop();
+					Particle p = OP.GetParticle();
+					
+					if (p)
+					{
+						p.Stop();
+					}
+					
+					delete OP;
 				}
 			}
 			
@@ -2715,7 +2781,7 @@ class ItemBase extends InventoryItem
 		return false;
 	}
 	
-	// Plays all muzzle flash particle effect
+	// Plays muzzle flash particle effects
 	static void PlayFireParticles(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
 	{
 		int id = muzzle_owner.GetMuzzleID();
@@ -2735,7 +2801,7 @@ class ItemBase extends InventoryItem
 		}
 	}
 	
-	// Plays all muzzle flash particle effect
+	// Plays all weapon overheating particles
 	static void PlayOverheatingParticles(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
 	{
 		int id = muzzle_owner.GetMuzzleID();
@@ -2750,6 +2816,26 @@ class ItemBase extends InventoryItem
 				if (WPOOH)
 				{
 					WPOOH.OnActivate(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
+				}
+			}
+		}
+	}
+	
+	// Updates all weapon overheating particles
+	static void UpdateOverheatingParticles(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
+	{
+		int id = muzzle_owner.GetMuzzleID();
+		array<ref WeaponParticlesOnOverheating> WPOOH_array = weapon.m_OnOverheatingEffect.Get(id);
+		
+		if (WPOOH_array)
+		{
+			for (int i = 0; i < WPOOH_array.Count(); i++)
+			{
+				WeaponParticlesOnOverheating WPOOH = WPOOH_array.Get(i);
+				
+				if (WPOOH)
+				{
+					WPOOH.OnUpdate(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
 				}
 			}
 		}

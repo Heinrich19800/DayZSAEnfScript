@@ -431,7 +431,11 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	
 	void OnLoadServersAsync( ref GetServersResult result_list, EBiosError error, string response )
 	{
-		GetSelectedTab().OnLoadServersAsync( result_list, error, response );
+		#ifdef PLATFORM_WINDOWS
+			GetSelectedTab().OnLoadServersAsyncPC( result_list, error, response );
+		#else
+			GetSelectedTab().OnLoadServersAsync( result_list, error, response );
+		#endif
 	}
 	
 	//Coloring functions (Until WidgetStyles are useful)

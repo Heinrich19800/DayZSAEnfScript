@@ -102,6 +102,8 @@ class ParticleList
 	static const int GUN_LONG_WINDED_SMOKE			= RegisterParticle("weapon_shot_winded_smoke");
 	static const int SMOKING_BARREL					= RegisterParticle("smoking_barrel");
 	static const int SMOKING_BARREL_SMALL			= RegisterParticle("smoking_barrel_small");
+	static const int SMOKING_BARREL_STEAM			= RegisterParticle("smoking_barrel_steam");
+	static const int SMOKING_BARREL_HOT				= RegisterParticle("smoking_barrel_heavy");
 	
 	// BULLET & MELEE IMPACTS
 	static const int IMPACT_TEST					= RegisterParticle("impacts/bullet_impact_placeholder");

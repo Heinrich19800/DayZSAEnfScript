@@ -11,6 +11,10 @@ class WeaponParticlesBase // This class represents every particle effect you see
 	int 			m_OverrideParticle;
 	int 			m_OnlyWithinHealthLabelMin;
 	int 			m_OnlyWithinHealthLabelMax;
+	float 			m_OnlyWithinOverheatLimitsMin;
+	float			m_OnlyWithinOverheatLimitsMax;
+	float 			m_OnlyWithinRainLimitsMin;
+	float			m_OnlyWithinRainLimitsMax;
 	string 			m_OverrideDirectionPoint;
 	string 			m_OnlyIfBulletIs;
 	string 			m_OnlyIfWeaponIs;
@@ -49,9 +53,51 @@ class WeaponParticlesBase // This class represents every particle effect you see
 		}
 		else
 		{
+			// Disable this filter
 			m_OnlyWithinHealthLabelMin = -1;
-			m_OnlyWithinHealthLabelMax = -1;
+			m_OnlyWithinHealthLabelMax = 2;
 		}
+		
+		health_limit.Clear();
+		delete health_limit;
+		
+		// onlyWithinOverheatLimits[]
+		array<float> overheat_limit = new array<float>;
+		GetGame().ConfigGetFloatArray( config_OnFire_entry + " onlyWithinOverheatLimits", overheat_limit);
+		
+		if (overheat_limit.Count() == 2)
+		{
+			m_OnlyWithinOverheatLimitsMin = overheat_limit.Get(0);
+			m_OnlyWithinOverheatLimitsMax = overheat_limit.Get(1);
+		}
+		else
+		{
+			// Disable this filter
+			m_OnlyWithinOverheatLimitsMin = -1;
+			m_OnlyWithinOverheatLimitsMax = 2;
+		}
+		
+		overheat_limit.Clear();
+		delete overheat_limit;
+		
+		// onlyWithinRainLimits[]
+		array<float> rain_limit = new array<float>;
+		GetGame().ConfigGetFloatArray( config_OnFire_entry + " onlyWithinRainLimits", rain_limit);
+		
+		if (rain_limit.Count() == 2)
+		{
+			m_OnlyWithinRainLimitsMin = rain_limit.Get(0);
+			m_OnlyWithinRainLimitsMax = rain_limit.Get(1);
+		}
+		else
+		{
+			// Disable this filter
+			m_OnlyWithinRainLimitsMin = -1;
+			m_OnlyWithinRainLimitsMax = 2;
+		}
+		
+		rain_limit.Clear();
+		delete rain_limit;
 		
 		// overridePoint
 		m_OverridePoint = "";
@@ -110,6 +156,12 @@ class WeaponParticlesBase // This class represents every particle effect you see
 	
 	void OnActivate(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
 	{
+		float wetness = muzzle_owner.GetWet();
+		Print(wetness);
+		
+		float rain = GetGame().GetWeather().GetRain().GetActual();
+		Print(rain);
+		
 		if ( !GetGame().IsServer()  ||  !GetGame().IsMultiplayer() )
 		{
 			// Handle effect's parameters
@@ -119,29 +171,44 @@ class WeaponParticlesBase // This class represents every particle effect you see
 				{
 					if ( CheckHealthCondition( muzzle_owner.GetHealthLevel() ) ) // onlyWithinHealthLevel
 					{
-						if ( m_OnlyIfBulletIs == ""  ||  m_OnlyIfBulletIs == ammoType ) // onlyIfBulletIs
+						if (CheckOverheatingCondition( muzzle_owner.GetOverheatingCoef() ) ) // onlyWithinOverheatLimits
 						{
-							if ( m_OnlyIfWeaponIs == ""  ||  m_OnlyIfWeaponIs == weapon.GetType() ) // onlyIfWeaponIs
+							if (CheckRainCondition( GetGame().GetWeather().GetRain().GetActual() ) ) // onlyWithinRainLimits
 							{
-								// Get particle ID
-								int particle_id = CheckParticleOverride(ammoType);
-								
-								// Get position of the particle
-								vector local_pos = muzzle_owner.GetSelectionPosition(m_OverridePoint);
-								local_pos += m_PositionOffset;
-								
-								// Set orientation of the particle
-								vector particle_ori = CheckOrientationOverride(local_pos, muzzle_owner);
-								
-								Particle p = Particle.Play( particle_id, muzzle_owner, local_pos, particle_ori );
-								
-								OnParticleCreated(muzzle_owner, p);
-								
-								// HACK: This temporarily fixes DAYZ-30268 until New Hierarchy is implemented + propper Lights API is developed
-								if (m_IlluminateWorld)
+								if ( m_OnlyIfBulletIs == ""  ||  m_OnlyIfBulletIs == ammoType ) // onlyIfBulletIs
 								{
-									vector global_pos = muzzle_owner.ModelToWorld(local_pos + Vector(-0.2, 0, 0));
-									Object light = GetGame().CreateObject( "Light", global_pos, true );
+									if ( m_OnlyIfWeaponIs == ""  ||  m_OnlyIfWeaponIs == weapon.GetType() ) // onlyIfWeaponIs
+									{
+										// Get particle ID
+										int particle_id = CheckParticleOverride(ammoType);
+										
+										// Get position of the particle
+										vector local_pos = muzzle_owner.GetSelectionPosition(m_OverridePoint);
+										local_pos += m_PositionOffset;
+										
+										// Set orientation of the particle
+										vector particle_ori = CheckOrientationOverride(local_pos, muzzle_owner);
+										
+										Particle p = Particle.Play( particle_id, muzzle_owner, local_pos, particle_ori );
+										
+										OnParticleCreated(weapon, ammoType, muzzle_owner, suppressor, config_to_search, p);
+										
+										// HACK: We need propper Lights API to avoid this workaround
+										if (m_IlluminateWorld)
+										{
+											vector global_pos = muzzle_owner.ModelToWorld(local_pos + Vector(-0.2, 0, 0));
+											Object o_light = GetGame().CreateObject( "Light", global_pos, true );
+											
+											if ( o_light )
+											{
+												Light l_light = Light.Cast( o_light );
+												if (l_light)
+												{
+													l_light.SetLifetime(0.05);
+												}
+											}
+										}
+									}
 								}
 							}
 						}
@@ -151,12 +218,17 @@ class WeaponParticlesBase // This class represents every particle effect you see
 		}
 	}
 	
-	void OnParticleCreated(ItemBase muzzle_owner, Particle p)
+	void OnParticleCreated(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search, Particle p)
 	{
 		
 	}
 	
 	void OnDeactivate(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
+	{
+		
+	}
+	
+	void OnUpdate(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
 	{
 		
 	}
@@ -170,20 +242,39 @@ class WeaponParticlesBase // This class represents every particle effect you see
 	// OnlyWithinHealthLabelMin & OnlyWithinHealthLabelMax
 	bool CheckHealthCondition(int health_label)
 	{
-		if (m_OnlyWithinHealthLabelMin != -1  ||  m_OnlyWithinHealthLabelMax != -1) // Check if health condition was even defined
+		if ( (health_label >= m_OnlyWithinHealthLabelMin)  &&  (health_label <= m_OnlyWithinHealthLabelMax) )
 		{
-			if ( (health_label >= m_OnlyWithinHealthLabelMin)  &&  (health_label <= m_OnlyWithinHealthLabelMax) )
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return true;
 		}
-		else // health condition was not defined so ignore it.
+		else
 		{
-			return true; 
+			return false;
+		}
+	}
+	
+	// OnlyWithinOverheatLimitsMin & OnlyWithinOverheatLimitsMax
+	bool CheckOverheatingCondition(float overheating_coef)
+	{
+		if ( (overheating_coef >= m_OnlyWithinOverheatLimitsMin)  &&  (overheating_coef <= m_OnlyWithinOverheatLimitsMax) )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	// OnlyWithinRainLimitsMin & OnlyWithinRainLimitsMax
+	bool CheckRainCondition(float rain_coef)
+	{
+		if ( (rain_coef >= m_OnlyWithinRainLimitsMin)  &&  (rain_coef <= m_OnlyWithinRainLimitsMax) )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 	
@@ -235,6 +326,11 @@ class WeaponParticlesBase // This class represents every particle effect you see
 			{
 				particle_ori = m_OverrideDirectionVector;
 			}
+			
+			if (muzzle_owner.IsInherited(ItemSuppressor))
+			{
+				particle_ori = particle_ori + Vector(0,0,270); // This rotation is necesarry due to suppressors being rotated into ground in their p3d files
+			}
 		}
 		
 		return particle_ori;
@@ -245,11 +341,11 @@ class WeaponParticlesBase // This class represents every particle effect you see
 class WeaponParticlesOnFire : WeaponParticlesBase {}
 
 // OVERHEATING particles
-class WeaponParticlesOnOverheating: WeaponParticlesBase 
+class WeaponParticlesOnOverheating: WeaponParticlesBase
 {
-	override void OnParticleCreated(ItemBase muzzle_owner, Particle p)
+	override void OnParticleCreated(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search, Particle p)
 	{
-		muzzle_owner.RegisterOverheatingParticle(p);
+		muzzle_owner.RegisterOverheatingParticle(p, m_OnlyWithinOverheatLimitsMin, m_OnlyWithinOverheatLimitsMax, p.GetParticleID(), muzzle_owner, p.m_DefaultPos, p.m_DefaultOri );
 	}
 	
 	override void OnDeactivate(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
@@ -259,7 +355,81 @@ class WeaponParticlesOnOverheating: WeaponParticlesBase
 			weapon.KillAllOverheatingParticles();
 		}
 	}
+	
+	override void OnUpdate(ItemBase weapon, string ammoType, ItemBase muzzle_owner, ItemBase suppressor, string config_to_search)
+	{
+		OnActivate(weapon, ammoType, muzzle_owner, suppressor, config_to_search);
+	}
 }
 
+class OverheatingParticle
+{
+	Particle 	m_Particle;
+	int 		m_ParticleID;
+	Object 		m_Parent;
+	vector		m_LocalPos;
+	vector		m_LocalOri;
+	
+	float m_OverheatingLimitMin;
+	float m_OverheatingLimitMax;
+	
+	void RegisterParticle( Particle p)
+	{
+		m_Particle = p;
+	}
+	
+	Particle GetParticle()
+	{
+		return m_Particle;
+	}
+	
+	void SetOverheatingLimitMin(float min)
+	{
+		m_OverheatingLimitMin = min;
+	}
+	
+	void SetOverheatingLimitMax(float max)
+	{
+		m_OverheatingLimitMax = max;
+	}
+	
+	float GetOverheatingLimitMin()
+	{
+		return m_OverheatingLimitMin;
+	}
+	
+	float GetOverheatingLimitMax()
+	{
+		return m_OverheatingLimitMax;
+	}
+	
+	void SetParticleParams(int particle_id, Object parent, vector local_pos, vector local_ori)
+	{
+		m_ParticleID = particle_id;
+		m_Parent = parent;
+		m_LocalPos = local_pos;
+		m_LocalOri = local_ori;
+	}
+	
+	int GetParticleID()
+	{
+		return m_ParticleID;
+	}
+	
+	Object GetParticleParent()
+	{
+		return m_Parent;
+	}
+	
+	vector GetParticlePos()
+	{
+		return m_LocalPos;
+	}
+	
+	vector GetParticleOri()
+	{
+		return m_LocalOri;
+	}
+}
 
 //class WeaponParticlesOnJammed : WeaponParticlesBase {} // MAYBE TO DO: Create functionality that would use this

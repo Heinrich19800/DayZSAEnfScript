@@ -73,7 +73,11 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		m_Menu					= menu;
 		m_TabType				= type;
 		
+		if( type == TabType.LAN )
+			m_Root.FindAnyWidget( "filters_content" ).Show( false );
+		
 		m_Filters				= new ServerBrowserFilterContainer( m_Root.FindAnyWidget( "filters_content" ), this );
+		
 		m_ApplyFilter			= m_Root.FindAnyWidget( "apply_filter_button" );
 		m_RefreshList			= m_Root.FindAnyWidget( "refresh_list_button" );
 		m_HostSort				= m_Root.FindAnyWidget( "server_list_content_header_host" );
@@ -90,10 +94,10 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void ~ServerBrowserTab()
 	{
-		if (m_Filters)
+		if( m_Filters )
 			m_Filters.SaveFilters();
 		
-		if (m_Root)
+		if(m_Root)
 			delete m_Root;
 	}
 	
@@ -336,7 +340,8 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			}
 			case SelectedPanel.FILTERS:
 			{
-				m_Filters.ResetFilters();
+				if( m_Filters )
+					m_Filters.ResetFilters();
 				break;
 			}
 		}
@@ -488,9 +493,47 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		m_Menu.SelectServer( server );
 	}
 	
+	void OnLoadServersAsyncPC( ref GetServersResult result_list, EBiosError error, string response )
+	{
+		if( result_list )
+		{
+			if( result_list.m_Results.Count() > 0 )
+			{
+				m_Entries.Insert( result_list.m_Page, result_list.m_Results );
+				foreach( GetServersResultRow result : result_list.m_Results )
+				{
+					if( PassFilter( result ) )
+					{
+						ref ServerBrowserEntry entry = new ServerBrowserEntry( m_ServerList, m_TotalLoadedServers, this );
+						entry.FillInfo( result );
+						entry.SetFavorite( m_Menu.IsFavorited( result.m_Id ) );
+						m_EntryWidgets.Insert( result.m_Id, entry );
+						m_TotalLoadedServers++;
+						m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_EntryWidgets.Count() + " " + "#server_browser_servers_desc" );
+					}
+					
+					if( !m_Menu || m_Menu.IsRefreshing() != m_TabType )
+						return;
+				}
+			}
+			else
+			{
+				m_LoadingText.SetText( "Finished loading " + m_EntryWidgets.Count() + " " + "#server_browser_servers_desc" );
+				m_Menu.SetRefreshing( TabType.NONE );
+			}
+			m_ServerList.Update();
+
+		}
+		else
+		{
+			m_LoadingText.SetText( "Finished loading " + m_EntryWidgets.Count() + " " + "#server_browser_servers_desc" );
+			m_Menu.SetRefreshing( TabType.NONE );
+		}
+	}
+	
 	void OnLoadServersAsync( ref GetServersResult result_list, EBiosError error, string response )
 	{
-		if( m_Menu.IsRefreshing() != m_TabType || !result_list || result_list.m_Pages == 0 )
+		if( m_Menu.IsRefreshing() != m_TabType || !result_list )
 		{
 			m_Menu.SetRefreshing( TabType.NONE );
 			string text = "#server_browser_tab_unable_to_get_server";
@@ -515,7 +558,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			m_TotalServers = 0;
 			#endif
 			
-			m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_TotalLoadedServers + "/" + m_TotalServers + " " +  "#server_browser_servers_desc" );
+			m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_EntryWidgets.Count() + "/" + m_TotalServers + " " +  "#server_browser_servers_desc" );
 		}
 		
 		#ifndef PLATFORM_CONSOLE
@@ -542,15 +585,12 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		}
 		#endif
 		
-		if( !m_BegunLoading && m_TotalPages > 0 )
+		#ifdef PLATFORM_CONSOLE
+		if( m_TotalPages > 0 )
 		{
-			m_BegunLoading = true;
-			#ifdef PLATFORM_CONSOLE
 			GetGame().GameScript.Call( this, "LoadEntries", new Param2<int, int>( 1, m_TotalPages ) );
-			#else
-			GetGame().GameScript.Call( this, "LoadEntries", new Param2<int, int>( result_list.m_Page, m_TotalPages ) );
-			#endif
 		}
+		#endif
 	}
 	
 	bool IsPingInRange( int ping, string max_ping )
@@ -611,8 +651,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 						entry.SetFavorite( m_Menu.IsFavorited( result.m_Id ) );
 						m_EntryWidgets.Insert( result.m_Id, entry );
 						index++;
-						m_TotalLoadedServers++;
-						m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_TotalLoadedServers + "/" + m_TotalServers + " " + "#server_browser_servers_desc" );
+						m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_EntryWidgets.Count() + "/" + m_TotalServers + " " + "#server_browser_servers_desc" );
 					}
 					
 					if( !m_Menu || m_Menu.IsRefreshing() != m_TabType )
@@ -653,7 +692,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		if (!m_Menu)
 			return;
 		
-		m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_TotalLoadedServers + "/" + m_TotalServers + " " + "#server_browser_servers_desc" );
+		m_LoadingText.SetText( "#server_browser_tab_loaded" + " " + m_EntryWidgets.Count() + "/" + m_EntryWidgets.Count() + " " + "#server_browser_servers_desc" );
 		m_Menu.SetRefreshing( TabType.NONE );
 	}
 	

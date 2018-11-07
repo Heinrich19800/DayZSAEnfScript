@@ -52,9 +52,34 @@ class BarbedWire extends ItemBase
 		if ( GetGame().IsServer() )
 		{
 			SetSynchDirty();
+			
+			if ( GetGame().IsMultiplayer() )
+			{
+				RefreshParent();
+			}
 		}
+	}
+	
+	override void OnVariablesSynchronized()
+	{
+		super.OnVariablesSynchronized();
+
+		//update parent (client)
+		RefreshParent();
 	}	
 
+	void RefreshParent()
+	{
+		EntityAI parent = GetHierarchyParent();
+		
+		//Base building objects
+		BaseBuildingBase base_building = BaseBuildingBase.Cast( parent );
+		if ( base_building )
+		{
+			base_building.Refresh();
+		}
+	}
+	
 	// --- EVENTS
 	override void OnStoreSave( ParamsWriteContext ctx )
 	{   

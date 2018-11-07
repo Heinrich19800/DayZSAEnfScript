@@ -39,14 +39,12 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		m_FriendsPlayingFilter		= new OptionSelector( root.FindAnyWidget( "friends_setting_option" ), 0, this, false );
 		m_PreviouslyPlayedFilter	= new OptionSelector( root.FindAnyWidget( "prev_played_setting_option" ), 0, this, false );
 		m_FullServerFilter			= new OptionSelector( root.FindAnyWidget( "full_server_setting_option" ), 0, this, false );
-		m_AcceleratedTimeFilter		= new OptionSelector( root.FindAnyWidget( "accelerated_time_setting_option" ), 0, this, false );
-		
-		m_FriendsPlayingFilter.Disable();
-		//m_PingFilter.Disable();
 		
 		#ifdef PLATFORM_CONSOLE
 			m_SortingFilter			= new OptionSelectorMultistate( root.FindAnyWidget( "sort_setting_option" ), 0, this, false, sort_options );
 			m_SortingFilter.m_OptionChanged.Insert( OnSortChanged );
+			m_PingFilter.Disable();
+			m_FriendsPlayingFilter.Disable();
 		#endif
 		
 		#ifdef PLATFORM_WINDOWS
@@ -57,9 +55,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 				m_VersionMatchFilter		= new OptionSelector( root.FindAnyWidget( "ver_match_setting_option" ), 0, this, false );
 				m_ThirdPersonFilter			= new OptionSelector( root.FindAnyWidget( "tps_setting_option" ), 0, this, false );
 				m_PublicFilter				= new OptionSelector( root.FindAnyWidget( "public_setting_option" ), 0, this, false );
-				m_CharacterAliveFilter.Disable();
-				m_VersionMatchFilter.Disable();
-				m_ThirdPersonFilter.Disable();
+				m_AcceleratedTimeFilter		= new OptionSelector( root.FindAnyWidget( "accelerated_time_setting_option" ), 0, this, false );
 			#endif
 		#endif
 		LoadFilters();
@@ -83,7 +79,6 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 			m_FriendsPlayingFilter.SetStringOption( options.Get( "m_FriendsPlayingFilter" ) );
 			m_PreviouslyPlayedFilter.SetStringOption( options.Get( "m_PreviouslyPlayedFilter" ) );
 			m_FullServerFilter.SetStringOption( options.Get( "m_FullServerFilter" ) );
-			m_AcceleratedTimeFilter.SetStringOption( options.Get( "m_AcceleratedTimeFilter" ) );
 			
 			#ifdef PLATFORM_CONSOLE
 				m_SortingFilter.SetStringOption( options.Get( "m_SortingFilter" ) );
@@ -101,6 +96,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 						m_VersionMatchFilter.SetStringOption( options.Get( "m_VersionMatchFilter" ) );
 						m_ThirdPersonFilter.SetStringOption( options.Get( "m_ThirdPersonFilter" ) );
 						m_PublicFilter.SetStringOption( options.Get( "m_PublicFilter" ) );
+						m_AcceleratedTimeFilter.SetStringOption( options.Get( "m_AcceleratedTimeFilter" ) );
 					#endif
 				#endif
 			}
@@ -117,7 +113,6 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		options.Insert( "m_FriendsPlayingFilter", m_FriendsPlayingFilter.GetStringValue() );
 		options.Insert( "m_PreviouslyPlayedFilter", m_PreviouslyPlayedFilter.GetStringValue() );
 		options.Insert( "m_FullServerFilter", m_FullServerFilter.GetStringValue() );
-		options.Insert( "m_AcceleratedTimeFilter", m_AcceleratedTimeFilter.GetStringValue() );
 		
 		#ifdef PLATFORM_CONSOLE
 			options.Insert( "m_SortingFilter", m_SortingFilter.GetStringValue() );
@@ -133,6 +128,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 				options.Insert( "m_VersionMatchFilter", m_VersionMatchFilter.GetStringValue() );
 				options.Insert( "m_ThirdPersonFilter", m_ThirdPersonFilter.GetStringValue() );
 				options.Insert( "m_PublicFilter", m_PublicFilter.GetStringValue() );
+				options.Insert( "m_AcceleratedTimeFilter", m_AcceleratedTimeFilter.GetStringValue() );
 			#endif
 		#endif
 		string data = JsonFileLoader<ref map<string, string>>.JsonMakeData( options );
@@ -147,7 +143,6 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		m_FriendsPlayingFilter.Reset();
 		m_PreviouslyPlayedFilter.Reset();
 		m_FullServerFilter.Reset();
-		m_AcceleratedTimeFilter.Reset();
 		
 		#ifdef PLATFORM_CONSOLE
 			m_SortingFilter.Reset();
@@ -155,7 +150,6 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		
 		#ifdef PLATFORM_WINDOWS
 			#ifndef PLATFORM_CONSOLE
-				
 				m_SearchByName.SetText( "" );
 				m_SearchByIP.SetText( "" );
 				m_CharacterAliveFilter.Reset();
@@ -164,6 +158,7 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 				m_VersionMatchFilter.Reset();
 				m_ThirdPersonFilter.Reset();
 				m_PublicFilter.Reset();
+				m_AcceleratedTimeFilter.Reset();
 			#endif
 		#endif
 	}
@@ -251,14 +246,19 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 		}
 		if( m_FriendsPlayingFilter.IsSet() )
 		{
-			//Character filter
+			#ifdef PLATFORM_WINDOWS
+				input.SetFriendsPlaying( m_FriendsPlayingFilter.IsEnabled() );
+			#endif
 		}
 		if( m_PreviouslyPlayedFilter.IsSet() )
 		{
-			//Character filter
+			#ifdef PLATFORM_WINDOWS
+				input.SetPreviouslyPlayed( m_PreviouslyPlayedFilter.IsEnabled() );
+			#endif
 		}
 		if( m_FullServerFilter.IsSet() )
 		{
+			input.SetFullServer( m_FullServerFilter.IsEnabled() );
 			if( m_FullServerFilter.IsEnabled() )
 			{
 				input.SetFreeSlotsMax( 1 );
@@ -267,10 +267,6 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 			{
 				input.SetFreeSlotsMin( 1 );
 			}
-		}
-		if( m_AcceleratedTimeFilter.IsSet() )
-		{
-			//Character filter
 		}
 		
 		#ifdef PLATFORM_WINDOWS
@@ -300,23 +296,18 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 						#endif
 					}
 				}
-				if( m_PublicFilter.IsSet() )
-				{
-					input.SetPublic();
-				}
 				if( m_CharacterAliveFilter.IsSet() )
 				{
 					//Character filter
 				}
 				if( m_ThirdPersonFilter.IsSet() )
 				{
-					//Character filter
+					input.SetModeIdFilter( m_ThirdPersonFilter.IsEnabled() );
+					input.SetThirdPerson( m_ThirdPersonFilter.IsEnabled() );
 				}
 				if( m_VersionMatchFilter.IsSet() )
 				{
-					string version;
-					GetGame().GetVersion( version );
-					input.SetGameVersionFilter( version );
+					input.SetProperVersionMatch( m_VersionMatchFilter.IsEnabled() );
 				}
 				if( m_PasswordFilter.IsSet() )
 				{
@@ -325,6 +316,14 @@ class ServerBrowserFilterContainer extends ScriptedWidgetEventHandler
 				if( m_BattleyeFilter.IsSet() )
 				{
 					input.SetAntiCheatFilter( m_BattleyeFilter.IsEnabled() );
+				}
+				if( m_PublicFilter.IsSet() )
+				{
+					input.SetPublic( m_PublicFilter.IsEnabled() );
+				}
+				if( m_AcceleratedTimeFilter.IsSet() )
+				{
+					input.SetAcceleratedTime( m_AcceleratedTimeFilter.IsEnabled() );
 				}
 			#endif
 		#endif

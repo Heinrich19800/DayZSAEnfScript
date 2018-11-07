@@ -110,6 +110,15 @@ class DayZPlayerCamera3rdPersonVehicle extends DayZPlayerCameraBase
 		super.OnUpdate(pDt, pOutResult);
 	}	
 
+	override vector GetBaseAngles()
+	{
+		vector a;
+		a[0] = m_fUpDownAngle;
+		a[1] = m_fLeftRightAngle;
+		a[2] = m_fUpDownAngleAdd;
+		return a;
+	}
+
 	//! runtime config
 	protected 	vector  m_CameraOffsetMS;	//!< model space offset
 	protected 	float 	m_fDistance;		//!< distance from start

@@ -563,6 +563,7 @@ FrameWidgetClass server_browser_tab_root {
      }
     }
     GridSpacerWidgetClass filters_content {
+     visible 1
      ignorepointer 1
      size 1 0.6
      hexactpos 1
@@ -756,6 +757,7 @@ FrameWidgetClass server_browser_tab_root {
        }
       }
       FrameWidgetClass restrict_char_setting_container {
+       visible 0
        ignorepointer 0
        position 0 0
        size 1 30
@@ -831,6 +833,7 @@ FrameWidgetClass server_browser_tab_root {
        }
       }
       ButtonWidgetClass region_setting_container {
+       visible 0
        position 0 0
        size 1 30
        hexactpos 1
@@ -1733,33 +1736,33 @@ FrameWidgetClass server_browser_tab_root {
         }
        }
       }
-      ButtonWidgetClass refresh_list_button {
-       ignorepointer 0
-       position 0 0
-       size 1 30
-       hexactpos 1
-       vexactpos 1
-       hexactsize 0
-       vexactsize 1
-       style Empty
-       text "#STR_server_browser_tab_root_filters_root_filters_content_refresh_list_button0"
-       text_proportion 0.55
-       font "gui/fonts/sdf_MetronLight24"
-      }
-      ButtonWidgetClass apply_filter_button {
-       ignorepointer 0
-       position 0 0
-       size 1 30
-       hexactpos 1
-       vexactpos 1
-       hexactsize 0
-       vexactsize 1
-       style Empty
-       text "#STR_server_browser_tab_root_filters_root_filters_content_apply_filter_button0"
-       text_proportion 0.55
-       font "gui/fonts/sdf_MetronLight24"
-      }
      }
+    }
+    ButtonWidgetClass apply_filter_button {
+     ignorepointer 0
+     position 0 0
+     size 1 30
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     style Empty
+     text "#STR_server_browser_tab_root_filters_root_filters_content_apply_filter_button0"
+     text_proportion 0.55
+     font "gui/fonts/sdf_MetronLight24"
+    }
+    ButtonWidgetClass refresh_list_button {
+     ignorepointer 0
+     position 0 0
+     size 1 30
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     style Empty
+     text "#STR_server_browser_tab_root_filters_root_filters_content_refresh_list_button0"
+     text_proportion 0.55
+     font "gui/fonts/sdf_MetronLight24"
     }
    }
   }

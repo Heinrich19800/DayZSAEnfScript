@@ -43,6 +43,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
      {
       ImageWidgetClass favorite_image {
        visible 1
+       clipchildren 0
        ignorepointer 1
        size 20 20
        halign center_ref
@@ -60,6 +61,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
       }
       ImageWidgetClass unfavorite_image {
        visible 0
+       clipchildren 0
        ignorepointer 1
        size 20 20
        halign center_ref
@@ -88,6 +90,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
      {
       ImageWidgetClass expand_image {
        visible 1
+       clipchildren 0
        ignorepointer 1
        size 20 20
        halign center_ref
@@ -105,6 +108,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
       }
       ImageWidgetClass collapse_image {
        visible 0
+       clipchildren 0
        ignorepointer 1
        size 20 20
        halign center_ref
@@ -134,6 +138,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
      {
       ImageWidgetClass player_icon {
        visible 1
+       clipchildren 0
        ignorepointer 1
        size 20 20
        halign center_ref
@@ -164,6 +169,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
      {
       ImageWidgetClass lock_icon {
        visible 0
+       clipchildren 0
        ignorepointer 1
        size 20 20
        halign center_ref
@@ -208,6 +214,7 @@ GridSpacerWidgetClass server_browser_list_entry_root {
      }
     }
     FrameWidgetClass server_time_panel {
+     clipchildren 0
      ignorepointer 1
      position 0 0
      size 30 30
@@ -217,8 +224,9 @@ GridSpacerWidgetClass server_browser_list_entry_root {
      vexactsize 1
      {
       ImageWidgetClass server_time {
+       clipchildren 0
        ignorepointer 1
-       size 23 24
+       size 20 20
        halign center_ref
        valign center_ref
        hexactpos 1
@@ -226,8 +234,10 @@ GridSpacerWidgetClass server_browser_list_entry_root {
        hexactsize 1
        vexactsize 1
        image0 "set:dayz_gui image:icon_sun_accel"
-       mode additive
+       mode blend
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
        filter 1
       }
      }
@@ -312,20 +322,32 @@ GridSpacerWidgetClass server_browser_list_entry_root {
     }
    }
   }
-  FrameWidgetClass detailed_info {
+  GridSpacerWidgetClass detailed_info {
    visible 0
    ignorepointer 1
    position 0 0
-   size 0.8 60
+   size 1 60
    hexactpos 1
    vexactpos 1
    hexactsize 0
    vexactsize 1
+   Padding 0
+   Margin 0
+   "Size To Content H" 1
+   Rows 1
    {
+    FrameWidgetClass spacer_left {
+     position 0 0
+     size 140 1
+     hexactpos 1
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+    }
     FrameWidgetClass detail_info_panel {
      ignorepointer 1
-     position 140 0
-     size 0.7 1
+     position 0 0
+     size 1 1
      hexactpos 1
      vexactpos 1
      hexactsize 0
@@ -583,6 +605,27 @@ GridSpacerWidgetClass server_browser_list_entry_root {
          "text valign" center
         }
        }
+      }
+     }
+    }
+    FrameWidgetClass spacer_right {
+     position 0 0
+     size 370 1
+     hexactpos 0
+     vexactpos 1
+     hexactsize 1
+     vexactsize 0
+     {
+      TextWidgetClass server_acceleration_text {
+       position 0 0
+       size 30 30
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       font "gui/fonts/sdf_MetronLight24"
+       "exact text" 1
+       "exact text size" 16
       }
      }
     }

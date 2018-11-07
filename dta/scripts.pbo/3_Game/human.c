@@ -778,6 +778,16 @@ class HumanCommandWeapons
 
 
 	//----------------------------------------------------
+	// 
+
+	//! returns base aiming angle UD - without sway/offsets/...
+	proto native float 			GetBaseAimingAngleUD();
+
+	//! returns base aiming angle LR - without sway/offsets/...
+	proto native float 			GetBaseAimingAngleLR();
+
+
+	//----------------------------------------------------
 	// debug copy 
 
 	//! return -1 when there is no event, otherwise it returns pId of event from animation 

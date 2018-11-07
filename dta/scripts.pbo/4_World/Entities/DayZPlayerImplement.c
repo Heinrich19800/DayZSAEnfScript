@@ -228,6 +228,13 @@ class DayZPlayerImplement extends DayZPlayer
 		return 0;
 	}
 	
+	override void EEKilled( Object killer )
+	{
+		DayZPlayerSyncJunctures.SendDeath(this, -1, 0);
+		
+		super.EEKilled(killer);
+	}
+	
 	static const int DEAD_SCREEN_DELAY = 1000; //ms
 	static const float DEFAULT_DYING_TIME = 2.5; //s
 	static const float DYING_PROGRESSION_TIME = 0.05; //s
@@ -600,6 +607,8 @@ class DayZPlayerImplement extends DayZPlayer
 	bool m_DamageHitFullbody = false;
 	int m_DamageHitAnimType = -1;
 	float m_DamageHitDir = 0;
+	bool m_TransportHitRegistered = false;
+	vector m_TransportHitVelocity;
 
 	bool HandleDamageHit(int pCurrentCommandID)
 	{
@@ -625,8 +634,13 @@ class DayZPlayerImplement extends DayZPlayer
 	//! selects animation type and direction based on damage system data
 	bool EvaluateDeathAnimation(int pDamageType, EntityAI pSource, string pAmmoType, out int pAnimType, out float pAnimHitDir)
 	{
+		//! 
+		bool doPhxImpulse = GetGame().ConfigGetInt("cfgAmmo " + pAmmoType + " doPhxImpulse") > 0;
+
 		//! anim type (-1 = default)
 		pAnimType = -1;		
+		if( doPhxImpulse )
+			pAnimType = 10;
 
 		//! direction
 		vector targetDirection = GetDirection();
@@ -683,7 +697,11 @@ class DayZPlayerImplement extends DayZPlayer
 			case 2: // DT_EXPLOSION
 			break;
 			case 3: // DT_CUSTOM (used by Fall Damage)
-				return false; //! skip evaluation of dmg hit animation
+				pAnimType = GetGame().ConfigGetInt("cfgAmmo " + pAmmoType + " hitAnimation");
+				if( pAnimType == 1 )
+					pAnimHitFullbody = true;
+				else
+					return false; //! skip evaluation of dmg hit animation
 			break;
 		}
 
@@ -708,12 +726,35 @@ class DayZPlayerImplement extends DayZPlayer
 
 		return true;
 	}
+	
+	void RegisterTransportHit(Transport transport)
+	{
+		if( !m_TransportHitRegistered )
+		{
+			m_TransportHitRegistered = true;
+			
+			// compute impulse & damage 
+			m_TransportHitVelocity = GetVelocity(transport);
+			float damage = 10 * m_TransportHitVelocity.Length();
+			//Print("Transport damage: " + damage.ToString());
+			
+			vector impulse = 40 * m_TransportHitVelocity;
+			impulse[1] = 40 * 1.5;
+			//Print("Impulse: " + impulse.ToString());
+			
+			dBodyApplyImpulse(this, impulse);
+			
+			ProcessDirectDamage( 3, transport, "", "TransportHit", "0 0 0", damage );
+		}
+	}
 
 	//! event from damage system
 	override void EEHitBy(TotalDamageResult damageResult, int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos)
 	{
 		super.EEHitBy(damageResult, damageType, source, component, dmgZone, ammo, modelPos);
 
+		m_TransportHitRegistered = false;
+		
 		if( !IsAlive() )
 		{
 			int animTypeDeath;
@@ -722,6 +763,7 @@ class DayZPlayerImplement extends DayZPlayer
 			{
 				DayZPlayerSyncJunctures.SendDeath(this, animTypeDeath, animHitDirDeath);
 			}
+			dBodySetInteractionLayer(this, PhxInteractionLayers.AI_NO_COLLISION);
 		}
 		else
 		{
@@ -2354,4 +2396,25 @@ class DayZPlayerImplement extends DayZPlayer
 		PPEffects.OverrideDOF(false,0,0,0,0,0);
 		PPEffects.SetBlurOptics(0);
 	}*/
+	
+	
+	//-------------------------------------------------------------
+	//!
+	//! Phx contact event
+	//! 
+	
+	override private void EOnContact(IEntity other, Contact extra)
+	{
+		if( !IsAlive() )
+			return;
+		
+		Transport transport = Transport.Cast(other);
+		if( transport )
+		{
+			if ( GetGame().IsServer() || !GetGame().IsMultiplayer() )
+			{
+				RegisterTransportHit(transport);
+			}			
+		}
+	}
 }
