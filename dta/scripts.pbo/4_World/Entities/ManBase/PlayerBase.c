@@ -188,6 +188,7 @@ class PlayerBase extends ManBase
 		m_CancelAction = false;
 		m_RecipePick = 0;
 		m_ActionQBControl = false;
+		m_QuickBarHold = false;
 		
 		m_AnalyticsTimer = new Timer( CALL_CATEGORY_SYSTEM );
 		
@@ -1040,11 +1041,21 @@ class PlayerBase extends ManBase
 	
 	void PlacingCancelServer()
 	{
-		if( IsPlacingServer() )
+		EntityAI entity_in_hands = GetHumanInventory().GetEntityInHands();
+		
+		if ( IsPlacingServer() )
 		{
 			GetHologramServer().GetParentEntity().OnPlacementCancelled( this );
 			
 			delete m_HologramServer;
+		}
+		
+		if ( entity_in_hands && entity_in_hands.HasEnergyManager() )
+		{
+			if ( entity_in_hands.GetCompEM().IsPlugged() )
+			{
+				entity_in_hands.OnPlacementCancelled( this );
+			}	
 		}
 	}
 	
@@ -2109,7 +2120,7 @@ class PlayerBase extends ManBase
 		if(!GetStaminaHandler()) return false;
 		
 		//TODO REDO
-		return (GetStaminaHandler().HasEnoughStaminaFor(consumer) && !IsOverloaded() && !IsRestrained() && !IsInFBEmoteState());
+		return (GetStaminaHandler().HasEnoughStaminaFor(consumer) && !IsOverloaded() && !IsRestrained() && !IsInFBEmoteState() && !IsRaised());
 	}
 	
 	// -------------------------------------------------------------------------
@@ -2232,32 +2243,31 @@ class PlayerBase extends ManBase
 				if( amc.CanPerformActionFromQuickbar(itemInHands, quickBarItem) )
 				{
 					amc.PerformActionFromQuickbar(itemInHands, quickBarItem);
-				
 				}
 				else
 				{
 					if( IsRaised() || GetCommand_Melee() )
 						return;
 					
-					m_QuickBarHold = true;
 					amc.ForceTarget(quickBarItem);
 				}
+				m_QuickBarHold = true;
 			}
 		}
 	}
 	//---------------------------------------------------------
 	void OnQuickBarContinuousUseEnd(int slotClicked)
 	{
-		if(m_ActionQBControl)
+		if ( m_QuickBarHold )
 		{
-			GetActionManager().OnContinuousCancel();
-		}
-		else
-		{
-			if(  GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )
+			if (m_ActionQBControl)
+			{
+				GetActionManager().OnContinuousCancel();
+			}
+			else if (  GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )
 			{
 				ActionManagerClient mngr;
-				if( Class.CastTo(mngr, GetActionManager()) && m_QuickBarHold )	
+				if( Class.CastTo(mngr, GetActionManager()) )	
 				{
 					mngr.ClearForceTarget();
 				}
