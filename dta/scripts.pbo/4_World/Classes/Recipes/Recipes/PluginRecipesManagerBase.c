@@ -61,7 +61,7 @@ class PluginRecipesManagerBase extends PluginBase
 		RegisterRecipe(new CraftSalineBagIV);
 		RegisterRecipe(new PurifyWater);
 		RegisterRecipe(new CraftBloodBagIV);
-		RegisterRecipe(new CraftCamoNetShelter);
+		//RegisterRecipe(new CraftCamoNetShelter);
 		RegisterRecipe(new DeCraftCamoNetShelter);
 		RegisterRecipe(new FuelChainsaw);
 		RegisterRecipe(new CraftFireplace);

@@ -1674,10 +1674,15 @@ class PlayerBase extends ManBase
 		}
 		if (m_StaminaHandler && hic)
 		{
-			if ( !CanConsumeStamina(EStaminaConsumers.SPRINT) )
+			//! SPRINT: enable/disable - based on stamina; disable also when raised
+			if ( !CanConsumeStamina(EStaminaConsumers.SPRINT) || IsRaised() )
+			{
 				hic.LimitsDisableSprint(true);
+			}
 			else
+			{
 				hic.LimitsDisableSprint(false);
+			}
 		}
 		//OnScheduledTick(pDt);
 		
@@ -2120,7 +2125,7 @@ class PlayerBase extends ManBase
 		if(!GetStaminaHandler()) return false;
 		
 		//TODO REDO
-		return (GetStaminaHandler().HasEnoughStaminaFor(consumer) && !IsOverloaded() && !IsRestrained() && !IsInFBEmoteState() && !IsRaised());
+		return (GetStaminaHandler().HasEnoughStaminaFor(consumer) && !IsOverloaded() && !IsRestrained() && !IsInFBEmoteState());
 	}
 	
 	// -------------------------------------------------------------------------
@@ -3296,7 +3301,7 @@ class PlayerBase extends ManBase
 			ItemBase item = g_Game.GetPlayer().CreateInInventory("Consumable_GardenLime", "cargo_weapon");
 		@endcode
 	*/
-	ItemBase CopyInventoryItem( ItemBase orig_item )
+	/*ItemBase CopyInventoryItem( ItemBase orig_item )
 	{
 		ItemBase item = ItemBase.Cast( GetInventory().CreateInInventory( orig_item.GetType() ) );
 		if ( item == NULL )
@@ -3311,7 +3316,49 @@ class PlayerBase extends ManBase
 		item.SetHealth( "", "", orig_item.GetHealth("", "") );
 
 		return item;
+	}*/
+	
+	ItemBase CreateCopyOfItemInInventory ( ItemBase src )
+	{
+		InventoryLocation loc = new InventoryLocation;
+		string t = src.GetType();
+		if (GetInventory().FindFirstFreeLocationForNewEntity(t, FindInventoryLocationType.CARGO | FindInventoryLocationType.ATTACHMENT, loc))
+		{
+			bool locked = GetGame().HasInventoryJunctureDestination(this, loc);
+			if (locked)
+			{
+				Print("Warning: Split: CreateCopyOfItemInInventory - Cannot create entity at locked inventory at loc=" + loc.DumpToString());
+				return null;
+			}
+			ItemBase dst = ItemBase.Cast( GetInventory().LocationCreateLocalEntity(loc, t) );
+			if (dst)
+			{
+				MiscGameplayFunctions.TransferItemProperties(src, dst);
+
+				GetGame().RemoteObjectTreeCreate(dst);
+				
+				Print("CreateCopyOfItemInInventory - created " + dst.GetName() + " at loc=" + loc.DumpToString());
+			}
+			return dst;
+		}
+		return NULL;
 	}
+	
+	ItemBase CreateCopyOfItemInInventoryOrGround ( ItemBase src )
+	{
+		ItemBase dst = CreateCopyOfItemInInventory(src);
+		if (!dst)
+		{
+			Print("CreateCopyOfItemInInventoryOrGround - cannot create in inv, creating on gnd");
+			//new_item = GetGame().CreateObject(this.GetType(), this.GetPosition() + "1 0 0" );
+			dst = ItemBase.Cast(SpawnEntityOnGroundPos(src.GetType(), this.GetPosition()));
+			dst.PlaceOnSurface();
+			MiscGameplayFunctions.TransferItemProperties(src, dst);
+		}
+		return dst;
+	}
+
+
 
 	// -------------------------------------------------------------------------
 	/**
