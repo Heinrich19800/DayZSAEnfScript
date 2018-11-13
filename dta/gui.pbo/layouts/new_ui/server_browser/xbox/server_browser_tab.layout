@@ -369,7 +369,6 @@ FrameWidgetClass server_browser_tab_root {
    "Size To Content H" 1
    "Size To Content V" 1
    Columns 1
-   Rows 2
    {
     PanelWidgetClass filters_header {
      ignorepointer 1
@@ -1040,6 +1039,21 @@ FrameWidgetClass server_browser_tab_root {
        }
       }
      }
+    }
+    TextWidgetClass unapplied_filters_notify {
+     visible 0
+     position 0 0
+     size 1 30
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     text "#server_browser_filters_changed_console"
+     font "gui/fonts/sdf_MetronLight24"
+     "exact text" 1
+     "exact text size" 20
+     "text halign" center
+     "text valign" center
     }
    }
   }

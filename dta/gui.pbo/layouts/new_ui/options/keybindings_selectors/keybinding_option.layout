@@ -1,11 +1,11 @@
-ButtonWidgetClass container {
+FrameWidgetClass container {
+ ignorepointer 1
  position 0 0
  size 1 30
  hexactpos 1
  vexactpos 1
  hexactsize 0
  vexactsize 1
- style Colorable
  {
   GridSpacerWidgetClass setting {
    ignorepointer 1
@@ -25,7 +25,7 @@ ButtonWidgetClass container {
     FrameWidgetClass setting_panel {
      ignorepointer 1
      position 0 0
-     size 0.5 0.6
+     size 0.3 0.6
      hexactpos 1
      vexactpos 1
      hexactsize 0
@@ -33,7 +33,22 @@ ButtonWidgetClass container {
      {
       TextWidgetClass setting_label {
        ignorepointer 1
-       size 1 0.6
+       size 0.7 0.6
+       valign center_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 0
+       font "gui/fonts/sdf_MetronLight24"
+       "text offset" 8 0
+       "exact text" 0
+       "exact text size" 18
+       "text valign" center
+      }
+      TextWidgetClass modifier_label {
+       ignorepointer 1
+       size 0.3 0.6
+       halign right_ref
        valign center_ref
        hexactpos 1
        vexactpos 1
@@ -50,11 +65,40 @@ ButtonWidgetClass container {
     FrameWidgetClass setting_option {
      ignorepointer 1
      position 0 0
-     size 0.5 1
+     size 0.7 1
      hexactpos 1
      vexactpos 1
      hexactsize 0
      vexactsize 0
+     {
+      ButtonWidgetClass kb_bind {
+       position 0 0
+       size 0.5 1
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 0
+       style MainMenu
+       "no focus" 1
+       text_proportion 0.55
+       text_halign left
+       font "gui/fonts/sdf_MetronBook24"
+      }
+      ButtonWidgetClass console_bind {
+       visible 1
+       size 0.5 1
+       halign right_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 0
+       vexactsize 0
+       style MainMenu
+       "no focus" 1
+       text_proportion 0.55
+       text_halign left
+       font "gui/fonts/sdf_MetronBook24"
+      }
+     }
     }
    }
   }
@@ -69,6 +113,7 @@ ButtonWidgetClass container {
    hexactsize 0
    vexactsize 0
    style rover_sim_colorable
+   "no focus" 1
   }
  }
 }

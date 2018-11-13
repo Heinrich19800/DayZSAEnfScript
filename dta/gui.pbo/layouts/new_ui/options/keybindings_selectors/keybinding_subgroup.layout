@@ -1,4 +1,4 @@
-WrapSpacerWidgetClass group {
+WrapSpacerWidgetClass subgroup {
  position 0 0
  size 1 0
  hexactpos 1
@@ -10,7 +10,7 @@ WrapSpacerWidgetClass group {
  "Size To Content H" 1
  "Size To Content V" 1
  {
-  PanelWidgetClass group_header {
+  PanelWidgetClass subgroup_header {
    visible 1
    ignorepointer 1
    color 0 0 0 0.9608
@@ -22,8 +22,9 @@ WrapSpacerWidgetClass group {
    vexactsize 1
    style rover_sim_colorable
    {
-    TextWidgetClass group_text {
+    TextWidgetClass subgroup_text {
      visible 1
+     clipchildren 0
      ignorepointer 1
      position 0 0
      size 1 22
@@ -33,14 +34,14 @@ WrapSpacerWidgetClass group {
      hexactsize 0
      vexactsize 1
      style Normal
-     font "gui/fonts/sdf_MetronLight72"
+     font "gui/fonts/sdf_MetronLight24"
+     "text offset" 20 0
      "exact text" 0
-     "text halign" center
      "text valign" center
     }
    }
   }
-  WrapSpacerWidgetClass group_content {
+  WrapSpacerWidgetClass subgroup_content {
    ignorepointer 1
    color 0 0 0 0.8627
    position 0 0

@@ -414,11 +414,11 @@ FrameWidgetClass HudFrameWidget {
    hexactsize 0
    vexactsize 0
    {
-    GridSpacerWidgetClass BadgesPanel {
+    FrameWidgetClass BadgesPanel {
      visible 1
      clipchildren 0
      position 260 49
-     size 161 32
+     size 162 32
      halign right_ref
      valign bottom_ref
      hexactpos 1
@@ -426,14 +426,8 @@ FrameWidgetClass HudFrameWidget {
      hexactsize 1
      vexactsize 1
      fixaspect fixwidth
+     priority 100
      scriptclass ""
-     style Colorable
-     Padding 0
-     Margin 0
-     "Size To Content H" 1
-     "Size To Content V" 1
-     Columns 5
-     Rows 1
      {
       ImageWidgetClass Stomach {
        visible 1
@@ -533,10 +527,10 @@ FrameWidgetClass HudFrameWidget {
       }
      }
     }
-    GridSpacerWidgetClass NotifiersPanel {
+    FrameWidgetClass NotifiersPanel {
      visible 1
      position 0 0
-     size 250 130
+     size 260 130
      halign right_ref
      valign bottom_ref
      hexactpos 1
@@ -545,12 +539,6 @@ FrameWidgetClass HudFrameWidget {
      vexactsize 1
      fixaspect fixwidth
      priority 100
-     style Colorable
-     Padding 0
-     Margin 0
-     "Size To Content V" 1
-     Columns 6
-     Rows 1
      {
       PanelWidgetClass Health {
        clipchildren 1
@@ -2731,6 +2719,7 @@ FrameWidgetClass HudFrameWidget {
      vexactpos 1
      hexactsize 0
      vexactsize 0
+     priority 100
      Padding 10
      Margin 0
      content_valign bottom

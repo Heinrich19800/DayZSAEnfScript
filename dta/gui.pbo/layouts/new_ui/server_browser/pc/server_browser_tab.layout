@@ -1738,6 +1738,31 @@ FrameWidgetClass server_browser_tab_root {
       }
      }
     }
+    TextWidgetClass unapplied_filters_notify {
+     visible 0
+     position 0 0
+     size 1 30
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+     text "#server_browser_filters_changed"
+     font "gui/fonts/sdf_MetronLight24"
+     "exact text" 0
+     "exact text size" 20
+     text_proportion 0.55
+     "text halign" center
+     "text valign" center
+    }
+    FrameWidgetClass spacer {
+     visible 1
+     position 0 0
+     size 1 10
+     hexactpos 1
+     vexactpos 1
+     hexactsize 0
+     vexactsize 1
+    }
     ButtonWidgetClass apply_filter_button {
      ignorepointer 0
      position 0 0
