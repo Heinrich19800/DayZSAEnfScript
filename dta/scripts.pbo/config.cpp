@@ -1236,7 +1236,7 @@ class CfgSlots
 		name="Material_L1_WoodenLogs";
 		displayName="Wooden logs";
 		selection="Material_L1_WoodenLogs";
-		ghostIcon="planks";
+		ghostIcon="firewood";
 		stackMax=4;
 	};
 	class Slot_Material_L1_Nails
@@ -1321,7 +1321,7 @@ class CfgSlots
 		name="Material_L2_WoodenLogs";
 		displayName="Wooden logs";
 		selection="Material_L2_WoodenLogs";
-		ghostIcon="planks";
+		ghostIcon="firewood";
 		stackMax=4;
 	};
 	class Slot_Material_L2_Nails
@@ -1406,7 +1406,7 @@ class CfgSlots
 		name="Material_L3_WoodenLogs";
 		displayName="Wooden logs";
 		selection="Material_L3_WoodenLogs";
-		ghostIcon="planks";
+		ghostIcon="firewood";
 		stackMax=4;
 	};
 	class Slot_Material_L3_Nails
@@ -1512,7 +1512,7 @@ class CfgSlots
 		name="Material_WoodenLogs";
 		displayName="Wooden logs";
 		selection="Material_WoodenLogs";
-		ghostIcon="planks";
+		ghostIcon="firewood";
 		stackMax=2;
 	};
 	class Slot_Material_MetalWire

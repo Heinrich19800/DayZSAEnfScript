@@ -6091,6 +6091,17 @@ class CfgVideoOptions
 		resultLimits[]={300,150,120,90,0};
 	};
 };
+class CfgLanguages
+{
+	class Original
+	{
+		name="Original";
+	};
+	class English
+	{
+		name="$STR_LANG_ENGLISH";
+	};
+};
 class CfgSurfaceCharacters
 {
 	class Empty
@@ -6484,9 +6495,6 @@ class UserActionsConflictGroups
 			"BuldRotationZAxisMod",
 			"BuldCoordModCycle",
 			"BuldResetCamera",
-			"BuldMagnetizePoints",
-			"BuldMagnetizePlanes",
-			"BuldMagnetizeYFixed",
 			"BuldSampleTerrainHeight",
 			"BuldSetTerrainHeight",
 			"BuldScaleMod",
@@ -6517,8 +6525,6 @@ class UserActionsConflictGroups
 			"BuldViewerMoveBack",
 			"BuldViewerMoveUp",
 			"BuldViewerMoveDown",
-			"BuldViewerLookLeft",
-			"BuldViewerLookRight",
 			"BuldMoveLeft",
 			"BuldMoveRight",
 			"BuldMoveForward",
@@ -7257,9 +7263,6 @@ class UserActionGroups
 			"BuldRotationZAxisMod",
 			"BuldCoordModCycle",
 			"BuldResetCamera",
-			"BuldMagnetizePoints",
-			"BuldMagnetizePlanes",
-			"BuldMagnetizeYFixed",
 			"BuldSampleTerrainHeight",
 			"BuldSetTerrainHeight",
 			"BuldScaleMod",
@@ -7290,8 +7293,6 @@ class UserActionGroups
 			"BuldViewerMoveBack",
 			"BuldViewerMoveUp",
 			"BuldViewerMoveDown",
-			"BuldViewerLookLeft",
-			"BuldViewerLookRight",
 			"BuldMoveLeft",
 			"BuldMoveRight",
 			"BuldMoveForward",
@@ -13298,13 +13299,13 @@ class CfgWorlds
 			class ThunderboltNorm
 			{
 				model="\core\default\default.p3d";
-				soundNear[]=
+				soundSetNear[]=
 				{
 					"",
 					0.31622776,
 					1
 				};
-				soundFar[]=
+				soundSetFar[]=
 				{
 					"",
 					0.31622776,
@@ -13314,13 +13315,13 @@ class CfgWorlds
 			class ThunderboltHeavy
 			{
 				model="\core\default\default.p3d";
-				soundNear[]=
+				soundSetNear[]=
 				{
 					"",
 					0.31622776,
 					1
 				};
-				soundFar[]=
+				soundSetFar[]=
 				{
 					"",
 					0.31622776,

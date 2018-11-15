@@ -145,7 +145,7 @@ FrameWidgetClass server_browser_tab_root {
            hexactsize 1
            vexactsize 1
            {
-            ImageWidgetClass host_sort_asc {
+            ImageWidgetClass host_sort_dsc {
              visible 1
              ignorepointer 1
              size 20 20
@@ -159,7 +159,7 @@ FrameWidgetClass server_browser_tab_root {
              mode additive
              "src alpha" 1
             }
-            ImageWidgetClass host_sort_dsc {
+            ImageWidgetClass host_sort_asc {
              visible 0
              ignorepointer 1
              size 20 20
@@ -213,7 +213,7 @@ FrameWidgetClass server_browser_tab_root {
            hexactsize 1
            vexactsize 1
            {
-            ImageWidgetClass time_sort_asc {
+            ImageWidgetClass time_sort_dsc {
              visible 1
              ignorepointer 1
              size 20 20
@@ -227,7 +227,7 @@ FrameWidgetClass server_browser_tab_root {
              mode additive
              "src alpha" 1
             }
-            ImageWidgetClass time_sort_dsc {
+            ImageWidgetClass time_sort_asc {
              visible 0
              ignorepointer 1
              size 20 20
@@ -281,7 +281,7 @@ FrameWidgetClass server_browser_tab_root {
            hexactsize 1
            vexactsize 1
            {
-            ImageWidgetClass population_sort_asc {
+            ImageWidgetClass population_sort_dsc {
              visible 1
              ignorepointer 1
              size 20 20
@@ -295,7 +295,7 @@ FrameWidgetClass server_browser_tab_root {
              mode additive
              "src alpha" 1
             }
-            ImageWidgetClass population_sort_dsc {
+            ImageWidgetClass population_sort_asc {
              visible 0
              ignorepointer 1
              size 20 20
@@ -349,7 +349,7 @@ FrameWidgetClass server_browser_tab_root {
            hexactsize 1
            vexactsize 1
            {
-            ImageWidgetClass slots_sort_asc {
+            ImageWidgetClass slots_sort_dsc {
              visible 1
              ignorepointer 1
              size 20 20
@@ -363,7 +363,7 @@ FrameWidgetClass server_browser_tab_root {
              mode additive
              "src alpha" 1
             }
-            ImageWidgetClass slots_sort_dsc {
+            ImageWidgetClass slots_sort_asc {
              visible 0
              ignorepointer 1
              size 20 20
@@ -417,7 +417,7 @@ FrameWidgetClass server_browser_tab_root {
            hexactsize 1
            vexactsize 1
            {
-            ImageWidgetClass ping_sort_asc {
+            ImageWidgetClass ping_sort_dsc {
              visible 1
              ignorepointer 1
              size 20 20
@@ -431,7 +431,7 @@ FrameWidgetClass server_browser_tab_root {
              mode additive
              "src alpha" 1
             }
-            ImageWidgetClass ping_sort_dsc {
+            ImageWidgetClass ping_sort_asc {
              visible 0
              ignorepointer 1
              size 20 20

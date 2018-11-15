@@ -2371,7 +2371,6 @@ class CfgVehicles
 	{
 		scope=2;
 		displayName="$STR_CivilianSedan0";
-		InteractActions[]={};
 		model="\DZ\vehicles\wheeled\civiliansedan\CivilianSedan.p3d";
 		attachments[]=
 		{

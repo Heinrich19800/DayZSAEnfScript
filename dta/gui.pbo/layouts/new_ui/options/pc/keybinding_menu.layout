@@ -162,7 +162,7 @@ FrameWidgetClass keybindings_root {
    vexactsize 1
    priority 1
    style Normal
-   text "#layout_keybinding_desc"
+   text "#layout_pc_keybinding_desc"
    font "gui/fonts/sdf_MetronLight72"
    "text color" 0.8157 0.1255 0.7843 1
    "exact text" 0
