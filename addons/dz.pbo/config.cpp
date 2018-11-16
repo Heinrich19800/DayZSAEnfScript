@@ -2784,6 +2784,7 @@ class CfgVehicles
 		heatIsolation=0;
 		heatReduction=0;
 		coldReduction=0;
+		slopeLimit=0.050000001;
 		spawnDamageRange[]={0,0.60000002};
 		canBeSplit=0;
 		stackedUnit="pc.";

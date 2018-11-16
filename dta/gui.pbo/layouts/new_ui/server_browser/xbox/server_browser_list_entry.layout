@@ -9,7 +9,7 @@ ButtonWidgetClass server_browser_list_entry_root {
  vexactsize 1
  style Colorable
  "no focus" 0
- "next right" "favorites_button"
+ "next right" "sort_button"
  "next up" ""
  "next down" ""
  font "gui/fonts/sdf_MetronLight24"
