@@ -856,7 +856,7 @@ FrameWidgetClass main_menu_root {
        hexactsize 1
        vexactsize 1
        style Normal
-       text "layout_xbox_trial_main_header_newsfeed_text1"
+       text "#layout_xbox_trial_main_header_newsfeed_text1"
        font "gui/fonts/sdf_MetronLight24"
        "exact text" 0
        "text halign" center

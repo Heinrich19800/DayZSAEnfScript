@@ -45,7 +45,8 @@ PanelWidgetClass players_info_panel_root {
    hexactsize 0
    vexactsize 0
    scriptclass ""
-   style 0
+   style blank
+   "Scrollbar V" 1
    {
     WrapSpacerWidgetClass Content {
      ignorepointer 1

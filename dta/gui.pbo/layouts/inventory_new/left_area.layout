@@ -13,7 +13,7 @@ PanelWidgetClass DropzoneX {
  scriptclass ""
  style dashed
  {
-  ScrollWidgetClass rootFrame {
+  ScrollWidgetClass Scroller {
    visible 1
    clipchildren 1
    ignorepointer 0

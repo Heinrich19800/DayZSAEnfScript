@@ -425,8 +425,8 @@ class CfgWorlds
 					sky[]={0.035999998,0.056000002,0.086999997};
 					skyAroundSun[]={0.035999998,0.056000002,0.086999997};
 					filmGrainIntensity=0.125;
-					desiredLuminanceCoef=-0.15000001;
-					desiredLuminanceCoefCloud=-0.15000001;
+					desiredLuminanceCoef=-0.12;
+					desiredLuminanceCoefCloud=-0.12;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -451,8 +451,8 @@ class CfgWorlds
 					sky[]={0.035999998,0.056000002,0.086999997};
 					skyAroundSun[]={0.1011,0.1063,0.092600003};
 					filmGrainIntensity=0.125;
-					desiredLuminanceCoef=-0.15000001;
-					desiredLuminanceCoefCloud=-0.15000001;
+					desiredLuminanceCoef=-0.12;
+					desiredLuminanceCoefCloud=-0.12;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -477,8 +477,8 @@ class CfgWorlds
 					sky[]={0.1,0.14,0.22};
 					skyAroundSun[]={0.3035,0.31900001,0.278};
 					filmGrainIntensity=0.125;
-					desiredLuminanceCoef=-0.15000001;
-					desiredLuminanceCoefCloud=-0.15000001;
+					desiredLuminanceCoef=-0.1;
+					desiredLuminanceCoefCloud=-0.1;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -503,8 +503,8 @@ class CfgWorlds
 					sky[]={0.15000001,0.20999999,0.34};
 					skyAroundSun[]={0.60390002,0.54110003,0.45089999};
 					filmGrainIntensity=0.125;
-					desiredLuminanceCoef=-0.15000001;
-					desiredLuminanceCoefCloud=-0.15000001;
+					desiredLuminanceCoef=-0.1;
+					desiredLuminanceCoefCloud=-0.1;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -529,8 +529,8 @@ class CfgWorlds
 					sky[]={0.15000001,0.20999999,0.34};
 					skyAroundSun[]={0.8039,0.54110003,0.45089999};
 					filmGrainIntensity=0.125;
-					desiredLuminanceCoef=-0.15000001;
-					desiredLuminanceCoefCloud=-0.15000001;
+					desiredLuminanceCoef=-0.1;
+					desiredLuminanceCoefCloud=-0.1;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
 					rayleigh[]={0,0,0};
@@ -552,16 +552,8 @@ class CfgWorlds
 					groundReflectionCloud[]={0,0,0};
 					bidirect[]={0,0,0};
 					bidirectCloud[]={0,0,0};
-					sky[]=
-					{
-						{0.15000001,0.20999999,0.34},
-						0.1
-					};
-					skyAroundSun[]=
-					{
-						{0.8039,0.54110003,0.45089999},
-						0.80000001
-					};
+					sky[]={0.15000001,0.20999999,0.34};
+					skyAroundSun[]={0.8039,0.54110003,0.45089999};
 					filmGrainIntensity=0.125;
 					desiredLuminanceCoef=-0.1;
 					desiredLuminanceCoefCloud=-0.1;
@@ -586,16 +578,8 @@ class CfgWorlds
 					groundReflectionCloud[]={0,0,0};
 					bidirect[]={0,0,0};
 					bidirectCloud[]={0,0,0};
-					sky[]=
-					{
-						{0.30000001,0.22499999,0.32699999},
-						1
-					};
-					skyAroundSun[]=
-					{
-						{0.93900001,0.54110003,0.2509},
-						1.8
-					};
+					sky[]={0.30000001,0.22499999,0.32699999};
+					skyAroundSun[]={0.93900001,0.54110003,0.2509};
 					filmGrainIntensity=0.125;
 					desiredLuminanceCoef=-0.050000001;
 					desiredLuminanceCoefCloud=-0.050000001;
@@ -754,7 +738,7 @@ class CfgWorlds
 					rayleigh[]={0,0,0};
 					mie[]={0,0,0};
 					cloudsColor[]={0,0,0};
-					swBrightness=2.25;
+					swBrightness=1.25;
 				};
 				class C_Day4
 				{
@@ -804,7 +788,7 @@ class CfgWorlds
 					rayleigh[]={0,0,0};
 					mie[]={0,0,0};
 					cloudsColor[]={0,0,0};
-					swBrightness=1.8;
+					swBrightness=0.80000001;
 				};
 				class C_Day8
 				{
@@ -854,7 +838,7 @@ class CfgWorlds
 					rayleigh[]={0,0,0};
 					mie[]={0,0,0};
 					cloudsColor[]={0,0,0};
-					swBrightness=1.5;
+					swBrightness=0.5;
 				};
 				class C_Day12
 				{
@@ -904,7 +888,7 @@ class CfgWorlds
 					rayleigh[]={0,0,0};
 					mie[]={0,0,0};
 					cloudsColor[]={0,0,0};
-					swBrightness=1.2;
+					swBrightness=0.2;
 				};
 				class C_Day16
 				{
@@ -974,12 +958,12 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.2,0.27000001,0.37},
+						{0.12,0.18000001,0.31999999},
 						11
 					};
 					ambientCloud[]=
 					{
-						{0.2,0.27000001,0.37},
+						{0.12,0.18000001,0.31999999},
 						11
 					};
 					groundReflection[]={0,0,0};
@@ -1024,12 +1008,12 @@ class CfgWorlds
 					};
 					ambient[]=
 					{
-						{0.2,0.27000001,0.37},
+						{0.12,0.18000001,0.31999999},
 						11.8
 					};
 					ambientCloud[]=
 					{
-						{0.2,0.27000001,0.37},
+						{0.12,0.18000001,0.31999999},
 						11.8
 					};
 					groundReflection[]={0,0,0};
