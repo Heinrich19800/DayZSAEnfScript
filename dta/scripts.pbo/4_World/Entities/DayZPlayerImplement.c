@@ -1161,7 +1161,7 @@ class DayZPlayerImplement extends DayZPlayer
 			m_CameraEyeZoom = true;
 			//Print("To EyeZoom " +  m_CameraEyeZoom.ToString());
 		}
-		else if (!hic.IsZoom() && m_CameraEyeZoom )
+		else if (input.GetActionUp(UAZoomIn, false) && m_CameraEyeZoom )
 		{
 			//Print("From EyeZoom " +  m_CameraEyeZoom.ToString());
 			m_CameraEyeZoom = false;
