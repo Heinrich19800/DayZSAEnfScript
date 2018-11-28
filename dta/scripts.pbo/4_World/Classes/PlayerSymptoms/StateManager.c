@@ -1,3 +1,9 @@
+enum AnimType 
+{
+	FULL_BODY = 1,
+	ADDITIVE,
+}
+
 enum SymptomIDs {
 
 	SYMPTOM_COUGH = 1,
@@ -10,6 +16,7 @@ enum SymptomIDs {
 	SYMPTOM_FEVERBLUR,
 	SYMPTOM_LAUGHTER,
 	SYMPTOM_UNCONSCIOUS,
+	SYMPTOM_FREEZE,
 };
 
 enum SymptomTypes 
@@ -37,11 +44,6 @@ class SymptomManager
 	ref array<ref Param> m_SymptomQueueServerDbgSecondary;
 	//ref array<string> m_SymptomQueueSecondaryServerDbg;
 
-	int m_AnimID;
-	int m_SymptomUID;
-	int m_StanceMask;
-	float m_Duration;
-	bool m_IsAnimSet;
 	int m_ActiveSymptomIndexPrimary = -1;
 	int m_CurrentCommandID;
 	
@@ -49,6 +51,8 @@ class SymptomManager
 	
 	bool m_ShowDebug = false;
 	bool m_ShowDebug2 = false;
+	
+	ref SmptAnimMetaBase m_AnimMeta;
 	
 	void Init()
 	{
@@ -60,6 +64,7 @@ class SymptomManager
 		RegisterSymptom(new FeverBlurSymptom);
 		RegisterSymptom(new BloodLoss);
 		RegisterSymptom(new LaughterSymptom);
+		RegisterSymptom(new FreezeSymptom);
 		
 	}
 
@@ -117,23 +122,6 @@ class SymptomManager
 		return m_Player;
 	}
 	
-	//! Removes all  Symptoms of a given type
-	/*
-	void RemoveSecondarySymptomsByType( int type )
-	{
-		for(int i = 0; i < m_SymptomQueueSecondary.Count(); i++)
-		{
-			int current_type = m_SymptomQueueSecondary.Get(i).GetType();
-			
-			if( current_type == type )
-			{
-				m_SymptomQueueSecondary.Get(i).Destroy();
-				i--;
-			}
-		}
-	}
-	*/
-	
 	void RegisterSymptom(SymptomBase Symptom)
 	{
 		Symptom.Init(this, m_Player,0);
@@ -147,14 +135,14 @@ class SymptomManager
 		
 		m_AvailableSymptoms.Insert(id, Symptom);
 		//PrintString("inserting id: "+ToString(id));
-		
-	
 	}
 
 	void OnAnimationFinished(int SYMPTOM_uid)
 	{
-		SymptomBase Symptom = GetSymptomByUID(SYMPTOM_uid);
-		if( Symptom ) Symptom.OnAnimationFinish();
+		if( m_AnimMeta )
+		{
+			m_AnimMeta.AnimFinished();
+		}
 	}
 	
 	int CreateUniqueID()
@@ -210,10 +198,33 @@ class SymptomManager
 		}
 		
 		UpdateActiveSymptoms(deltatime);
-		if(m_IsAnimSet) 
+		
+		if( m_AnimMeta )
 		{
-			PlayAnimation();
+			if( m_AnimMeta.IsDestroyReqested() )
+			{
+				m_AnimMeta = null;
+			}
 		}
+		
+		if( m_AnimMeta )
+		{
+		
+			//anim requested
+			if( !m_AnimMeta.IsPlaying() )
+			{
+
+				if( !m_AnimMeta.PlayRequest() )
+				{
+					m_AnimMeta.AnimFinished();
+				}
+			}
+			else
+			{
+				m_AnimMeta.Update();
+			}
+		}
+		
 		#ifdef DEVELOPER
 		if( GetGame().IsMultiplayer() && GetGame().IsServer() ) return;//must be here !!!
 		if ( DiagMenu.GetBool(DiagMenuIDs.DM_PLAYER_SYMPTOMS_SHOW) )
@@ -235,34 +246,26 @@ class SymptomManager
 		#endif
 	}
 
-	void SetAnimation(ParamsReadContext ctx)
+	void SetAnimation(ParamsReadContext ctx, AnimType anim_type)
 	{
-		m_IsAnimSet = true;
-		DayZPlayerSyncJunctures.ReadPlayerSymptomAnimParams(ctx, m_AnimID, m_SymptomUID, m_StanceMask, m_Duration);
-	}
-	
-	
-	void PlayAnimation()
-	{
-		HumanCommandActionCallback callback = GetPlayer().GetCommand_Action();
-		if (!callback)
+		if(m_AnimMeta)
 		{
-			callback = GetPlayer().GetCommandModifier_Action();
+			// animation meta already exists
+			// pass
 		}
-		if( callback )
+		else
 		{
-			callback.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_INTERRUPT);
+			if( anim_type == AnimType.FULL_BODY )
+			{
+				m_AnimMeta = new SmptAnimMetaFB(ctx, anim_type, this, m_Player);
+			}
+			else
+			{
+				m_AnimMeta = new SmptAnimMetaADD(ctx, anim_type, this, m_Player);
+			}
+			
 		}
-		
-	
-		SymptomCB	anim_callback = SymptomCB.Cast(GetPlayer().StartCommand_Action(m_AnimID, SymptomCB, m_StanceMask));
-		anim_callback.Init(m_SymptomUID, m_Duration, GetPlayer());
-		m_IsAnimSet = false;
-
 	}
-	
-	
-	
 	
 	void UpdateActiveSymptoms(float deltatime)
 	{	
@@ -414,13 +417,6 @@ class SymptomManager
 		}
 	}
 	
-/*
-	SymptomBase GetCurrentPrimaryActiveSymptom()
-	{
-		if(m_SymptomQueuePrimary.Count() > 0 ) return m_SymptomQueuePrimary.Get(0);
-		else return NULL;
-	}	
-	*/
 	SymptomBase GetCurrentPrimaryActiveSymptom()
 	{
 		if( GetGame().IsServer() || !GetGame().IsMultiplayer() )
@@ -642,7 +638,6 @@ class SymptomManager
 		}
 
 		ctx.Write( m_SaveQueue );
-
 	}
 
 	void OnStoreLoad( ParamsReadContext ctx )

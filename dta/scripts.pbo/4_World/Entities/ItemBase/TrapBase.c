@@ -422,7 +422,7 @@ class TrapBase extends ItemBase
 
 	void StartActivate( PlayerBase player )
 	{
-			m_Timer = new Timer( CALL_CATEGORY_GAMEPLAY );
+			m_Timer = new Timer( CALL_CATEGORY_SYSTEM );
 			HideSelection("safety_pin");
 			
 			if ( m_InitWaitTime > 0 )
@@ -492,8 +492,8 @@ class TrapBase extends ItemBase
 	void CreateTrigger()
 	{
 		m_TrapTrigger = TrapTrigger.Cast( g_Game.CreateObject( "TrapTrigger", this.GetPosition(), false ) );
-		vector mins = "-0.01 -0.5 -0.01";
-		vector maxs = "0.01 0.5 0.01";
+		vector mins = "-0.01 -0.05 -0.01";
+		vector maxs = "0.01 0.05 0.01";
 		m_TrapTrigger.SetOrientation( this.GetOrientation() );
 		m_TrapTrigger.SetExtents(mins, maxs);	
 		m_TrapTrigger.SetParentObject( this );

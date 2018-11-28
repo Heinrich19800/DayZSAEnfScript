@@ -303,11 +303,11 @@ class ItemManager
 		delete m_ToolTipTimer;
 	}
 	
-	static int GetItemHealthColor( EntityAI item )
+	static int GetItemHealthColor( EntityAI item, string zone = "" )
 	{
 		if( item )
 		{
-			switch ( item.GetHealthLevel() )
+			switch ( item.GetHealthLevel( zone ) )
 			{
 				case -1 :
 					break;

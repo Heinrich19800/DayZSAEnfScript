@@ -140,6 +140,6 @@ class ActionPourLiquid: ActionContinuousBase
 	{
 		Bottle_Base target_vessel = Bottle_Base.Cast( action_data.m_Target.GetObject());
 		if (target_vessel) target_vessel.StopPouringSound();
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

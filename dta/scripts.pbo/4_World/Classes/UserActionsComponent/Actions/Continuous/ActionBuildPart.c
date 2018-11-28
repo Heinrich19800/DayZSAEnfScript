@@ -64,15 +64,20 @@ class ActionBuildPart: ActionContinuousBase
 			
 			string main_part_name = targetObject.GetActionComponentName( target.GetComponentIndex() );
 			
-			//Debug
-			//base_building.GetConstruction().IsColliding( part_name );
-			
 			if ( !GetGame().IsMultiplayer() || GetGame().IsServer() )
 			{
 				construction_action_data.RefreshPartsToBuild( main_part_name, item );
 			}
 			ConstructionPart constrution_part = construction_action_data.GetCurrentBuildPart();
-			
+
+			//Debug
+			/*
+			if ( constrution_part )
+			{
+				construction.IsColliding( constrution_part.GetPartName() );
+			}
+			*/
+						
 			if ( constrution_part && base_building.IsFacingBack( player ) )
 			{
 				return true;
@@ -98,7 +103,7 @@ class ActionBuildPart: ActionContinuousBase
 			action_data.m_MainItem.DecreaseHealth( UADamageApplied.BUILD );
 		}
 
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 	
 	//setup

@@ -714,6 +714,23 @@ class EntityAI extends Entity
 		return true;
 	}
 
+	/**@fn		CanDisplayAttachmentSlot
+	 * @param	slot_name->name of the attachment slot that will or won't be displayed
+	 * @return	true if attachment icon can be displayed in UI (inventory)
+	 **/	
+	bool CanDisplayAttachmentSlot( string slot_name )
+	{
+		return true;
+	}
+
+	/**@fn		CanDisplayAttachmentCategory
+	 * @param	category_name->name of the attachment category that will or won't be displayed
+	 * @return	true if attachment icon can be displayed in UI (inventory)
+	 **/		
+	bool CanDisplayAttachmentCategory( string category_name )
+	{
+		return true;
+	}
 
 	// !Called on CHILD when it's attached to parent.
 	void OnWasAttached( EntityAI parent, int slot_id ) { }
@@ -1393,6 +1410,17 @@ class EntityAI extends Entity
 	{
 		//! returns Global so it is obvious you need to configure that properly on entity
 		return "";
+	}
+	
+	//! returns default hit position component name for the Entity (overriden by type if needed - used mainly as support for impact particles)
+	string GetDefaultHitPositionComponent()
+	{
+		return "";
+	}
+	
+	vector GetDefaultHitPosition()
+	{
+		return GetPosition();
 	}
 	
 	//! returns sound type of attachment (used for clothing and weapons on DayZPlayerImplement, paired with Anim*Type enum from DayZAnimEvents)

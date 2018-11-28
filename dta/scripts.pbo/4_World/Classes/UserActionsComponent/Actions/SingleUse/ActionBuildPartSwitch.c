@@ -27,6 +27,7 @@ class ActionBuildPartSwitch: ActionSingleUseBase
 		{
 			BaseBuildingBase base_building = BaseBuildingBase.Cast( targetObject );
 			ConstructionActionData construction_action_data = player.GetConstructionActionData();
+			construction_action_data.SetTarget( targetObject );
 			
 			string main_part_name = targetObject.GetActionComponentName( target.GetComponentIndex() );
 			construction_action_data.RefreshPartsToBuild( main_part_name, item );

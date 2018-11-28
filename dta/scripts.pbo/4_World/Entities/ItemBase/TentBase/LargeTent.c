@@ -37,10 +37,13 @@ class LargeTent extends TentBase
 	override void OnPlacementComplete( Man player )
 	{		
 		super.OnPlacementComplete( player );
+			
+		PlayerBase pb = PlayerBase.Cast( player );
 		
 		if ( GetGame().IsServer() )
 		{
-			m_ClutterCutter = GetGame().CreateObject( "ClutterCutter6x6", GetPosition(), false );	
+			m_ClutterCutter = GetGame().CreateObject( "LargeTentClutterCutter", pb.GetLocalProjectionPosition(), false );
+			m_ClutterCutter.SetOrientation( pb.GetLocalProjectionOrientation() );	
 		}	
 	}
 	

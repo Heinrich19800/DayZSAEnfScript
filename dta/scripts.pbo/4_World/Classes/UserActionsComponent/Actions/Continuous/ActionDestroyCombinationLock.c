@@ -63,6 +63,6 @@ class ActionDestroyCombinationLock: ActionContinuousBase
 		action_data.m_MainItem.DecreaseHealth( UADamageApplied.SAW_LOCK );
 		
 		//soft skills
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

@@ -91,7 +91,7 @@ class ActionRestrainTarget: ActionContinuousBase
 	}
 
 	override void OnFinishProgressServer( ActionData action_data )
-	{	
+	{
 		PlayerBase target_player = PlayerBase.Cast(action_data.m_Target.GetObject());
 		PlayerBase source_player = PlayerBase.Cast(action_data.m_Player);
 	
@@ -123,24 +123,21 @@ class ActionRestrainTarget: ActionContinuousBase
 		else
 		{
 			Print("Restraining player with empty hands");
-			RestrainTargetPlayerLambda lambda = new RestrainTargetPlayerLambda(item_in_hands_source, new_item_name, target_player, item_in_hands_target);
+			RestrainTargetPlayerLambda lambda = new RestrainTargetPlayerLambda(item_in_hands_source, new_item_name, target_player);
 			source_player.LocalReplaceItemInHandsWithNewElsewhere(lambda);
 		}		
 		
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };
-
 
 class RestrainTargetPlayerLambda : ReplaceItemWithNewLambdaBase
 {
 	PlayerBase m_TargetPlayer;
-	EntityAI m_TargetItem;
 
-	void RestrainTargetPlayerLambda (EntityAI old_item, string new_item_type, PlayerBase player, EntityAI targetItem)
+	void RestrainTargetPlayerLambda (EntityAI old_item, string new_item_type, PlayerBase player)
 	{
 		m_TargetPlayer = player;
-		m_TargetItem = targetItem;
 		
 		InventoryLocation targetHnd = new InventoryLocation;
 		targetHnd.SetHands(m_TargetPlayer, null);

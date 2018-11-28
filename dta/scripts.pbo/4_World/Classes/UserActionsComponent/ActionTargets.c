@@ -256,6 +256,8 @@ class ActionTargets
 		if ( object && (object.IsBuilding() || object.IsTransport() || object.IsStaticTransmitter()) ) return false;
 		if ( object && (object.IsTree() || object.IsBush())) return false;
 		if ( object && (object.IsInherited(BaseBuildingBase) || object.IsInherited(FenceKit) || object.IsInherited(WatchtowerKit)) ) return false; // base building objects
+		if ( object && object.IsInherited(PlantBase) ) return false;
+		if ( object && object.IsInherited(GardenPlot) ) return false; // TO DO: Add GardenBase here
 
 		if ( object )
 		{

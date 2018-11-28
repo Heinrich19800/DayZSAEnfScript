@@ -109,7 +109,7 @@ class PowerGenerator extends ItemBase
 			PlaySound(START_SOUND, 50);
 			
 			if (!m_SoundLoopStartTimer)
-				m_SoundLoopStartTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				m_SoundLoopStartTimer = new Timer( CALL_CATEGORY_SYSTEM );
 			
 			if ( !m_SoundLoopStartTimer.IsRunning() ) // Makes sure the timer is NOT running already
 			{

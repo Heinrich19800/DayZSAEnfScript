@@ -56,7 +56,7 @@ class ActionCoverHeadSelf: ActionContinuousBase
 		action_data.m_Player.GetInventory().CreateInInventory("BurlapSackCover");
 		action_data.m_MainItem.TransferModifiers(action_data.m_Player);
 		action_data.m_MainItem.Delete();
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 
 

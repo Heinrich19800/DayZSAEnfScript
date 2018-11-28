@@ -865,25 +865,24 @@ class IngameHud extends Hud
 			
 			int health = m_CurrentVehicle.GetHealthLevel();
 			int color;
-			if( m_CurrentVehicle.EngineIsOn() && health > 0 && health < 4 )
+			if( rpm_value > 1 )
 			{
-				m_VehiclePanelEngineHealth.Show( true );
-				color = ItemManager.GetItemHealthColor( m_CurrentVehicle );
-				
-				m_VehiclePanelEngineHealth.SetColor( color );
-				m_VehiclePanelEngineHealth.SetAlpha( 1 );
-			}
-			else if( health > 3 )
-			{
-				if( m_TimeSinceLastEngineLightChange > 0.7 )
+				if( m_TimeSinceLastEngineLightChange > 0.35 )
 				{
 					m_VehiclePanelEngineHealth.Show( !m_VehiclePanelEngineHealth.IsVisible() );
-					color = ItemManager.GetItemHealthColor( m_CurrentVehicle );
-					m_VehiclePanelEngineHealth.SetColor( color );
+					m_VehiclePanelEngineHealth.SetColor( Colors.COLOR_RUINED );
 					m_VehiclePanelEngineHealth.SetAlpha( 1 );
 					m_TimeSinceLastEngineLightChange = 0;
 				}
 				m_TimeSinceLastEngineLightChange += timeslice;
+			}
+			else if( m_CurrentVehicle.EngineIsOn() && health > 1 && health < 5 )
+			{
+				m_VehiclePanelEngineHealth.Show( true );
+				color = ItemManager.GetItemHealthColor( m_CurrentVehicle, "Engine" );
+				
+				m_VehiclePanelEngineHealth.SetColor( color );
+				m_VehiclePanelEngineHealth.SetAlpha( 1 );
 			}
 			else
 			{
@@ -1065,10 +1064,10 @@ class IngameHud extends Hud
 	{
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 
-		if ( player && player.GetSoftSkillManager() )
+		if ( player && player.GetSoftSkillsManager() )
 		{
 			m_SpecializationPanel.Show( visible );
-			float x = player.GetSoftSkillManager().GetSpecialtyLevel() / 2;
+			float x = player.GetSoftSkillsManager().GetSpecialtyLevel() / 2;
 			float y = -0.75;
 			m_SpecializationIcon.SetPos( x, y, true );	
 		}

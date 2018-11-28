@@ -3,8 +3,20 @@ const int MAX_FAVORITES = 50;
 #ifdef PLATFORM_CONSOLE
 const int SERVER_BROWSER_PAGE_SIZE = 50;
 #else
-const int SERVER_BROWSER_PAGE_SIZE = 1;
+const int SERVER_BROWSER_PAGE_SIZE = 5;
 #endif
+
+class DebugClass1
+{
+	string m_DebugString;
+	
+	
+}
+
+class DebugClass2 : Managed
+{
+	ref DebugClass1 m_Class1;
+}
 
 class ServerBrowserMenuNew extends UIScriptedMenu
 {
@@ -33,10 +45,22 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 		#endif
 		#endif
 		
-		m_OfficialTab	= new ServerBrowserTab( layoutRoot.FindAnyWidget( "Tab_0" ), this, TabType.OFFICIAL );
+		#ifdef SERVER_BROWSER_PAGES
+			m_OfficialTab	= new ServerBrowserTabPage( layoutRoot.FindAnyWidget( "Tab_0" ), this, TabType.OFFICIAL );
+		#else
+			m_OfficialTab	= new ServerBrowserTab( layoutRoot.FindAnyWidget( "Tab_0" ), this, TabType.OFFICIAL );
+		#endif
+		
 		#ifndef PLATFORM_CONSOLE
-			m_CommunityTab	= new ServerBrowserTab( layoutRoot.FindAnyWidget( "Tab_1" ), this, TabType.COMMUNITY );
-			m_LANTab		= new ServerBrowserTab( layoutRoot.FindAnyWidget( "Tab_2" ), this, TabType.LAN );
+			
+			#ifdef SERVER_BROWSER_PAGES
+				m_CommunityTab	= new ServerBrowserTabPage( layoutRoot.FindAnyWidget( "Tab_1" ), this, TabType.COMMUNITY );
+				m_LANTab		= new ServerBrowserTabPage( layoutRoot.FindAnyWidget( "Tab_2" ), this, TabType.LAN );
+			#else
+				m_CommunityTab	= new ServerBrowserTab( layoutRoot.FindAnyWidget( "Tab_1" ), this, TabType.COMMUNITY );
+				m_LANTab		= new ServerBrowserTab( layoutRoot.FindAnyWidget( "Tab_2" ), this, TabType.LAN );
+			#endif
+		
 		#endif
 		
 		layoutRoot.FindAnyWidget( "Tabber" ).GetScript( m_Tabber );
@@ -302,12 +326,12 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			GetSelectedTab().PressA();
 		}
 		
-		if( GetGame().GetInput().GetActionDown( UAUIFastEquipOrSplit, false ) )
+		if( GetGame().GetInput().GetActionDown( UAUICtrlX, false ) )
 		{
 			GetSelectedTab().PressX();
 		}
 		
-		if( GetGame().GetInput().GetActionDown( UAQuickReload, false ) )
+		if( GetGame().GetInput().GetActionDown( UAUICtrlY, false ) )
 		{
 			GetSelectedTab().PressY();
 		}

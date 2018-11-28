@@ -84,6 +84,23 @@ class HumanInventoryWithFSM : HumanInventory
 			return false;
 		}
 	}
+	
+	bool ProcessHandAbortEvent (HandEventBase e)
+	{
+		//SyncRemote(e);
+		ProcessEventResult aa;
+		m_FSM.ProcessAbortEvent(e, aa);
+		if (aa == ProcessEventResult.FSM_OK)
+		{
+			hndDebugSpam("[hndfsm] Processed event e=" + e.ToString());
+			return true;
+		}
+		else
+		{
+			//hndDebugPrint("FSM refused to process event (no transition): src=" + GetCurrentState().ToString() + " event=" + e.ToString());
+			return false;
+		}
+	}
 
 	override void OnStoreLoad (ParamsReadContext ctx)
 	{

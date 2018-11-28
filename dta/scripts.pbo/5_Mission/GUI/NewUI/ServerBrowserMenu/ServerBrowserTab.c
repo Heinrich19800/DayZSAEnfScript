@@ -57,6 +57,11 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	
 	void ServerBrowserTab( Widget parent, ServerBrowserMenuNew menu, TabType type )
 	{
+		Construct(parent, menu, type);
+	}
+	
+	protected void Construct( Widget parent, ServerBrowserMenuNew menu, TabType type )
+	{
 		#ifdef PLATFORM_CONSOLE
 			m_Root					= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/server_browser/xbox/server_browser_tab.layout", parent );
 		#else
@@ -452,6 +457,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	{
 		m_Filters.SaveFilters();
 		m_FiltersChanged.Show( false );
+		m_CurrentFilterInput = m_Filters.GetFilterOptions();
 		RefreshList();
 	}
 	
@@ -470,7 +476,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		m_EntryWidgets.Clear();
 		
 		#ifdef PLATFORM_WINDOWS
-		if( !m_CurrentFilterInput )
+		//if( !m_CurrentFilterInput )
 		#endif
 			m_CurrentFilterInput = m_Filters.GetFilterOptions();
 		
@@ -530,7 +536,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 	}
 	
 	void OnLoadServersAsyncPC( ref GetServersResult result_list, EBiosError error, string response )
-	{
+	{		
 		if( result_list )
 		{
 			if( result_list.m_Results.Count() > 0 )
@@ -540,6 +546,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 					if( PassFilter( result ) )
 					{
 						ref ServerBrowserEntry entry = new ServerBrowserEntry( null, m_TotalLoadedServers, this );
+						
 						entry.FillInfo( result );
 						entry.SetFavorite( m_Menu.IsFavorited( result.m_Id ) );
 						m_EntryWidgets.Insert( result.m_Id, entry );
@@ -659,6 +666,7 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 			{
 				if( PassFilter( result ) )
 				{
+					Print("ServerBrowserEntry -> LoadEntries");
 					ref ServerBrowserEntry entry = new ServerBrowserEntry( m_ServerList, index, this );
 					entry.FillInfo( result );
 					entry.SetFavorite( m_Menu.IsFavorited( result.m_Id ) );
@@ -942,6 +950,8 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 				}
 			}
 		}
+		
+		
 	}
 	
 	void Sort( array<ref GetServersResultRow> entries, int low, int high )

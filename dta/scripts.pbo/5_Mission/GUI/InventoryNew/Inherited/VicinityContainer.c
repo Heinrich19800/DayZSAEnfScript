@@ -11,7 +11,7 @@ class VicinityContainer: CollapsibleContainer
 		m_Body.Insert( m_VicinityIconsContainer );
 		RecomputeOpenedContainers();
 		Header h = Header.Cast( m_Body.Get(0) );
-		h.SetName("VICINITY");
+		h.SetName("#container_vicinity");
 		LoadDefaultState();
 	}
 	
@@ -148,10 +148,11 @@ class VicinityContainer: CollapsibleContainer
 		{
 			return;
 		}
-		if( GetFocusedContainer() && (GetFocusedContainer().IsInherited( ContainerWithCargo ) || GetFocusedContainer().IsInherited( ContainerWithCargoAndAttachments )) )
+		if( GetFocusedContainer() && ( GetFocusedContainer().IsInherited( ContainerWithElectricManager ) || GetFocusedContainer().IsInherited( ContainerWithCargo ) || GetFocusedContainer().IsInherited( ContainerWithCargoAndAttachments )) )
 		{
 			ContainerWithCargo iwc = ContainerWithCargo.Cast( GetFocusedContainer() );
 			ContainerWithCargoAndAttachments iwca = ContainerWithCargoAndAttachments.Cast( GetFocusedContainer() );
+			ContainerWithElectricManager iwem = ContainerWithElectricManager.Cast( GetFocusedContainer() );
 			if( iwc )
 			{
 				iwc.MoveGridCursor(direction);
@@ -160,8 +161,12 @@ class VicinityContainer: CollapsibleContainer
 			{
 				iwca.MoveGridCursor( direction );
 			}
+			else if ( iwem )
+			{
+				iwem.MoveGridCursor( direction );
+			}
 		}
-		else
+		else if( GetFocusedContainer() == m_VicinityIconsContainer )
 		{
 			m_VicinityIconsContainer.MoveGridCursor( direction );
 		}
@@ -586,15 +591,15 @@ class VicinityContainer: CollapsibleContainer
 		for( i = 0; i < objects.Count(); i++ )
 		{
 			Object obj = objects.Get( i );
-			bool showable_item = !objects.Get( i ).IsAnyInherited( { ScriptedEntity, Building, Camera, PlantSuper, PASReceiver, DayZAnimal, UndergroundStash, GardenBase } );
+			bool showable_item = !objects.Get( i ).IsAnyInherited( { ScriptedEntity, Building, Camera, PlantSuper, PASReceiver, DayZAnimal/*, UndergroundStash, GardenBase*/ } );
 			if ( player.GetInventory().IsPlaceholderEntity(obj) )
 				continue; // noproxy: ignore body placeholder
 			if ( obj.GetParent() || ( EntityAI.Cast( obj ) && EntityAI.Cast( obj ).GetHierarchyParent() ) )
 				continue; // noproxy: ignore owned items
 
-			// Temporary solution for making GardenBase objects visible in vicinity
-			//if (!showable_item )
-				//showable_item = objects.Get( i ).IsAnyInherited( { GardenBase } );
+			// Temporary solution for making GardenPlot objects visible in vicinity
+			if (!showable_item )
+				showable_item = objects.Get( i ).IsAnyInherited( { GardenPlot } );
 
 			if( showable_item )
 			{
@@ -756,6 +761,29 @@ class VicinityContainer: CollapsibleContainer
 				c.Open();
 			}
 		}
+	}
+	
+	override bool OnChildRemove( Widget w, Widget child )
+	{
+		m_MainWidget.Update();
+		float x, y;
+		m_MainWidget.GetScreenSize( x, y );
+		if( w == GetMainWidget() )
+		{
+			GetMainWidget().Update();
+			m_Parent.OnChildRemove( w, child );
+		}
+		return true;
+	}
+	
+	override bool OnChildAdd( Widget w, Widget child )
+	{
+		if( w == GetMainWidget() )
+		{
+			GetMainWidget().Update();
+			m_Parent.OnChildAdd( w, child );
+		}
+		return true;
 	}
 
 	override void CollapseButtonOnMouseButtonDown(Widget w)

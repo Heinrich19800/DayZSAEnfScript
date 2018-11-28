@@ -457,15 +457,6 @@ class Barrel_ColorBase : Container_Base
 		}
 		return false;
 	}
-
-    override bool CanRemoveFromCargo(EntityAI cargo)
-	{
-		if ( IsOpened() )
-		{
-			return true;
-		}
-		return false;
-	}
 	
 	override bool CanReleaseCargo(EntityAI attachment)
 	{

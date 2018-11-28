@@ -12,11 +12,6 @@ class Fireplace extends FireplaceBase
 		PARTICLE_STEAM_END		= ParticleList.CAMP_STEAM_2END;
 	}
 	
-	/*override bool IsTwoHandedBehaviour()
-	{
-		return true;
-	}*/
-	
 	override bool IsBaseFireplace()
 	{
 		return true;

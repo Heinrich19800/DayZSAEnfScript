@@ -220,7 +220,7 @@ class ItemBase extends InventoryItem
 		m_OverheatingShots++;
 		
 		if (!m_CheckOverheating)
-				m_CheckOverheating = new Timer( CALL_CATEGORY_GAMEPLAY );
+				m_CheckOverheating = new Timer( CALL_CATEGORY_SYSTEM );
 		
 		m_CheckOverheating.Stop();
 		m_CheckOverheating.Run(m_OverheatingDecayInterval, this, "OnOverheatingDecay");
@@ -302,7 +302,6 @@ class ItemBase extends InventoryItem
 		OP.SetParticleParams(particle_id, parent, local_pos, local_ori);
 		
 		m_OverheatingParticles.Insert(OP);
-		Print(m_OverheatingParticles);
 	}
 	
 	float GetOverheatingCoef()
@@ -318,8 +317,6 @@ class ItemBase extends InventoryItem
 		if (m_OverheatingParticles)
 		{
 			float overheat_coef = GetOverheatingCoef();
-			Print(m_OverheatingParticles);
-			Print(overheat_coef);
 			int count = m_OverheatingParticles.Count();
 			
 			for (int i = count; i > 0; --i)
@@ -331,15 +328,7 @@ class ItemBase extends InventoryItem
 				float overheat_min = OP.GetOverheatingLimitMin();
 				float overheat_max = OP.GetOverheatingLimitMax();
 				
-				if (false  ||  overheat_coef >= overheat_min  &&  overheat_coef < overheat_max)
-				{
-					/*if (!p)
-					{
-						p = Particle.Play(OP.GetParticleID(), OP.GetParticleParent(), OP.GetParticlePos(), OP.GetParticleOri());
-						OP.RegisterParticle(p);
-					}*/
-				}
-				else
+				if (overheat_coef < overheat_min  &&  overheat_coef >= overheat_max)
 				{
 					if (p)
 					{

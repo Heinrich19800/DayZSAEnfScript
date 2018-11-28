@@ -73,6 +73,6 @@ class ActionDisinfectPlantBit: ActionSingleUseBase
 			SendMessageToClient(action_data.m_Player, plant.StopInfestation( nacdata.param1 ));
 		}
 		
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

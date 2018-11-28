@@ -16,6 +16,33 @@ class Fence extends BaseBuildingBase
 		RegisterNetSyncVariableBool( "m_IsOpened" );
 	}
 	
+	// --- INVENTORY
+	override bool CanDisplayAttachmentSlot( string slot_name )
+	{
+		if ( slot_name == "Att_CombinationLock" )
+		{
+			if ( !HasGate() )
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	override bool CanDisplayAttachmentCategory( string category_name )
+	{
+		if ( category_name == "Attachments" || category_name == "Material" )
+		{
+			if ( !HasBase() )
+			{
+				return false;
+			}			
+		}
+		return true;
+	}	
+	// ---
+	
 	// --- EVENTS
 	override void OnStoreSave( ParamsWriteContext ctx )
 	{   

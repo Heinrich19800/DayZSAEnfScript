@@ -59,7 +59,7 @@ class ActionUncoverHeadSelf: ActionContinuousBase
 			attachment.Delete();
 		}
 		
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 
 

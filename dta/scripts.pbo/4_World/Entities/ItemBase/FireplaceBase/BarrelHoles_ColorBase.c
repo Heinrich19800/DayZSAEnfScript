@@ -5,6 +5,7 @@ class BarrelHoles_ColorBase extends FireplaceBase
 	const string ANIMATION_CLOSED			= "LidOn";
 	
 	protected bool m_IsOpened 				= false;
+	protected bool m_IsOpenedClient			= false;
 	
 	void BarrelHoles_ColorBase()
 	{
@@ -27,17 +28,37 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		super.EEInit();
 		
 		//hide in inventory
-		GetInventory().LockInventory(HIDE_INV_FROM_SCRIPT);
+		//GetInventory().LockInventory(HIDE_INV_FROM_SCRIPT);
 	}
-	
-	/*override bool IsHeavyBehaviour()
-	{
-		return true;
-	}*/
 	
 	override bool IsBarrelWithHoles()
 	{
 		return true;
+	}
+
+	override void OnVariablesSynchronized()
+	{
+		super.OnVariablesSynchronized();
+		
+		//refresh if opened/closed state changed
+		if ( m_IsOpenedClient != m_IsOpened )
+		{
+			m_IsOpenedClient = m_IsOpened;
+			
+			//Refresh particles and sounds
+			RefreshFireParticlesAndSounds( true );
+		}
+		
+		//sound sync
+		if ( IsOpened() && IsSoundSynchRemote() )
+		{
+			SoundBarrelOpenPlay();
+		}
+		
+		if ( !IsOpened() && IsSoundSynchRemote() )
+		{
+			SoundBarrelClosePlay();
+		}
 	}
 	
 	//ATTACHMENTS
@@ -237,22 +258,7 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		
 		Synchronize();
 	}
-	
-	override void OnVariablesSynchronized()
-	{
-		super.OnVariablesSynchronized();
-		
-		if ( IsOpened() && IsSoundSynchRemote() )
-		{
-			SoundBarrelOpenPlay();
-		}
-		
-		if ( !IsOpened() && IsSoundSynchRemote() )
-		{
-			SoundBarrelClosePlay();
-		}
-	}
-	
+
 	void SoundBarrelOpenPlay()
 	{
 		EffectSound sound =	SEffectManager.PlaySound( "barrel_open_SoundSet", GetPosition() );
@@ -268,11 +274,8 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		//set open state
 		SetOpenState( true );
 		
-		//refresh
-		RefreshFireParticlesAndSounds( true );
-		
 		//show in inventory
-		GetInventory().UnlockInventory(HIDE_INV_FROM_SCRIPT);
+		//GetInventory().UnlockInventory(HIDE_INV_FROM_SCRIPT);
 		
 		SoundSynchRemote();
 	}
@@ -292,11 +295,8 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		//set open state
 		SetOpenState( false );
 		
-		//refresh
-		RefreshFireParticlesAndSounds( true );
-		
 		//hide in inventory
-		GetInventory().LockInventory(HIDE_INV_FROM_SCRIPT);
+		//GetInventory().LockInventory(HIDE_INV_FROM_SCRIPT);
 		
 		SoundSynchRemote();
 	}

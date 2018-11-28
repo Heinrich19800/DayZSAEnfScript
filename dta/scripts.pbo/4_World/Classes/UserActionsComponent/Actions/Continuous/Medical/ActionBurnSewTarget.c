@@ -55,6 +55,6 @@ class ActionBurnSewTarget: ActionContinuousBase
 		//OlD_SHOCK//ntarget.GetStatShock().Add(1000);
 		action_data.m_MainItem.DecreaseHealth ( "", "", 5 );
 
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

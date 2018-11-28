@@ -51,7 +51,7 @@ class ActionFillBottleBase: ActionContinuousBase
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 		ItemBase item = player.GetItemInHands();
 
-		return "#fill" + " " + item.GetDisplayName().Substring(0,(item.GetDisplayName().Length() ));
+		return "#fill";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

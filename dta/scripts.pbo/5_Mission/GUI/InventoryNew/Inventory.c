@@ -145,7 +145,7 @@ class Inventory: LayoutHolder
 
 	bool Controller( Widget w, int control, int value )
 	{
-		//Print("control: "+ control +" value: "+value);
+		//Print( "control: " + control + " value: " + value );
 		
 		//Right stick
 		if ( control == ControlID.CID_RADIALMENU )
@@ -197,45 +197,6 @@ class Inventory: LayoutHolder
 		}
 		
 		UpdateConsoleToolbar();
-		
-		if( control == ControlID.CID_SELECT && value != 0 )
-		{
-			if( m_RightArea.IsActive() )
-			{
-				m_RightArea.Select();
-			}
-			if( m_LeftArea.IsActive() )
-			{
-				m_LeftArea.Select();
-			}
-			if( m_HandsArea.IsActive() )
-			{
-				m_HandsArea.Select();
-			}
-			ItemManager.GetInstance().SetItemMicromanagmentMode( false );
-			ItemManager.GetInstance().SetItemMoving( false );
-			UpdateConsoleToolbar();
-			return true;
-		}
-
-		if( control == ControlID.CID_BACK && value != 0 )
-		{
-			if( GetMainWidget().IsVisible() )
-			{
-				if( m_RightArea.IsActive() )
-				{
-					m_RightArea.Combine();
-					m_RightArea.UnfocusGrid();
-
-				}
-				if( m_LeftArea.IsActive() )
-				{
-					m_LeftArea.Combine();
-					m_LeftArea.UnfocusGrid();
-				}
-			}
-			return true;
-		}
 		return false;
 	}
 
@@ -523,7 +484,7 @@ class Inventory: LayoutHolder
 			}
 		}
 		
-		if( GetGame().GetInput().GetActionDown( UAUIFastEquipOrSplit, false ) )
+		if( GetGame().GetInput().GetActionDown( UAUICtrlX, false ) )
 		{
 			if( m_HandsArea.IsActive() )
 			{
@@ -541,24 +502,46 @@ class Inventory: LayoutHolder
 			ItemManager.GetInstance().HideTooltip();
 		}
 		
-		if( GetGame().GetInput().GetActionDown( UAUISelectItem, false ) )
+		if( GetGame().GetInput().GetActionUp( UAUISelectItem, false ) )
 		{
-			ItemManager.GetInstance().SetItemMicromanagmentMode( true );
-			
 			if( m_RightArea.IsActive() )
 			{
-				m_RightArea.SelectItem();
+				m_RightArea.Select();
 			}
 			if( m_LeftArea.IsActive() )
 			{
-				m_LeftArea.SelectItem();
+				m_LeftArea.Select();
 			}
 			if( m_HandsArea.IsActive() )
 			{
-				m_HandsArea.SelectItem();
+				m_HandsArea.Select();
 			}
+			ItemManager.GetInstance().SetItemMicromanagmentMode( false );
+			ItemManager.GetInstance().SetItemMoving( false );
+			ItemManager.GetInstance().SetSelectedItem( null, null, null );
 			UpdateConsoleToolbar();
-			ItemManager.GetInstance().HideTooltip();
+		}
+		
+		if( GetGame().GetInput().GetActionHold( UAUISelectItem, false ) )
+		{
+			if( !ItemManager.GetInstance().IsMicromanagmentMode() )
+			{
+				ItemManager.GetInstance().SetItemMicromanagmentMode( true );
+				if( m_RightArea.IsActive() )
+				{
+					m_RightArea.SelectItem();
+				}
+				if( m_LeftArea.IsActive() )
+				{
+					m_LeftArea.SelectItem();
+				}
+				if( m_HandsArea.IsActive() )
+				{
+					m_HandsArea.SelectItem();
+				}
+				UpdateConsoleToolbar();
+				ItemManager.GetInstance().HideTooltip();
+			}
 		}
 		
 		if( GetGame().GetInput().GetActionDown( UAUIFastTransferToVicinity, false ) )
@@ -745,6 +728,7 @@ class Inventory: LayoutHolder
 			}
 		}
 
+		MissionGameplay mission = MissionGameplay.Cast( GetGame().GetMission() );
 #ifdef PLATFORM_CONSOLE
 		//Open Quickbar radial menu
 		if( GetGame().GetInput().GetActionDown( UAUIQuickbarRadialInventoryOpen, false ) )
@@ -774,6 +758,25 @@ class Inventory: LayoutHolder
 			}
 		}
 #endif
+		if( GetGame().GetInput().GetActionDown( UAUIBack, false ) )
+		{	if( GetMainWidget().IsVisible() )
+			{
+			#ifdef PLATFORM_CONSOLE
+				if( m_RightArea.IsActive() )
+				{
+					m_RightArea.Combine();
+					m_RightArea.UnfocusGrid();
+
+				}
+				if( m_LeftArea.IsActive() )
+				{
+					m_LeftArea.Combine();
+					m_LeftArea.UnfocusGrid();
+				}
+			#endif
+				mission.HideInventory();
+			}
+		}
 
 		m_LeftArea.UpdateInterval();
 		m_RightArea.UpdateInterval();
@@ -889,7 +892,7 @@ class Inventory: LayoutHolder
 	
 	#ifdef PLATFORM_XBOX
 	string to_hands_swap = "<image set=\"xbox_buttons\" name=\"A\" /> " + "#dayz_context_menu_to_hands_swap" + "    ";
-	string drop = "<image set=\"xbox_buttons\" name=\"Y\" /> " + "#datz_context_menu_drop" + "    ";
+	string drop = "<image set=\"xbox_buttons\" name=\"Y\" /> " + "#dayz_context_menu_drop" + "    ";
 	string equip = "<image set=\"xbox_buttons\" name=\"X\" /> " + "#dayz_context_menu_equip" + "    ";
 	string split = "<image set=\"xbox_buttons\" name=\"X\" /> " + "#dayz_context_menu_split" + "    ";
 	string to_inventory = "<image set=\"xbox_buttons\" name=\"Y\" /> " + "#dayz_context_menu_to_inventory" + "    ";
@@ -1022,7 +1025,7 @@ class Inventory: LayoutHolder
 					context_text += combine;
 				}
 			}
-			else if( vicinity_container.IsContainerWithCargoActive()	)
+			else if( vicinity_container.IsContainerWithCargoActive() )
 			{
 				ContainerWithCargo iwc = ContainerWithCargo.Cast( vicinity_container.GetFocusedContainer() );
 				if( iwc.IsEmpty() )

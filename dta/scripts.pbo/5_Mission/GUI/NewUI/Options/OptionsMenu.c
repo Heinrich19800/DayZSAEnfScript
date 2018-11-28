@@ -430,12 +430,12 @@ class OptionsMenu extends UIScriptedMenu
 			m_Tabber.NextTab();
 		}
 		
-		if( GetGame().GetInput().GetActionDown( UAUIFastEquipOrSplit, false ) )
+		if( GetGame().GetInput().GetActionDown( UAUICtrlX, false ) )
 		{
 			Apply();
 		}
 		
-		if( GetGame().GetInput().GetActionDown( UAQuickReload, false ) )
+		if( GetGame().GetInput().GetActionDown( UAUICtrlY, false ) )
 		{
 			Reset();
 		}

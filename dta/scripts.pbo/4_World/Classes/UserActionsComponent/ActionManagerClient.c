@@ -6,10 +6,13 @@ class ActionManagerClient: ActionManagerBase
 	protected bool								m_ActionPossible;
 	protected ref array<ref InventoryLocation>	m_ReservedInventoryLocations;
 	protected ref InventoryActionHandler		m_InventoryActionHandler;
+	protected ref InventoryLocation				m_HandInventoryLocationTest;
 
 	void ActionManagerClient(PlayerBase player)
 	{
 		//ActionManagerBase(player);
+		m_HandInventoryLocationTest = new InventoryLocation;
+		m_HandInventoryLocationTest.SetHands(player,null);
 		m_LastAcknowledgmentID = 1;
 		m_Targets	= new ActionTargets(player);
 		m_ReservedInventoryLocations = new array<ref InventoryLocation>;
@@ -148,6 +151,18 @@ class ActionManagerClient: ActionManagerBase
 		DisableInteractAction();
 	}
 */	
+	
+/*	override bool ActionPossibilityCheck(int pCurrentCommandID)
+	{
+		if ( super.ActionPossibilityCheck(pCurrentCommandID) )
+		{
+			m_HandInventoryLocationTest.SetHands(m_Player,m_Player.GetItemInHands());
+			if (!m_Player.GetHumanInventory().HasInventoryReservation(m_Player.GetItemInHands(),m_HandInventoryLocationTest))
+				return true;
+		}
+		
+		return false;
+	}*/
 	//--------------------------------------------------------
 	// Alows to set different action to current contextual one //jtomasik - pri injectu budu muset serveru poslat ID injectnute akce
 	//--------------------------------------------------------
@@ -242,11 +257,19 @@ class ActionManagerClient: ActionManagerBase
 		return item;
 	}
 	
+	protected bool HasHandInventoryReservation()
+	{
+		m_HandInventoryLocationTest.SetHands(m_Player,m_Player.GetItemInHands());
+		if (m_Player.GetHumanInventory().HasInventoryReservation(m_Player.GetItemInHands(),m_HandInventoryLocationTest))
+			return true;
+		return false;
+	}
+	
 	protected void FindContextualUserActions( int pCurrentCommandID )
 	{
 		RemoveActions();
 		
-		if (m_Player.IsRaised() || !ActionPossibilityCheck(pCurrentCommandID) )
+		if (m_Player.IsRaised() || !ActionPossibilityCheck(pCurrentCommandID) || HasHandInventoryReservation() )
 		{
 			m_SelectableActions.Clear();
 			return;
@@ -510,7 +533,7 @@ class ActionManagerClient: ActionManagerBase
 	
 	protected void ActionStart(ActionBase action, ActionTarget target, ItemBase item, Param extra_data = NULL )
 	{
-		if ( action ) 
+		if ( !m_CurrentActionData && action ) 
 		{	
 			if ( GetGame().IsMultiplayer() && !action.IsLocal() )
 			{

@@ -92,6 +92,6 @@ class ActionDestroyPart: ActionContinuousBase
 			action_data.m_MainItem.DecreaseHealth( UADamageApplied.DESTROY );
 		}
 
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }

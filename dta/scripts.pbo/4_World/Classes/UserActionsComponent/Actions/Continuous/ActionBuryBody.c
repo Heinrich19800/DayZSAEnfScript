@@ -66,6 +66,6 @@ class ActionBuryBody: ActionContinuousBase
 		Object targetObject = action_data.m_Target.GetObject();
 		g_Game.ObjectDelete(targetObject);
 
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight ); 
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight ); 
 	}
 };

@@ -11,8 +11,9 @@ class ActionHarvestCrops: ActionInteractBase
 
 		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_MEDIUM;
 		
-		//m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERACT;
-		//m_FullBody = true;
+		/*m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERACT;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
+		m_FullBody = true;*/
 	}
 
 	override int GetType()
@@ -31,8 +32,13 @@ class ActionHarvestCrops: ActionInteractBase
 		if ( targetObject.IsInherited(PlantBase) )
 		{
 			PlantBase plant = PlantBase.Cast( targetObject );
+			bool is_mature = plant.IsMature();
+			bool is_spoiled = plant.IsSpoiled();
+			bool has_crops = plant.HasCrops();
+			int plant_state = plant.GetPlantState();
 			
-			if (  ( plant.IsMature()  ||  plant.IsSpoiled() )  &&  plant.HasCrops()  )
+			
+			if (  ( is_mature  ||  is_spoiled )  &&  has_crops  )
 			{
 				return true;
 			}
@@ -47,6 +53,6 @@ class ActionHarvestCrops: ActionInteractBase
 		PlantBase plant = PlantBase.Cast( targetObject );
 		m_MessageSuccess = plant.Harvest( action_data.m_Player );
 
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

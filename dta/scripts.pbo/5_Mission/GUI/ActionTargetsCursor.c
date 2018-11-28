@@ -3,20 +3,23 @@ class ATCCachedObject
 	protected Object 	m_CachedObject;
 	protected vector 	m_CursorWPos;
 	protected vector	m_ScreenPos;
+	protected int		m_CompIdx;
 	
 	void ATCCachedTarget()
 	{
 		m_CachedObject = null;
 		m_ScreenPos = vector.Zero;
+		m_CompIdx = -1;
 	}
 
 	//! cache object and its world pos
-	void Store(Object obj, vector pos)
+	void Store(Object obj, vector pos, int compIdx)
 	{
 		if(!m_CachedObject)
 		{
 			m_CachedObject = obj;
 			m_CursorWPos = pos;
+			m_CompIdx = compIdx;
 		}
 	}
 
@@ -27,6 +30,7 @@ class ATCCachedObject
 		{
 			m_CachedObject = null;
 			m_CursorWPos = vector.Zero;
+			m_CompIdx = -1;
 		}
 	}
 
@@ -38,6 +42,11 @@ class ATCCachedObject
 	vector GetCursorWorldPos()
 	{
 		return m_CursorWPos;
+	}
+	
+	int GetCursorCompIdx()
+	{
+		return m_CompIdx;
 	}
 };
 
@@ -192,7 +201,8 @@ class ActionTargetsCursor extends ObjectFollower
 
 		PrepareCursorContent();
 		
-		if (forceRebuild)
+		//! Get OnScreenPos when forced or targeted component differs
+		if (forceRebuild || m_Target.GetComponentIndex() != m_CachedObject.GetCursorCompIdx())
 		{
 			GetOnScreenPosition(pos_x, pos_y);
 		}
@@ -384,7 +394,7 @@ class ActionTargetsCursor extends ObjectFollower
 						}
 
 						//! cache current object and the widget world pos
-						m_CachedObject.Store(object, worldPos);
+						m_CachedObject.Store(object, worldPos, compIdx);
 					}
 					//! doors/handles
 					else if( !compName.Contains("ladder") && IsComponentInSelection( memSelections, compName ) )
@@ -433,7 +443,7 @@ class ActionTargetsCursor extends ObjectFollower
 						}
 						
 						//! cache current object and the widget world pos
-						m_CachedObject.Store(object, worldPos);
+						m_CachedObject.Store(object, worldPos, compIdx);
 					}
 					//! ladders handling
 					else if( compName.Contains("ladder") && IsComponentInSelection( memSelections, compName))
@@ -477,7 +487,7 @@ class ActionTargetsCursor extends ObjectFollower
 						}
 
 						//! cache current object and the widget world pos
-						m_CachedObject.Store(object, worldPos);
+						m_CachedObject.Store(object, worldPos, -1); //! do not store component index for ladders
 					}
 					else
 					{
@@ -585,7 +595,7 @@ class ActionTargetsCursor extends ObjectFollower
 		if (m_Target && m_Target.GetObject() && m_Target.GetObject().IsItemBase())
 		{
 			ItemBase item = ItemBase.Cast(m_Target.GetObject());
-			if( !item.IsTakeable() || m_Player.IsInVehicle() )
+			if( !item.IsTakeable() || (m_Player && m_Player.IsInVehicle()) )
 			{
 				m_Hidden = true;
 			}
@@ -606,10 +616,16 @@ class ActionTargetsCursor extends ObjectFollower
 	protected string GetItemDesc(ActionBase action)
 	{
 		string desc = "";
-		if(m_Target && m_Target.GetObject() && m_Target.GetObject().IsItemBase())
+		if(m_Target && m_Target.GetObject())
 		{
-			desc = m_Target.GetObject().GetDisplayName();
-			return desc;
+			if( m_Target.GetObject().IsItemBase() )
+			{
+				desc = m_Target.GetObject().GetDisplayName();
+			}
+			else if( !m_Target.GetObject().IsAlive() )
+			{
+				desc = m_Target.GetObject().GetDisplayName();
+			}
 		}
 		return desc;
 	}
@@ -622,10 +638,16 @@ class ActionTargetsCursor extends ObjectFollower
 		{
 			return health;
 		}
-		if(m_Target && m_Target.GetObject() && m_Target.GetObject().IsHealthVisible())
+		if(m_Target && m_Target.GetObject())
 		{
-			health = m_Target.GetObject().GetHealthLevel();
-			return health;
+			if( m_Target.GetObject().IsHealthVisible() )
+			{
+				health = m_Target.GetObject().GetHealthLevel();
+			}
+			else if( !m_Target.GetObject().IsAlive() )
+			{
+				health = m_Target.GetObject().GetHealthLevel();
+			}
 		}
 		
 		return health;
@@ -649,22 +671,56 @@ class ActionTargetsCursor extends ObjectFollower
 		}
 	}
 
+	//! returns number of item in cargo for targeted entity
 	protected void GetItemCargoCount(out int cargoCount)
 	{
+		CargoBase cargo = null;
 		EntityAI entity = null;
-		
+		PlayerBase player;
+
 		if( Class.CastTo(entity, m_Target.GetObject()) )
 		{
-			if(entity.GetInventory())
-			{
-				CargoBase cargo = entity.GetInventory().GetCargo();
-				if (cargo)
+			//! player specific way
+			if (entity.IsInherited(PlayerBase))
+			{					
+				if (Class.CastTo(player, entity))
 				{
-					cargoCount = cargo.GetItemCount();
+					int attCount = player.GetHumanInventory().AttachmentCount();
+
+					//! go thru the each attachment slot and check cargo count
+					for(int attIdx = 0; attIdx < attCount; attIdx++)
+					{
+						EntityAI attachment = player.GetInventory().GetAttachmentFromIndex(attIdx);
+						int attachmentSlot = attachment.GetInventory().GetSlotId(0);
+						if( attachment.GetInventory() )
+						{
+							cargo = attachment.GetInventory().GetCargo();
+							if( cargo )
+							{
+								cargoCount += cargo.GetItemCount();
+							}
+						}
+						
+					}
+					
 					return;
 				}
 			}
+			else
+			{
+				if(entity.GetInventory())
+				{
+					cargo = entity.GetInventory().GetCargo();
+	
+					if (cargo)
+					{
+						cargoCount = cargo.GetItemCount();
+						return;
+					}
+				}
+			}
 
+			//! default cargo count
 			cargoCount = 0;
 		}
 	}
@@ -824,11 +880,16 @@ class ActionTargetsCursor extends ObjectFollower
 					actionName.SetText(descText);
 				}
 				else
+				{
 					actionName.SetText(descText);
+				}
+
 				widget.Show(true);
 			}
 			else
+			{
 				widget.Show(false);
+			}
 		}
 		else
 		{

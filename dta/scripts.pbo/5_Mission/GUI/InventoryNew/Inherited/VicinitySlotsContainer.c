@@ -75,13 +75,13 @@ class VicinitySlotsContainer: Container
 		{
 			m_FocusedColumn++;
 			if( m_FocusedColumn == ITEMS_IN_ROW )
-			m_FocusedColumn = 0;
+				m_FocusedColumn = 0;
 		}
 		else if( direction == Direction.LEFT )
 		{
 			m_FocusedColumn--;
 			if( m_FocusedColumn < 0 )
-			m_FocusedColumn = ITEMS_IN_ROW - 1;
+				m_FocusedColumn = ITEMS_IN_ROW - 1;
 		}
 		else if( direction == Direction.UP )
 		{

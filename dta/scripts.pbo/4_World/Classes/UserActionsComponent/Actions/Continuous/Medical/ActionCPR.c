@@ -66,7 +66,7 @@ class ActionCPR: ActionContinuousBase
 	{
 		PlayerBase other_player = PlayerBase.Cast(action_data.m_Target.GetObject());
 		other_player.GiveShock(5);
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 		action_data.m_Player.GetItemAccessor().HideItemInHands(false);
 	}
 	

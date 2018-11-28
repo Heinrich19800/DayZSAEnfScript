@@ -153,7 +153,5 @@ class LightItemOnFire extends RecipeBase
 			item_source.OnIgnitedTargetFailed(item_target);
 			item_target.OnIgnitedThisFailed(item_source);
 		}
-		
-		player.GetSoftSkillManager().AddSpecialty( UASoftSkillsWeight.ROUGH_LOW );
 	}
 };

@@ -76,6 +76,6 @@ class ActionMountBarbedWire: ActionContinuousBase
 		//mount and refresh parent
 		barbed_wire.SetMountedState( true );
 		
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }

@@ -1245,19 +1245,20 @@ class EmoteManager
 	
 	bool InterruptGesture()
 	{
-		//TODO connect to consoles once new inputs are in place
-		#ifndef PLATFORM_CONSOLE
-		for( int idx = 0; idx < m_InterruptInputs.Count(); idx++ )
+		if ( GetUApi() )
 		{
-			string inputName = m_InterruptInputs[idx];
-			UAInput inp = GetUApi().GetInputByName(inputName);
-			
-			if( inp.LocalPress() )
+			for( int idx = 0; idx < m_InterruptInputs.Count(); idx++ )
 			{
-				return true;
+				string inputName = m_InterruptInputs[idx];
+				
+					UAInput inp = GetUApi().GetInputByName(inputName);
+					
+					if( inp && inp.LocalPress() )
+					{
+						return true;
+					}
 			}
 		}
-		#endif
 		return false;
 	}
 	

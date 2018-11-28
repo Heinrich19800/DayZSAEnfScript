@@ -249,7 +249,7 @@ class ActionDeployObject: ActionContinuousBase
 		
 		GetGame().ClearJuncture( action_data.m_Player, entity_for_placing );
 		action_data.m_MainItem.SetIsBeingPlaced( false );
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 		poActionData.m_AlreadyPlaced = true;	
 		action_data.m_MainItem.SoundSynchRemoteReset();
 	}

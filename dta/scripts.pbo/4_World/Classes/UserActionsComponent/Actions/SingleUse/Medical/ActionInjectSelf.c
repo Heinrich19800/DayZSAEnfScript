@@ -40,7 +40,7 @@ class ActionInjectSelf: ActionSingleUseBase
 		if (action_data.m_MainItem)
 		{
 			action_data.m_MainItem.Delete();
-			action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+			action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 		}
 	}
 };

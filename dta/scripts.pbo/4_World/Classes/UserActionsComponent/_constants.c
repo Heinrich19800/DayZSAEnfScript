@@ -161,6 +161,10 @@ const int AT_VIEW_OPTICS = 236;
 const int AT_VIEW_BINOCULARS = 237;
 const int AT_EMPTY_COOKING_POT = 238;
 const int AT_FOLD_BASEBUILDING_OBJECT = 239;
+const int AT_GAG_TARGET = 240;
+const int AT_GAG_SELF = 241;
+const int AT_UNGAG_TARGET = 242;
+const int AT_UNGAG_SELF = 243;
 
 //SingleUse Actions
 const int AT_OPEN = 501;

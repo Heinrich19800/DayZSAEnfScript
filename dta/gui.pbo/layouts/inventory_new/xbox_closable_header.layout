@@ -9,7 +9,6 @@ PanelWidgetClass closable_header_root {
  hexactsize 0
  vexactsize 1
  fixaspect inside
- priority 1
  draggable 1
  scriptclass ""
  style blank

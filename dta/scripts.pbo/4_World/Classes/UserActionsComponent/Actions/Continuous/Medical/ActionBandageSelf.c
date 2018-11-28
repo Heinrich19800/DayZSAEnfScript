@@ -61,6 +61,6 @@ class ActionBandageSelf: ActionContinuousBase
 			action_data.m_MainItem.AddQuantity(-1,true);
 		}
 
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 };

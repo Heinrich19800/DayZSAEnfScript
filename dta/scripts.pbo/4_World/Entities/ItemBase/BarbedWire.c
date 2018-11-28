@@ -24,7 +24,7 @@ class BarbedWire extends ItemBase
 	
 	void BarbedWire()
 	{
-		m_SparkEvent 	= new Timer( CALL_CATEGORY_GAMEPLAY );
+		m_SparkEvent 	= new Timer( CALL_CATEGORY_SYSTEM );
 		m_TriggerActive = false;
 		m_IsPlaced 		= false;
 		

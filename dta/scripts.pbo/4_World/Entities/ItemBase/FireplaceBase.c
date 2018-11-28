@@ -209,14 +209,14 @@ class FireplaceBase extends ItemBase
 		super.EEInit();
 		
 		//refresh visual on init
-		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( RefreshFireplaceVisuals );
+		RefreshFireplaceVisuals();
 	}	
 	
 	override void OnItemLocationChanged( EntityAI old_owner, EntityAI new_owner ) 
 	{
 		super.OnItemLocationChanged( old_owner, new_owner );
 		
-		//refresh visuals after location change
+		//refresh physics after location change (with delay)
 		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( RefreshFireplacePhysics );
 	}	
 	
@@ -288,7 +288,7 @@ class FireplaceBase extends ItemBase
 			if ( GetGame().IsMultiplayer() )
 			{
 				//Refresh visuals (on server)
-				GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( RefreshFireplaceVisuals );
+				RefreshFireplaceVisuals();
 			}
 		}
 	}
@@ -298,8 +298,8 @@ class FireplaceBase extends ItemBase
 		super.OnVariablesSynchronized();
 
 		//Refresh client particles and audio
-		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( RefreshFireplaceVisuals );
-		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( RefreshFireParticlesAndSounds, false );
+		RefreshFireplaceVisuals();
+		RefreshFireParticlesAndSounds( false );
 	}
 	
 	//================================================================
@@ -473,7 +473,7 @@ class FireplaceBase extends ItemBase
 			SetAnimationPhase( ANIMATION_TRIPOD, 1 );
 		}
 		
-		//refresh physics
+		//refresh physics (with delay)
 		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( RefreshFireplacePhysics );
 	}
 
@@ -501,7 +501,7 @@ class FireplaceBase extends ItemBase
 		}		
 	}
 	
-	protected void RefreshFireParticlesAndSounds( bool force_refresh = false )
+	protected void RefreshFireParticlesAndSounds( bool force_refresh )
 	{
 		FireplaceFireState fire_state = GetFireState();
 		
@@ -979,7 +979,7 @@ class FireplaceBase extends ItemBase
 		}
 		
 		//refresh visual
-		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( RefreshFireplaceVisuals );
+		RefreshFireplaceVisuals();
 
 		return m_ItemToConsume;
 	}

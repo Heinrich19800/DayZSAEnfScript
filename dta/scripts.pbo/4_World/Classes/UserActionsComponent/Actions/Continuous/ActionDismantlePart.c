@@ -94,7 +94,7 @@ class ActionDismantlePart: ActionContinuousBase
 			action_data.m_MainItem.DecreaseHealth( UADamageApplied.DISMANTLE );
 		}
 
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 	
 	//setup

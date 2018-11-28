@@ -12,6 +12,7 @@ class Hologram
 	protected bool 				m_IsCollidingPlayer;
 	protected bool 				m_IsFloating;
 	protected bool 				m_UpdatePosition;
+	protected bool 				m_IsHidden;
 
 	protected vector 			m_DefaultOrientation;
 	protected vector			m_Rotation;
@@ -202,7 +203,7 @@ class Hologram
 	{	
 		bool is_surface_water = IsSurfaceWater( m_Projection.GetPosition() );		
 		
-		if( IsCollidingBBox() || IsCollidingPlayer() || IsCollidingBase() || IsCollidingGPlot() || IsCollidingZeroPos() || IsBehindObstacle() )
+		if ( IsHidden() || IsCollidingBBox() || IsCollidingPlayer() || IsCollidingBase() || IsCollidingGPlot() || IsCollidingZeroPos() || IsBehindObstacle() )
 		{
 			SetIsColliding( true );							
 		}	
@@ -465,7 +466,14 @@ class Hologram
 					continue;
 				}
 				
+				if ( object.IsInherited( CarTent ) )
+				{
+					//Print( "Mame Cartent" );
+					continue;
+				}
 				
+				
+				Print( "Mame obstacle" );
 				return true;
 			}
 		}
@@ -598,13 +606,13 @@ class Hologram
 		Print(slope_pos_right_far);
 		*/
 		
-		if( slope_pos_left_close < 1 )
+		if( slope_pos_left_close < slope_limit )
 		{
-			if( slope_pos_right_close < 1 )
+			if( slope_pos_right_close < slope_limit )
 			{
-				if( slope_pos_left_far < 1 )
+				if( slope_pos_left_far < slope_limit )
 				{
-					if(  slope_pos_right_far < 1 )
+					if(  slope_pos_right_far < slope_limit )
 					{
 						//Print("base is flat");
 						return true;	
@@ -885,6 +893,11 @@ class Hologram
 		m_IsColliding = is_colliding;
 	}
 
+	void SetIsHidden( bool is_hidden )
+	{
+		m_IsHidden = is_hidden;
+	}
+	
 	void SetIsCollidingPlayer( bool is_colliding )
 	{
 		m_IsCollidingPlayer = is_colliding;
@@ -903,6 +916,11 @@ class Hologram
 	bool IsColliding()
 	{
 		return m_IsColliding;
+	}
+	
+	bool IsHidden()
+	{
+		return m_IsHidden;
 	}
 
 	bool IsCollidingPlayer()

@@ -412,7 +412,7 @@ class InGameMenuXbox extends UIScriptedMenu
 				}
 			}
 			
-			if( GetGame().GetInput().GetActionDown( UAUIFastEquipOrSplit, false ) )
+			if( GetGame().GetInput().GetActionDown( UAUICtrlX, false ) )
 			{
 				bool muted;
 				ScriptInputUserData ctx;
@@ -446,7 +446,7 @@ class InGameMenuXbox extends UIScriptedMenu
 				}
 			}
 			
-			if( GetGame().GetInput().GetActionDown( UAQuickReload, false ) )
+			if( GetGame().GetInput().GetActionDown( UAUICtrlY, false ) )
 			{
 				if( m_ServerInfoPanel )
 				{
@@ -456,11 +456,6 @@ class InGameMenuXbox extends UIScriptedMenu
 					return;
 				OnlineServices.ShowUserProfile( uid );
 			}
-		}
-		
-		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
-		{
-			//g_Game.CancelQueueTime();
 		}
 	}
 

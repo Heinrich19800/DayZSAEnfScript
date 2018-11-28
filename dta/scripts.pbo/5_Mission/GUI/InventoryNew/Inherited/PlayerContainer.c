@@ -18,7 +18,7 @@ class PlayerContainer: CollapsibleContainer
 
 		//START - SetHeaderName
 			Header h = Header.Cast( m_Body.Get( 0 ) );
-			h.SetName( "EQUIPMENT" );
+			h.SetName( "#container_inventory" );
 		//END - SetHeaderName
 
 		//START - InitGhostSlots
@@ -1271,6 +1271,26 @@ class PlayerContainer: CollapsibleContainer
 			return false;
 		}
 		
+		return true;
+	}
+	
+	override bool OnChildRemove( Widget w, Widget child )
+	{
+		if( w == GetMainWidget() )
+		{
+			GetMainWidget().Update();
+			m_ScrollWidget.VScrollToPos01( m_ScrollWidget.GetVScrollPos01() );
+		}
+		return true;
+	}
+	
+	override bool OnChildAdd( Widget w, Widget child )
+	{
+		if( w == GetMainWidget() )
+		{
+			GetMainWidget().Update();
+			m_ScrollWidget.VScrollToPos01( m_ScrollWidget.GetVScrollPos01() );
+		}
 		return true;
 	}
 }

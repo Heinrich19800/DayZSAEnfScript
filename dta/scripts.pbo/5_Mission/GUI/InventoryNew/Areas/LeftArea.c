@@ -216,4 +216,16 @@ class LeftArea: Container
 		super.OnShow();
 		Refresh();
 	}
+	
+	override bool OnChildRemove( Widget w, Widget child )
+	{
+		m_ScrollWidget.VScrollToPos01( m_ScrollWidget.GetVScrollPos01() );
+		return true;
+	}
+	
+	override bool OnChildAdd( Widget w, Widget child )
+	{
+		m_ScrollWidget.VScrollToPos01( m_ScrollWidget.GetVScrollPos01() );
+		return true;
+	}
 }

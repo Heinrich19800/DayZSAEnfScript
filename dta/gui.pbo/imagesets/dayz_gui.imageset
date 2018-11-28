@@ -362,50 +362,50 @@ ImageSetClass {
   }
   ImageSetDefClass icon_expand {
    Name "icon_expand"
-   Pos 926 488
-   Size 64 64
+   Pos 779 265
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass icon_collapse {
    Name "icon_collapse"
-   Pos 734 552
-   Size 64 64
+   Pos 717 286
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass icon_favourite_on {
    Name "icon_favourite_on"
-   Pos 862 552
-   Size 64 64
+   Pos 758 286
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass icon_favourite_off {
    Name "icon_favourite_off"
-   Pos 798 552
-   Size 64 64
+   Pos 738 286
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass icon_locked_sb {
    Name "icon_locked_sb"
-   Pos 926 552
-   Size 64 64
+   Pos 779 286
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass icon_moon {
    Name "icon_moon"
-   Pos 862 488
-   Size 64 64
+   Pos 758 265
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass icon_sun {
    Name "icon_sun"
-   Pos 734 488
-   Size 64 64
+   Pos 717 265
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass icon_player {
    Name "icon_player"
-   Pos 798 488
-   Size 64 64
+   Pos 738 265
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass area_0 {
@@ -434,14 +434,14 @@ ImageSetClass {
   }
   ImageSetDefClass icon_sun_accel {
    Name "icon_sun_accel"
-   Pos 670 488
-   Size 64 64
+   Pos 696 265
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass icon_moon_accel {
    Name "icon_moon_accel"
-   Pos 670 552
-   Size 64 64
+   Pos 696 286
+   Size 20 20
    Flags 0
   }
   ImageSetDefClass icon_refresh {

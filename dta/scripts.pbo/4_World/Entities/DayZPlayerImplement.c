@@ -21,7 +21,7 @@ class DayZPlayerCommandDeathCallback : HumanCommandDeathCallback
 			{
 				vector transform[4];
 				itemInHands.GetTransform(transform);
-				m_pPlayer.ServerDropEntity(itemInHands);
+				m_pPlayer.PredictiveDropEntity(itemInHands);
 				itemInHands.SetTransform(transform);
 			}
 		}
@@ -435,6 +435,12 @@ class DayZPlayerImplement extends DayZPlayer
 	{
 		Print("inv: DayZPlayerImplement::OnItemInHandsChanged");
 		GetItemAccessor().OnItemInHandsChanged();
+		
+		if (!IsAlive())
+		{
+			Print("inv: DayZPlayerImplement::OnItemInHandsChanged - human not alive! calling ResetWeaponInHands");
+			GetItemAccessor().ResetWeaponInHands();
+		}
 	}
 
 	WeaponManager GetWeaponManager () { return null; }
@@ -538,7 +544,8 @@ class DayZPlayerImplement extends DayZPlayer
 		#endif
 		
 		//! fire
-		if (!m_LiftWeapon_player && weapon && !weapon.IsDamageDestroyed() && weapon.CanProcessWeaponEvents() )
+		//if (!m_LiftWeapon_player && weapon && !weapon.IsDamageDestroyed() && weapon.CanProcessWeaponEvents() )
+		if (GetWeaponManager().CanFire(weapon))
 		{
 			bool autofire = weapon.GetCurrentModeAutoFire(weapon.GetCurrentMuzzle()) && weapon.IsCartridgeInChamber(weapon.GetCurrentMuzzle());
 			int burst = weapon.GetCurrentModeBurstSize(weapon.GetCurrentMuzzle());
@@ -692,12 +699,12 @@ class DayZPlayerImplement extends DayZPlayer
 	{
 		pAnimType = 0;
 		pAnimHitFullbody = false; // additive anm
-		
+		GetMovementState(m_MovementState);
+
 		switch(pDamageType)
 		{
 			case 0: // DT_CLOSE_COMBAT
 				//! ignore hit impacts in prone (for now)
-				GetMovementState(m_MovementState);
 				if (m_MovementState.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_PRONE || m_MovementState.m_iStanceIdx == DayZPlayerConstants.STANCEIDX_RAISEDPRONE)
 					return false;
 
@@ -705,16 +712,22 @@ class DayZPlayerImplement extends DayZPlayer
 			 	if (pSource.IsInherited(DayZInfected))
 					break;
 
-				pAnimType = GetGame().ConfigGetInt("cfgAmmo " + pAmmoType + " hitAnimation");			
+				pAnimType = GetGame().ConfigGetInt("cfgAmmo " + pAmmoType + " hitAnimation");
 				if (pAnimType == 1 && !m_MeleeFightLogic.IsInBlock())
 					pAnimHitFullbody = true;
 			break;
 			case 1: // DT_FIREARM
-				//return false; // skip evaluation of dmg hit anim (tmp)
-				
-				float fireDamage = pDamageResult.GetHighestDamage("Health");
-				if (fireDamage > 80.0)
-					pAnimHitFullbody = true;
+				int impactBehaviour = 0;
+				//! play full body when these coponents were hit
+				if ( pComponent == "Torso" || pComponent == "Head")
+				{
+					impactBehaviour = GetGame().ConfigGetInt("cfgAmmo " + pAmmoType + " impactBehaviour");
+					float fireDamage = pDamageResult.GetHighestDamage("Health");
+					if( fireDamage > 80.0 && impactBehaviour == 1 )
+					{
+						pAnimHitFullbody = true;
+					}
+				}
 
 			break;
 			case 2: // DT_EXPLOSION
@@ -1156,15 +1169,15 @@ class DayZPlayerImplement extends DayZPlayer
 		////////////////////////////////////////////////
 		// Eye Zoom logic
 
-		if (input.GetActionDown(UAZoomIn, false) && !m_CameraEyeZoom && !input.GetActionDown(UAADSToggle, false))
+		if( !m_CameraEyeZoom && input.GetActionDown(UAZoomIn, false) && !m_MovementState.IsRaised() )
 		{
 			m_CameraEyeZoom = true;
-			//Print("To EyeZoom " +  m_CameraEyeZoom.ToString());
+			//Print( "To EyeZoom " +  m_CameraEyeZoom.ToString() );
 		}
-		else if (input.GetActionUp(UAZoomIn, false) && m_CameraEyeZoom )
+		else if( m_CameraEyeZoom && ( input.GetActionUp(UAZoomIn, false) || m_MovementState.IsRaised() ) )
 		{
-			//Print("From EyeZoom " +  m_CameraEyeZoom.ToString());
 			m_CameraEyeZoom = false;
+			//Print( "From EyeZoom " +  m_CameraEyeZoom.ToString() );
 		}
 
 		//--------------------------------------------
@@ -1322,19 +1335,27 @@ class DayZPlayerImplement extends DayZPlayer
 			}
 		}
 
+		HumanCommandAdditives ad = GetCommandModifier_Additives();
+		if (ad)
+		{
+			bool force = false;
 #ifndef NO_GUI
 #ifdef DEVELOPER
-		//! enable this later for everything
-
-		HumanCommandAdditives ad = GetCommandModifier_Additives();
-		if( ad )
-		{
-			ad.SetTalking(DiagMenu.GetValue(DayZPlayerConstants.DEBUG_ENABLETALKING));
-		}
-
+			//! force speaking for debug
+			force = DiagMenu.GetValue(DayZPlayerConstants.DEBUG_ENABLETALKING);
 #endif
 #endif 
-		
+			float amplitude = IsPlayerSpeaking();
+			
+			if (amplitude > 0.1 || force)
+			{	
+				ad.SetTalking(true);
+			}
+			else
+			{
+				ad.SetTalking(false);
+			}
+		}
 		
 		//--------------------------------------------
 		// anything whats handled by InputController
@@ -2002,7 +2023,7 @@ class DayZPlayerImplement extends DayZPlayer
 			if (soundBuilder != NULL && GetGame().GetPlayer())
 			{
 				vector orientation = Vector(0, 0, 0);
-				vector edgeLength = Vector(0.5, 1.5, 0.5);
+				vector edgeLength = Vector(1.5, 3.0, 1.5);
 				array<Object> excludedObjects = new array<Object>;
 				array<Object> collidedObjects = new array<Object>;
 				

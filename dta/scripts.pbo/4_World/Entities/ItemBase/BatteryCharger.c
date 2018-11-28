@@ -20,8 +20,8 @@ class BatteryCharger extends ItemBase
 	static protected const string SWITCH_LIGHT_GLOW		= "dz\\gear\\camping\\data\\battery_charger_light_switch_on.rvmat";
 	static protected const string DEFAULT_MATERIAL 		= "dz\\gear\\camping\\data\\battery_charger.rvmat";
 	
-	protected const string 	ATTACHED_CLIPS_STATES[] 		= {SEL_CLIPS_CAR, SEL_CLIPS_TRUCK}; // TO DO: If it's required by design, add helicopter battery here and regieter its selection names.
-	protected const int 	ATTACHED_CLIPS_STATES_COUNT		= 2;
+	protected const string 	ATTACHED_CLIPS_STATES[] 		= {SEL_CLIPS_CAR, SEL_CLIPS_TRUCK}; // TO DO: If it's required by design, add helicopter battery here and register its selection names.
+	protected const int 	ATTACHED_CLIPS_STATES_COUNT		= 2; // Reffers to this ^ array
 	
 	
 	
@@ -35,7 +35,7 @@ class BatteryCharger extends ItemBase
 	void BatteryCharger()
 	{
 		m_ChargeEnergyPerSecond = GetGame().ConfigGetFloat ("CfgVehicles " + GetType() + " ChargeEnergyPerSecond");
-		m_UpdateStatusLightsTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+		m_UpdateStatusLightsTimer = new Timer( CALL_CATEGORY_SYSTEM );
 		SwitchLightOff();
 		RegisterNetSyncVariableInt("m_BatteryEnergy0To100");
 	}

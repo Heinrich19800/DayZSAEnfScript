@@ -156,5 +156,6 @@ class PluginRecipesManagerBase extends PluginBase
 		RegisterRecipe(new LightItemOnFire);
 		RegisterRecipe(new CraftFenceKit);
 		RegisterRecipe(new CraftWatchtowerKit);
+		RegisterRecipe(new CraftWoodenPlank);
 	}
 };

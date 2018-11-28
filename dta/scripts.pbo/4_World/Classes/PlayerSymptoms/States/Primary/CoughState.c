@@ -20,10 +20,22 @@ class CoughSymptom extends SymptomBase
 	{
 	}
 	
+	override void OnAnimationPlayFailed()
+	{
+		
+	}
+	
 	//!gets called once on an Symptom which is being activated
 	override void OnGetActivatedServer(PlayerBase player)
 	{
-		PlaySound( EPlayerSoundEventID.SYMPTOM_COUGH );
+		if( m_Manager.GetCurrentCommandID() == DayZPlayerConstants.COMMANDID_MOVE )
+		{
+			PlayAnimationADD(1);
+		}
+		else
+		{
+			PlaySound(EPlayerSoundEventID.SYMPTOM_COUGH);
+		}
 		player.SpreadAgents();
 	}
 

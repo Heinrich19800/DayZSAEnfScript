@@ -233,7 +233,6 @@ class ActionConstructor
 		actions.Insert(new ActionPackTent);
 		actions.Insert(new ActionOpenBarrel);
 		actions.Insert(new ActionCloseBarrel);
-		actions.Insert(new ActionCoverPlantedSeed);
 		actions.Insert(new ActionOpenBarrelHoles);
 		actions.Insert(new ActionCloseBarrelHoles);
 		actions.Insert(new ActionTakeFireplaceIndoor);

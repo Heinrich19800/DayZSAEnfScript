@@ -41,6 +41,7 @@ class GetServersResultRow
 	bool	m_IsPasswordProtected;
 	string	m_CreatedAt;
 	string	m_UpdatedAt;
+	bool	m_IsExpanded;
 
 	//characters alive
 	string m_CharactersAlive;
@@ -100,6 +101,8 @@ class GetServersResult
 	int								m_Page;
 	int								m_Pages;
 	ref GetServersResultRowArray	m_Results;
+
+	int m_NumServers;
 };
 
 //! GetServersInput the input structure of the GetServers operation

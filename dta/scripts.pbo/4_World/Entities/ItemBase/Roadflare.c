@@ -48,8 +48,8 @@ class Roadflare : ItemBase
 
 	void Roadflare()
 	{
-		m_FinalSmokeTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
-		m_RandomSparksTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+		m_FinalSmokeTimer = new Timer( CALL_CATEGORY_SYSTEM );
+		m_RandomSparksTimer = new Timer( CALL_CATEGORY_SYSTEM );
 		
 		RegisterNetSyncVariableFloat("m_EM.m_Energy"); // TO DO: Do not register float energy directly, but use GetEnergy0To100() instead!
 	}

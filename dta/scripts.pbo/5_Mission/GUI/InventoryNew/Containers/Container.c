@@ -69,7 +69,10 @@ class Container extends LayoutHolder
 	
 	void Select()
 	{
-		GetFocusedContainer().Select();
+		if( GetFocusedContainer() )
+		{
+			GetFocusedContainer().Select();
+		}
 	}
 	
 	void SelectItem()

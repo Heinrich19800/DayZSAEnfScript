@@ -165,6 +165,8 @@ class CarDoor extends InventoryItemSuper
 
 class CarRadiator extends InventoryItemSuper
 {
+
+/* MOVED TO CarScript.C
 	override void OnWasAttached ( EntityAI parent, int slot_id )
 	{	
 		if ( GetGame().IsServer() && parent )
@@ -191,7 +193,7 @@ class CarRadiator extends InventoryItemSuper
 			}
 		}
 	}
-	
+*/
 	override void EEKilled(Object killer)
 	{
 		if ( GetGame().IsServer() )
@@ -202,7 +204,7 @@ class CarRadiator extends InventoryItemSuper
 			Class.CastTo( car, parent );
 
 			if ( car )
-				car.Leak( CarFluid.COOLANT, car.GetFluidFraction(CarFluid.COOLANT)*car.GetFluidCapacity(CarFluid.COOLANT) );
+				car.LeakAll( CarFluid.COOLANT );
 		}
 	}
 

@@ -31,15 +31,21 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	void ServerBrowserEntry( Widget parent, int index, ServerBrowserTab tab )
 	{
+		m_Index++;
+		
 		#ifdef PLATFORM_CONSOLE
 			m_Root				= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/server_browser/xbox/server_browser_list_entry.layout", parent );
 		#else
-		#ifdef PLATFORM_WINDOWS
-			m_Root				= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/server_browser/pc/server_browser_list_entry.layout", parent );
-		#endif
+			#ifdef PLATFORM_WINDOWS
+				#ifdef SERVER_BROWSER_PAGES
+					m_Root				= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/server_browser/pc/server_browser_list_entry_pages.layout", parent );
+				#else
+					m_Root				= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/server_browser/pc/server_browser_list_entry.layout", parent );
+				#endif
+			#endif
 		#endif
 		//m_Root.SetSort( index );
-		
+		m_Root.Enable( true );
 		m_Favorite				= m_Root.FindAnyWidget( "favorite_button" );
 		m_Expand				= m_Root.FindAnyWidget( "expand_button" );
 		m_ServerName			= TextWidget.Cast( m_Root.FindAnyWidget( "server_name" ) );
@@ -82,6 +88,11 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	Widget GetRoot()
 	{
 		return m_Root;
+	}
+	
+	void Show(bool show)
+	{
+		m_Root.Show( show );
 	}
 	
 	override bool OnClick( Widget w, int x, int y, int button )
@@ -215,7 +226,7 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	{
 		m_ServerData = server_info;
 		
-		SetName( server_info.m_Name );
+		SetName( /*"("+ m_Index +") "+*/ server_info.m_Name );
 		SetPasswordLocked( server_info.m_IsPasswordProtected );
 		SetPopulation( server_info.m_CurrentNumberPlayers, server_info.m_MaxPlayers );
 		SetSlots( server_info.m_MaxPlayers );
@@ -246,21 +257,26 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	void SetPopulation( int population, int slots )
 	{
-		/*
-		string pop_text;
-		float pop_percentage = population / slots;
-		if( population == 0 )
-			pop_text	= "#server_browser_entry_empty";
-		else if( pop_percentage < 0.33 )
-			pop_text	= "#server_browser_entry_low" + population.ToString() + ")" ;
-		else if( pop_percentage < 0.66 )
-			pop_text	= "#server_browser_entry_medium" + population.ToString() + ")" ;
-		else if( pop_percentage != 1 )
-			pop_text	= "#server_browser_entry_high" + population.ToString() + ")" ;
-		else
-			pop_text	= "#server_browser_entry_full";
-		*/
-		m_ServerPopulation.SetText( population.ToString() );
+		
+		string pop_text	= "#server_browser_entry_empty";
+		
+		if ( slots > 0 )
+		{
+			float pop_percentage = population / slots;
+			if( population == 0 )
+				pop_text	= "#server_browser_entry_empty";
+			else if( pop_percentage < 0.33 )
+				pop_text	= "#server_browser_entry_low";
+			else if( pop_percentage < 0.66 )
+				pop_text	= "#server_browser_entry_medium";
+			else if( pop_percentage != 1 )
+				pop_text	= "#server_browser_entry_high";
+			else
+				pop_text	= "#server_browser_entry_full";
+		}
+		
+		//m_ServerPopulation.SetText( population.ToString() );
+		m_ServerPopulation.SetText( pop_text );
 	}
 	
 	void SetSlots( int slots )
@@ -426,10 +442,20 @@ class ServerBrowserEntry extends ScriptedWidgetEventHandler
 	
 	bool ToggleExpand()
 	{
-		m_IsExpanded = !m_IsExpanded;
+		return SetExpand(!m_IsExpanded);
+	}
+	
+	bool SetExpand(bool expand)
+	{
+		m_IsExpanded = expand;
 		m_Root.FindAnyWidget( "collapse_image" ).Show( m_IsExpanded );
 		m_Root.FindAnyWidget( "expand_image" ).Show( !m_IsExpanded );
 		m_Root.FindAnyWidget( "detailed_info" ).Show( m_IsExpanded );
+		
+		if ( m_ServerData )
+		{
+			m_ServerData.m_IsExpanded = m_IsExpanded;
+		}
 		
 		return m_IsExpanded;
 	}

@@ -2,6 +2,7 @@ class ItemOptics extends InventoryItemSuper
 {
 	bool 				m_data_set;
 	bool 				m_allowsDOF;
+	bool 				m_reddot_displayed
 	int 				m_reddot_index;
 	float 				m_blur_float;
 	string 				m_optic_sight_texture;
@@ -120,6 +121,26 @@ class ItemOptics extends InventoryItemSuper
 		ShowReddot(false);
 	}
 	
+	bool IsWorking()
+	{
+		ComponentEnergyManager eem = GetCompEM();
+		if (GetCompEM() && GetCompEM().CanWork())
+			return true;
+		return false;
+	}
+	
+	void UpdateOpticsReddotVisibility()
+	{
+		if (IsWorking() && !m_reddot_displayed)
+		{
+			ShowReddot(true);
+		}
+		else if (!IsWorking() && m_reddot_displayed)
+		{
+			ShowReddot(false);
+		}
+	}
+	
 	override void OnWasAttached( EntityAI parent, int slot_id )
 	{
 		super.OnWasAttached(parent, slot_id);
@@ -198,6 +219,7 @@ class ItemOptics extends InventoryItemSuper
 			SetObjectTexture(m_reddot_index, "");
 			SetObjectMaterial(m_reddot_index, "");
 		}
+		m_reddot_displayed = state;
 	}
 	
 	void InitOpticsPPInfo()

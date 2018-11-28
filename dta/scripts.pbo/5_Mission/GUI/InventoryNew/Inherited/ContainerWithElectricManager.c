@@ -18,6 +18,11 @@ class ContainerWithElectricManager: ClosableContainer
 		}
 	}
 	
+	override void MoveGridCursor( int direction )
+	{
+		m_Atts.MoveGridCursor( direction );
+	}
+	
 	void ElectricityIcon()
 	{
 		if( GetMainWidget().FindAnyWidget( "electricity" ) )

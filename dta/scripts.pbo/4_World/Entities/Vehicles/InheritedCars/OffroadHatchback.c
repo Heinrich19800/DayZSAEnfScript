@@ -32,9 +32,16 @@ class OffroadHatchback extends CarScript
 
 	}
 
+/*
 	override void EEItemAttached ( EntityAI item, string slot_name ) 
 	{
-/*
+		//not working properly 
+		if ( item.GetType() == "HatchbackWheel_Ruined" )
+		{
+			dBodyActive( this, ActiveState.ACTIVE);
+			dBodyApplyImpulseAt( this, vector.Up * 2, item.GetPosition() );
+		}
+
 		if ( GetGame().IsServer() )
 		{
 			if ( slot_name == "CarRadiator" )
@@ -43,10 +50,9 @@ class OffroadHatchback extends CarScript
 				//Leak( CarFluid.COOLANT, GetFluidFraction(CarFluid.COOLANT)*GetFluidCapacity(CarFluid.COOLANT) );
 			}
 		}
-*/
 	}
 
-	override void EEItemDetached(EntityAI item, string slot_name)
+		override void EEItemDetached(EntityAI item, string slot_name)
 	{
 		if ( GetGame().IsServer() )
 		{
@@ -59,6 +65,7 @@ class OffroadHatchback extends CarScript
 			}
 		}
 	}
+*/
 
 	override bool CanReleaseAttachment( EntityAI attachment )
 	{

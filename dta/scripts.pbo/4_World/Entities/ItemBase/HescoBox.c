@@ -182,7 +182,7 @@ class HescoBox extends Inventory_Base
 	void RefreshPhysics()
 	{
 		if (!m_Timer)
-			m_Timer = new Timer( CALL_CATEGORY_GAMEPLAY );
+			m_Timer = new Timer( CALL_CATEGORY_SYSTEM );
 		
 		m_Timer.Run(0.1, this, "RefreshPhysicsDelayed");
 	}

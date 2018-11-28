@@ -1459,11 +1459,22 @@ class DayZGame extends CGame
 		string uid = ip + ":" + port;
 		if( m_Visited )
 		{
-			if( m_Visited.Find( uid ) < 0 )
+			int pos = m_Visited.Find( uid );
+			 
+			if( pos < 0 )
 			{
 				if( m_Visited.Count() == MAX_VISITED )
 					m_Visited.Remove( 0 );
 				m_Visited.Insert( uid );
+			}
+			else
+			{
+				// if item is not saved as last server, move it
+				if( pos != ( m_Visited.Count() - 1 ))
+				{
+					m_Visited.Remove( pos );
+					m_Visited.Insert( uid );
+				}
 			}
 			GetGame().SetProfileStringList( "SB_Visited", m_Visited );
 			GetGame().SaveProfile();

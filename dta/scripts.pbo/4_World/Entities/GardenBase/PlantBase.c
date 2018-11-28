@@ -6,7 +6,7 @@ class PlantBase extends ItemBase
 	static const int STATE_MATURE 				= 2;
 	static const int STATE_SPOILED 				= 3;
 
-	private float 	m_SprayUsage; 					// How much spray is needed to stop infestation of plant
+	private float 	m_SprayUsage; // How much spray is needed to stop infestation of plant
 	
 	private float 	m_InfestationChance;
 	
@@ -63,21 +63,25 @@ class PlantBase extends ItemBase
 		m_SprayQuantity = 0.0;
 		
 		m_HasCrops = true;
+		
+		
+		RegisterNetSyncVariableBool("m_HasCrops");
+		RegisterNetSyncVariableInt("m_PlantState");
+		RegisterNetSyncVariableInt("m_PlantStateIndex");
 	}
 
 	void Init( GardenBase garden_base, float fertility, float harvesting_efficiency, float water )
 	{
 		m_GardenBase = garden_base;
 		
-		float divided = (float)((60 * 13) + Math.RandomInt(0, 60 * 4)) / fertility;
-		m_FullMaturityTime = 10; //divided; // TO DO: use correct time when testing is done
+		float divided = 30;// (float)((60 * 1) + Math.RandomInt(0, 60 * 1)) / fertility;
+		m_FullMaturityTime = divided;
 		
 		divided = (float)((60 * 30) + Math.RandomInt(0, 60 * 30)) * fertility;
 		m_SpoilAfterFullMaturityTime = divided;
 
 		divided = (float)((float)m_FullMaturityTime / ((float)m_GrowthStagesCount - 2.0));
 		m_StateChangeTime = divided;
-		m_StateChangeTime = 3; // TO DO: Temporal overwrite for faster testing
 
 		float count = m_CropsCount * fertility * harvesting_efficiency;
 		m_CropsCount = (int)Math.Ceil( count );
@@ -104,16 +108,49 @@ class PlantBase extends ItemBase
 				}
 			}
 		}
-
-		Synch(ERPCs.RPC_PLANT_STATE);
-		Synch(ERPCs.RPC_PLANT_STATE_INDEX);
-		Synch(ERPCs.RPC_PLANT_CROPS);
-		Synch(ERPCs.RPC_PLANT_INFESTATION);
-		Synch(ERPCs.RPC_PLANT_PESTICIDE);
-		Synch(ERPCs.RPC_PLANT_SLOT);
-		Synch(ERPCs.RPC_PLANT_GARDEN);
 	}
 
+	
+	override void OnStoreLoad( ParamsReadContext ctx )
+	{
+		super.OnStoreLoad( ctx );
+		
+		Print("Plant - OnStoreLoad - ");
+		
+		GardenBase garden = GardenBase.Cast( GetHierarchyParent() );
+		Print(garden);
+		
+		int slot_index = -1;
+		ctx.Read( slot_index );
+		
+		Print(slot_index);
+		
+		Slot slot = garden.GetSlotByIndex(slot_index);
+		Print(slot);
+		
+		SetSlot(slot);
+	}
+
+	override void OnStoreSave( ParamsWriteContext ctx )
+	{
+		super.OnStoreSave( ctx );
+		
+		Print("Plant - OnStoreSave - ");
+		Slot slot = GetSlot();
+		Print(slot);
+		if (slot)
+		{
+			int slot_index = slot.GetSlotIndex();
+			Print(slot_index);
+			ctx.Write( slot_index );
+		}
+		else
+		{
+			GetGame().ObjectDelete(this); // Plants that exist without a garden must be deleted. Otherwise they might cause problems.
+			Error("Warning! A plant existed without a garden. Therefore it was deleted from the world to prevent issues!");
+		}
+	}
+	
 	void OnStoreLoadCustom( ParamsReadContext ctx, GardenBase garden_base )
 	{
 		int loadInt;
@@ -309,93 +346,6 @@ class PlantBase extends ItemBase
 		}
 		ctx.Write( saveFloat );
 	}
-
-	// On server -> client synchronization
-	override void OnRPC(PlayerIdentity sender, int rpc_type, ParamsReadContext ctx)
-	{
-		super.OnRPC(sender, rpc_type, ctx);
-		
-		if ( GetGame().IsClient() )
-		{
-			switch(rpc_type)
-			{
-				case ERPCs.RPC_PLANT_STATE:
-				
-					ref Param1<int> p_plant_state = new Param1<int>(0);
-					
-					if (ctx.Read(p_plant_state ))
-					{
-						m_PlantState = p_plant_state .param1;
-					}
-					
-				break;
-				case ERPCs.RPC_PLANT_STATE_INDEX:
-				
-					ref Param1<int> p_plant_state_index = new Param1<int>(0);
-					
-					if (ctx.Read(p_plant_state_index))
-					{
-						m_PlantStateIndex = p_plant_state_index.param1;
-					}
-					
-				break;
-				case ERPCs.RPC_PLANT_CROPS:
-				
-					ref Param1<bool> p_crops = new Param1<bool>(false);
-					
-					if (ctx.Read(p_crops))
-					{
-						m_HasCrops = p_crops.param1;
-					}
-					
-				break;
-				case ERPCs.RPC_PLANT_INFESTATION:
-				
-					ref Param1<bool> p_is_infested = new Param1<bool>(false);
-					
-					if (ctx.Read(p_is_infested))
-					{
-						m_IsInfested = p_is_infested.param1;
-						PrintValues();
-					}
-					
-				break;
-				case ERPCs.RPC_PLANT_PESTICIDE:
-				
-					ref Param1<float> p_spray = new Param1<float>(0);
-					
-					if (ctx.Read(p_spray))
-					{
-						m_SprayQuantity = p_spray.param1;
-					}
-					
-				break;
-				case ERPCs.RPC_PLANT_SLOT:
-				
-					ref Param1<Slot> p_slot = new Param1<Slot>>(NULL);
-					
-					if (ctx.Read(p_slot))
-					{
-						//m_Slot = p_slot.param1;
-						SetSlot(p_slot.param1);
-					}
-					
-				break;
-				case ERPCs.RPC_PLANT_GARDEN:
-				
-					ref Param1<GardenBase> p_garden = new Param1<GardenBase>(NULL);
-					
-					if (ctx.Read(p_garden))
-					{
-						m_GardenBase = p_garden.param1;
-					}
-					
-				break;
-			}
-
-			PrintValues();
-		}
-	}
 	
 	void PrintValues()
 	{
@@ -411,59 +361,6 @@ class PlantBase extends ItemBase
 		Print(m_Slot);
 		Print(m_GardenBase);
 		Print("----------------------------------------------------------");
-	}
-	
-	// Synchronizes values server->client
-	protected void Synch(int rpc_type)
-	{
-		if ( GetGame().IsServer() )
-		{
-			switch(rpc_type)
-			{
-				case ERPCs.RPC_PLANT_STATE:
-				
-					Param1<int> p1 = new Param1<int>( m_PlantState );
-					GetGame().RPCSingleParam( this, ERPCs.RPC_PLANT_STATE, p1, true );
-					
-				break;
-				case ERPCs.RPC_PLANT_STATE_INDEX:
-				
-					Param1<int> p2 = new Param1<int>( m_PlantStateIndex );
-					GetGame().RPCSingleParam( this, ERPCs.RPC_PLANT_STATE_INDEX, p2, true );
-					
-				break;
-				case ERPCs.RPC_PLANT_CROPS:
-				
-					Param1<bool> p3 = new Param1<bool>( m_HasCrops );
-					GetGame().RPCSingleParam( this, ERPCs.RPC_PLANT_CROPS, p3, true );
-					
-				break;
-				case ERPCs.RPC_PLANT_INFESTATION:
-				
-					Param1<bool> p4 = new Param1<bool>( m_IsInfested );
-					GetGame().RPCSingleParam( this, ERPCs.RPC_PLANT_INFESTATION, p4, true );
-					
-				break;
-				case ERPCs.RPC_PLANT_PESTICIDE:
-				
-					Param1<float> p5 = new Param1<float>( m_SprayQuantity );
-					GetGame().RPCSingleParam( this, ERPCs.RPC_PLANT_PESTICIDE, p5, true );
-					
-				break;
-				case ERPCs.RPC_PLANT_SLOT:
-				
-					Param1<Slot> p6 = new Param1<Slot>( m_Slot );
-					GetGame().RPCSingleParam( this, ERPCs.RPC_PLANT_SLOT, p6, true );
-					
-				break;
-				case ERPCs.RPC_PLANT_GARDEN:
-				
-					Param1<GardenBase> p7 = new Param1<GardenBase>( m_GardenBase );
-					GetGame().RPCSingleParam( this, ERPCs.RPC_PLANT_GARDEN, p7, true );
-					
-				break;
-			}
-		}
 	}
 	
 	override bool CanPutInCargo( EntityAI parent )
@@ -515,8 +412,6 @@ class PlantBase extends ItemBase
 				SetObjectMaterial( 0, material.m_HealthyMat );
 			}
 		}
-		
-		Synch(ERPCs.RPC_PLANT_INFESTATION);
 	}
 
 	void UpdatePlant()
@@ -550,8 +445,6 @@ class PlantBase extends ItemBase
 		
 		float float_plant_state_index = (float)m_PlantStateIndex;
 		m_CurrentPlantMaterialQuantity = m_PlantMaterialMultiplier * float_plant_state_index;
-		
-		Synch(ERPCs.RPC_PLANT_STATE_INDEX);
 	}
 
 	void GrowthTimerTick()
@@ -562,6 +455,7 @@ class PlantBase extends ItemBase
 			{
 				m_PlantStateIndex++;
 				UpdatePlant();
+				SetSynchDirty();
 					
 				if ( m_PlantStateIndex == 0 )
 				{
@@ -573,7 +467,9 @@ class PlantBase extends ItemBase
 					
 					if (GetGame().IsServer())
 					{
-						m_InfestationTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+						if (!m_InfestationTimer)
+							m_InfestationTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+						
 						m_InfestationTimer.Run( Math.RandomInt(int_infestation_time_min, int_infestation_time_max), this, "InfestationTimerTick", NULL, false );
 					}
 				}
@@ -593,10 +489,11 @@ class PlantBase extends ItemBase
 		}
 		else if ( IsMature() )
 		{
-			// BUG TO DO: This secion gets executed every m_StateChangeTime seconds which creates additional 'm_SpoilAfterFullMaturityTimer' timers!
 			if (GetGame().IsServer())
 			{
-				m_SpoilAfterFullMaturityTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				if (!m_SpoilAfterFullMaturityTimer)
+					m_SpoilAfterFullMaturityTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				
 				m_SpoilAfterFullMaturityTimer.Run( m_SpoilAfterFullMaturityTime, this, "SetSpoiled", NULL, false );
 			}
 		}
@@ -636,8 +533,8 @@ class PlantBase extends ItemBase
 		{
 			m_PlantStateIndex++;
 			SetPlantState(STATE_SPOILED);
-			
 			UpdatePlant();
+			SetSynchDirty();
 			
 			if (GetGame().IsServer())
 			{
@@ -661,10 +558,7 @@ class PlantBase extends ItemBase
 				// Get the liquid
 				int liquid_type	= item.GetLiquidType();
 
-				// Liquid type check. Disabled due to DAYZ-12143
-				/*if !( _bottle getVariable "LiquidType" == "Water" ) exitWith {
-					[_user, format["#STR_PlantBase0", displayName _bottle], "colorImportant"] call fnc_playerMessage;};*/
-				if (!liquid_type & LIQUID_WATER) 
+				if (!liquid_type & LIQUID_WATER)
 				{
 					string item_display_name = "";
 					GetGame().ObjectGetDisplayName( item, item_display_name );
@@ -757,8 +651,7 @@ class PlantBase extends ItemBase
 		}
 		
 		m_HasCrops = false;
-		Synch(ERPCs.RPC_PLANT_CROPS); // TO DO: Create method for toggling crops and put this synch there.
-		
+		SetSynchDirty();
 		UpdatePlant();
 		
 		return "I've harvested the crops.";
@@ -767,8 +660,7 @@ class PlantBase extends ItemBase
 	void SetPlantState(int state)
 	{
 		m_PlantState = state;
-		Synch(ERPCs.RPC_PLANT_STATE);
-		Synch(ERPCs.RPC_PLANT_CROPS);
+		SetSynchDirty();
 	}
 	
 	int GetPlantState()
@@ -794,14 +686,8 @@ class PlantBase extends ItemBase
 	
 	bool NeedsWater()
 	{
-		Print(IsDry());
-		Print(this);
 		Slot slotPlant = m_Slot;
-		Print(slotPlant);
-		Print(m_Slot);
-		Print(GetSlot());
-		//Print(slotPlant.GetWater());
-		//Print(slotPlant.GetWaterUsage());
+		
 		if ( IsDry()  &&  slotPlant  &&  slotPlant.GetWater() < slotPlant.GetWaterUsage() )
 		{
 			return true;
@@ -847,7 +733,6 @@ class PlantBase extends ItemBase
 		if ( slot )
 		{
 			m_Slot = slot;
-			Synch(ERPCs.RPC_PLANT_SLOT);
 		}
 	}
 	
@@ -910,27 +795,3 @@ class PlantBase extends ItemBase
 		return m_HasCrops;
 	}
 }
-
-// TODO remove DiggedSoil classes below when SQF horticulture is removed from game. REMOVED old PlantBase, name conflict. Should work just as well, if still needed
-class DiggedSoil extends ItemBase
-{
-	override bool CanPutInCargo( EntityAI parent )
-	{
-		if( !super.CanPutInCargo(parent) ) {return false;}
-		return false;
-	}
-
-	override bool CanPutIntoHands( EntityAI player )
-	{
-		if( !super.CanPutIntoHands( parent ) )
-		{
-			return false;
-		}
-		return false;
-	}
-
-	override bool CanRemoveFromHands( EntityAI player )
-	{
-		return false;
-	}
-};

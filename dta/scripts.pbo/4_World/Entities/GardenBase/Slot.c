@@ -1,12 +1,11 @@
 class Slot
 {
-	static const int 	STATE_NOT_DIGGED 	= 0;
 	static const int 	STATE_DIGGED 		= 1;
 	static const int 	STATE_PLANTED 		= 2;
 	static const int 	STATE_COVERED 		= 3;
 	
 	private int 		m_WaterQuantity;
-	private int 		m_WaterUsage; 					// How much water is needed to water a plant from a bottle. Value is in mililitres
+	private int 		m_WaterUsage; // How much water is needed to water a plant from a bottle. Value is in mililitres
 	
 	float m_Fertility;
 	float m_FertilizerUsage;
@@ -31,7 +30,7 @@ class Slot
 		m_Seed = NULL;
 		m_Plant = NULL;
 		m_WaterQuantity = 0.0;
-		m_WaterUsage = 180 + Math.RandomInt(0, 20);
+		m_WaterUsage = 200;
 		Init( base_fertility );
 	}
 
@@ -226,15 +225,6 @@ class Slot
 		m_State = new_state;
 	}
 	
-	bool IsNotDigged()
-	{
-		if (m_State==STATE_NOT_DIGGED)
-		{
-			return true;
-		}
-		
-		return false;
-	}
 	bool IsDigged()
 	{
 		if (m_State==STATE_DIGGED)

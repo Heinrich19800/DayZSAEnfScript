@@ -13,6 +13,7 @@ class SymptomCB extends HumanCommandActionCallback
 		}
 	}
 	
+	
 	void Init(int SYMPTOM_uid, float running_time, PlayerBase player)
 	{
 		EnableCancelCondition(true);

@@ -43,8 +43,8 @@ class BaseBuildingBase extends ItemBase
 	//refresh visual/physics state
 	void Refresh()
 	{
-		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).Call( UpdateVisuals );
-		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( UpdatePhysics, 100, false );
+		UpdateVisuals();
+		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( UpdatePhysics, 200, false );
 	}
 	
 	override void OnVariablesSynchronized()
@@ -253,6 +253,9 @@ class BaseBuildingBase extends ItemBase
 		ctx.Read( m_SyncParts01 );
 		ctx.Read( m_SyncParts02 );
 		
+		//update server data
+		SetPartsFromSyncData();
+		
 		//synchronize after load
 		Synchronize();
 	}
@@ -273,7 +276,7 @@ class BaseBuildingBase extends ItemBase
 		super.OnItemLocationChanged( old_owner, new_owner );
 		
 		//update visuals after location change
-		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( UpdatePhysics, 100, false );
+		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( UpdatePhysics, 200, false );
 	}
 	
 	override void EEItemAttached ( EntityAI item, string slot_name )
@@ -362,8 +365,7 @@ class BaseBuildingBase extends ItemBase
 						SetAnimationPhase( slot_name, 1 );
 						SetAnimationPhase( slot_name_mounted, 0 );
 						
-						//TODO - add damage trigger once triggers are fixed
-						//CreateAreaDamage( slot_name_mounted );			//create damage trigger if barbed wire is mounted
+						CreateAreaDamage( slot_name_mounted );			//create damage trigger if barbed wire is mounted
 					}
 					else
 					{
@@ -468,8 +470,14 @@ class BaseBuildingBase extends ItemBase
 		GetConstruction().UpdatePhysics();
 		
 		//regenerate navmesh
-		SetAffectPathgraph( true, false );
+		UpdateNavmesh();
 	}	
+	
+	protected void UpdateNavmesh()
+	{
+		SetAffectPathgraph( true, false );
+		GetGame().UpdatePathgraphRegionByObject( this );
+	}
 	
 	override bool CanUseConstruction()
 	{
@@ -596,29 +604,26 @@ class BaseBuildingBase extends ItemBase
 			AreaDamageRegularDeferred area_damage = new AreaDamageRegularDeferred( this );
 			
 			vector min_max[2];
-			
 			if ( MemoryPointExists( slot_name + "_min" ) )
 			{
 				min_max[0] = GetMemoryPointPos( slot_name + "_min" );
 			}
 			if ( MemoryPointExists( slot_name + "_max" ) )
 			{
-				min_max[0] = GetMemoryPointPos( slot_name + "_max" );
+				min_max[1] = GetMemoryPointPos( slot_name + "_max" );
 			}
 			
-			/*
-			vector egde_length = GetConstruction().GetCollisionBoxSize( min_max );
-			vector min;
-			min[0] = -egde_length[0] / 2;
-			min[1] = -egde_length[1] / 2;
-			min[2] = -egde_length[2] / 2;
-			vector max;
-			max[0] = egde_length[0] / 2;
-			max[1] = egde_length[1] / 2;
-			max[2] = egde_length[2] / 2;
-			area_damage.SetExtents( min_max[0], min_max[1] );
-			*/
-			area_damage.SetExtents( "-2 -1 -2", "2 1 2" );
+			//get proper trigger extents (min<max)
+			vector extents[2];
+			GetConstruction().GetTriggerExtents( min_max, extents );
+			
+			//get box center
+			vector center;
+			center = GetConstruction().GetBoxCenter( min_max );
+			center = ModelToWorld( center );
+			
+			area_damage.SetExtents( extents[0], extents[1] );
+			area_damage.SetAreaPosition( center );
 			area_damage.SetLoopInterval( 0.5 );
 			area_damage.SetDeferInterval( 0.5 );
 			area_damage.SetHitZones( { "Head","Torso","LeftHand","LeftLeg","LeftFoot","RightHand","RightLeg","RightFoot" } );

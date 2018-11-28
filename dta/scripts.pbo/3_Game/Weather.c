@@ -109,8 +109,63 @@ class WeatherPhenomenon
 		\param time   Seconds when the next forecast will be computed.
 		\return True when script modifies state of this phenomenon false otherwise.
 	*/
+
 	bool OnBeforeChange( EWeatherPhenomenon type, float change, float time )
 	{
+		float rainActual = g_Game.GetWeather().GetRain().GetActual();
+		float rainLastForecast;
+		
+		float overcastForecast;
+		float overcastNextChange;
+		float overcastForecastMin;
+		float overcastForecastMax;
+
+
+		switch( type )
+		{
+			case EWeatherPhenomenon.OVERCAST:
+				overcastForecast = g_Game.GetWeather().GetOvercast().GetForecast();
+				overcastNextChange = g_Game.GetWeather().GetOvercast().GetNextChange();
+				Print( "COMPUTING NEW OVERCAST" );
+				//Print( "-----------------------------------------------------------" );
+				Print( "Actual " + "( " + g_Game.GetDayTime() + " )" + " overcast: " + GetActual() );
+				Print( "Actual " + "( " + g_Game.GetDayTime() + " )" + " rain: " + rainActual );
+				//Print( "Forecast overcast: " + GetForecast() );
+				//Print( "New overcast will be: " + overcastForecast + " in " + overcastForecastMin + " sec");
+				Print( "-----------------------------------------------------------" );	
+				return false;
+				break;
+			
+			case EWeatherPhenomenon.FOG:
+				Print( "COMPUTING NEW FOG" );
+				//Print( "-----------------------------------------------------------" );
+				Print( "Actual " + "( " + g_Game.GetDayTime() + " )" + " fog: " + GetActual() );
+				Print( "-----------------------------------------------------------" );
+				return false;
+				break;
+			
+			case EWeatherPhenomenon.RAIN:
+				Print( "COMPUTING NEW RAIN" );
+				//Print( "-----------------------------------------------------------" );
+
+				//overcastForecast = g_Game.GetWeather().GetOvercast().GetForecast();
+				//overcastNextChange = g_Game.GetWeather().GetOvercast().GetNextChange();
+			
+				//GetLimits(rainMin, rainMax);
+				Print( "Actual " + "( " + g_Game.GetDayTime() + " )" + " rain: " + GetActual() );
+				//Print( "Last Forecast: " + GetForecast() );
+				//Print( "< " + rainMin + ";" + rainMax + " >");
+				//Print( "Overcast Forecast>>> " + overcastForecast);
+				//Print( "OverCast next Change>>> " + overcastNextChange);
+				Print( "-----------------------------------------------------------" );
+			
+				return false;
+				break;
+				
+			return false;
+			
+		}
+		
 		return false;
 	}
 };

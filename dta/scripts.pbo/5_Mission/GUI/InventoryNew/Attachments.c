@@ -354,10 +354,10 @@ class Attachments
 	{
 		Widget ghost_widget;
 		int slot_id;
-		bool draggable = true;;
 
 		for ( int i = 0; i < count; i++ )
 		{
+			bool draggable = true;
 			string slot_name = slots.Get ( i );
 			string path = "CfgSlots" + " Slot_" + slot_name;
 			string icon_name2;

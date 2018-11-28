@@ -82,6 +82,6 @@ class ActionUnmountBarbedWire: ActionContinuousBase
 		//unmount and refresh parent
 		barbed_wire.SetMountedState( false );
 		
-		action_data.m_Player.GetSoftSkillManager().AddSpecialty( m_SpecialtyWeight );
+		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
 }
