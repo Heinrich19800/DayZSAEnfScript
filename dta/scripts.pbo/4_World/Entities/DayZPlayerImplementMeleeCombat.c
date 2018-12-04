@@ -358,15 +358,22 @@ class DayZPlayerImplementMeleeCombat
 	
 	void Debug(InventoryItem weapon, MeleeCombatHit hitMask)
 	{
-		bool show_targets = DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_SHOW_TARGETS);
-		bool draw_targets = DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DRAW_TARGETS);
-		bool draw_range = DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DRAW_RANGE);
+		bool show_targets = DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_SHOW_TARGETS) && DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DEBUG_ENABLE);
+		bool draw_targets = DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DRAW_TARGETS) && DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DEBUG_ENABLE);
+		bool draw_range = DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DRAW_RANGE) && DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DEBUG_ENABLE);
 
 		if( show_targets || draw_targets || draw_range )
 		{
-			//Update(weapon, hitMask);
 			if( !GetGame().IsMultiplayer() || !GetGame().IsServer() )
 			{
+				m_Weapon = weapon;
+				m_HitMask = hitMask;
+				m_SprintAttack = (hitMask & MeleeCombatHit.SPRINT) == MeleeCombatHit.SPRINT;
+				m_WeaponMode = SelectWeaponMode(weapon);
+				m_WeaponRange = GetWeaponRange(weapon, m_WeaponMode);
+				m_AllTargetObjects.Clear();
+				m_HitPositionWS = "0.5 0.5 0.5";
+				
 				TargetSelection();
 				HitZoneSelection();
 			}
@@ -388,7 +395,7 @@ class DayZPlayerImplementMeleeCombat
 		DbgUI.Begin("Melee Target", windowPosX, windowPosY);
 		if (enabled )
 		{
-			if ( m_TargetObject && m_TargetObject.IsMan() )
+			if ( m_TargetObject /*&& m_TargetObject.IsMan()*/ )
 			{
 				DbgUI.Text("Character: " + m_TargetObject.GetDisplayName());
 				DbgUI.Text("HitZone: " + m_HitZoneName + "(" + m_HitZoneIdx + ")");
@@ -497,8 +504,9 @@ class DayZPlayerImplementMeleeCombat
 		for ( int it = 0; it < shapes.Count(); ++it )
 		{
 			Debug.RemoveShape( shapes[it] );
-			shapes.Remove(it);
 		}
+
+		shapes.Clear();
 	}
 #endif
 }

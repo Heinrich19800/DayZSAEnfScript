@@ -77,7 +77,7 @@ class ActionBuildPart: ActionContinuousBase
 				construction.IsColliding( constrution_part.GetPartName() );
 			}
 			*/
-						
+
 			if ( constrution_part && base_building.IsFacingBack( player ) )
 			{
 				return true;
@@ -97,7 +97,7 @@ class ActionBuildPart: ActionContinuousBase
 		if ( !construction.IsColliding( part_name ) && construction.CanBuildPart( part_name, action_data.m_MainItem ) )
 		{
 			//build
-			construction.BuildPart( part_name, true );
+			construction.BuildPart( part_name );
 			
 			//add damage to tool
 			action_data.m_MainItem.DecreaseHealth( UADamageApplied.BUILD );
@@ -105,6 +105,20 @@ class ActionBuildPart: ActionContinuousBase
 
 		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
+	
+	override void OnFinishProgressClient( ActionData action_data )
+	{	
+		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
+		Construction construction = base_building.GetConstruction();
+		ConstructionActionData construction_action_data = action_data.m_Player.GetConstructionActionData();
+		string part_name = construction_action_data.GetCurrentBuildPart().GetPartName();
+		
+		if ( !construction.IsColliding( part_name ) && construction.CanBuildPart( part_name, action_data.m_MainItem ) )
+		{
+			//build
+			construction.BuildPart( part_name );
+		}
+	}	
 	
 	//setup
 	override bool SetupAction( PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extra_data = NULL )

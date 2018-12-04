@@ -1131,42 +1131,42 @@ class CfgSlots
 		name="Level_1_Wall_1_Barbedwire_1";
 		displayName="Bottom barbed wire";
 		selection="level_1_wall_1_barbedwire_1";
-		ghostIcon="barbedwire";
+		ghostIcon="barbedwiredown";
 	};
 	class Slot_Level_1_Wall_1_Barbedwire_2
 	{
 		name="Level_1_Wall_1_Barbedwire_2";
 		displayName="Upper barbed wire";
 		selection="level_1_wall_1_barbedwire_2";
-		ghostIcon="barbedwire";
+		ghostIcon="barbedwireup";
 	};
 	class Slot_Level_1_Wall_2_Barbedwire_1
 	{
 		name="Level_1_Wall_2_Barbedwire_1";
 		displayName="Bottom barbed wire";
 		selection="level_1_wall_2_barbedwire_1";
-		ghostIcon="barbedwire";
+		ghostIcon="barbedwiredown";
 	};
 	class Slot_Level_1_Wall_2_Barbedwire_2
 	{
 		name="Level_1_Wall_2_Barbedwire_2";
 		displayName="Upper barbed wire";
 		selection="level_1_wall_2_barbedwire_2";
-		ghostIcon="barbedwire";
+		ghostIcon="barbedwireup";
 	};
 	class Slot_Level_1_Wall_3_Barbedwire_1
 	{
 		name="Level_1_Wall_3_Barbedwire_1";
 		displayName="Bottom barbed wire";
 		selection="level_1_wall_3_barbedwire_1";
-		ghostIcon="barbedwire";
+		ghostIcon="barbedwiredown";
 	};
 	class Slot_Level_1_Wall_3_Barbedwire_2
 	{
 		name="Level_1_Wall_3_Barbedwire_2";
 		displayName="Upper barbed wire";
 		selection="level_1_wall_3_barbedwire_2";
-		ghostIcon="barbedwire";
+		ghostIcon="barbedwireup";
 	};
 	class Slot_Level_1_Wall_1_Camonet
 	{
@@ -1236,7 +1236,7 @@ class CfgSlots
 		name="Material_L1_WoodenLogs";
 		displayName="Wooden logs";
 		selection="Material_L1_WoodenLogs";
-		ghostIcon="firewood";
+		ghostIcon="woodenlog";
 		stackMax=4;
 	};
 	class Slot_Material_L1_Nails
@@ -1321,7 +1321,7 @@ class CfgSlots
 		name="Material_L2_WoodenLogs";
 		displayName="Wooden logs";
 		selection="Material_L2_WoodenLogs";
-		ghostIcon="firewood";
+		ghostIcon="woodenlog";
 		stackMax=4;
 	};
 	class Slot_Material_L2_Nails
@@ -1406,7 +1406,7 @@ class CfgSlots
 		name="Material_L3_WoodenLogs";
 		displayName="Wooden logs";
 		selection="Material_L3_WoodenLogs";
-		ghostIcon="firewood";
+		ghostIcon="woodenlog";
 		stackMax=4;
 	};
 	class Slot_Material_L3_Nails
@@ -1512,7 +1512,7 @@ class CfgSlots
 		name="Material_WoodenLogs";
 		displayName="Wooden logs";
 		selection="Material_WoodenLogs";
-		ghostIcon="firewood";
+		ghostIcon="woodenlog";
 		stackMax=2;
 	};
 	class Slot_Material_MetalWire
@@ -1534,14 +1534,14 @@ class CfgSlots
 		name="Wall_Barbedwire_1";
 		displayName="Upper barbed wire";
 		selection="wall_barbedwire_1";
-		ghostIcon="barbedwire";
+		ghostIcon="barbedwiredown";
 	};
 	class Slot_Wall_Barbedwire_2
 	{
 		name="Wall_Barbedwire_2";
 		displayName="Bottom barbed wire";
 		selection="wall_barbedwire_2";
-		ghostIcon="barbedwire";
+		ghostIcon="barbedwireup";
 	};
 	class Slot_Wall_Camonet
 	{

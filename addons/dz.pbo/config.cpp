@@ -257,7 +257,7 @@ class CfgWorlds
 	{
 		class SimulWeather: SimulWeather
 		{
-			numKeyframesPerDay=48;
+			numKeyframesPerDay=144;
 			windSpeedCoef="10.0f";
 			moonIrradianceCoef="10.0f";
 			fadeMaxDistanceKm=100;
@@ -1520,7 +1520,7 @@ class CfgWorlds
 				class Weather9: Weather1
 				{
 					overcast=0.80000001;
-					sky="dz\data\data\sky_overcast_sky.paa";
+					sky="dz\data\data\sky_mostlycloudy_sky.paa";
 					skyR="dz\data\data\sky_mostlycloudy_lco.paa";
 					horizon="dz\data\data\sky_mostlycloudy_horizont_sky.paa";
 					waves=0.44999999;
@@ -1530,7 +1530,7 @@ class CfgWorlds
 				class Weather10: Weather1
 				{
 					overcast=0.89999998;
-					sky="dz\data\data\sky_overcast_sky.paa";
+					sky="dz\data\data\sky_mostlycloudy_sky.paa";
 					skyR="dz\data\data\sky_mostlycloudy_lco.paa";
 					horizon="dz\data\data\sky_mostlycloudy_horizont_sky.paa";
 					waves=0.55000001;
@@ -1540,7 +1540,7 @@ class CfgWorlds
 				class Weather11: Weather1
 				{
 					overcast=1;
-					sky="dz\data\data\sky_overcast_sky.paa";
+					sky="dz\data\data\sky_mostlycloudy_sky.paa";
 					skyR="dz\data\data\sky_mostlycloudy_lco.paa";
 					horizon="dz\data\data\sky_mostlycloudy_horizont_sky.paa";
 					waves=0.75;

@@ -166,6 +166,7 @@ class PlayerBase extends ManBase
 	//! melee stats
 	protected int					m_MeleeLastHitTime;
 	protected EntityAI 				m_MeleeSource;
+	protected bool 					m_MeleeDebug;
 		
 	void PlayerBase()
 	{	
@@ -235,6 +236,7 @@ class PlayerBase extends ManBase
 		
 		if( !GetGame().IsMultiplayer() || GetGame().IsClient() )
 		{
+			m_MeleeDebug = false;
 			m_CraftingManager = new CraftingManager(this,m_ModuleRecipesManager);
 			m_InventoryActionHandler = new InventoryActionHandler(this);
 			m_PlayerSoundEventHandler = new PlayerSoundEventHandler(this);
@@ -584,19 +586,22 @@ class PlayerBase extends ManBase
 				{
 					if( weapon )
 					{
+						//! killed by player (with weapon)
 						GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Call(GetGame().AdminLog, "Player " + GetIdentity().GetName() + " (id=" + GetIdentity().GetId() + ") killed by " + killerIdentity.GetName() + " (id=" + killerIdentity.GetId() + ") with " + weapon.GetType() );
 						//Print("Player " + GetIdentity().GetName() + " (id=" + GetIdentity().GetId() + ") killed by " + killerIdentity.GetName() + " (id=" + killerIdentity.GetId() + ") with " + weapon.GetDisplayName() );
 					}
 					else
 					{
+						//! killed by player (without weapon)
 						GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Call(GetGame().AdminLog, "Player " + GetIdentity().GetName() + " (id=" + GetIdentity().GetId() + ") killed by " + killerIdentity.GetName() + " (id=" + killerIdentity.GetId() + ")");
 						//Print("Player " + GetIdentity().GetName() + " (id=" + GetIdentity().GetId() + ") killed by " + killerIdentity.GetName() + " (id=" + killerIdentity.GetId() + ")");
 					}
 				}
 				else
 				{
-						GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Call(GetGame().AdminLog, "Player " + GetIdentity().GetName() + " (id=" + GetIdentity().GetId() + ") killed by " + m_MeleeSource.GetType());
-						//Print("Player " + GetIdentity().GetName() + " (id=" + GetIdentity().GetId() + ") killed by " + m_MeleeSource.GetDisplayName());				
+					//! killed by "other"
+					GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).Call(GetGame().AdminLog, "Player " + GetIdentity().GetName() + " (id=" + GetIdentity().GetId() + ") killed by " + m_MeleeSource.GetType());
+					//Print("Player " + GetIdentity().GetName() + " (id=" + GetIdentity().GetId() + ") killed by " + m_MeleeSource.GetDisplayName());				
 				}
 			}
 		}
@@ -1540,7 +1545,7 @@ class PlayerBase extends ManBase
 	{
 		if(!IsAlive() ) return;
 		if( m_DebugMonitorValues ) m_DebugMonitorValues.OnScheduledTick(delta_time);
-		if( GetSymptomManager() ) GetSymptomManager().OnScheduledTick(delta_time, pCurrentCommandID);//needs to stay in command handler tick as it's playing animations
+		if( GetSymptomManager() ) GetSymptomManager().OnTick(delta_time, pCurrentCommandID, m_MovementState);//needs to stay in command handler tick as it's playing animations
 		if( GetBleedingManagerServer() ) GetBleedingManagerServer().OnTick(delta_time);
 		
 		if( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT || GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_REMOTE )
@@ -2040,15 +2045,20 @@ class PlayerBase extends ManBase
 		{
 			
 		}
-		if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER || !GetGame().IsMultiplayer() )
+		
+		if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT )
 		{
-			SetSynchDirty();
 			EntityAI entity_in_hands = GetHumanInventory().GetEntityInHands();
 			if( entity_in_hands && CanDropEntity(entity_in_hands) && !IsRestrained() )
 			{
-				ServerDropEntity(entity_in_hands);
+				PredictiveDropEntity(entity_in_hands);
 				//GetGame().GetCallQueue(CALL_CATEGORY_GAMEPLAY).CallLater(ServerDropEntity,1000,false,( GetHumanInventory().GetEntityInHands() ));
 			}
+		}
+
+		if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER || !GetGame().IsMultiplayer() )
+		{
+			SetSynchDirty();
 			 
 			// disable voice communication
 			GetGame().EnableVoN(this, false);
@@ -2325,9 +2335,13 @@ class PlayerBase extends ManBase
 			{
 				if(DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DEBUG_ENABLE))
 				{
-					InventoryItem itemInHands = GetItemInHands();
-					GetMovementState(m_MovementState);
-					m_MeleeCombat.Debug(itemInHands, m_MeleeCombat.GetHitMask());
+					m_MeleeDebug = true;
+					m_MeleeCombat.Debug(GetItemInHands(), m_MeleeCombat.GetHitMask());
+				}
+				else if (!DiagMenu.GetBool(DiagMenuIDs.DM_MELEE_DEBUG_ENABLE) && m_MeleeDebug)
+				{
+					m_MeleeDebug = false;
+					m_MeleeCombat.Debug(GetItemInHands(), m_MeleeCombat.GetHitMask());
 				}
 			}
 			
@@ -3579,7 +3593,7 @@ class PlayerBase extends ManBase
 	{
 		InventoryLocation loc = new InventoryLocation;
 		string t = src.GetType();
-		if (GetInventory().FindFirstFreeLocationForNewEntity(t, FindInventoryLocationType.CARGO | FindInventoryLocationType.ATTACHMENT, loc))
+		if (GetInventory().FindFirstFreeLocationForNewEntity(t, FindInventoryLocationType.CARGO, loc))
 		{
 			bool locked = GetGame().HasInventoryJunctureDestination(this, loc);
 			if (locked)
@@ -4274,7 +4288,7 @@ class PlayerBase extends ManBase
 		return m_AgentPool.GetSingleAgentCount(agent_id) / max_count;
 	}
 
-	int GetTotalAgentCount()
+	float GetTotalAgentCount()
 	{
 		return m_AgentPool.GetTotalAgentCount();
 	}
@@ -4514,7 +4528,7 @@ class PlayerBase extends ManBase
 				m_CancelAction = true;
 				break;
 			case DayZPlayerSyncJunctures.SJ_PLAYER_STATES:
-				GetSymptomManager().SetAnimation(pCtx, AnimType.FULL_BODY);
+				GetSymptomManager().SetAnimation(pCtx);
 				break;
 			case DayZPlayerSyncJunctures.SJ_QUICKBAR_SET_SHORTCUT:		
 				OnQuickbarSetEntityRequest(pCtx);
@@ -4535,7 +4549,7 @@ class PlayerBase extends ManBase
 				DayZPlayerSyncJunctures.ReadPlayerUnconsciousnessParams(pCtx, m_ShouldBeUnconscious);
 				break;
 			case DayZPlayerSyncJunctures.SJ_PLAYER_ADD_MODIFIER:
-				GetSymptomManager().SetAnimation(pCtx, AnimType.ADDITIVE);
+				GetSymptomManager().SetAnimation(pCtx);
 				break;
 		}
 	}

@@ -358,4 +358,13 @@ class Fireplace extends FireplaceBase
 		
 		return true;	
 	}	
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+	
+	override string GetPlaceSoundset()
+	{
+		return "placeFireplace_SoundSet";
+	}
 }

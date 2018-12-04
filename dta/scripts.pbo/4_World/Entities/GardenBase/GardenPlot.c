@@ -1,27 +1,23 @@
-class GardenPlot extends GardenBase // garden plots are temporarily disabled for the first 063 exps. Also uncomment stuff in EEDelete event!
+class GardenPlot extends GardenBase
 {
-	ClutterCutter6x6 	m_clutter_cutter;
+	ClutterCutter6x6 	m_ClutterCutter;
 	const string COMPATIBLE_SURFACES[] = {"cp_dirt", "cp_broadleaf_dense1", "cp_broadleaf_dense2", "cp_broadleaf_sparse1", "cp_broadleaf_sparse2", "cp_conifer_common1", "cp_conifer_common2", "cp_conifer_moss1", "cp_conifer_moss2", "cp_grass", "cp_grass_tall", "cp_gravel", "cp_rock", "textile_carpet_int"};
 	static const int COMPATIBLE_SURFACES_COUNT = 14; // Count if elements of COMPATIBLE_SURFACES array
 	
 	void GardenPlot()
 	{
-		m_BaseFertility = 0.8;
-		InitializeSlots();
-		DigAllSlots(); // TO DO: Slots should be digged by default, so remove this function when that change is made.
+		SetBaseFertility(0.75);
 	}
 	
 	override void EEInit()
 	{
 		super.EEInit();
 		
-		if( GetGame().IsMultiplayer() && GetGame().IsServer() )
+		if( GetGame().IsMultiplayer()  &&  GetGame().IsServer() )
 		{
-			if (!m_clutter_cutter)
+			if (!m_ClutterCutter)
 			{
-				vector pos = GetPosition();
-				Print(pos);
-				m_clutter_cutter = ClutterCutter6x6.Cast( GetGame().CreateObject( "ClutterCutter6x6", GetPosition(), false ) );
+				m_ClutterCutter = ClutterCutter6x6.Cast( GetGame().CreateObject( "ClutterCutter6x6", GetPosition(), false ) );
 			}			
 		}	
 	}	
@@ -30,13 +26,11 @@ class GardenPlot extends GardenBase // garden plots are temporarily disabled for
 	{
 		super.EEDelete(parent);
 		
-		/*
-		if (m_clutter_cutter  &&  GetGame())
+		if (m_ClutterCutter  &&  GetGame())
 		{
-			GetGame().ObjectDelete(m_clutter_cutter);
-			m_clutter_cutter = NULL;
+			GetGame().ObjectDelete(m_ClutterCutter);
+			m_ClutterCutter = NULL;
 		}
-		*/
 	}
 
 	override int GetGardenSlotsCount()
@@ -67,18 +61,27 @@ class GardenPlot extends GardenBase // garden plots are temporarily disabled for
 		HideSelection("slotDigged_09");
 	}
 	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+	
 	override void OnPlacementComplete( Man player )
 	{		
-		// To properly move the clutter cutter from spawn position, it must be deleted and created again.
-		if (m_clutter_cutter)
-		{
-			GetGame().ObjectDelete(m_clutter_cutter);
-			m_clutter_cutter = NULL;
-		}
+		super.OnPlacementComplete( player );
 		
-		if (!m_clutter_cutter)
+		if ( GetGame().IsServer() )
 		{
-			m_clutter_cutter = ClutterCutter6x6.Cast( GetGame().CreateObject( "ClutterCutter6x6", GetPosition(), false ) );
+			// To properly move the clutter cutter from spawn position, it must be deleted and created again.
+			if (m_ClutterCutter)
+			{
+				GetGame().ObjectDelete(m_ClutterCutter);
+				m_ClutterCutter = NULL;
+			}
+			
+			if (!m_ClutterCutter)
+			{
+				m_ClutterCutter = ClutterCutter6x6.Cast( GetGame().CreateObject( "ClutterCutter6x6", GetPosition(), false ) );
+			}
 		}
 	}
 	

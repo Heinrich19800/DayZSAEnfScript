@@ -11,9 +11,9 @@ class ActionDestroyPart: ActionContinuousBase
 	void ActionDestroyPart()
 	{
 		m_CallbackClass = ActionDestroyPartCB;
-		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_CRAFTING;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DISASSEMBLE;
 		m_FullBody = true;
-		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;		
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;		
 		
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 	}
@@ -94,4 +94,18 @@ class ActionDestroyPart: ActionContinuousBase
 
 		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
+	
+	override void OnFinishProgressClient( ActionData action_data )
+	{	
+		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
+		Construction construction = base_building.GetConstruction();
+		ConstructionActionData construction_action_data = action_data.m_Player.GetConstructionActionData();
+		ConstructionPart construction_part = construction_action_data.GetTargetPart();
+		
+		if ( construction.CanDestroyPart( construction_part.GetPartName() ) )
+		{
+			//build
+			construction.DestroyPart( construction_part.GetPartName() );
+		}
+	}	
 }

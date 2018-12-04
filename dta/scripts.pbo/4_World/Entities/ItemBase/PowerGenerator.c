@@ -24,6 +24,7 @@ class PowerGenerator extends ItemBase
 		
 		m_FuelPercentage = 100;
 		RegisterNetSyncVariableInt("m_FuelPercentage");
+		RegisterNetSyncVariableBool("m_IsSoundSynchRemote");
 	}
 
 	override void EOnInit( IEntity other, int extra)
@@ -293,7 +294,28 @@ class PowerGenerator extends ItemBase
 	override void OnVariablesSynchronized()
 	{
 		super.OnVariablesSynchronized();
-		
+				
 		UpdateFuelMeter();
+		
+		if ( IsPlaceSound() )
+		{
+			PlayPlaceSound();
+		}
+	}
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+	
+	override void OnPlacementComplete( Man player )
+	{		
+		super.OnPlacementComplete( player );
+			
+		SetIsPlaceSound( true );
+	}
+	
+	override string GetPlaceSoundset()
+	{
+		return "placePowerGenerator_SoundSet";
 	}
 }

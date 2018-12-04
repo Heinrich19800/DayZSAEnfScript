@@ -34,6 +34,30 @@ class LargeTent extends TentBase
 		super.OnItemLocationChanged(old_owner, new_owner);
 	}
 	
+	override string GetSoundOpen()
+	{
+		return "LargeTent_Door_Open_SoundSet";
+	}
+	
+	override string GetSoundClose()
+	{
+		return "LargeTent_Door_Close_SoundSet";
+	}
+	
+	override string GetSoundOpenWindow()
+	{
+		return "LargeTent_Window_Open_SoundSet";
+	}
+	
+	override string GetSoundCloseWindow()
+	{
+		return "LargeTent_Window_Close_SoundSet";
+	}
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+
 	override void OnPlacementComplete( Man player )
 	{		
 		super.OnPlacementComplete( player );
@@ -60,25 +84,5 @@ class LargeTent extends TentBase
 	override string GetLoopDeploySoundset()
 	{
 		return "largetent_deploy_SoundSet";
-	}
-	
-	override string GetSoundOpen()
-	{
-		return "LargeTent_Door_Open_SoundSet";
-	}
-	
-	override string GetSoundClose()
-	{
-		return "LargeTent_Door_Close_SoundSet";
-	}
-	
-	override string GetSoundOpenWindow()
-	{
-		return "LargeTent_Window_Open_SoundSet";
-	}
-	
-	override string GetSoundCloseWindow()
-	{
-		return "LargeTent_Window_Close_SoundSet";
 	}
 };

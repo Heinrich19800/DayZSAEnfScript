@@ -25,6 +25,8 @@ class ItemBase extends InventoryItem
 	int 	m_ItemBehaviour = -1; // -1 = not specified; 0 = heavy item; 1= onehanded item; 2 = twohanded item
 	bool	m_IsBeingPlaced;
 	bool	m_IsHologram;
+	bool	m_IsPlaceSound;
+	bool	m_IsDeploySound;
 	bool	m_IsTakeable;
 	bool	m_IsSoundSynchRemote;
 	string	m_SoundAttType;
@@ -99,6 +101,8 @@ class ItemBase extends InventoryItem
 		m_VarQuantity = GetQuantityInit();//should be by the CE, this is just a precaution
 		m_IsBeingPlaced = false;
 		m_IsHologram = false;
+		m_IsPlaceSound = false;
+		m_IsDeploySound = false;
 		m_IsTakeable = true;
 		m_IsSoundSynchRemote = false;
 		m_HeatIsolation = GetHeatIsolation();
@@ -2745,7 +2749,6 @@ class ItemBase extends InventoryItem
 	// ------------------------------------------------------------
 	override bool CanPutInCargo( EntityAI parent )
 	{
-		
 		if ( parent )
 		{
 			if ( parent.IsInherited(DayZInfected) )
@@ -2753,7 +2756,7 @@ class ItemBase extends InventoryItem
 
 			if ( !parent.IsRuined() )
 				return true;
-		};
+		}
 		
 		return true;
 	}	
@@ -2960,7 +2963,7 @@ class ItemBase extends InventoryItem
 	}
 	
 	//----------------------------------------------------------------
-	//SOUNDS
+	//SOUNDS FOR ADVANCED PLACEMNT
 	//----------------------------------------------------------------
 	
 	void SoundSynchRemoteReset()
@@ -2987,13 +2990,63 @@ class ItemBase extends InventoryItem
 		
 	}
 	
+	string GetPlaceSoundset()
+	{
+		
+	}
+	
 	string GetLoopDeploySoundset()
 	{
 		
 	}
+	
+	void SetIsPlaceSound( bool is_place_sound )
+	{
+		m_IsPlaceSound = is_place_sound;
+	}
+	
+	bool IsPlaceSound()
+	{
+		return m_IsPlaceSound;
+	}
+	
+	void SetIsDeploySound( bool is_deploy_sound )
+	{
+		m_IsDeploySound = is_deploy_sound;
+	}
+	
+	bool IsDeploySound()
+	{
+		return m_IsDeploySound;
+	}
+	
+	void PlayDeploySound()
+	{		
+		if ( GetGame().IsMultiplayer() && GetGame().IsClient() || !GetGame().IsMultiplayer() )
+		{		
+			EffectSound sound =	SEffectManager.PlaySound( GetDeploySoundset(), GetPosition() );
+			sound.SetSoundAutodestroy( true );
+			
+			SetIsDeploySound( false );
+		}
+	}
+	
+	void PlayPlaceSound()
+	{		
+		if ( GetGame().IsMultiplayer() && GetGame().IsClient() || !GetGame().IsMultiplayer() )
+		{		
+			EffectSound sound =	SEffectManager.PlaySound( GetPlaceSoundset(), GetPosition() );
+			sound.SetSoundAutodestroy( true );
+				
+			SetIsPlaceSound( false );
+		}
+	}
+	
+	bool CanPlayDeployLoopSound()
+	{		
+		return IsBeingPlaced() && IsSoundSynchRemote();
+	}
 }
-
-
 
 EntityAI SpawnItemOnLocation (string object_name, notnull InventoryLocation loc, bool full_quantity)
 {

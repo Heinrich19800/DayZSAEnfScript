@@ -124,7 +124,7 @@ class BloodTypes
 			break;
 			
 			default: 
-				bloodTypeName = "bad value";
+				bloodTypeName = "";
 			break;
 		}
 		

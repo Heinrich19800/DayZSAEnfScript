@@ -20,7 +20,6 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		
 		//synchronized variables
 		RegisterNetSyncVariableBool( "m_IsOpened" );
-		RegisterNetSyncVariableBool("m_IsSoundSynchRemote");
 	}
 	
 	override void EEInit()
@@ -40,24 +39,27 @@ class BarrelHoles_ColorBase extends FireplaceBase
 	{
 		super.OnVariablesSynchronized();
 		
-		//refresh if opened/closed state changed
-		if ( m_IsOpenedClient != m_IsOpened )
+		if ( !IsBeingPlaced() )
 		{
-			m_IsOpenedClient = m_IsOpened;
+			//refresh if opened/closed state changed
+			if ( m_IsOpenedClient != m_IsOpened )
+			{
+				m_IsOpenedClient = m_IsOpened;
+				
+				//Refresh particles and sounds
+				RefreshFireParticlesAndSounds( true );
+			}
 			
-			//Refresh particles and sounds
-			RefreshFireParticlesAndSounds( true );
-		}
-		
-		//sound sync
-		if ( IsOpened() && IsSoundSynchRemote() )
-		{
-			SoundBarrelOpenPlay();
-		}
-		
-		if ( !IsOpened() && IsSoundSynchRemote() )
-		{
-			SoundBarrelClosePlay();
+			//sound sync
+			if ( IsOpened() && IsSoundSynchRemote() )
+			{
+				SoundBarrelOpenPlay();
+			}
+			
+			if ( !IsOpened() && IsSoundSynchRemote() )
+			{
+				SoundBarrelClosePlay();
+			}
 		}
 	}
 	
@@ -396,5 +398,14 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		}
 		
 		return true;	
+	}
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+	
+	override string GetPlaceSoundset()
+	{
+		return "placeBarrel_SoundSet";
 	}
 }

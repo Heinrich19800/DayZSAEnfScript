@@ -20,6 +20,20 @@ class MediumTent extends TentBase
 		super.OnItemLocationChanged(old_owner, new_owner);
 	}
 	
+	override string GetSoundOpen()
+	{
+		return "MediumTent_Door_Open_SoundSet";
+	}
+	
+	override string GetSoundClose()
+	{
+		return "MediumTent_Door_Close_SoundSet";
+	}
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+		
 	override void OnPlacementComplete( Man player )
 	{		
 		super.OnPlacementComplete( player );
@@ -32,12 +46,12 @@ class MediumTent extends TentBase
 			m_ClutterCutter.SetOrientation( pb.GetLocalProjectionOrientation() );
 		}	
 	}
-	
+		
 	override bool IsTwoHandedBehaviour()
 	{
 		return true;
 	}
-	
+		
 	override string GetDeploySoundset()
 	{
 		return "placeMediumTent_SoundSet";
@@ -47,14 +61,4 @@ class MediumTent extends TentBase
 	{
 		return "mediumtent_deploy_SoundSet";
 	}	
-	
-	override string GetSoundOpen()
-	{
-		return "MediumTent_Door_Open_SoundSet";
-	}
-	
-	override string GetSoundClose()
-	{
-		return "MediumTent_Door_Close_SoundSet";
-	}
 };

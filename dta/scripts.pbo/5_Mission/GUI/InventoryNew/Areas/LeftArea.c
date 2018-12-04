@@ -191,6 +191,11 @@ class LeftArea: Container
 		}
 	}
 	
+	void ExpandCollapseContainer()
+	{
+		m_VicinityContainer.ExpandCollapseContainer();
+	}
+	
 	void OnLeftPanelDropReceived( Widget w, int x, int y, Widget receiver )
 	{
 		m_VicinityContainer.OnLeftPanelDropReceived( w, x, y, receiver );

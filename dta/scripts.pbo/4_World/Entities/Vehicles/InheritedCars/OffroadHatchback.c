@@ -69,11 +69,34 @@ class OffroadHatchback extends CarScript
 
 	override bool CanReleaseAttachment( EntityAI attachment )
 	{
-		CarDoor carDoor;
-		string attSlot = "";
+		string attType = attachment.GetType();
 
-		attSlot = attachment.GetType();
-		switch( attSlot )
+		if ( GetSpeedometer() > 1 )
+			return false;
+
+		if ( !GetGame().IsServer() || !GetGame().IsMultiplayer() )
+		{
+			for( int i =0; i < CrewSize(); i++ )
+			{
+				Human crew = CrewMember( i );
+				if ( !crew )
+					continue;
+
+				PlayerBase player;
+				if ( Class.CastTo(player, crew ) )
+					return false;
+			}
+		}
+		
+		if ( EngineIsOn() || GetCarDoorsState("NivaHood") == CarDoorState.DOORS_CLOSED )
+		{
+			if ( attType == "CarRadiator" || attType == "CarBattery" || attType == "SparkPlug" )
+				return false;
+		}
+
+		CarDoor carDoor;
+
+		switch( attType )
 		{
 			case "HatchbackDoors_Driver":
 				if ( GetCarDoorsState("NivaDriverDoors") != CarDoorState.DOORS_OPEN )

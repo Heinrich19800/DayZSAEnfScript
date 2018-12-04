@@ -18,16 +18,6 @@ class BearTrap extends TrapBase
 		return true;
 	}*/
 	
-	override bool IsDeployable()
-	{
-		return true;
-	}
-	
-	override string GetDeploySoundset()
-	{
-		return "beartrap_deploy_SoundSet";
-	}
-	
 	override void OnSteppedOn(EntityAI victim)
 	{
 		vector 	contact_pos;
@@ -133,13 +123,7 @@ class BearTrap extends TrapBase
 			PlaySoundBiteEmpty();
 		}
 	}
-	
-	override void OnPlacementComplete( Man player ) 
-	{
-		PlayerBase player_PB = PlayerBase.Cast( player );
-		StartActivate( player_PB );
-	}
-	
+		
 	void PlaySoundBiteLeg()
 	{
 		if ( GetGame().IsClient()  ||  !GetGame().IsMultiplayer() )
@@ -170,5 +154,30 @@ class BearTrap extends TrapBase
 		{
 			PlaySoundOpen();
 		}
+	}
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+	
+	override void OnPlacementComplete( Man player ) 
+	{
+		super.OnPlacementComplete( player );
+		
+		if ( GetGame().IsServer() )
+		{
+			PlayerBase player_PB = PlayerBase.Cast( player );
+			StartActivate( player_PB );
+		}	
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
+	override string GetLoopDeploySoundset()
+	{
+		return "beartrap_deploy_SoundSet";
 	}
 }

@@ -12,6 +12,7 @@ class BarbedWire extends ItemBase
 	const static string 	m_SoundsCollision[SOUNDS_COLLISION_COUNT]	= {"barbedFenceCollision1", "barbedFenceCollision2", "barbedFenceCollision3", "barbedFenceCollision4"};
 	const static string 	m_SoundsShock[SOUNDS_SHOCK_COUNT] 			= {"electricFenceShock1", "electricFenceShock2", "electricFenceShock3", "electricFenceShock4"};
 	const static string 	m_SoundBuzzLoop 							= "electricFenceBuzzLoop1";
+	ref protected EffectSound 	m_DeployLoopSound;
 	
 	SoundOnVehicle m_BuzzSoundLoop;
 	
@@ -29,7 +30,8 @@ class BarbedWire extends ItemBase
 		m_IsPlaced 		= false;
 		
 		//synchronized variables
-		RegisterNetSyncVariableBool( "m_IsMounted" );		
+		RegisterNetSyncVariableBool( "m_IsMounted" );	
+		RegisterNetSyncVariableBool( "m_IsSoundSynchRemote" );	
 	}
 	
 	void ~BarbedWire() {}
@@ -66,8 +68,40 @@ class BarbedWire extends ItemBase
 
 		//update parent (client)
 		RefreshParent();
+		
+		if ( IsDeploySound() )
+		{
+			PlayDeploySound();
+		}
+		
+		if ( CanPlayDeployLoopSound() )
+		{
+			PlayDeployLoopSound();
+		}
+					
+		if ( m_DeployLoopSound && !CanPlayDeployLoopSound() )
+		{
+			StopDeployLoopSound();
+		}
 	}	
 
+	void PlayDeployLoopSound()
+	{		
+		if ( GetGame().IsMultiplayer() && GetGame().IsClient() || !GetGame().IsMultiplayer() )
+		{		
+			m_DeployLoopSound = SEffectManager.PlaySound( GetLoopDeploySoundset(), GetPosition() );
+		}
+	}
+	
+	void StopDeployLoopSound()
+	{
+		if ( GetGame().IsMultiplayer() && GetGame().IsClient() || !GetGame().IsMultiplayer() )
+		{	
+			m_DeployLoopSound.SoundStop();
+			delete m_DeployLoopSound;
+		}
+	}
+	
 	void RefreshParent()
 	{
 		EntityAI parent = GetHierarchyParent();
@@ -111,11 +145,6 @@ class BarbedWire extends ItemBase
 			//TimerRandomSpark();
 			CreateElectrifiedDamageTrigger();
 		}
-	}
-
-	override string GetDeploySoundset()
-	{
-		return "barbedwire_deploy_SoundSet";
 	}	
 	
 	override void OnWorkStop()
@@ -153,21 +182,6 @@ class BarbedWire extends ItemBase
 			{ DestroyDamageTrigger(); }
 		GetCompEM().UnplugThis();
 		GetCompEM().UnplugAllDevices();
-	}
-	
-	override void OnPlacementComplete( Man player )
-	{
-		ShowAllSelections();
-		HideSelection("zbytek");
-
-		if (!GetHierarchyParent())
-		{
-			if (GetCompEM().IsPlugged() && GetCompEM().IsWorking() )
-				{ CreateElectrifiedDamageTrigger(); }
-			else
-				{ CreateDamageTrigger(); }
-			m_IsPlaced = true;
-		}
 	}
 	
 	// Area Damage triggers
@@ -302,4 +316,40 @@ class BarbedWire extends ItemBase
 			m_IsPlaced = false;
 		}
 	}
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+	
+	override void OnPlacementComplete( Man player )
+	{
+		super.OnPlacementComplete( player );
+		
+		if ( GetGame().IsServer() )
+		{
+			ShowAllSelections();
+			HideSelection("zbytek");
+	
+			if (!GetHierarchyParent())
+			{
+				if (GetCompEM().IsPlugged() && GetCompEM().IsWorking() )
+					{ CreateElectrifiedDamageTrigger(); }
+				else
+					{ CreateDamageTrigger(); }
+				m_IsPlaced = true;
+			}
+		}	
+		
+		SetIsDeploySound( true );
+	}
+	
+	override string GetDeploySoundset()
+	{
+		return "placeBarbedWire_SoundSet";
+	}
+	
+	override string GetLoopDeploySoundset()
+	{
+		return "barbedwire_deploy_SoundSet";
+	}	
 }

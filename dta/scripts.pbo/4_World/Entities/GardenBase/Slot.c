@@ -1,11 +1,11 @@
 class Slot
 {
-	static const int 	STATE_DIGGED 		= 1;
-	static const int 	STATE_PLANTED 		= 2;
-	static const int 	STATE_COVERED 		= 3;
+	static const int 		STATE_DIGGED 		= 1;
+	static const int 		STATE_PLANTED 		= 2;
 	
-	private int 		m_WaterQuantity;
-	private int 		m_WaterUsage; // How much water is needed to water a plant from a bottle. Value is in mililitres
+	private int 			m_WaterQuantity;
+	static private int 		m_WaterNeeded 		= 200; // How much water is needed to water a plant from a bottle. Value is in mililitres
+	static private int 		m_WaterMax 			= 400; // How much water is needed to water a plant from a bottle. Value is in mililitres
 	
 	float m_Fertility;
 	float m_FertilizerUsage;
@@ -30,7 +30,6 @@ class Slot
 		m_Seed = NULL;
 		m_Plant = NULL;
 		m_WaterQuantity = 0.0;
-		m_WaterUsage = 200;
 		Init( base_fertility );
 	}
 
@@ -105,39 +104,19 @@ class Slot
 		return false;
 	}
 	
-	string GiveWater( ItemBase item, float consumed_quantity )
+	void GiveWater( float consumed_quantity )
 	{
 		m_WaterQuantity += consumed_quantity;
 		
-		if (m_WaterQuantity > GetWaterUsage())
-			m_WaterQuantity = GetWaterUsage();
+		if (m_WaterQuantity > GetWaterMax())
+			m_WaterQuantity = GetWaterMax();
 		
 		if (m_WaterQuantity < 0)
 			m_WaterQuantity = 0;
 		
-		if ( NeedsWater() )
+		if ( !NeedsWater() )
 		{
-			if (item)
-			{
-				// Get the liquid
-				int liquid_type	= item.GetLiquidType();
-
-				if (!liquid_type & LIQUID_WATER)
-				{
-					string item_display_name = "";
-					GetGame().ObjectGetDisplayName( item, item_display_name );
-					m_WaterQuantity = 0;
-					return "The " + item_display_name + " did not contained water.";
-				}
-			}
-		}
-		else
-		{
-			if (GetPlant())
-			{
-				GetPlant().CheckWater(item );
-			}
-			else
+			if ( !GetPlant() )
 			{
 				if ( GetSeed() )
 				{
@@ -149,13 +128,23 @@ class Slot
 		}
 		
 		GetGarden().UpdateSlotTexture( GetSlotIndex() );
-
-		return "";
 	}
 	
 	bool NeedsWater()
 	{
 		if ( m_WaterQuantity < GetWaterUsage() )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	bool CanBeWatered()
+	{
+		if ( m_WaterQuantity < GetWaterMax() )
 		{
 			return true;
 		}
@@ -212,7 +201,12 @@ class Slot
 	
 	float GetWaterUsage()
 	{
-		return m_WaterUsage;
+		return m_WaterNeeded;
+	}
+	
+	float GetWaterMax()
+	{
+		return m_WaterMax;
 	}
 	
 	int GetState()
@@ -237,15 +231,6 @@ class Slot
 	bool IsPlanted()
 	{
 		if (m_State==STATE_PLANTED)
-		{
-			return true;
-		}
-		
-		return false;
-	}
-	bool IsCovered()
-	{
-		if (m_State==STATE_COVERED)
 		{
 			return true;
 		}

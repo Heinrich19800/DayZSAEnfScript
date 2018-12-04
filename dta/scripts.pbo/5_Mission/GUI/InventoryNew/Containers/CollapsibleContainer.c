@@ -3,10 +3,13 @@ class CollapsibleContainer: Container
 	protected ref CollapsibleHeader	m_CollapsibleHeader;
 	protected bool m_Hidden;
 
-	void CollapsibleContainer( LayoutHolder parent )
+	void CollapsibleContainer( LayoutHolder parent, int sort = -1 )
 	{
 		m_MainWidget.Show( true );
 
+		if( sort > -1 )
+			m_MainWidget.SetSort( sort + 2 );
+		
 		m_Body = new array<ref LayoutHolder>;
 		m_CollapsibleHeader = new CollapsibleHeader( this, "CollapseButtonOnMouseButtonDown" );
 		m_Body.Insert( m_CollapsibleHeader );

@@ -222,11 +222,14 @@ class Clothing extends ItemBase
 	// Conditions	
 	override bool CanPutInCargo( EntityAI parent )
 	{
-		if( !super.CanPutInCargo(parent) ) {return false;}
+		if( !super.CanPutInCargo( parent ) )
+		{
+			return false;
+		}
 		
 		bool is_hidden_stash_exception = false;
 		
-		if ( parent.IsInherited(UndergroundStash) )
+		if ( parent.IsInherited( UndergroundStash ) )
 			is_hidden_stash_exception = true;
 		
 		if ( ( GetNumberOfItems() == 0 || !parent || parent.IsMan() || is_hidden_stash_exception ) && super.CanPutInCargo( parent ) )

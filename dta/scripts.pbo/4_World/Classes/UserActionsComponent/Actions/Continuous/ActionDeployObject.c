@@ -43,12 +43,13 @@ class ActiondeployObjectCB : ActionContinuousBaseCB
 					if ( m_ActionData.m_Player.GetItemInHands() )
 					{
 						DropDuringPlacing();
+						m_ActionData.m_MainItem.SoundSynchRemote();
 					}
 				}
 			
 				if ( GetGame().IsMultiplayer() && GetGame().IsServer() )
 				{		
-					
+						m_ActionData.m_MainItem.SoundSynchRemote();
 				}
 			
 				if ( GetGame().IsMultiplayer() && GetGame().IsClient() )
@@ -197,12 +198,12 @@ class ActionDeployObject: ActionContinuousBase
 			
 			GetGame().AddActionJuncture( action_data.m_Player, entity_for_placing, 10000 );
 			action_data.m_MainItem.SetIsBeingPlaced( true );
-			action_data.m_MainItem.SoundSynchRemote();
 		}
 		else
 		{
 			//local singleplayer
 			action_data.m_Player.GetHologramLocal().SetUpdatePosition( false );
+			action_data.m_MainItem.SetIsBeingPlaced( true );
 		}
 	}
 			
@@ -216,6 +217,8 @@ class ActionDeployObject: ActionContinuousBase
 		
 		MoveEntityToFinalPosition( action_data, position, orientation );
 		poActionData.m_AlreadyPlaced = true;
+		
+		entity_for_placing.OnPlacementComplete( action_data.m_Player );
 	}
 	
 	override void OnFinishProgressServer( ActionData action_data )
@@ -232,7 +235,7 @@ class ActionDeployObject: ActionContinuousBase
 			action_data.m_Player.GetHologramServer().CheckPowerSource();
 			action_data.m_Player.PlacingCompleteServer();	
 			
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call( entity_for_placing.OnPlacementComplete, action_data.m_Player );
+			entity_for_placing.OnPlacementComplete( action_data.m_Player );
 		}
 			
 		//local singleplayer
@@ -244,7 +247,7 @@ class ActionDeployObject: ActionContinuousBase
 			action_data.m_Player.GetHologramLocal().PlaceEntity( entity_for_placing, action_data.m_Player.GetHologramLocal().GetProjectionPosition(), action_data.m_Player.GetHologramLocal().GetProjectionOrientation() );
 			action_data.m_Player.PlacingCompleteLocal();
 			
-			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Call( entity_for_placing.OnPlacementComplete, action_data.m_Player );
+			entity_for_placing.OnPlacementComplete( action_data.m_Player );
 		}
 		
 		GetGame().ClearJuncture( action_data.m_Player, entity_for_placing );
@@ -287,6 +290,14 @@ class ActionDeployObject: ActionContinuousBase
 				//local singleplayer
 				action_data.m_Player.PlacingCancelLocal();
 				action_data.m_Player.LocalTakeEntityToHands( entity_for_placing );
+			}
+		}
+		else
+		{
+			//TODO: make on END placement event and move there
+			if ( action_data.m_MainItem.IsKindOf( "FenceKit" ) || action_data.m_MainItem.IsKindOf( "WatchtowerKit" ) )
+			{
+				GetGame().ObjectDelete(  action_data.m_MainItem );
 			}
 		}
 	}
@@ -335,8 +346,7 @@ class ActionDeployObject: ActionContinuousBase
 			
 	void MoveEntityToFinalPosition( ActionData action_data, vector position, vector orientation )
 	{
-		if ( action_data.m_MainItem.IsKindOf( "FenceKit" ) ) return;
-		if ( action_data.m_MainItem.IsKindOf( "WatchtowerKit" ) ) return;
+		if ( action_data.m_MainItem.IsKindOf( "FenceKit" ) || action_data.m_MainItem.IsKindOf( "WatchtowerKit" ) ) return;
 		
 		EntityAI entity_for_placing = EntityAI.Cast( action_data.m_MainItem );
 		vector rotation_matrix[3];

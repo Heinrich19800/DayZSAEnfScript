@@ -78,6 +78,7 @@ const int MENU_CAMERA_TOOLS							= 32;
 const int MENU_VIDEO								= 33;
 const int MENU_KEYBINDINGS							= 34;
 const int MENU_TUTORIAL								= 35;
+const int MENU_CREDITS								= 36;
 
 const int GUI_WINDOW_MISSION_LOADER = 1;
 

@@ -167,7 +167,7 @@ PanelWidgetClass height_wrapper {
               ImageWidgetClass Background0 {
                visible 1
                ignorepointer 1
-               color 0 0 0 0.5882
+               color 0 0 0 0.7843
                size 29 29
                halign center_ref
                valign center_ref
@@ -198,8 +198,9 @@ PanelWidgetClass height_wrapper {
                priority 500
                style Light
                text "99"
+               font "gui/fonts/sdf_MetronBook24"
                "text color" 1 1 1 0.7843
-               "exact text" 1
+               "exact text" 0
                "text halign" center
                "text valign" center
               }
@@ -520,7 +521,7 @@ PanelWidgetClass height_wrapper {
               ImageWidgetClass Background1 {
                visible 1
                ignorepointer 1
-               color 0 0 0 0.5882
+               color 0 0 0 0.7843
                size 29 29
                halign center_ref
                valign center_ref
@@ -551,8 +552,9 @@ PanelWidgetClass height_wrapper {
                priority 500
                style Light
                text "99"
+               font "gui/fonts/sdf_MetronBook24"
                "text color" 1 1 1 0.7843
-               "exact text" 1
+               "exact text" 0
                "text halign" center
                "text valign" center
               }
@@ -870,7 +872,7 @@ PanelWidgetClass height_wrapper {
               ImageWidgetClass Background2 {
                visible 1
                ignorepointer 1
-               color 0 0 0 0.5882
+               color 0 0 0 0.7843
                size 29 29
                halign center_ref
                valign center_ref
@@ -901,8 +903,9 @@ PanelWidgetClass height_wrapper {
                priority 500
                style Light
                text "99"
+               font "gui/fonts/sdf_MetronBook24"
                "text color" 1 1 1 0.7843
-               "exact text" 1
+               "exact text" 0
                "text halign" center
                "text valign" center
               }
@@ -1221,7 +1224,7 @@ PanelWidgetClass height_wrapper {
               ImageWidgetClass Background3 {
                visible 1
                ignorepointer 1
-               color 0 0 0 0.5882
+               color 0 0 0 0.7843
                size 29 29
                halign center_ref
                valign center_ref
@@ -1252,8 +1255,9 @@ PanelWidgetClass height_wrapper {
                priority 500
                style Light
                text "99"
+               font "gui/fonts/sdf_MetronBook24"
                "text color" 1 1 1 0.7843
-               "exact text" 1
+               "exact text" 0
                "text halign" center
                "text valign" center
               }
@@ -1571,7 +1575,7 @@ PanelWidgetClass height_wrapper {
               ImageWidgetClass Background4 {
                visible 1
                ignorepointer 1
-               color 0 0 0 0.5882
+               color 0 0 0 0.7843
                size 29 29
                halign center_ref
                valign center_ref
@@ -1602,8 +1606,9 @@ PanelWidgetClass height_wrapper {
                priority 500
                style Light
                text "99"
+               font "gui/fonts/sdf_MetronBook24"
                "text color" 1 1 1 0.7843
-               "exact text" 1
+               "exact text" 0
                "text halign" center
                "text valign" center
               }
@@ -1921,7 +1926,7 @@ PanelWidgetClass height_wrapper {
               ImageWidgetClass Background5 {
                visible 1
                ignorepointer 1
-               color 0 0 0 0.5882
+               color 0 0 0 0.7843
                size 29 29
                halign center_ref
                valign center_ref
@@ -1952,8 +1957,9 @@ PanelWidgetClass height_wrapper {
                priority 500
                style Light
                text "99"
+               font "gui/fonts/sdf_MetronBook24"
                "text color" 1 1 1 0.7843
-               "exact text" 1
+               "exact text" 0
                "text halign" center
                "text valign" center
               }
@@ -2271,7 +2277,7 @@ PanelWidgetClass height_wrapper {
               ImageWidgetClass Background6 {
                visible 1
                ignorepointer 1
-               color 0 0 0 0.5882
+               color 0 0 0 0.7843
                size 29 29
                halign center_ref
                valign center_ref
@@ -2302,8 +2308,9 @@ PanelWidgetClass height_wrapper {
                priority 500
                style Light
                text "99"
+               font "gui/fonts/sdf_MetronBook24"
                "text color" 1 1 1 0.7843
-               "exact text" 1
+               "exact text" 0
                "text halign" center
                "text valign" center
               }

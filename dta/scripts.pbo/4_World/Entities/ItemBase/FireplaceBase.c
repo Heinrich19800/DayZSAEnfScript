@@ -202,6 +202,7 @@ class FireplaceBase extends ItemBase
 		RegisterNetSyncVariableBool( "m_HasAshes" );
 		RegisterNetSyncVariableBool( "m_IsOven" );
 		RegisterNetSyncVariableInt( "m_FireState", FireplaceFireState.NO_FIRE, FireplaceFireState.COUNT );
+		RegisterNetSyncVariableBool("m_IsSoundSynchRemote");
 	}
 	
 	override void EEInit()
@@ -300,6 +301,11 @@ class FireplaceBase extends ItemBase
 		//Refresh client particles and audio
 		RefreshFireplaceVisuals();
 		RefreshFireParticlesAndSounds( false );
+				
+		if ( IsPlaceSound() )
+		{
+			PlayPlaceSound();
+		}
 	}
 	
 	//================================================================
@@ -2063,5 +2069,21 @@ class FireplaceBase extends ItemBase
 	bool CanExtinguishFire()
 	{
 		return IsBurning();
+	}
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+	
+	override void OnPlacementComplete( Man player )
+	{		
+		super.OnPlacementComplete( player );
+			
+		SetIsPlaceSound( true );
+	}
+	
+	override string GetPlaceSoundset()
+	{
+		return "placeFireplace_SoundSet";
 	}
 }

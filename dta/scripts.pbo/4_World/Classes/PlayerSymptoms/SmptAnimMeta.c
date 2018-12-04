@@ -1,22 +1,27 @@
+enum eAnimFinishType
+{
+	SUCCESS,
+	FAILURE,
+}
+
 class SmptAnimMetaBase
 {
-	AnimType m_AnimType;
 	bool	m_IsPlaying;
 	SymptomManager m_Manager;
 	PlayerBase m_Player;
 	int m_AnimID;
-	int m_SymptomUID;
+	int m_SymptomType;
 	bool m_DestroyRequested;
 	
-	void SmptAnimMetaBase(ParamsReadContext ctx, AnimType type, SymptomManager manager, PlayerBase player)
+	void SmptAnimMetaBase()
 	{
-		m_AnimType = type;
-		m_Manager = manager;
-		m_Player = player;
-		Init(ctx);
 	}
 	
-	protected void Init(ParamsReadContext ctx);
+	void Init(ParamsReadContext ctx, SymptomManager manager, PlayerBase player)
+	{
+		m_Manager = manager;
+		m_Player = player;
+	}
 	
 	bool IsPlaying()
 	{
@@ -28,12 +33,31 @@ class SmptAnimMetaBase
 		return m_DestroyRequested;
 	}
 	
-	void AnimFinished()
+	void AnimFinished(eAnimFinishType type)
 	{
-		SymptomBase Symptom = m_Manager.GetSymptomByUID(m_SymptomUID);
-		if( Symptom ) 
-			Symptom.OnAnimationFinish();
 		m_DestroyRequested = true;
+		SymptomBase Symptom = m_Manager.GetCurrentPrimaryActiveSymptom();
+		
+		if( type == eAnimFinishType.FAILURE)//   <--------------- FAILED
+		{
+			if( m_Player.GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER )
+			{
+				if( Symptom ) 
+				{
+					Symptom.AnimationPlayFailed();
+				}
+			}
+		}
+		else if( type == eAnimFinishType.SUCCESS)//   <--------------- SUCCESS
+		{
+			if( m_Player.GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER )
+			{
+				if( Symptom )
+				{
+					Symptom.AnimationFinish();
+				}
+			}
+		}
 	}
 	
 	bool PlayRequest()
@@ -46,16 +70,13 @@ class SmptAnimMetaBase
 		}
 		else
 		{
-			SymptomBase Symptom = m_Manager.GetSymptomByUID(m_SymptomUID);
-			if( Symptom ) 
-				Symptom.OnAnimationPlayFailed();
+			m_Manager.OnAnimationFinished(eAnimFinishType.FAILURE);
 		}
-		
 		return played;
 	}
 	
 	protected bool Play();
-	void Update();
+	void Update(HumanMovementState movement_state);
 
 };
 
@@ -64,9 +85,10 @@ class SmptAnimMetaFB extends SmptAnimMetaBase
 	int m_StanceMask;
 	float m_Duration;
 	
-	override void Init(ParamsReadContext ctx)
+	override void Init(ParamsReadContext ctx, SymptomManager manager, PlayerBase player)
 	{
-		DayZPlayerSyncJunctures.ReadPlayerSymptomFBParams( ctx,  m_AnimID, m_SymptomUID, m_StanceMask, m_Duration);
+		super.Init(ctx, manager, player);
+		DayZPlayerSyncJunctures.ReadPlayerSymptomFBParams( ctx,  m_AnimID, m_StanceMask, m_Duration);
 	}
 	
 	override bool Play()
@@ -86,7 +108,7 @@ class SmptAnimMetaFB extends SmptAnimMetaBase
 		
 		if(anim_callback)
 		{
-			anim_callback.Init(m_SymptomUID, m_Duration, m_Player);
+			anim_callback.Init(m_Duration, m_Player);
 			m_IsPlaying = true;
 			return true;
 		}
@@ -98,9 +120,10 @@ class SmptAnimMetaADD extends SmptAnimMetaBase
 {
 	HumanCommandModifierAdditive m_Hcma;
 	
-	override void Init(ParamsReadContext ctx)
+	override void Init(ParamsReadContext ctx, SymptomManager manager, PlayerBase player)
 	{
-		DayZPlayerSyncJunctures.ReadPlayerSymptomADDParams( ctx, m_AnimID, m_SymptomUID);
+		super.Init(ctx, manager, player);
+		DayZPlayerSyncJunctures.ReadPlayerSymptomADDParams( ctx, m_AnimID);
 	}
 	
 	override bool Play()
@@ -123,20 +146,28 @@ class SmptAnimMetaADD extends SmptAnimMetaBase
 		return false;
 	}
 	
-	override void Update()
+	override void Update(HumanMovementState movement_state)
 	{
-		{//crash hotfix
-			//Print(m_Hcma);
-		m_Manager.OnAnimationFinished(m_SymptomUID);
-		return;
-		}
-		
 		if( m_IsPlaying )
 		{
-			if(!m_Hcma)
+			if(!m_Player.GetCommandModifier_Modifier())
 			{
-				m_Manager.OnAnimationFinished(m_SymptomUID);
+				m_Manager.OnAnimationFinished();
 			}
 		}
+	}
+}
+
+
+class HeatComfortmMetaADD extends SmptAnimMetaADD
+{
+	override void Update(HumanMovementState movement_state)
+	{
+		super.Update(movement_state);
+		if( movement_state.m_iMovement != DayZPlayerConstants.MOVEMENTIDX_IDLE)
+		{
+			m_Player.DeleteCommandModifier_Modifier(m_Hcma);
+		}
+
 	}
 }

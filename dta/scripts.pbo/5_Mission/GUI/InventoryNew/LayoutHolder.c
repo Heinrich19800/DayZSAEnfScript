@@ -1,6 +1,7 @@
 class LayoutHolder extends ScriptedWidgetEventHandler
 {
 	protected Widget				m_MainWidget;
+	protected Widget				m_RootWidget;
 	protected Widget				m_ParentWidget;
 	protected LayoutHolder			m_Parent;
 	protected string				m_LayoutName;
@@ -34,6 +35,8 @@ class LayoutHolder extends ScriptedWidgetEventHandler
 				m_MainWidget.Show( true );
 			}
 		}
+		
+		m_RootWidget = m_MainWidget;
 		
 		if( m_ParentWidget )
 		{
@@ -103,6 +106,11 @@ class LayoutHolder extends ScriptedWidgetEventHandler
 	Widget GetMainWidget()
 	{
 		return m_MainWidget;
+	}
+	
+	Widget GetRootWidget()
+	{
+		return m_RootWidget;
 	}
 
 	void OnShow()

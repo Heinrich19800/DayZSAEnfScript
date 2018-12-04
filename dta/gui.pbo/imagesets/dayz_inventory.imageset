@@ -512,6 +512,30 @@ ImageSetClass {
    Size 197 197
    Flags 0
   }
+  ImageSetDefClass metalwire {
+   Name "metalwire"
+   Pos 197 1415
+   Size 197 197
+   Flags 0
+  }
+  ImageSetDefClass woodenlog {
+   Name "woodenlog"
+   Pos 394 1415
+   Size 197 197
+   Flags 0
+  }
+  ImageSetDefClass barbedwiredown {
+   Name "barbedwiredown"
+   Pos 197 1612
+   Size 197 197
+   Flags 0
+  }
+  ImageSetDefClass barbedwireup {
+   Name "barbedwireup"
+   Pos 591 1612
+   Size 197 197
+   Flags 0
+  }
  }
  Groups {
  }

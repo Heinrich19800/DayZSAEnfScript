@@ -502,15 +502,22 @@ class DayZPlayerInventory : HumanInventoryWithFSM
 			}
 		}
 
-		if (!handling_juncture && !remote && GetDayZPlayerOwner().GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER)
-		{
-			syncDebugPrint("[syncinv] HandleInputData forwarding to remotes cmd=" + typename.EnumToString(InventoryCommandType, type));
-			GetDayZPlayerOwner().StoreInputForRemotes(ctx); // @NOTE: needs to be called _after_ the operation
-		}
+		StoreInputForRemotes(handling_juncture, remote, ctx);
 
 		return true;
 	}
 	
+	bool StoreInputForRemotes (bool handling_juncture, bool remote, ParamsReadContext ctx)
+	{
+		if (!handling_juncture && !remote && GetDayZPlayerOwner().GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER)
+		{
+			syncDebugPrint("[syncinv] StoreInputForRemotes forwarding to remotes");
+			GetDayZPlayerOwner().StoreInputForRemotes(ctx); // @NOTE: needs to be called _after_ the operation
+			return true;
+		}
+		return false;
+	}
+
 	override bool TakeToDst (InventoryMode mode, notnull InventoryLocation src, notnull InventoryLocation dst)
 	{
 		switch (mode)

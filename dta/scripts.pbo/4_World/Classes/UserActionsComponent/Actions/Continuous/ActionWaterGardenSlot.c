@@ -62,7 +62,7 @@ class ActionWaterGardenSlot: ActionContinuousBase
 			
 			Slot slot = garden_base.GetSlotBySelection( selection );
 		
-			if ( slot  &&  !slot.GetPlant()  &&  (slot.IsDigged() || slot.IsPlanted())  &&  slot.NeedsWater() ) // !slot.GetPlant() is here because we have separate user action for watering plants
+			if ( slot  &&  !slot.GetPlant()  &&  slot.CanBeWatered() )
 			{
 				return true;
 			}

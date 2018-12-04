@@ -66,7 +66,10 @@ class Hologram
 			CreateTrigger();
 		}
 		
-		GetProjectionIB().SetIsHologram( true );
+		if ( !projection_entity.IsInherited(GardenBase)) // Garden plot is a special case
+		{
+			GetProjectionIB().SetIsHologram( true );
+		}
 	}
 	
 	void ~Hologram()

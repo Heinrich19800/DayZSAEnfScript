@@ -183,7 +183,7 @@ class CarScript extends Car
 
 			if ( slot_name == "CarRadiator" )
 			{
-				Leak( CarFluid.COOLANT, GetFluidFraction( CarFluid.COOLANT )* GetFluidCapacity( CarFluid.COOLANT ) );
+				LeakAll( CarFluid.COOLANT );
 				SetHealth( "Radiator", "Health", 0);
 			}
 		}
@@ -193,82 +193,30 @@ class CarScript extends Car
 	override void EOnPostSimulate(IEntity other, float timeSlice)
 	{
 		m_Time += timeSlice;
+
 		//! move it to constants.c const float CAR_UPDATE_INTERVAL = 1.0
 		if ( m_Time >= CARS_FLUIDS_TICK )
 		{
-			CarPartsHealthCheck();
-
-			
 			m_Time = 0;
-			
-			if ( GetGame().IsServer() && IsDamageDestroyed() )
-				Print("Zniceno");
+
+			CarPartsHealthCheck();
 
 			//First of all check if the car should stop the engine
 			if ( GetGame().IsServer() && EngineIsOn() )
 			{
 				if ( GetFluidFraction(CarFluid.FUEL) <= 0 || m_EngineHealth <= 0 )
 					EngineStop();
-				
 
-				EntityAI item;
-				if ( IsVitalCarBattery() )
-				{
-					item = FindAttachmentBySlotName("CarBattery");
-
-					if ( !item )
-						EngineStop();
-					else if ( item.IsRuined() )
-						EngineStop();
-				}
-
-				if ( IsVitalTruckBattery() )
-				{
-					item = FindAttachmentBySlotName("TruckBattery");
-
-					if ( !item )
-						EngineStop();
-					else if ( item.IsRuined() )
-						EngineStop();
-				}
-
-				if ( IsVitalSparkPlug() )
-				{
-					item = FindAttachmentBySlotName("SparkPlug");
-
-					if ( !item )
-						EngineStop();
-					else if ( item.IsRuined() )
-						EngineStop();
-				}
-
-				if ( IsVitalGlowPlug() )
-				{
-					item = FindAttachmentBySlotName("GlowPlug");
-
-					if ( !item )
-						EngineStop();
-					else if ( item.IsRuined() )
-						EngineStop();
-				}
-
-/*engine belt is not needed right now
-				if ( IsVitalEngineBelt() )
-				{
-					item = FindAttachmentBySlotName("EngineBelt");
-
-					if ( !item )
-						EngineStop();
-					else if ( item.IsRuined() )
-						EngineStop();
-				}
-*/
+				CheckVitalItem( IsVitalCarBattery(), "CarBattery" );
+				CheckVitalItem( IsVitalTruckBattery(), "TruckBattery" );
+				CheckVitalItem( IsVitalSparkPlug(), "SparkPlug" );
+				CheckVitalItem( IsVitalGlowPlug(), "GlowPlug" );
+				// engine belt is not needed right now
+				//CheckVitalItem( IsVitalEngineBelt(), "EngineBelt" );
 			}
 
-			
-						
 			//! actions runned when the engine on
-			if ( EngineIsOn()  )
+			if ( EngineIsOn() )
 			{
 				if ( GetGame().IsServer() )
 				{
@@ -305,13 +253,13 @@ class CarScript extends Car
 
 					if ( m_EngineHealth < 0.25 )
 						LeakFluid( CarFluid.OIL );
-
+/*Commented out till indicator of Oil in HUD will be ready
 					if ( GetFluidFraction( CarFluid.OIL ) < 1 )
 					{
-						dmg = ( 1 - GetFluidFraction( CarFluid.OIL ) ) * Math.RandomFloat( 0.02, 10.00 );  //CARS_TICK_DMG_MIN; //CARS_TICK_DMG_MAX
+						dmg = Math.Lerp( 0.02, 10, 1 - GetFluidFraction( CarFluid.OIL ) );  //CARS_TICK_DMG_MIN; //CARS_TICK_DMG_MAX
 						AddHealth( "Engine", "Health", -dmg);
 					}
-
+*/
 					if ( IsVitalRadiator() )
 					{
 						if ( GetFluidFraction( CarFluid.COOLANT ) < 0.5 && GetFluidFraction( CarFluid.COOLANT ) >= 0 )
@@ -392,7 +340,7 @@ class CarScript extends Car
 		//FX only on Client and in Single
 		if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )
 		{
-			if ( m_EngineHealth <= 0 )
+			if ( IsDamageDestroyed() )
 			{
 				if ( !SEffectManager.IsEffectExist( m_enginePtcFx ) )
 				{
@@ -405,7 +353,7 @@ class CarScript extends Car
 		}
 	}
 
-	void OnContact( string zoneName, vector localPos, IEntity other, Contact data )
+	override void OnContact( string zoneName, vector localPos, IEntity other, Contact data )
 	{
 
 		//Print(zoneName);
@@ -439,17 +387,14 @@ class CarScript extends Car
 					{					
 						if ( dmg > dmgMin )
 						{
-							//Print( GetType() + " >>> " + " SmallHit " + zoneName + " >>> " + dmg.ToString() + " >>> " + localPos);
+							//Print( GetType() + " >>> " + " smlHit >>> " + "zoneName: "  + zoneName + " >>> - " + dmg.ToString() + " HP >>> in " + GetSpeedometer() + " km/h");
 							AddHealth( zoneName, "Health", -dmg);
 							m_PlayCrashSoundLight = true;
 						}
 					}
 					else
 					{
-						
-						//Print( GetType() + " >>> " + " BIGHit " + zoneName + " >>> " + dmg.ToString() + " >>> " + localPos );
-						//Print( dmg );
-
+						//Print( GetType() + " >>> " + " BIGHit >>> " + "zoneName: " + zoneName + " >>> - " + dmg.ToString() + " HP >>> in " + GetSpeedometer() + " km/h" );
 						for( int i =0; i < CrewSize(); i++ )
 						{
 							Human crew = CrewMember( i );
@@ -487,7 +432,7 @@ class CarScript extends Car
 		Gets called every sound simulation step.
 		In this callback, user can modify behaviour of sound controllers
 	*/
-	float OnSound( CarSoundCtrl ctrl, float oldValue )
+	override float OnSound( CarSoundCtrl ctrl, float oldValue )
 	{
 		if ( m_PlayCrashSoundLight )
 		{
@@ -524,7 +469,7 @@ class CarScript extends Car
 
 		This callback is called on both server and client.
 	*/
-	void OnFluidChanged( CarFluid fluid, float newValue, float oldValue )
+	override void OnFluidChanged( CarFluid fluid, float newValue, float oldValue )
 	{
 		if ( m_PlayCrashSoundLight )
 		{
@@ -568,8 +513,7 @@ class CarScript extends Car
 
 		\return true if the engine can start, false otherwise.
 	*/
-
-	bool OnBeforeEngineStart()
+	override bool OnBeforeEngineStart()
 	{
 		// todo :: check if the battery is plugged-in
 		//         check if we have enough power to start the engine
@@ -610,12 +554,12 @@ class CarScript extends Car
 	}
 
 	//! Gets called everytime the engine starts.
-	void OnEngineStart()
+	override void OnEngineStart()
 	{
 	}
 
 	//! Gets called everytime the engine stops.
-	void OnEngineStop()
+	override void OnEngineStop()
 	{
 	}
 
@@ -623,7 +567,7 @@ class CarScript extends Car
 		Gets called everytime the game wants to switch the lights.
 		\return true when lights can be switched, false otherwise.
 	*/
-	bool OnBeforeSwitchLights( bool toOn )
+	override bool OnBeforeSwitchLights( bool toOn )
 	{
 		if ( toOn )
 		{
@@ -643,7 +587,20 @@ class CarScript extends Car
 		// this is the case on -> off
 		return true;
 	}
-	
+
+	protected void CheckVitalItem( bool isVital, string itemName )
+	{
+		if ( !isVital )
+			return;
+
+		EntityAI item = FindAttachmentBySlotName(itemName);
+
+		if ( !item )
+			EngineStop();
+		else if ( item.IsRuined() )
+			EngineStop();
+	}
+
 	protected void LeakFluid(CarFluid fluid)
 	{
 		float ammount = 0;

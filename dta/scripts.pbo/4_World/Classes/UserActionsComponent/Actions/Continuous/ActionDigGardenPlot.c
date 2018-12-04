@@ -29,8 +29,6 @@ class ActionDigGardenPlot: ActionPlaceObject
 	
 	override bool Can ( PlayerBase player, ActionTarget target, ItemBase item )
 	{
-		return false; // TO DO: Boris V 02.VII.2018: Remove this when horticulture is enabled
-		
 		//Client
 		if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )
 		{

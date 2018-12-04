@@ -4,7 +4,7 @@ class CoughSymptom extends SymptomBase
 	override void OnInit()
 	{
 		m_SymptomType = SymptomTypes.PRIMARY;
-		m_Priority = 0;
+		m_Priority = 100;
 		m_ID = SymptomIDs.SYMPTOM_COUGH;
 		m_DestroyOnAnimFinish = true;
 		m_SyncToClient = false;
@@ -23,6 +23,11 @@ class CoughSymptom extends SymptomBase
 	override void OnAnimationPlayFailed()
 	{
 		
+	}
+	
+	override SmptAnimMetaBase SpawnAnimMetaObject()
+	{
+		return new SmptAnimMetaADD();
 	}
 	
 	//!gets called once on an Symptom which is being activated

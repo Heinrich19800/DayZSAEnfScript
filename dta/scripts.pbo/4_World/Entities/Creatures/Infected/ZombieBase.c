@@ -677,6 +677,12 @@ class ZombieBase extends DayZInfected
 		
 	bool HandleDamageHit(int pCurrentCommandID)
 	{
+		if( pCurrentCommandID == DayZInfectedConstants.COMMANDID_HIT )
+		{
+			m_DamageHitToProcess = false;
+			return true;
+		}
+		
 		if( m_DamageHitToProcess )
 		{
 			StartCommand_Hit(m_DamageHitHeavy, m_DamageHitType, m_DamageHitDirection);
@@ -685,7 +691,7 @@ class ZombieBase extends DayZInfected
 			return true;
 		}
 
-		return pCurrentCommandID == DayZInfectedConstants.COMMANDID_HIT;
+		return false;
 	}
 
 	//! selects animation type and direction based on damage system data

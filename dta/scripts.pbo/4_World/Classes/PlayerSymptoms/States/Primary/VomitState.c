@@ -7,9 +7,8 @@ class VomitSymptom extends SymptomBase
 		m_Priority = 100;
 		m_ID = SymptomIDs.SYMPTOM_VOMIT;
 		m_DestroyOnAnimFinish = true;
-		m_SyncToClient = true;
+		m_SyncToClient = false;
 		m_Duration = 5;
-		m_QuitAnimOnSymptomDestroy = true;
 	}
 	
 	//!gets called every frame
@@ -48,5 +47,10 @@ class VomitSymptom extends SymptomBase
 	override void OnGetDeactivatedClient(PlayerBase player)
 	{
 		Debug.Log("OnGetDeactivated VomitSymptom called", "PlayerSymptom");
+	}
+	
+	override SmptAnimMetaBase SpawnAnimMetaObject()
+	{
+		return new SmptAnimMetaFB();
 	}
 }

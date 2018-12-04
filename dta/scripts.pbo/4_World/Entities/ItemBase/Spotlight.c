@@ -18,6 +18,7 @@ class Spotlight extends ItemBase
 	static const string SEL_REFLECTOR_U				= "reflector_unfolded";
 	static const string SEL_REFLECTOR_FAR_U			= "reflector_far_unfolded";
 	
+	ref protected EffectSound 						m_DeployLoopSound;
 	/*
 	Spotlight, folded and unfolded.
 	*/
@@ -26,23 +27,14 @@ class Spotlight extends ItemBase
 	{
 		Fold();
 		UpdateAllSelections();
+		RegisterNetSyncVariableBool("m_IsSoundSynchRemote");
 	}
-	
-	override string GetDeploySoundset()
-	{
-		return "spotlight_deploy_SoundSet";
-	}	
 	
 	/*override bool IsTwoHandedBehaviour()
 	{
 		return true;
 	}*/
 	
-	override bool IsDeployable()
-	{
-		return true;
-	}
-
 	override void OnWorkStart()
 	{
 		SetPilotLight(true);
@@ -116,9 +108,24 @@ class Spotlight extends ItemBase
 		UpdateAllSelections();
 	}
 
-	override void OnPlacementComplete( Man player )
+	override void OnVariablesSynchronized()
 	{
-		Unfold();
+		super.OnVariablesSynchronized();
+				
+		if ( IsDeploySound() )
+		{
+			PlayDeploySound();
+		}
+				
+		if ( CanPlayDeployLoopSound() )
+		{
+			PlayDeployLoopSound();
+		}
+					
+		if ( m_DeployLoopSound && !CanPlayDeployLoopSound() )
+		{
+			StopDeployLoopSound();
+		}
 	}
 
 	void Fold()
@@ -199,6 +206,54 @@ class Spotlight extends ItemBase
 		else
 		{
 			player_PB.GetHologramLocal().SetSelectionToRefresh( array_of_selections );
+		}
+	}
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+			
+	override void OnPlacementComplete( Man player )
+	{
+		super.OnPlacementComplete( player );
+		
+		if ( GetGame().IsServer() )
+		{
+			Unfold();
+		}
+		
+		SetIsDeploySound( true );
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
+	override string GetDeploySoundset()
+	{
+		return "placeSpotlight_SoundSet";
+	}
+	
+	override string GetLoopDeploySoundset()
+	{
+		return "spotlight_deploy_SoundSet";
+	}
+	
+	void PlayDeployLoopSound()
+	{		
+		if ( GetGame().IsMultiplayer() && GetGame().IsClient() || !GetGame().IsMultiplayer() )
+		{		
+			m_DeployLoopSound = SEffectManager.PlaySound( GetLoopDeploySoundset(), GetPosition() );
+		}
+	}
+	
+	void StopDeployLoopSound()
+	{
+		if ( GetGame().IsMultiplayer() && GetGame().IsClient() || !GetGame().IsMultiplayer() )
+		{	
+			m_DeployLoopSound.SoundStop();
+			delete m_DeployLoopSound;
 		}
 	}
 }

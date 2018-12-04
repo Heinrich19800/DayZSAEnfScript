@@ -9,6 +9,7 @@ enum SurfaceAnimationBone
 class EntityAI extends Entity
 {
 	ref array<EntityAI> m_AttachmentsWithCargo;
+	ref array<EntityAI> m_AttachmentsWithAttachments;
 	
 	void EntityAI ()
 	{
@@ -28,7 +29,8 @@ class EntityAI extends Entity
 		// Item preview index
 		RegisterNetSyncVariableInt( "m_ViewIndex", 0, 99 );
 		
-		m_AttachmentsWithCargo = new array<EntityAI>;
+		m_AttachmentsWithCargo			= new array<EntityAI>;
+		m_AttachmentsWithAttachments	= new array<EntityAI>;
 	}
 	
 	void ~EntityAI()
@@ -225,6 +227,11 @@ class EntityAI extends Entity
 	{
 		return m_AttachmentsWithCargo;
 	}
+	
+	array<EntityAI> GetAttachmentsWithAttachments()
+	{
+		return m_AttachmentsWithAttachments;
+	}
 
 	int GetAgents() { return 0; }
 	void RemoveAgent(int agent_id);
@@ -270,7 +277,7 @@ class EntityAI extends Entity
 	//! Returns root of current hierarchy (for example: if this entity is in Backpack on gnd, returns Backpack)
 	proto native EntityAI GetHierarchyRoot();
 
-	//! Returns root of current hierarchy cast-ed to Man
+	//! Returns root of current hierarchy cast to Man
 	proto native Man GetHierarchyRootPlayer();
 	
 	//! Returns direct parent of current entity
@@ -393,6 +400,12 @@ class EntityAI extends Entity
 		{
 			m_AttachmentsWithCargo.Insert( item );
 		}
+		
+		if( item.GetInventory().GetAttachmentSlotsCount() > 0 )
+		{
+			m_AttachmentsWithAttachments.Insert( item );
+		}
+		
 		//SwitchItemSelectionTexture(item, slot_name);
 	}
 	
@@ -424,6 +437,11 @@ class EntityAI extends Entity
 		if( m_AttachmentsWithCargo.Find( item ) > -1 )
 		{
 			m_AttachmentsWithCargo.RemoveItem( item );
+		}
+		
+		if( m_AttachmentsWithAttachments.Find( item ) > -1 )
+		{
+			m_AttachmentsWithAttachments.RemoveItem( item );
 		}
 		
 		//SwitchItemSelectionTexture(item, slot_name);
@@ -731,6 +749,14 @@ class EntityAI extends Entity
 	{
 		return true;
 	}
+	
+	/**@fn		IgnoreOutOfReachCondition
+	 * @return	if true, attachment condition for out of reach (inventory) will be ignored
+	 **/		
+	bool IgnoreOutOfReachCondition()
+	{
+		return false;
+	}	
 
 	// !Called on CHILD when it's attached to parent.
 	void OnWasAttached( EntityAI parent, int slot_id ) { }

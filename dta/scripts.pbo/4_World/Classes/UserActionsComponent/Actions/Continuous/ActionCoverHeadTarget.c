@@ -103,6 +103,6 @@ class CoverHeadOfTargetPlayerLambda : ReplaceItemWithNewLambdaBase
 	{
 		super.OnSuccess(new_item);
 
-		m_TargetPlayer.SetRestrained(true);
+		//m_TargetPlayer.SetRestrained(true);
 	}
 };

@@ -345,15 +345,15 @@ class ActionManagerClient: ActionManagerBase
 		ref TIntArray primary_action_ids = new TIntArray;
 		ActionBase picked_action;
 		
+		if ( item )
+		{
+			item.GetContinuousActions(primary_action_ids);
+		}
+		
 		// Adding default continuous actions of player
 		if ( m_Player ) 
 		{
 			m_Player.GetContinuousActions(primary_action_ids);
-		}
-		
-		if ( item )
-		{
-			item.GetContinuousActions(primary_action_ids);
 		}
 
 		// Adding actions of item
@@ -377,16 +377,18 @@ class ActionManagerClient: ActionManagerBase
 	{
 		ref TIntArray secondary_action_ids = new TIntArray;
 		ActionBase picked_action;
-		// Adding default single use actions of player
-		if ( m_Player ) 
-		{
-			m_Player.GetSingleUseActions(secondary_action_ids);
-		}
+
 		// Adding actions of item
 		if ( item )
 		{
 			item.GetSingleUseActions(secondary_action_ids);
 		}
+		// Adding default single use actions of player
+		if ( m_Player ) 
+		{
+			m_Player.GetSingleUseActions(secondary_action_ids);
+		}
+		
 		// Looking for first possible single use action 
 		if ( secondary_action_ids  && secondary_action_ids.Count() > 0 )
 		{
@@ -414,11 +416,6 @@ class ActionManagerClient: ActionManagerBase
 		}
 		ref TIntArray tertiary_action_ids = new TIntArray;
 		ActionBase picked_action; 
-		// Adding default interact actions of player
-		if ( m_Player ) 
-		{
-			m_Player.GetInteractActions(tertiary_action_ids);	
-		}
 		
 		if (targetParent)
 		{
@@ -429,6 +426,12 @@ class ActionManagerClient: ActionManagerBase
 		if ( targetObject )
 		{
 			targetObject.GetInteractActions(tertiary_action_ids);
+		}
+		
+		// Adding default interact actions of player
+		if ( m_Player ) 
+		{
+			m_Player.GetInteractActions(tertiary_action_ids);	
 		}
 
 		// Looking for first possible interact action 

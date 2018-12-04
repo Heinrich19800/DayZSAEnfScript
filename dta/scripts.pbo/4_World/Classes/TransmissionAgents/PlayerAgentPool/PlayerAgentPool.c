@@ -120,9 +120,9 @@ class PlayerAgentPool
 		else return 0;
 	}
 	
-	int GetTotalAgentCount()
+	float GetTotalAgentCount()
 	{
-		int agent_count;
+		float agent_count;
 		for(int i = 0; i < m_VirusPool.Count(); i++)
 		{
 			agent_count += m_VirusPool.GetElement(i);

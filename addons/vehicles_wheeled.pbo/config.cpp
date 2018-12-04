@@ -2308,12 +2308,12 @@ class CfgVehicles
 		class SimulationModule: SimulationModule
 		{
 			drive="DRIVE_AWD";
-			airDragCoefficient=0.56999999;
+			airDragCoefficient=0.88999999;
 			class Steering
 			{
 				increaseSpeed[]={0,45,60,23,100,12};
 				decreaseSpeed[]={0,80,60,40,90,20};
-				centeringSpeed[]={0,0,15,20,60,35,100,50};
+				centeringSpeed[]={0,0,15,25,60,40,100,60};
 			};
 			class Throttle
 			{

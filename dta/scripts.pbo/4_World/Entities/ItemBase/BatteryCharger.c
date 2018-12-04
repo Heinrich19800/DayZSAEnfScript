@@ -38,18 +38,14 @@ class BatteryCharger extends ItemBase
 		m_UpdateStatusLightsTimer = new Timer( CALL_CATEGORY_SYSTEM );
 		SwitchLightOff();
 		RegisterNetSyncVariableInt("m_BatteryEnergy0To100");
+		RegisterNetSyncVariableBool("m_IsSoundSynchRemote");
 	}
 	
 	/*override bool IsHeavyBehaviour()
 	{
 		return true;
 	}*/
-	
-	override bool IsDeployable()
-	{
-		return true;
-	}
-	
+
 	override void OnWork( float consumed_energy )
 	{
 		// Charging functionality
@@ -365,5 +361,36 @@ class BatteryCharger extends ItemBase
 		{
 			player_PB.GetHologramLocal().SetSelectionToRefresh( array_of_selections );
 		}
+	}
+	
+	override void OnVariablesSynchronized()
+	{
+		super.OnVariablesSynchronized();
+				
+		if ( IsPlaceSound() )
+		{
+			PlayPlaceSound();
+		}
+	}
+		
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+	
+	override void OnPlacementComplete( Man player )
+	{		
+		super.OnPlacementComplete( player );
+			
+		SetIsPlaceSound( true );
+	}
+	
+	override bool IsDeployable()
+	{
+		return true;
+	}
+	
+	override string GetPlaceSoundset()
+	{
+		return "placeBatteryCharger_SoundSet";
 	}
 }

@@ -171,6 +171,12 @@ class KeybindingsMenu extends UIScriptedMenu
 		{
 			group.Apply();
 		}
+		
+		#ifdef WIP_INPUTS
+			// save input configuration
+			GetUApi().Export();
+			Print(" ----- Export -----");
+		#endif			
 	}
 	
 	void Back()

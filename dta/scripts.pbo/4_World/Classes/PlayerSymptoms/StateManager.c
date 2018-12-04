@@ -17,6 +17,7 @@ enum SymptomIDs {
 	SYMPTOM_LAUGHTER,
 	SYMPTOM_UNCONSCIOUS,
 	SYMPTOM_FREEZE,
+	SYMPTOM_HOT,
 };
 
 enum SymptomTypes 
@@ -59,13 +60,13 @@ class SymptomManager
 		RegisterSymptom(new CoughSymptom);
 		RegisterSymptom(new VomitSymptom);
 		RegisterSymptom(new BlindnessSymptom);
-		RegisterSymptom(new BulletHitSymptom);
 		RegisterSymptom(new SneezeSymptom);
 		RegisterSymptom(new FeverBlurSymptom);
 		RegisterSymptom(new BloodLoss);
 		RegisterSymptom(new LaughterSymptom);
 		RegisterSymptom(new FreezeSymptom);
-		
+		RegisterSymptom(new HotSymptom);
+		//RegisterSymptom(new BulletHitSymptom);
 	}
 
 	void AutoactivateSymptoms()
@@ -87,7 +88,6 @@ class SymptomManager
 		m_SymptomQueueServerDbg = new array<ref Param>;
 		m_SymptomQueueServerDbgPrimary = new array<ref Param>;
 		m_SymptomQueueServerDbgSecondary = new array<ref Param>;
-		//m_SymptomQueueSecondaryServerDbg = new array<ref Param>;
 		m_AvailableSymptoms = new map<int, ref SymptomBase>;
 		m_Player = player;
 		Init();
@@ -137,11 +137,11 @@ class SymptomManager
 		//PrintString("inserting id: "+ToString(id));
 	}
 
-	void OnAnimationFinished(int SYMPTOM_uid)
+	void OnAnimationFinished(eAnimFinishType type = eAnimFinishType.SUCCESS)
 	{
 		if( m_AnimMeta )
 		{
-			m_AnimMeta.AnimFinished();
+			m_AnimMeta.AnimFinished(type);
 		}
 	}
 	
@@ -168,6 +168,11 @@ class SymptomManager
 	{
 		return m_AvailableSymptoms.Get(symptom_id).GetName();
 	}
+	
+	SmptAnimMetaBase SpawnAnimMetaObject(int symptom_id)
+	{
+		return m_AvailableSymptoms.Get(symptom_id).SpawnAnimMetaObject();
+	}
 		
 	//! Exits a specific Symptom with a given UID
 	void RequestSymptomExit(int SYMPTOM_uid)
@@ -189,7 +194,7 @@ class SymptomManager
 		return m_CurrentCommandID;
 	}
 	
-	void OnScheduledTick(float deltatime, int pCurrentCommandID)
+	void OnTick(float deltatime, int pCurrentCommandID, HumanMovementState movement_state)
 	{
 		m_CurrentCommandID = pCurrentCommandID;
 		if(m_ActiveSymptomIndexPrimary == -1)
@@ -209,19 +214,19 @@ class SymptomManager
 		
 		if( m_AnimMeta )
 		{
-		
+			
 			//anim requested
 			if( !m_AnimMeta.IsPlaying() )
 			{
 
 				if( !m_AnimMeta.PlayRequest() )
 				{
-					m_AnimMeta.AnimFinished();
+					OnAnimationFinished(eAnimFinishType.FAILURE);
 				}
 			}
 			else
 			{
-				m_AnimMeta.Update();
+				m_AnimMeta.Update(movement_state);
 			}
 		}
 		
@@ -246,7 +251,7 @@ class SymptomManager
 		#endif
 	}
 
-	void SetAnimation(ParamsReadContext ctx, AnimType anim_type)
+	void SetAnimation(ParamsReadContext ctx)
 	{
 		if(m_AnimMeta)
 		{
@@ -255,15 +260,15 @@ class SymptomManager
 		}
 		else
 		{
-			if( anim_type == AnimType.FULL_BODY )
+			int state_type;
+			if(ctx.Read(state_type))
 			{
-				m_AnimMeta = new SmptAnimMetaFB(ctx, anim_type, this, m_Player);
+				m_AnimMeta = SpawnAnimMetaObject(state_type);
+				if(m_AnimMeta)
+				{
+					m_AnimMeta.Init(ctx, this, m_Player);
+				}
 			}
-			else
-			{
-				m_AnimMeta = new SmptAnimMetaADD(ctx, anim_type, this, m_Player);
-			}
-			
 		}
 	}
 	
@@ -370,7 +375,7 @@ class SymptomManager
 		SymptomBase Symptom;
 		for(int i = 0; i < m_SymptomQueuePrimary.Count(); i++)
 		{
-			if( ComparePriority( GetSymptomPriority(symptom_id), m_SymptomQueuePrimary.Get(i).GetPriority() ) == 1 )
+			if( m_SymptomQueuePrimary.Get(i).CanBeInterupted() && ComparePriority( GetSymptomPriority(symptom_id), m_SymptomQueuePrimary.Get(i).GetPriority() ) == 1 )
 			{
 				Symptom = SpawnSymptom( symptom_id, uid );
 				m_SymptomQueuePrimary.InsertAt(Symptom,i);

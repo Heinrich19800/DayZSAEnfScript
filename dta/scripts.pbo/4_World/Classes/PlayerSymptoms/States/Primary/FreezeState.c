@@ -30,10 +30,11 @@ class FreezeSymptom extends SymptomBase
 	{	
 		HumanMovementState hms = new HumanMovementState();
 		player.GetMovementState(hms);
-		
+		PlaySound(EPlayerSoundEventID.FREEZING);
+		return;//crash fix
 		if( m_Manager.GetCurrentCommandID() == DayZPlayerConstants.COMMANDID_MOVE && hms.m_iMovement == DayZPlayerConstants.MOVEMENTIDX_IDLE )
 		{
-			PlayAnimationADD(2);
+			PlayAnimationADD(1);
 		}
 		else
 		{
@@ -56,5 +57,10 @@ class FreezeSymptom extends SymptomBase
 	override void OnGetDeactivatedClient(PlayerBase player)
 	{
 		Debug.Log("OnGetDeactivated CoughSymptom called", "PlayerSymptom");
+	}
+	
+	override SmptAnimMetaBase SpawnAnimMetaObject()
+	{
+		return new HeatComfortmMetaADD();
 	}
 }

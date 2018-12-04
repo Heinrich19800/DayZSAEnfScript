@@ -6,6 +6,7 @@ class HescoBox extends Inventory_Base
 	
 	static ref array<string> 		m_SurfaceForSetup;
 	ref Timer 						m_Timer;
+	ref protected EffectSound 		m_DeployLoopSound;
 
 	protected int m_State;
 	
@@ -21,23 +22,14 @@ class HescoBox extends Inventory_Base
 		
 		//synchronized variables
 		RegisterNetSyncVariableInt( "m_State", FOLDED, FILLED );
-	}
-
-	override string GetDeploySoundset()
-	{
-		return "hescobox_deploy_SoundSet";
+		RegisterNetSyncVariableBool("m_IsSoundSynchRemote");
 	}
 	
 	/*override bool IsHeavyBehaviour()
 	{
 		return true;
 	}*/
-	
-	override bool IsDeployable()
-	{
-		return true;
-	}
-	
+
 	override bool CanPutIntoHands( EntityAI parent )
 	{
 		if( !super.CanPutIntoHands( parent ) )
@@ -46,12 +38,7 @@ class HescoBox extends Inventory_Base
 		}
 		return CanBeManipulated();
 	}
-
-	override void OnPlacementComplete( Man player )
-	{
-		Unfold();
-	}
-
+		
 	void Synchronize()
 	{
 		SetSynchDirty();
@@ -63,6 +50,21 @@ class HescoBox extends Inventory_Base
 		
 		//refresh visuals
 		RefreshVisuals();
+				
+		if ( IsDeploySound() )
+		{
+			PlayDeploySound();
+		}
+				
+		if ( CanPlayDeployLoopSound() )
+		{
+			PlayDeployLoopSound();
+		}
+					
+		if ( m_DeployLoopSound && !CanPlayDeployLoopSound() )
+		{
+			StopDeployLoopSound();
+		}
 	}
 	
 	void RefreshVisuals()
@@ -253,6 +255,54 @@ class HescoBox extends Inventory_Base
 				Fill();
 				break;
 			}
+		}
+	}
+	
+	//================================================================
+	// ADVANCED PLACEMENT
+	//================================================================
+	
+	override void OnPlacementComplete( Man player )
+	{
+		super.OnPlacementComplete( player );
+		
+		if ( GetGame().IsServer() )
+		{
+			Unfold();
+		}
+				
+		SetIsDeploySound( true );
+	}
+		
+	override bool IsDeployable()
+	{
+		return true;
+	}
+
+	override string GetDeploySoundset()
+	{
+		return "placeHescoBox_SoundSet";
+	}
+	
+	override string GetLoopDeploySoundset()
+	{
+		return "hescobox_deploy_SoundSet";
+	}
+	
+	void PlayDeployLoopSound()
+	{		
+		if ( GetGame().IsMultiplayer() && GetGame().IsClient() || !GetGame().IsMultiplayer() )
+		{		
+			m_DeployLoopSound = SEffectManager.PlaySound( GetLoopDeploySoundset(), GetPosition() );
+		}
+	}
+	
+	void StopDeployLoopSound()
+	{
+		if ( GetGame().IsMultiplayer() && GetGame().IsClient() || !GetGame().IsMultiplayer() )
+		{	
+			m_DeployLoopSound.SoundStop();
+			delete m_DeployLoopSound;
 		}
 	}
 }

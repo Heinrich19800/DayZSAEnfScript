@@ -4,10 +4,10 @@ class ThirstNotfr: NotifierBase
 	private const float 	THIRSTY_TRESHOLD 			= 2500;
 	private const float 	VERY_THIRSTY_TRESHOLD 		= 1500;
 	private const float 	FATALLY_THIRSTY_TRESHOLD 	= 0;
-	private const float 	DEC_TRESHOLD_LOW 			= -0.01;
+	private const float 	DEC_TRESHOLD_LOW 			= 0;
 	private const float 	DEC_TRESHOLD_MED 			= -0.2;
 	private const float 	DEC_TRESHOLD_HIGH			= -0.85;
-	private const float 	INC_TRESHOLD_LOW 			= 0.01;
+	private const float 	INC_TRESHOLD_LOW 			= 0;
 	private const float 	INC_TRESHOLD_MED 			= 0.2;
 	private const float 	INC_TRESHOLD_HIGH			= 0.85;
 		

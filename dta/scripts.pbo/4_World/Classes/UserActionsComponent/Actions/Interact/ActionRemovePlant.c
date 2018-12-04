@@ -45,7 +45,7 @@ class ActionRemovePlant: ActionInteractBase
 		if ( targetObject != NULL && targetObject.IsInherited(PlantBase) )
 		{
 			PlantBase plant = PlantBase.Cast( targetObject );
-			m_MessageSuccess = plant.Remove( action_data.m_Player );
+			plant.RemovePlant();
 		}
 	}
 };

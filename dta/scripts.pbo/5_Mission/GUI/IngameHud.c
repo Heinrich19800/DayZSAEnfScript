@@ -42,6 +42,8 @@ class IngameHud extends Hud
 	protected CarScript							m_CurrentVehicle;
 	
 	protected Widget							m_Notifiers;
+	protected ImageWidget						m_BloodType;
+	protected Widget							m_BadgeNotifierDivider;
 	protected Widget							m_Badges;
 	protected ref Timer							m_HideTimer;
 	protected ref WidgetFadeTimer				m_FadeTimerCrosshair;
@@ -99,7 +101,6 @@ class IngameHud extends Hud
 	protected ImageWidget						m_ActionIcon;
 	protected TextWidget						m_ActionButtonText;
 
-	protected TextWidget						m_BloodType;
 	protected Widget							m_ActionIconFrame;
 	protected Widget							m_ActionMultipleItemsFrame;
 	
@@ -182,6 +183,8 @@ class IngameHud extends Hud
 		m_Presence						= m_HudPanelWidget.FindAnyWidget("PresencePanel");
 		m_Badges						= hud_panel_widget.FindAnyWidget("BadgesPanel");
 		m_Notifiers						= m_HudPanelWidget.FindAnyWidget("NotifiersPanel");
+		m_BadgeNotifierDivider			= m_HudPanelWidget.FindAnyWidget("BadgeNotifierDivider");
+		m_BloodType						= ImageWidget.Cast( m_HudPanelWidget.FindAnyWidget("IconBlood") );
 		
 		m_VehiclePanel					= m_HudPanelWidget.FindAnyWidget("VehiclePanel");
 		m_VehiclePanelRPMPointer		= m_VehiclePanel.FindAnyWidget("RpmPointer");
@@ -216,7 +219,6 @@ class IngameHud extends Hud
 		m_StanceCar						= m_HudPanelWidget.FindAnyWidget("StanceCar");
 		m_StancePanel					= m_HudPanelWidget.FindAnyWidget("StancePanel");
 		m_ActionTarget					= m_HudPanelWidget.FindAnyWidget("ActionTargetsCursorWidget");
-		Class.CastTo(m_BloodType, m_HudPanelWidget.FindAnyWidget("BloodType") );
 		
 		// state notifiers
 		m_StatesWidgetNames.Clear();
@@ -235,9 +237,7 @@ class IngameHud extends Hud
 		#endif
 
 			m_Notifiers.Show( true );
-			// m_Notifiers.SetAlpha( 0 );
 			m_Badges.Show( true );
-			// m_Badges.SetAlpha( 0 );
 
 			int i = 0;
 			int key = 0;
@@ -268,6 +268,8 @@ class IngameHud extends Hud
 			m_BadgesWidgetNames.Set( NTFKEY_SICK, "Pill" );
 			m_BadgesWidgetNames.Set( NTFKEY_WETNESS, "Wetness" );
 			m_BadgesWidgetNames.Set( NTFKEY_FEVERISH, "Skull" );
+			m_BadgesWidgetNames.Set( NTFKEY_BLEEDISH, "Bleeding" );
+			m_BadgesWidgetNames.Set( NTFKEY_LIVES, "Shock" );
 			// NTFKEY_SICK
 			// NTFKEY_BLEEDISH
 			// NTFKEY_FRACTURE
@@ -295,20 +297,6 @@ class IngameHud extends Hud
 			m_PresenceLevel2.Show( false );
 			m_PresenceLevel3.Show( false );
 			m_PresenceLevel4.Show( false );
-		
-		/*
-		else
-		{
-			m_StaminaBackground.Show( false );
-			m_Stamina.Show( false );
-			m_Presence.Show( false );
-			m_StanceProne.Show( false );
-			m_StanceStand.Show( false );
-			m_StanceCrouch.Show( false );
-			m_Badges.Show( false );
-			m_Notifiers.Show( false );
-		}
-		*/
 		
 //		#ifndef NO_GUI
 //		m_zeroing_and_weaponmode_timer.Run(0.1, this, "RefreshZeroingAndWeaponMode", NULL, true );
@@ -470,21 +458,21 @@ class IngameHud extends Hud
 		switch( status )
 		{
 			case 1:
-				w.SetColor( ARGB( alpha * 255, 255, 255, 255 ) );	//white
+				w.SetColor( ARGB( alpha * 255, 220, 220, 220 ) );	//white
 				m_TendencyStatusCritical.Remove( w );		//remove from blinking group
 				break;
 			case 2:
-				w.SetColor( ARGB( alpha * 255, 255, 255, 0 ) );		//yellow
+				w.SetColor( ARGB( alpha * 255, 220, 220, 0 ) );		//yellow
 				m_TendencyStatusCritical.Remove( w );		//remove from blinking group
 				break;
 			case 3:
-				w.SetColor( ARGB( alpha * 255, 255, 0, 0 ) );		//red
+				w.SetColor( ARGB( alpha * 255, 220, 0, 0 ) );		//red
 				m_TendencyStatusCritical.Remove( w );		//remove from blinking group
 				break;
 			case 4:
 				if ( !m_TendencyStatusCritical.Contains( w ) )
 				{
-					m_TendencyStatusCritical.Insert( w, ARGB( alpha * 255, 255, 0, 0 ) );	//add to blinking group
+					m_TendencyStatusCritical.Insert( w, ARGB( alpha * 255, 220, 0, 0 ) );	//add to blinking group
 				}
 				break;
 			case 5:
@@ -492,17 +480,17 @@ class IngameHud extends Hud
 				m_TendencyStatusCritical.Remove( w );		//remove from blinking group
 				break;
 			case 6:
-				w.SetColor( ARGB( alpha * 255, 30, 144, 255 ) );	//blue
+				w.SetColor( ARGB( alpha * 255, 30, 144, 220 ) );	//blue
 				m_TendencyStatusCritical.Remove( w );		//remove from blinking group
 				break;
 			case 7:													//blue blinking
 				if ( !m_TendencyStatusCritical.Contains( w ) )
 				{
-					m_TendencyStatusCritical.Insert( w, ARGB( alpha * 255, 30, 144, 255 ) );	//add to blinking group
+					m_TendencyStatusCritical.Insert( w, ARGB( alpha * 255, 30, 144, 220 ) );	//add to blinking group
 				}
 				break;				
 			default:
-				w.SetColor( ARGB( alpha * 255, 255, 255, 255 ) );	//white
+				w.SetColor( ARGB( alpha * 255, 220, 220, 220 ) );	//white
 				m_TendencyStatusCritical.Remove( w );		//remove from blinking group
 				break;
 		}
@@ -523,19 +511,16 @@ class IngameHud extends Hud
 			Class.CastTo(w,  m_Notifiers.FindAnyWidget( String(  m_StatesWidgetNames.Get( key ) + "ArrowDown" + x.ToString() ) ) );
 			w.Show( false );
 		}
-
-		for ( int i = 1; i < ( tendency + 1) ; i++ )
-		{
-			string widget_name = m_StatesWidgetNames.Get( key ) + arrow_name + i.ToString() ;
-			Class.CastTo(w,  m_Notifiers.FindAnyWidget( widget_name ) );
-			w.Show( true );
-		}
+		
+		string widget_name = m_StatesWidgetNames.Get( key ) + arrow_name + Math.Clamp( ( tendency + 1 ), 1, 3 );
+		Class.CastTo(w,  m_Notifiers.FindAnyWidget( widget_name ) );
+		w.Show( true );
 	}
 	
 	override void DisplayBadge( int key, bool show )
 	{
 		m_BadgesWidgetDisplay.Set( key, show );
-
+		bool any_visible = show;
 		int x = 0;
 		for ( int i = 0; i < m_BadgesWidgetDisplay.Count(); i++ )
 		{
@@ -550,6 +535,7 @@ class IngameHud extends Hud
 					badge_widget.SetPos ( x*0.2, 0.0, true);
 					badge_widget.Show( true );
 					x = x + 1;
+					any_visible = true;
 				}
 				else
 				{
@@ -557,6 +543,12 @@ class IngameHud extends Hud
 				}
 			}
 		}
+		m_BadgeNotifierDivider.Show( any_visible );
+	}
+	
+	void SetStomachState()
+	{
+		
 	}
 	
 	override void SetStamina( int value , int range )
@@ -1127,16 +1119,7 @@ class IngameHud extends Hud
 			string blood_name = BloodTypes.GetBloodTypeName( player.GetBloodType() );
 			bool blood_type_visible = player.HasBloodTypeVisible();
 			
-			if( blood_type_visible )
-			{
-				m_BloodType.Show( blood_type_visible );
-				m_BloodType.SetText( blood_name );	
-			}
-			else
-			{
-				m_BloodType.Show( blood_type_visible );
-				m_BloodType.SetText( "" );
-			}
+			m_BloodType.LoadImageFile( 0, "set:dayz_gui image:iconBlood" + blood_name );
 		}
 	}
 

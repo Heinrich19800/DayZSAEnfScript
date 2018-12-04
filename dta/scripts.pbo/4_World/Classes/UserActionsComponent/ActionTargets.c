@@ -262,7 +262,7 @@ class ActionTargets
 		if ( object )
 		{
 			//! quick distance check
-			if (vector.DistanceSq(m_Player.GetPosition(), object.GetPosition()) > c_MaxTargetDistance * c_MaxTargetDistance)
+			if (vector.DistanceSq(m_Player.GetPosition(), object.GetPosition()) > c_MaxActionDistance * c_MaxActionDistance)
 				return true;
 
 			// use CE_CENTER mem point for obstruction check
@@ -630,6 +630,7 @@ class ActionTargets
 	//! searching properties
 	private const float c_RayDistance = 5.0;
 	private const float c_MaxTargetDistance = 3.0;
+	private const float c_MaxActionDistance = UAMaxDistances.DEFAULT;
 	private const float c_ConeAngle = 30.0;
 	private const float c_ConeHeightMin = -0.5;
 	private const float c_ConeHeightMax = 2.0;

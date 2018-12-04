@@ -543,7 +543,7 @@ class MiscGameplayFunctions
 class DestroyItemInCorpsesHandsAndCreateNewOnGndLambda : ReplaceAndDestroyLambda
 {
 	// @NOTE m_Player == target player - i.e. restrained one
-	void DestroyItemInCorpsesHandsAndCreateNewOnGnd (EntityAI old_item, string new_item_type, PlayerBase player, bool destroy = false)
+	void DestroyItemInCorpsesHandsAndCreateNewOnGndLambda (EntityAI old_item, string new_item_type, PlayerBase player, bool destroy = false)
 	{
 		InventoryLocation gnd = new InventoryLocation;
 		vector mtx[4];

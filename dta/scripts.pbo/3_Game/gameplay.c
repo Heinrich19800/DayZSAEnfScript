@@ -211,6 +211,10 @@ class LOD
 		
 		return NULL;
 	}
+	
+	proto native int GetPropertyCount();
+	proto native string GetPropertyName(int index);
+	proto native string GetPropertyValue(int index);
 }
 
 class Plant extends Object
@@ -881,7 +885,7 @@ proto native Hive GetHive();
 // -------------------------------------------------------------------------
 class UAInput
 {
-	proto native int Hash();	// return input hash
+	proto native int NameHash();	// return input hash
 
 	proto native int BindingCount();	// return binding count
 	proto native int Binding( int iIndex );	// return binding at index
@@ -896,6 +900,10 @@ class UAInput
 	proto native void SelectAlternative( int iIndex );		// select binding alternative by index
 	proto native int AlternativeCount();					// get currently assigned alternative count
 	proto native int AlternativeIndex();					// get currently selected alternative index
+
+
+	proto native int BindKeyCount(); // binded key count (for selected alternative)
+	proto native int GetBindKey( int iIndex ); // binded key at index (for selected alternative)
 
 	proto native float LocalValue();
 
@@ -914,6 +922,8 @@ class UAInput
 	proto native bool IsReleaseLimit();		// if limited to RELEASE
 	proto native bool IsHoldLimit();		// if limited to HOLD
 	proto native bool IsDoubleClickLimit();	// if limited to DOUBLE CLICK
+
+	proto native bool HasSorting( int iIndex );		// has sorting group index?
 
 	proto native bool IsLocked();			// determine if locked (not active ATM)
 	proto native void Lock();				// lock (until unlock called or exclusion is selected)
@@ -935,6 +945,9 @@ class UAInputAPI
 	proto native UAInput GetInputByName( string sInputName );
 
 	proto native string GetButtonName( int iHash );	// get localized name for any button hash
+
+	proto native int ModificatorCount();	// modificator count
+	proto native string GetModificatorName( int index );	// modificator name
 	
 	// for options only mapping, do not call normally as it is not performance wise!
 	proto native int DeterminePressedButton();	// recently pressed key, mouse button or pad button (returns zero if nothing pressed)
@@ -963,6 +976,9 @@ class UAInputAPI
 	proto native void PresetSelect( int index ); // select specific preset
 	proto native int PresetCount(); // count of presets
 	proto native string PresetName( int index ); // name of selected preset
+
+	proto native int SortingCount();				// sorting group count
+	proto native string SortingName( int index );	// sorting group name
 
 	proto native void Export();	// export XML (user) configuration
 };

@@ -48,7 +48,7 @@ class PlantBase extends ItemBase
 		m_DeleteDryPlantTime = (60 * 10) + Math.RandomInt(0, 60 * 2);
 		m_SpoiledRemoveTime = (60 * 20) + Math.RandomInt(0, 60 * 5);
 		
-		m_InfestationChance = 0.2;
+		m_InfestationChance = 0.5;
 		
 		string plant_type = this.GetType();
 		m_GrowthStagesCount = GetGame().ConfigGetInt( "cfgVehicles " + plant_type + " Horticulture GrowthStagesCount" );
@@ -70,11 +70,16 @@ class PlantBase extends ItemBase
 		RegisterNetSyncVariableInt("m_PlantStateIndex");
 	}
 
+	void ~PlantBase()
+	{
+		
+	}
+	
 	void Init( GardenBase garden_base, float fertility, float harvesting_efficiency, float water )
 	{
 		m_GardenBase = garden_base;
 		
-		float divided = 30;// (float)((60 * 1) + Math.RandomInt(0, 60 * 1)) / fertility;
+		float divided = (float) ((60 * 5) + Math.RandomInt(0, 60 * 1)) / fertility;
 		m_FullMaturityTime = divided;
 		
 		divided = (float)((60 * 30) + Math.RandomInt(0, 60 * 30)) * fertility;
@@ -91,11 +96,11 @@ class PlantBase extends ItemBase
 		float rain_intensity = GetGame().GetWeather().GetRain().GetActual();
 		if ( rain_intensity > 0.0 )
 		{
-			CheckWater( NULL );
+			CheckWater();
 		}
 		else
 		{
-			CheckWater( NULL );
+			CheckWater();
 			
 			if ( NeedsWater() )
 			{
@@ -129,6 +134,8 @@ class PlantBase extends ItemBase
 		Print(slot);
 		
 		SetSlot(slot);
+		
+		OnStoreLoadCustom( ctx );
 	}
 
 	override void OnStoreSave( ParamsWriteContext ctx )
@@ -143,15 +150,17 @@ class PlantBase extends ItemBase
 			int slot_index = slot.GetSlotIndex();
 			Print(slot_index);
 			ctx.Write( slot_index );
+			
+			OnStoreSaveCustom( ctx );
 		}
 		else
 		{
 			GetGame().ObjectDelete(this); // Plants that exist without a garden must be deleted. Otherwise they might cause problems.
-			Error("Warning! A plant existed without a garden. Therefore it was deleted from the world to prevent issues!");
+			Print("Warning! A plant existed without a garden. Therefore it was deleted from the world to prevent issues!");
 		}
 	}
 	
-	void OnStoreLoadCustom( ParamsReadContext ctx, GardenBase garden_base )
+	void OnStoreLoadCustom( ParamsReadContext ctx )
 	{
 		int loadInt;
 		ctx.Read( loadInt );
@@ -544,29 +553,13 @@ class PlantBase extends ItemBase
 		}
 	}
 
-	string CheckWater( ItemBase item )
+	void CheckWater()
 	{
 		if ( !IsMature()  &&  !NeedsWater() )
 		{
 			if ( m_DeleteDryPlantTimer )
 			{
 				m_DeleteDryPlantTimer.Stop();
-			}
-			
-			if (item)
-			{
-				// Get the liquid
-				int liquid_type	= item.GetLiquidType();
-
-				if (!liquid_type & LIQUID_WATER)
-				{
-					string item_display_name = "";
-					GetGame().ObjectGetDisplayName( item, item_display_name );
-					
-					RemoveSlot();
-					
-					return "The " + item_display_name + " contained some liquid which poisoned the plant.";
-				}
 			}
 			
 			SetPlantState(STATE_GROWING);
@@ -576,12 +569,6 @@ class PlantBase extends ItemBase
 				m_GrowthTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
 				m_GrowthTimer.Run( m_StateChangeTime, this, "GrowthTimerTick", NULL, true );
 			}
-		
-			return "I've watered the plant. Now it has enough of water to grow.";
-		}
-		else 
-		{
-			return "I've watered the plant a bit.";
 		}
 	}
 
@@ -610,20 +597,21 @@ class PlantBase extends ItemBase
 		}
 	}
 
-	string Remove( PlayerBase player = NULL )
+	void RemovePlant()
 	{
-		if ( m_CurrentPlantMaterialQuantity > 0.0  &&  player )
+		if ( GetGame()  &&  GetGame().IsServer() )
 		{
-			vector pos = GetPosition();
-			ItemBase item = ItemBase.Cast( GetGame().CreateObject( "PlantMaterial", pos ) );
-			item.SetQuantity( m_CurrentPlantMaterialQuantity * 1000.0 );
+			if ( m_CurrentPlantMaterialQuantity > 0.0 )
+			{
+				vector pos = GetPosition();
+				ItemBase item = ItemBase.Cast( GetGame().CreateObject( "PlantMaterial", pos ) );
+				item.SetQuantity( m_CurrentPlantMaterialQuantity * 1000.0 );
+			}
+			
+			RemoveSlot();
 		}
 		
-		RemoveSlot();
-		
 		GetGame().ObjectDelete( this );
-		
-		return "I've removed the plant.";
 	}
 
 	string Harvest( PlayerBase player )

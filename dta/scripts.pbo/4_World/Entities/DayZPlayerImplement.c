@@ -69,6 +69,7 @@ class DayZPlayerImplement extends DayZPlayer
 	protected bool 										m_KilledByHeadshot;
 	protected int										m_LastSurfaceUnderHash;
 	protected Transport									m_TransportCache;
+	protected string 									m_ClimbingLadderType;
 	
 
 	//! constructor 
@@ -169,6 +170,11 @@ class DayZPlayerImplement extends DayZPlayer
 	void SetIronsights(bool value)
 	{
 		m_CameraIronsighs = value;
+	}
+
+	void SetClimbingLadderType(string value)
+	{
+		m_ClimbingLadderType = value;
 	}
 
 	//! Implementations only! - used on PlayerBase
@@ -2044,6 +2050,7 @@ class DayZPlayerImplement extends DayZPlayer
 									SoundObjectBuilder vegSoundObjectBuilder = vegetationSound.GetSoundObjectBuilder();
 									SoundObject vegSoundObject = vegetationSound.GetSoundObjectBuilder().BuildSoundObject();
 									
+									AttenuateSoundIfNecessary(vegSoundObject);
 									PlaySound(vegSoundObject, vegSoundObjectBuilder);
 									
 									break;
@@ -2269,7 +2276,40 @@ class DayZPlayerImplement extends DayZPlayer
 			}
 		}
 	}
-	
+
+	void SetVariablesLadderSoundObjectBuilder(SoundObjectBuilder soundObjectBuilder)
+	{
+		if (m_ClimbingLadderType == "wood")
+		{
+			soundObjectBuilder.SetVariable("laddertype", 1);
+		}
+		else
+		{
+			soundObjectBuilder.SetVariable("laddertype", 0);
+		}
+		
+		AnimBootsType pBoots = GetBootsType();
+		
+		if (pBoots == AnimBootsType.None)
+		{
+			soundObjectBuilder.SetVariable("bare", 1);
+			soundObjectBuilder.SetVariable("sneakers", 0);
+			soundObjectBuilder.SetVariable("boots", 0);
+		}
+		else if (pBoots == AnimBootsType.Sneakers)
+		{
+			soundObjectBuilder.SetVariable("bare", 0);
+			soundObjectBuilder.SetVariable("sneakers", 1);
+			soundObjectBuilder.SetVariable("boots", 0);
+		}
+		else if (pBoots == AnimBootsType.Boots)
+		{
+			soundObjectBuilder.SetVariable("bare", 0);
+			soundObjectBuilder.SetVariable("sneakers", 0);
+			soundObjectBuilder.SetVariable("boots", 1);
+		}
+	}
+
 	void ProcessSoundEvent(string pEventType, string pUserString, int pUserInt)
 	{
 		DayZPlayerType type = GetDayZPlayerType();
@@ -2285,6 +2325,10 @@ class DayZPlayerImplement extends DayZPlayer
 			if(GetGame().IsClient() || !GetGame().IsMultiplayer())
 			{
 				SoundObjectBuilder objectBuilder = soundEvent.GetSoundBuilder();
+				if (GetCommand_Ladder())
+				{
+					SetVariablesLadderSoundObjectBuilder(objectBuilder);
+				}
 				objectBuilder.UpdateEnvSoundControllers(GetPosition());
 
 				SoundObject soundObject = objectBuilder.BuildSoundObject();
@@ -2298,7 +2342,6 @@ class DayZPlayerImplement extends DayZPlayer
 					GetGame().GetNoiseSystem().AddNoise(this, soundEvent.m_NoiseParams);
 			}
 		}
-		
 	}
 	
 	AbstractWave ProcessVoiceEvent(string pEventType, string pUserString, int pUserInt)

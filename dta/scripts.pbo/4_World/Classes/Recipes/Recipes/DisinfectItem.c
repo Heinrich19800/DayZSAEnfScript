@@ -58,6 +58,11 @@ class DisinfectItem extends RecipeBase
 
 	override bool CanDo(ItemBase ingredients[], PlayerBase player)//final check for recipe's validity
 	{
+		ItemBase item = ingredients[1];
+		
+		if (item.IsInherited(PlantBase) )
+			return false;
+		
 		int liquid_type = ingredients[0].GetLiquidType();
 		return (liquid_type & LIQUID_DISINFECTANT);
 	}

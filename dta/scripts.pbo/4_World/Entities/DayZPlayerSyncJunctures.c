@@ -141,21 +141,20 @@ class DayZPlayerSyncJunctures
 	//! Additive Symptoms
 	//!
 	
-	static void SendPlayerSymptomADD(DayZPlayer pPlayer, int type, int state_uid)
+	static void SendPlayerSymptomADD(DayZPlayer pPlayer, int type, int state_type)
 	{
 		ScriptJunctureData ctx = new ScriptJunctureData;
+		ctx.Write(state_type);
 		ctx.Write(type);
-		ctx.Write(state_uid);
+
 
 		pPlayer.SendSyncJuncture(SJ_PLAYER_ADD_MODIFIER, ctx);
 	}
 	
-	static bool ReadPlayerSymptomADDParams(ParamsReadContext pCtx, out int type, out int state_uid)
+	static bool ReadPlayerSymptomADDParams(ParamsReadContext pCtx, out int type)
 	{
 		if ( !pCtx.Read(type) )
 			return false; // error		
-		if ( !pCtx.Read(state_uid) )
-			return false; // error
 		return true;
 	}
 	
@@ -165,11 +164,11 @@ class DayZPlayerSyncJunctures
 	//! Full body Symptoms
 	//! 
 	
-	static void SendPlayerSymptomFB(DayZPlayer pPlayer, DayZPlayerConstants anim_id, int state_uid, int stance_mask, float duration)
+	static void SendPlayerSymptomFB(DayZPlayer pPlayer, DayZPlayerConstants anim_id, int state_type, int stance_mask, float duration)
 	{
 		ScriptJunctureData ctx = new ScriptJunctureData;
+		ctx.Write(state_type);
 		ctx.Write(anim_id);
-		ctx.Write(state_uid);
 		ctx.Write(stance_mask);
 		ctx.Write(duration);
 		//ctx.Write(pPlayer);
@@ -177,11 +176,9 @@ class DayZPlayerSyncJunctures
 		pPlayer.SendSyncJuncture(SJ_PLAYER_STATES, ctx);
 	}
 	
-	static bool ReadPlayerSymptomFBParams(ParamsReadContext pCtx, out DayZPlayerConstants anim_id, out int state_uid, out int stance_mask, out float duration)
+	static bool ReadPlayerSymptomFBParams(ParamsReadContext pCtx, out DayZPlayerConstants anim_id, out int stance_mask, out float duration)
 	{
 		if ( !pCtx.Read(anim_id) )
-			return false; // error
-		if ( !pCtx.Read(state_uid) )
 			return false; // error
 		if ( !pCtx.Read(stance_mask) )
 			return false; // error

@@ -7,7 +7,7 @@ class PlayerContainer: CollapsibleContainer
 	protected PlayerBase						m_Player;
 	protected ScrollWidget						m_ScrollWidget;
 	
-	void PlayerContainer( LayoutHolder parent )
+	void PlayerContainer( LayoutHolder parent, int sort = -1 )
 	{
 		m_ScrollWidget	= ScrollWidget.Cast( parent.GetMainWidget().GetParent() );
 		m_InventorySlots = new ref map<int, ref Widget>;
@@ -256,6 +256,35 @@ class PlayerContainer: CollapsibleContainer
 		ScrollToActiveContainer( active );
 	}
 	
+	override void Insert( LayoutHolder container )
+	{
+		ClosableContainer c_cont = ClosableContainer.Cast( container );
+		if( c_cont && m_Body.Count() > 2 )
+		{
+			ClosableContainer prev	= ClosableContainer.Cast( m_Body.Get( 2 ) );
+			int index				= 2;
+			int curr_sort			= c_cont.GetRootWidget().GetSort();
+			while( prev )
+			{
+				int prev_sort = prev.GetRootWidget().GetSort();
+				if( prev_sort > curr_sort )
+					break;
+				if( ++index < m_Body.Count() )
+					prev = ClosableContainer.Cast( m_Body.Get( index ) );
+				else
+					break;
+			}
+			
+			m_Body.InsertAt( container, index );
+		}
+		else
+		{
+			m_Body.Insert( container );
+		}
+		
+		RecomputeOpenedContainers();
+	}
+	
 	bool IsItemWithContainerActive()
 	{
 		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainWidget().FindAnyWidget( "Render" + m_FocusedColumn ) );
@@ -364,7 +393,7 @@ class PlayerContainer: CollapsibleContainer
 	void ExpandCollapseContainer()
 	{
 		ItemPreviewWidget item_preview = ItemPreviewWidget.Cast( m_PlayerAttachmentsContainer.Get( m_FocusedRow ).GetMainWidget().FindAnyWidget( "Render" + m_FocusedColumn ) );
-		ToggleWidget( item_preview.GetParent() );		
+		ToggleWidget( item_preview.GetParent() );
 	}
 	
 	bool IsContainerWithCargoActive()
@@ -613,15 +642,11 @@ class PlayerContainer: CollapsibleContainer
 				if( item && item.GetInventory().CanRemoveEntity() )
 				{
 					EntityAI item_in_hands = GetGame().GetPlayer().GetHumanInventory().GetEntityInHands();
-					if( item_in_hands && item.GetInventory().CanRemoveEntity() )
+					if( item_in_hands && item_in_hands.GetInventory().CanRemoveEntity() )
 					{
 						if( GameInventory.CanSwapEntities( item_in_hands, item ) )
 						{
 							GetGame().GetPlayer().PredictiveSwapEntities( item_in_hands, item );
-						}
-						else
-						{
-							GetGame().GetPlayer().PredictiveSwapEntities( item, item_in_hands );
 						}
 					}
 					else
@@ -1142,9 +1167,10 @@ class PlayerContainer: CollapsibleContainer
 					if( m_ShowedItems.Contains( entity ) == false )
 					{
 						string name;
+						int sort_index = Inventory.GetPlayerAttachmentIndex( slot_id );
 						if( entity.GetSlotsCountCorrect() > 0 )
 						{
-							ContainerWithCargoAndAttachments iwca = new ContainerWithCargoAndAttachments( this );
+							ContainerWithCargoAndAttachments iwca = new ContainerWithCargoAndAttachments( this, sort_index );
 							iwca.SetEntity( entity );
 							new_showed_items.Insert( entity, iwca );
 							showed_items_IDs.Insert( entity.GetID(), iwca );
@@ -1157,7 +1183,7 @@ class PlayerContainer: CollapsibleContainer
 						}
 						else if( entity.GetInventory().GetCargo() )
 						{
-							ContainerWithCargo iwc = new ContainerWithCargo( this );
+							ContainerWithCargo iwc = new ContainerWithCargo( this, sort_index );
 							iwc.SetEntity( entity );
 							new_showed_items.Insert( entity, iwc );
 							showed_items_IDs.Insert( entity.GetID(), iwc );

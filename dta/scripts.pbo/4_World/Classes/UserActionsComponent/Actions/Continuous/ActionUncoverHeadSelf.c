@@ -50,7 +50,15 @@ class ActionUncoverHeadSelf: ActionContinuousBase
 
 	override void OnFinishProgressServer( ActionData action_data )
 	{	
-		action_data.m_Player.GetInventory().CreateInInventory("BurlapSack");
+		EntityAI entity = action_data.m_Player.GetInventory().CreateInInventory("BurlapSack");
+		if( !entity )
+		{
+			vector m4[4];
+			action_data.m_Player.GetTransformWS(m4);
+			InventoryLocation target_gnd = new InventoryLocation;
+			target_gnd.SetGround(null, m4);
+			GameInventory.LocationCreateEntity(target_gnd, "BurlapSack");
+		}
 		
 		EntityAI attachment;
 		Class.CastTo(attachment, action_data.m_Player.GetInventory().FindAttachment(InventorySlots.HEADGEAR));

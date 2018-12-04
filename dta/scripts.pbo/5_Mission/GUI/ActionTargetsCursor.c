@@ -67,11 +67,6 @@ class ActionTargetsCursor extends ObjectFollower
 	protected bool							m_FixedOnPosition;
 	protected bool 							m_Hidden;
 
-	// for KeyToUIElements conversion
-	ref TIntArray 							m_ActionIndices;
-	ref TIntArray 							m_Keys;
-	ref TStringArray						m_Actions;
-	
 	protected Widget						m_Container;
 	protected Widget 						m_ItemLeft;
 	ref AutoHeightSpacer					m_MainSpacer;
@@ -84,15 +79,13 @@ class ActionTargetsCursor extends ObjectFollower
 		m_Continuous = null;
 		m_AM = null;
 		
+		m_HealthEnabled = true;
+		m_QuantityEnabled = true;
+		
 		m_CachedObject = new ATCCachedObject;
 		m_Hidden = false;
 		
-		m_ActionIndices = new TIntArray;
-		m_Keys = new TIntArray;
-		m_Actions = new TStringArray;
-		
-		GetActionGroup(4); // 4 - "Interact"
-		KeysToUIElements.Init(); // Initialiaze of KeysToUIElements
+		//KeysToUIElements.Init(); // Initialiaze of KeysToUIElements
 	}
 	
 	// Controls appearance of the builded cursor
@@ -225,10 +218,17 @@ class ActionTargetsCursor extends ObjectFollower
 	
 	override protected void Update()
 	{
+		//! don't show floating widget if it's disabled in profile
+		if(!g_Game.GetProfileOption(EDayZProfilesOptions.HUD))
+		{
+			m_Root.Show(false);
+			return;
+		};
+
 		// TODO: if we choose to have it configurable throught options or from server settings
 		// we need to change setting of these methods;
-		SetHealthVisibility(true);
-		SetQuantityVisibility(true);
+		//SetHealthVisibility(true);
+		//SetQuantityVisibility(true);
 		
 		if(m_Player && !m_Player.IsAlive()) // handle respawn
 		{
@@ -529,20 +529,6 @@ class ActionTargetsCursor extends ObjectFollower
 	}
 
 	// getters
-
-	// selects Action Group like in OptionsMenu
-	protected void GetActionGroup(int group_index)
-	{
-		g_Game.GetInput().GetActionGroupItems(group_index, m_ActionIndices);
-		string desc;
-
-		for (int i = 0; i < m_ActionIndices.Count(); i++)
-		{
-			int action_index = m_ActionIndices.Get(i);
-			g_Game.GetInput().GetActionDesc(action_index, desc);
-			m_Actions.Insert(desc);
-		}
-	}
 
  	protected void GetPlayer()
 	{
@@ -912,10 +898,7 @@ class ActionTargetsCursor extends ObjectFollower
 	
 	protected void SetInteractActionIcon(string actionWidget, string actionIconFrameWidget, string actionIconWidget, string actionIconTextWidget)
 	{
-		Param2<string, bool> key_data;
-		string group_name;
-		ref TIntArray group_items;
-
+		string keyName = string.Empty;
 		Widget widget, frameWidget;
 		ImageWidget iconWidget;
 		TextWidget textWidget;
@@ -925,47 +908,23 @@ class ActionTargetsCursor extends ObjectFollower
 		Class.CastTo(iconWidget, widget.FindAnyWidget(actionIconWidget));
 		Class.CastTo(textWidget, widget.FindAnyWidget(actionIconTextWidget));
 
-		g_Game.GetInput().GetActionGroupName( 4, group_name );
-		if ( group_name == "Interact" )
+		//! get name of key which is used for UAAction input 
+		UAInput i1 = GetUApi().GetInputByName("UAAction"); 
+		
+		i1.SelectAlternative(0); //! select first alternative (which is the primary bind)
+		for( int c = 0; c < i1.BindKeyCount(); c++ )
 		{
-			g_Game.GetInput().GetActionKeys(m_ActionIndices.Get(0), m_Keys);
-			string default_action = m_Actions.Get(0);
-			// get only the Default action which is first item in Interact Action Group
-			if ( default_action.Contains("Use default action") )
-			{
-				// get data about action key (1st from selection)
-					key_data = KeysToUIElements.GetKeyToUIElement( m_Keys.Get(0) );
-			}
+		  	int _hc = i1.GetBindKey(0);
+		  	keyName = GetUApi().GetButtonName(_hc);
 		}
-#ifdef DEVELOPER
-		else
-		{
-			//Print( "ActionTargetsCursor.c | SetInteractActionIcon | Bad options for group_name" );
-		}
-#endif
-
-		if ( key_data )
-		{
-			if ( key_data.param2 )
-			{
-				// uses image in floating widget
-				frameWidget.Show(false);
-				textWidget.Show(false);
-				iconWidget.LoadImageFile( 0, key_data.param1 );
-				iconWidget.Show(true);
-			}
-			else
-			{
-				// uses text in floating widget
-				iconWidget.Show(false);
-
-				textWidget.SetText( key_data.param1 );
+		
+		// uses text in floating widget
+		iconWidget.Show(false);
+		textWidget.SetText(keyName);
 #ifdef X1_TODO_TEMP_GUI
-				textWidget.SetText("X");
+		textWidget.SetText("X");
 #endif
-				//frameWidget.Show(true);
-				textWidget.Show(true);
-			}
-		}	
+		//frameWidget.Show(true);
+		textWidget.Show(true);
 	}
 }

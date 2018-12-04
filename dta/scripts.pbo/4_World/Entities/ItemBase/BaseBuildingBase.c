@@ -5,15 +5,30 @@ class BaseBuildingBase extends ItemBase
 		  string 	CONSTRUCTION_KIT			= "";
 	
 	float 				m_ConstructionKitHealth;			//stored health value for used construction kit
-	
+
 	ref Construction 	m_Construction;
 	
 	bool 				m_HasBase = false;
-	bool 				m_HasGate = false;
 	//variables for synchronization of base building parts (2x31 is the current limit)
 	int 				m_SyncParts01;									//synchronization for already built parts (31)
 	int 				m_SyncParts02;									//synchronization for already built parts (62)
+
+	//Sounds
+	//build
+	const string SOUND_BUILD_WOOD_LOG 			= "putDown_WoodLog_SoundSet";
+	const string SOUND_BUILD_WOOD_PLANK			= "putDown_WoodPlank_SoundSet";
+	const string SOUND_BUILD_WOOD_STAIRS		= "putDown_WoodStairs_SoundSet";
+	const string SOUND_BUILD_METAL				= "putDown_MetalPlank_SoundSet";
+	const string SOUND_BUILD_WIRE				= "putDown_BarbedWire_SoundSet";
+	//dismantle
+	const string SOUND_DISMANTLE_WOOD_LOG 		= "Crash_WoodPlank_SoundSet";
+	const string SOUND_DISMANTLE_WOOD_PLANK		= "Crash_WoodPlank_SoundSet";
+	const string SOUND_DISMANTLE_WOOD_STAIRS	= "Crash_WoodPlank_SoundSet";
+	const string SOUND_DISMANTLE_METAL			= "Crash_MetalPlank_SoundSet";
+	const string SOUND_DISMANTLE_WIRE			= "putDown_BarbedWire_SoundSet";
 	
+	protected EffectSound m_Sound;
+		
 	ref map<string, ref AreaDamageRegularDeferred> m_DamageTriggers;
 	
 	// Constructor
@@ -24,6 +39,7 @@ class BaseBuildingBase extends ItemBase
 		//synchronized variables
 		RegisterNetSyncVariableInt( "m_SyncParts01" );
 		RegisterNetSyncVariableInt( "m_SyncParts02" );
+		RegisterNetSyncVariableBool( "m_HasBase" );
 	}
 
 	// --- SYNCHRONIZATION
@@ -82,8 +98,6 @@ class BaseBuildingBase extends ItemBase
 				
 				m_SyncParts01 = m_SyncParts01 | mask;
 			}
-			
-			Synchronize();
 		}
 	}
 	
@@ -110,8 +124,6 @@ class BaseBuildingBase extends ItemBase
 				
 				m_SyncParts01 = m_SyncParts01 & ~mask;
 			}
-			
-			Synchronize();
 		}		
 	}	
 	
@@ -166,14 +178,14 @@ class BaseBuildingBase extends ItemBase
 			{
 				if ( !value.IsBuilt() )
 				{
-					GetConstruction().BuildPart( key, false );
+					GetConstruction().AddToConstructedParts( key );
 				}
 			}
 			else
 			{
 				if ( value.IsBuilt() )
 				{
-					GetConstruction().DismantlePart( key, false );
+					GetConstruction().RemoveFromConstructedParts( key );
 				}
 			}
 		}
@@ -190,18 +202,7 @@ class BaseBuildingBase extends ItemBase
 	{
 		m_HasBase = has_base;
 	}
-	
-	//Gate
-	bool HasGate()
-	{
-		return m_HasGate;
-	}
-	
-	void SetGateState( bool has_gate )
-	{
-		m_HasGate = has_gate;
-	}
-	
+
 	// --- PLACING
 	/*override bool IsHeavyBehaviour()
 	{
@@ -242,6 +243,9 @@ class BaseBuildingBase extends ItemBase
 		//sync parts 01
 		ctx.Write( m_SyncParts01 );
 		ctx.Write( m_SyncParts02 );
+		
+		//has base 
+		ctx.Write( m_HasBase );
 	}
 	
 	override void OnStoreLoad( ParamsReadContext ctx )
@@ -252,6 +256,9 @@ class BaseBuildingBase extends ItemBase
 		//sync parts 01
 		ctx.Read( m_SyncParts01 );
 		ctx.Read( m_SyncParts02 );
+		
+		//has base
+		ctx.Read( m_HasBase );
 		
 		//update server data
 		SetPartsFromSyncData();
@@ -300,47 +307,83 @@ class BaseBuildingBase extends ItemBase
 	{
 		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		
-		//check base state
-		if ( constrution_part.IsBase() )
+		if ( GetGame().IsServer() )
 		{
-			SetBaseState( true );
-			
-			//spawn kit
-			if ( GetGame().IsServer() )
+			//check base state
+			if ( constrution_part.IsBase() )
 			{
+				SetBaseState( true );
+				
+				//spawn kit
 				CreateConstructionKit();
 			}
+				
+			//register constructed parts for synchronization
+			RegisterPartForSync( constrution_part.GetId() );
+			
+			//synchronize
+			Synchronize();
 		}
-	
-		//check gate state
-		if ( constrution_part.IsGate() )
+		
+		if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )
 		{
-			SetGateState( true );
+			//play sound
+			SoundBuildStart( part_name );
 		}
-	
-		//register constructed parts for synchronization
-		RegisterPartForSync( constrution_part.GetId() );		
 	}
 	
 	void OnPartDismantled( string part_name )
 	{
 		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		
-		//check base state
-		if ( constrution_part.IsBase() )
+		if ( GetGame().IsServer() )					//Server only
 		{
-			//Destroy construction
-			DestroyConstruction();
+			//check base state
+			if ( constrution_part.IsBase() )
+			{
+				//Destroy construction
+				DestroyConstruction();
+			}
+						
+			//register constructed parts for synchronization
+			UnregisterPartForSync( constrution_part.GetId() );
+			
+			//synchronize
+			Synchronize();
 		}
 		
-		//check gate state
-		if ( constrution_part.IsGate() )
+		if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )		//Client or Single player
 		{
-			SetGateState( false );
-		}		
+			//play sound
+			SoundDismantleStart( part_name );
+		}
+	}
+	
+	void OnPartDestroyed( string part_name )
+	{
+		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		
-		//register constructed parts for synchronization
-		UnregisterPartForSync( constrution_part.GetId() );
+		if ( GetGame().IsServer() )					//Server only
+		{
+			//check base state
+			if ( constrution_part.IsBase() )
+			{
+				//Destroy construction
+				DestroyConstruction();
+			}
+						
+			//register constructed parts for synchronization
+			UnregisterPartForSync( constrution_part.GetId() );
+			
+			//synchronize
+			Synchronize();
+		}
+		
+		if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )		//Client or Single player
+		{
+			//play sound
+			SoundDestroyStart( part_name );
+		}
 	}
 	
 	// --- UPDATE
@@ -476,7 +519,7 @@ class BaseBuildingBase extends ItemBase
 	protected void UpdateNavmesh()
 	{
 		SetAffectPathgraph( true, false );
-		GetGame().UpdatePathgraphRegionByObject( this );
+		GetGame().GetCallQueue( CALL_CATEGORY_SYSTEM ).CallLater( GetGame().UpdatePathgraphRegionByObject, 100, false, this );
 	}
 	
 	override bool CanUseConstruction()
@@ -650,4 +693,54 @@ class BaseBuildingBase extends ItemBase
 			}
 		}
 	}
+	
+	//================================================================
+	// SOUNDS
+	//================================================================
+	protected void SoundBuildStart( string part_name )
+	{
+		PlaySoundSet( m_Sound, GetBuildSoundByMaterial( part_name ), 0.1, 0.1 );
+	}
+
+	protected void SoundDismantleStart( string part_name )
+	{
+		PlaySoundSet( m_Sound, GetDismantleSoundByMaterial( part_name ), 0.1, 0.1 );
+	}
+	
+	protected void SoundDestroyStart( string part_name )
+	{
+		PlaySoundSet( m_Sound, GetDismantleSoundByMaterial( part_name ), 0.1, 0.1 );
+	}
+	
+	protected string GetBuildSoundByMaterial( string part_name )
+	{
+		ConstructionMaterialType material_type = GetConstruction().GetMaterialType( part_name );
+		
+		switch( material_type )
+		{
+			case ConstructionMaterialType.MATERIAL_LOG: 	return SOUND_BUILD_WOOD_LOG;
+			case ConstructionMaterialType.MATERIAL_WOOD: 	return SOUND_BUILD_WOOD_PLANK;
+			case ConstructionMaterialType.MATERIAL_STAIRS: 	return SOUND_BUILD_WOOD_STAIRS;
+			case ConstructionMaterialType.MATERIAL_METAL: 	return SOUND_BUILD_METAL;
+			case ConstructionMaterialType.MATERIAL_WIRE:	return SOUND_BUILD_WIRE;
+		}
+		
+		return "";
+	}
+	
+	protected string GetDismantleSoundByMaterial( string part_name )
+	{
+		ConstructionMaterialType material_type = GetConstruction().GetMaterialType( part_name );
+		
+		switch( material_type )
+		{
+			case ConstructionMaterialType.MATERIAL_LOG: 	return SOUND_DISMANTLE_WOOD_LOG;
+			case ConstructionMaterialType.MATERIAL_WOOD: 	return SOUND_DISMANTLE_WOOD_PLANK;
+			case ConstructionMaterialType.MATERIAL_STAIRS: 	return SOUND_DISMANTLE_WOOD_STAIRS;
+			case ConstructionMaterialType.MATERIAL_METAL: 	return SOUND_DISMANTLE_METAL;
+			case ConstructionMaterialType.MATERIAL_WIRE:	return SOUND_DISMANTLE_WIRE;
+		}
+		
+		return "";
+	}	
 }

@@ -58,7 +58,7 @@ class CAContinuousWaterPlant : CAContinuousQuantity
 					PlantBase plant;
 					Class.CastTo(plant,  action_data.m_Target.GetObject() );
 					Slot slot = plant.GetSlot();
-					m_Action.SendMessageToClient(action_data.m_Player, slot.GiveWater( action_data.m_MainItem, m_SpentQuantity ));
+					slot.GiveWater( m_SpentQuantity );
 				}
 				return UA_PROCESSING;
 			}

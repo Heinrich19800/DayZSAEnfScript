@@ -63,7 +63,7 @@ class KeybindingElement extends ScriptedWidgetEventHandler
 		m_IsAlternateEdited		= false;
 		m_CustomBind			= null;
 		m_CustomAlternateBind	= null;
-		
+
 		if( input.IsLimited() )
 		{
 			if( input.IsPressLimit() )
@@ -95,7 +95,7 @@ class KeybindingElement extends ScriptedWidgetEventHandler
 		
 		GetGame().GetInput().GetActionDesc( m_ElementIndex, option_text );
 		m_ElementName.SetText( option_text );
-		
+
 		if( input.AlternativeCount() > 0 )
 		{
 			input.SelectAlternative( 0 );
@@ -166,7 +166,7 @@ class KeybindingElement extends ScriptedWidgetEventHandler
 		}
 		else if( custom_binds.Count() > 0 )
 		{
-			if( custom_binds.Get( 0 ) > 0 )
+			if( custom_binds.Get( 0 ) != 0 )
 				output = GetUApi().GetButtonName( custom_binds.Get( 0 ) );
 		}
 		

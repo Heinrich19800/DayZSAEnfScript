@@ -63,7 +63,15 @@ class ActionUncoverHeadTarget: ActionContinuousBase
 		if ( attachment && attachment.GetType() == "BurlapSackCover" )
 		{
 			attachment.Delete();
-			action_data.m_Player.GetInventory().CreateInInventory("BurlapSack");
+			EntityAI item = action_data.m_Player.GetInventory().CreateInInventory("BurlapSack");
+			if(!item)
+			{
+				vector m4[4];
+				action_data.m_Player.GetTransformWS(m4);
+				InventoryLocation target_gnd = new InventoryLocation;
+				target_gnd.SetGround(null, m4);
+				GameInventory.LocationCreateEntity(target_gnd, "BurlapSack");
+			}
 			action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 		}
 		

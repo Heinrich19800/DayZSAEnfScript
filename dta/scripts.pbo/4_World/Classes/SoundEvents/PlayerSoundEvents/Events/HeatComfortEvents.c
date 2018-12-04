@@ -1,7 +1,7 @@
-class FreezingEventsBase extends PlayerSoundEventBase
+class HeatComfortEventsBase extends PlayerSoundEventBase
 {
 	
-	void FreezingEventsBase()
+	void HeatComfortEventsBase()
 	{
 		m_HasPriorityOverTypes = EPlayerSoundEventType.DUMMY | EPlayerSoundEventType.INJURY | EPlayerSoundEventType.STAMINA;//-1 for all
 		m_Type = EPlayerSoundEventType.FREEZING;
@@ -18,12 +18,22 @@ class FreezingEventsBase extends PlayerSoundEventBase
 	}
 }
 
-class FreezingSoundEvent extends FreezingEventsBase
+class FreezingSoundEvent extends HeatComfortEventsBase
 {
 	void FreezingSoundEvent()
 	{
 		
 		m_ID = EPlayerSoundEventID.FREEZING;
 		m_SoundVoiceAnimEventClassID = 11;
+	}
+}
+
+class HotSoundEvent extends HeatComfortEventsBase
+{
+	void HotSoundEvent()
+	{
+		
+		m_ID = EPlayerSoundEventID.HOT;
+		m_SoundVoiceAnimEventClassID = 1111111;
 	}
 }
