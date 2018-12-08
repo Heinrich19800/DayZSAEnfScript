@@ -109,7 +109,6 @@ class WeatherPhenomenon
 		\param time   Seconds when the next forecast will be computed.
 		\return True when script modifies state of this phenomenon false otherwise.
 	*/
-
 	bool OnBeforeChange( EWeatherPhenomenon type, float change, float time )
 	{
 		float rainActual = g_Game.GetWeather().GetRain().GetActual();
@@ -257,7 +256,4 @@ class Weather
 		\param tTime Time in seconds when it stops raining.
 	*/
 	proto native void SetRainThresholds( float tMin, float tMax, float tTime );
-
-	//! Returns actual air temperature in degrees Celsius.
-	proto native float GetAirTemperature();
 };

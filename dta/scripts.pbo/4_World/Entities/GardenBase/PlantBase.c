@@ -598,10 +598,13 @@ class PlantBase extends ItemBase
 	{
 		if ( GetGame()  &&  GetGame().IsServer() )
 		{
-			// Unlock plant
-			InventoryLocation inventory_location = new InventoryLocation;
-			GetInventory().GetCurrentInventoryLocation( inventory_location );
-			m_GardenBase.GetInventory().SetSlotLock( inventory_location.GetSlot(), false );
+			if (m_GardenBase)
+			{
+				// Unlock plant
+				InventoryLocation inventory_location = new InventoryLocation;
+				GetInventory().GetCurrentInventoryLocation( inventory_location );
+				m_GardenBase.GetInventory().SetSlotLock( inventory_location.GetSlot(), false );
+			}
 			
 			if ( m_CurrentPlantMaterialQuantity > 0.0 )
 			{

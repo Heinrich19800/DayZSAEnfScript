@@ -189,6 +189,9 @@ class DayZPlayerCameraIronsights extends DayZPlayerCameraBase
 			PPEffects.SetLensEffect(0, 0, 0, 0);
 			PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 			PPEffects.SetBlurOptics(0);
+			PPEffects.SetColorizationNV(0.0, 0.0, 0.0);
+			PPEffects.SetFilmgrainNV(0.0, 0.0);
+			PPEffects.SetNVValueEV(0);
 		}
 		else
 		{
@@ -206,6 +209,9 @@ class DayZPlayerCameraIronsights extends DayZPlayerCameraBase
 			else
 				PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 			PPEffects.SetBlurOptics(0);
+			PPEffects.SetColorizationNV(0.0, 0.0, 0.0);
+			PPEffects.SetFilmgrainNV(0.0, 0.0);
+			PPEffects.SetNVValueEV(0);
 		}
 	}
 	
@@ -345,6 +351,9 @@ class DayZPlayerCameraOptics : DayZPlayerCameraIronsights
 			PPEffects.SetLensEffect(0, 0, 0, 0);
 			PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 			PPEffects.SetBlurOptics(0);
+			PPEffects.SetColorizationNV(0.0, 0.0, 0.0);
+			PPEffects.SetFilmgrainNV(0.0, 0.0);
+			PPEffects.SetNVValueEV(0);
 		}
 		else
 		{
@@ -390,7 +399,7 @@ class DayZPlayerCameraOptics : DayZPlayerCameraIronsights
 				{
 					PPEffects.SetLensEffect(0, 0, 0, 0);
 				}
-				
+/*				
 				//optics DOF (1x optics only)
 				if (m_opticsUsed.AllowsDOF())
 				{
@@ -402,7 +411,7 @@ class DayZPlayerCameraOptics : DayZPlayerCameraIronsights
 				{
 					PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 				}
-				
+*/				
 				//optics blur
 				if (m_opticsUsed.GetOpticsPPBlur() != 0)
 				{
@@ -410,6 +419,17 @@ class DayZPlayerCameraOptics : DayZPlayerCameraIronsights
 				}
 				else
 					PPEffects.SetBlurOptics(0);
+				
+				// optics NV mode
+				if (m_opticsUsed.IsNVOptic())
+				{
+					/*if (m_opticsUsed.HasEnergyManager() && m_opticsUsed.GetCompEM().CanWork())
+					{*/
+						PPEffects.SetNVValueEV(7);
+						PPEffects.SetColorizationNV(0.0, 1.0, 0.0);
+						PPEffects.SetFilmgrainNV(2.25, 1.0);
+					//}
+				}
 			}
 			
 		}

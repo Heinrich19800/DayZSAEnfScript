@@ -211,6 +211,9 @@ class DayZPlayerCameraBase extends DayZPlayerCamera
 		PPEffects.SetLensEffect(0, 0, 0, 0);
 		PPEffects.OverrideDOF(false, 0, 0, 0, 0, 1);
 		PPEffects.SetBlurOptics(0);
+		PPEffects.SetColorizationNV(0.0, 0.0, 0.0);
+		PPEffects.SetFilmgrainNV(0.0, 0.0);
+		PPEffects.SetNVValueEV(0);
 	}
 	
 	override float GetCurrentPitch()

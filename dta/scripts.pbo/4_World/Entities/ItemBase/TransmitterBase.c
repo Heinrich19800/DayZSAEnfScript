@@ -35,13 +35,16 @@ class TransmitterBase extends ItemTransmitter
 	{
 		SetNextChannel();
 		
+		/*
 		if ( player )
 		{
 			DisplayRadioInfo( GetTunedFrequency().ToString(), player );
 		}
+		*/
 	}
 	
 	//--- HUD
+	/*
 	protected Hud GetHud( PlayerBase player )
 	{
 		if ( !player ) 
@@ -66,6 +69,7 @@ class TransmitterBase extends ItemTransmitter
 			hud.ShowWalkieTalkie( 3 );
 		}
 	}
+	*/
 	
 	//--- POWER EVENTS
 	override void OnSwitchOn()

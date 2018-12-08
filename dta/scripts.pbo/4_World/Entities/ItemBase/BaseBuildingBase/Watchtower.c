@@ -143,9 +143,13 @@ class Watchtower extends BaseBuildingBase
 			{
 				return true;
 			}
+			else
+			{
+				return false;
+			}
 		}
 		
-		return false;
+		return true;
 	}
 	// ---	
 	

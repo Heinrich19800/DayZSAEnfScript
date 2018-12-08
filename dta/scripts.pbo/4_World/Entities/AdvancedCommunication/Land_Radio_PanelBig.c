@@ -29,10 +29,12 @@ class Land_Radio_PanelBig extends StaticTransmitter
 	{
 		SetNextChannel();
 		
+		/*
 		if ( player )
 		{
 			DisplayRadioInfo( GetTunedFrequency().ToString(), player );
 		}
+		*/
 	}
 
 	//--- POWER EVENTS

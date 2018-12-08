@@ -103,11 +103,15 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 		SetItemHealth(health, "ia_item", "ia_item_health_mark", m_HealthEnabled);
 		
 		// quantity
-		if(m_EntityInHands && m_EntityInHands.IsWeapon())
+		if( m_EntityInHands && m_EntityInHands.IsWeapon() )
 		{
 			GetWeaponQuantity(q_chamber, q_mag);
 			SetWeaponQuantity(q_chamber, q_mag, "ia_item", "ia_item_quantity_pb", "ia_item_quantity_text", m_QuantityEnabled);
 			SetWeaponModeAndZeroing("ia_item_subdesc", "ia_item_subdesc_up", "ia_item_subdesc_down", true);
+		}
+		else if( m_EntityInHands && m_EntityInHands.IsTransmitter() )
+		{
+			SetRadioFrequency(GetRadioFrequency(), "ia_item_subdesc", "ia_item_subdesc_up", "ia_item_subdesc_down", m_QuantityEnabled);
 		}
 		else
 		{
@@ -301,6 +305,18 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 		}
 	}
 	
+	protected string GetRadioFrequency()
+	{
+		TransmitterBase trans;
+
+		if ( Class.CastTo(trans, m_EntityInHands ) )
+		{
+			return trans.GetTunedFrequency().ToString();
+		}
+
+		return string.Empty;
+	}
+	
 	// setters
 	protected void SetItemDesc(EntityAI entity, string descText, string itemWidget, string descWidget)
 	{
@@ -465,6 +481,27 @@ class ItemActionsWidget extends ScriptedWidgetEventHandler
 		}
 		else
 			widget.Show(false);
+	}
+	
+	protected void SetRadioFrequency(string freq, string itemWidget, string upWidget, string downWidget, bool enabled)
+	{
+		Widget widget;
+		
+		widget = m_Root.FindAnyWidget(itemWidget);
+		
+		if(enabled)
+		{
+			TextWidget txtUpWidget;
+			TextWidget txtDownWidget;
+			Class.CastTo(txtUpWidget, widget.FindAnyWidget(upWidget));
+			Class.CastTo(txtDownWidget, widget.FindAnyWidget(downWidget));
+
+			txtUpWidget.SetText(freq);
+			txtDownWidget.SetText("MHz");
+			widget.Show(true);
+		}
+		else
+			widget.Show(false);	
 	}
 	
 	protected void SetActionWidget(ActionBase action, string descText, string actionWidget, string descWidget)

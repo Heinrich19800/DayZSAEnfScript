@@ -452,6 +452,7 @@ class CfgVehicles
 		model="\DZ\vehicles\wheeled\V3S\proxy\v3s_wheel.p3d";
 		weight=30000;
 		itemSize[]={7,7};
+		itemBehaviour=0;
 		inventorySlot[]=
 		{
 			"V3SWheel_1_1",
@@ -523,6 +524,7 @@ class CfgVehicles
 		model="\DZ\vehicles\wheeled\V3S\proxy\v3s_wheel_new_burst.p3d";
 		itemSize[]={6,6};
 		weight=25000;
+		itemBehaviour=0;
 		physLayer="item_large";
 		inventorySlot[]=
 		{
@@ -540,6 +542,7 @@ class CfgVehicles
 	{
 		displayName="$STR_V3SWheelDouble0";
 		model="\DZ\vehicles\wheeled\V3S\proxy\v3s_wheel_double.p3d";
+		itemBehaviour=0;
 		inventorySlot[]=
 		{
 			"V3SWheel_1_2",
@@ -603,6 +606,7 @@ class CfgVehicles
 	{
 		displayName="$STR_V3SWheelDouble_Ruined0";
 		model="\DZ\vehicles\wheeled\V3S\proxy\v3s_wheel_burst_double.p3d";
+		itemBehaviour=0;
 		inventorySlot[]=
 		{
 			"V3SWheel_1_2",
@@ -619,6 +623,7 @@ class CfgVehicles
 		model="\DZ\vehicles\wheeled\V3S\proxy\v3s_doors_Driver.p3d";
 		weight=15000;
 		itemSize[]={10,8};
+		itemBehaviour=0;
 		inventorySlot="V3SDriverDoors";
 		rotationFlags=8;
 		physLayer="item_large";
@@ -778,6 +783,7 @@ class CfgVehicles
 	{
 		displayName="$STR_V3SDoors_CoDriver0";
 		model="\DZ\vehicles\wheeled\V3S\proxy\v3s_doors_coDriver.p3d";
+		itemBehaviour=0;
 		inventorySlot="V3SCoDriverDoors";
 		rotationFlags=4;
 		hiddenSelectionsTextures[]=
@@ -834,6 +840,7 @@ class CfgVehicles
 		model="\DZ\vehicles\wheeled\V3S\proxy\v3s_hood.p3d";
 		weight=15000;
 		itemSize[]={12,10};
+		itemBehaviour=0;
 		inventorySlot="V3SHood";
 		rotationFlags=2;
 		physLayer="item_large";
@@ -1891,6 +1898,7 @@ class CfgVehicles
 		model="\DZ\vehicles\wheeled\OffroadHatchback\proxy\nivaWheel.p3d";
 		weight=15000;
 		itemSize[]={6,6};
+		itemBehaviour=0;
 		inventorySlot[]=
 		{
 			"NivaWheel_1_1",
@@ -1962,6 +1970,7 @@ class CfgVehicles
 		model="\DZ\vehicles\wheeled\OffroadHatchback\proxy\nivaWheel_destroyed.p3d";
 		weight=10000;
 		itemSize[]={6,6};
+		itemBehaviour=0;
 		inventorySlot[]=
 		{
 			"NivaWheel_1_1",
@@ -1985,6 +1994,7 @@ class CfgVehicles
 		model="\DZ\vehicles\wheeled\OffroadHatchback\proxy\nivaDoors_Driver.p3d";
 		weight=15000;
 		itemSize[]={10,8};
+		itemBehaviour=0;
 		inventorySlot="NivaDriverDoors";
 		rotationFlags=8;
 		physLayer="item_large";
@@ -2086,6 +2096,7 @@ class CfgVehicles
 		displayName="$STR_HatchbackDoors_CoDriver0";
 		descriptionShort="$STR_HatchbackDoors_CoDriver1";
 		model="\DZ\vehicles\wheeled\OffroadHatchback\proxy\nivaDoors_coDriver.p3d";
+		itemBehaviour=0;
 		inventorySlot="NivaCoDriverDoors";
 		rotationFlags=4;
 	};
@@ -2097,6 +2108,7 @@ class CfgVehicles
 		model="\DZ\vehicles\wheeled\OffroadHatchback\proxy\nivaDoors_Hood.p3d";
 		weight=15000;
 		itemSize[]={12,10};
+		itemBehaviour=0;
 		inventorySlot="NivaHood";
 		rotationFlags=2;
 		physLayer="item_large";
@@ -2156,6 +2168,7 @@ class CfgVehicles
 		model="\DZ\vehicles\wheeled\OffroadHatchback\proxy\nivaDoors_Trunk.p3d";
 		weight=15000;
 		itemSize[]={12,10};
+		itemBehaviour=0;
 		inventorySlot="NivaTrunk";
 		rotationFlags=1;
 		physLayer="item_large";

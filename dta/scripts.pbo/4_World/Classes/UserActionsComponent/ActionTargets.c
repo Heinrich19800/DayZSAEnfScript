@@ -430,7 +430,7 @@ class ActionTargets
 					m_VicinityObjects.Remove(object);
 					numObstructed++;
 				}
-			}		
+			}
 		}
 	}
 
@@ -601,8 +601,9 @@ class ActionTargets
 		for ( int it = 0; it < shapesArr.Count(); ++it )
 		{
 			Debug.RemoveShape( shapesArr[it] );
-			shapesArr.Remove(it);
 		}
+		
+		shapesArr.Clear();
 	}
 #endif
 	

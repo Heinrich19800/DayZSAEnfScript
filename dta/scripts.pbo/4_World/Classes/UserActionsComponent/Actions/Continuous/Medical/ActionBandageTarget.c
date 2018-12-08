@@ -17,7 +17,6 @@ class ActionBandageTarget: ActionContinuousBase
 		m_MessageFail = "Player moved and bandaging was canceled.";
 		m_MessageCancel = "You stopped bandaging.";
 		m_SpecialtyWeight = UASoftSkillsWeight.PRECISE_LOW;
-		
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BANDAGETARGET;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;

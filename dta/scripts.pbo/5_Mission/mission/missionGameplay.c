@@ -66,7 +66,7 @@ class MissionGameplay extends MissionBase
 	#ifndef NO_GUI
 		if (g_Game.GetUIManager() && g_Game.GetUIManager().ScreenFadeVisible())
 		{
-			GetGame().SetEVUser(0);
+			g_Game.SetEVValue(0);
 			g_Game.GetUIManager().ScreenFadeOut(0);
 		}
 	#endif

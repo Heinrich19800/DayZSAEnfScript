@@ -14,7 +14,6 @@ class ActionBandageSelf: ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BANDAGE;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH;
-		
 		m_MessageStartFail = "There's nothing to bandage.";
 		m_MessageStart = "I have started bandaging myself";
 		m_MessageSuccess = "I have bandaged myself.";

@@ -13,6 +13,9 @@ class ActionFillGeneratorTank: ActionContinuousBase
 	void ActionFillGeneratorTank()
 	{
 		m_CallbackClass = ActionFillGeneratorTankCB;
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_EMPTY_VESSEL;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
+		m_FullBody = true;
 		m_MessageStartFail = "There's nothing left.";
 		m_MessageStart = "I am filling the tank.";
 		m_MessageSuccess = "I've poured fuel into generator.";

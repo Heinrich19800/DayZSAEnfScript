@@ -3,6 +3,7 @@ class ItemOptics extends InventoryItemSuper
 	bool 				m_data_set;
 	bool 				m_allowsDOF;
 	bool 				m_reddot_displayed
+	bool 				m_isNVOptic = false;
 	int 				m_reddot_index;
 	float 				m_blur_float;
 	string 				m_optic_sight_texture;
@@ -15,7 +16,7 @@ class ItemOptics extends InventoryItemSuper
 		m_mask_array = new array<float>;
 		m_lens_array = new array<float>;
 		InitReddotData();
-		InitOpticsPPInfo();;
+		InitOpticsPPInfo();
 	}
 	/**@fn		EnterOptics
 	 * @brief	switches to optics mode if possible
@@ -226,6 +227,9 @@ class ItemOptics extends InventoryItemSuper
 	{
 		m_allowsDOF = InitDOFAvailability();
 		InitOpticsPP(m_mask_array, m_lens_array, m_blur_float);
+		
+		//NV prototype
+		m_isNVOptic = ConfigGetBool("NVOptic");
 	}
 	
 	//! optics with more than 1x zoom do not allow DOF changes
@@ -259,6 +263,11 @@ class ItemOptics extends InventoryItemSuper
 	bool AllowsDOF()
 	{
 		return m_allowsDOF;
+	}
+	
+	bool IsNVOptic()
+	{
+		return m_isNVOptic;
 	}
 	
 	ref array<float> GetOpticsPPMask()

@@ -257,7 +257,7 @@ class BarbedWire extends ItemBase
 	{
 		int random_index = Math.RandomInt(0, SOUNDS_CUT_COUNT);
 		string sound_type = m_SoundsCut[random_index];
-		PlaySound(sound_type, 50);
+		//PlaySound(sound_type, 50); // Removed as a quick fix
 	}
 
 	// Plays sound
@@ -265,7 +265,7 @@ class BarbedWire extends ItemBase
 	{
 		int random_index = Math.RandomInt(0, SOUNDS_SPARK_COUNT);
 		string sound_type = m_SoundsSpark[random_index];
-		PlaySound(sound_type, 50);
+		//PlaySound(sound_type, 50); // Removed as a quick fix
 	}
 
 	// Plays sound
@@ -273,7 +273,7 @@ class BarbedWire extends ItemBase
 	{
 		if (!m_BuzzSoundLoop)
 		{
-			m_BuzzSoundLoop = PlaySoundLoop(m_SoundBuzzLoop, 50);
+			// m_BuzzSoundLoop = PlaySoundLoop(m_SoundBuzzLoop, 50); // Removed as a quick fix
 		}
 	}
 
@@ -292,7 +292,7 @@ class BarbedWire extends ItemBase
 	{
 		int random_index = Math.RandomInt(0, SOUNDS_SHOCK_COUNT);
 		string sound_type = m_SoundsShock[random_index];
-		PlaySound(sound_type, 50);
+		//PlaySound(sound_type, 50); // Removed as a quick fix
 	}
 	
 	// Plays a collision sound

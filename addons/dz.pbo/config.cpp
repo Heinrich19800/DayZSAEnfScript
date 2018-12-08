@@ -384,17 +384,17 @@ class CfgWorlds
 					overcast=0.5;
 					sunAngle=-18;
 					sunOrMoon=0;
-					diffuse[]={0.1,0.18000001,0.30000001};
+					diffuse[]={0.050000001,0.075000003,0.15000001};
 					ambient[]={0.016000001,0.031599998,0.048};
 					groundReflection[]={0,0,0};
 					bidirect[]={0,0,0};
 					sky[]={0.017999999,0.028000001,0.043000001};
 					skyAroundSun[]={0.017999999,0.028000001,0.043000001};
 					swBrightness=0;
-					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoef=-0.12;
 					EVMin=-2;
-					EVMax=0.5;
-					filmGrainIntensity=0.125;
+					EVMax=0;
+					filmGrainIntensity=0.0125;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -422,7 +422,7 @@ class CfgWorlds
 					desiredLuminanceCoef=-0.12;
 					EVMin=-2;
 					EVMax=0.5;
-					filmGrainIntensity=0.125;
+					filmGrainIntensity=0.0125;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -450,7 +450,7 @@ class CfgWorlds
 					desiredLuminanceCoef=-0.12;
 					EVMin=-2;
 					EVMax=0.5;
-					filmGrainIntensity=0.125;
+					filmGrainIntensity=0.0125;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -478,7 +478,7 @@ class CfgWorlds
 					desiredLuminanceCoef=-0.1;
 					EVMin=-2;
 					EVMax=0.5;
-					filmGrainIntensity=0.125;
+					filmGrainIntensity=0.0125;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -506,7 +506,7 @@ class CfgWorlds
 					desiredLuminanceCoef=-0.1;
 					EVMin=-2;
 					EVMax=0.5;
-					filmGrainIntensity=0.125;
+					filmGrainIntensity=0.011;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -534,7 +534,7 @@ class CfgWorlds
 					desiredLuminanceCoef=-0.1;
 					EVMin=-2;
 					EVMax=0.5;
-					filmGrainIntensity=0.125;
+					filmGrainIntensity=0.0099999998;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -562,7 +562,7 @@ class CfgWorlds
 					desiredLuminanceCoef=-0.050000001;
 					EVMin=-2;
 					EVMax=0.5;
-					filmGrainIntensity=0.125;
+					filmGrainIntensity=0.0099999998;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -590,7 +590,7 @@ class CfgWorlds
 					desiredLuminanceCoef=0.050000001;
 					EVMin=-2;
 					EVMax=0.5;
-					filmGrainIntensity=0.1;
+					filmGrainIntensity=0.0049999999;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -634,7 +634,7 @@ class CfgWorlds
 					desiredLuminanceCoef=0.25;
 					EVMin=-2;
 					EVMax=0.2;
-					filmGrainIntensity=0.075000003;
+					filmGrainIntensity=0.0049999999;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -678,7 +678,7 @@ class CfgWorlds
 					desiredLuminanceCoef=0.25;
 					EVMin=-2;
 					EVMax=0.1;
-					filmGrainIntensity=0.075000003;
+					filmGrainIntensity=0.0049999999;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -1011,10 +1011,10 @@ class CfgWorlds
 					sky[]={0.012,0.012,0.012};
 					skyAroundSun[]={0.012,0.012,0.012};
 					swBrightness=0;
-					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoef=-0.12;
 					EVMin=-2;
 					EVMax=0;
-					filmGrainIntensity=0.125;
+					filmGrainIntensity=0.0125;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -1039,10 +1039,10 @@ class CfgWorlds
 					sky[]={0.035999998,0.056000002,0.086999997};
 					skyAroundSun[]={0.035999998,0.056000002,0.086999997};
 					swBrightness=0;
-					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoef=-0.12;
 					EVMin=-2;
 					EVMax=0;
-					filmGrainIntensity=0.125;
+					filmGrainIntensity=0.0125;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -1067,10 +1067,10 @@ class CfgWorlds
 					sky[]={0.035999998,0.056000002,0.086999997};
 					skyAroundSun[]={0.1011,0.1063,0.092600003};
 					swBrightness=0;
-					desiredLuminanceCoef=-0.15000001;
+					desiredLuminanceCoef=-0.12;
 					EVMin=-2;
 					EVMax=0;
-					filmGrainIntensity=0.1;
+					filmGrainIntensity=0.0099999998;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -1095,10 +1095,10 @@ class CfgWorlds
 					sky[]={0.1,0.14,0.22};
 					skyAroundSun[]={0.1,0.14,0.22};
 					swBrightness=0;
-					desiredLuminanceCoef=0.1;
+					desiredLuminanceCoef=-0.07;
 					EVMin=-2;
 					EVMax=0;
-					filmGrainIntensity=0.1;
+					filmGrainIntensity=0.0099999998;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -1135,10 +1135,10 @@ class CfgWorlds
 						2.799
 					};
 					swBrightness=0;
-					desiredLuminanceCoef=0.15000001;
+					desiredLuminanceCoef=-0.050000001;
 					EVMin=-2;
 					EVMax=0;
-					filmGrainIntensity=0.075000003;
+					filmGrainIntensity=0.0074999998;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;
@@ -1179,10 +1179,10 @@ class CfgWorlds
 						3.799
 					};
 					swBrightness=0;
-					desiredLuminanceCoef=0.30000001;
+					desiredLuminanceCoef=0.050000001;
 					EVMin=-2;
 					EVMax=0;
-					filmGrainIntensity=0.025;
+					filmGrainIntensity=0;
 					desiredLuminanceCoefCloud=0;
 					luminanceRectCoef=0;
 					luminanceRectCoefCloud=0;

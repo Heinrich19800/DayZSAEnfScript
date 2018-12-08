@@ -11457,7 +11457,7 @@ class CfgWorlds
 	};
 	class DefaultLighting
 	{
-		access=3;
+		access=0;
 		groundReflection[]={0.085000001,0.068000004,0.034000002};
 		moonObjectColorFull[]={0.89999998,0.89999998,1,0.69999999};
 		moonHaloObjectColorFull[]={0.89999998,0.89999998,1,0.0099999998};
@@ -13328,13 +13328,6 @@ class CfgWorlds
 					1
 				};
 			};
-			temperatureDayMax[]={10,12,15,20,25,35,35,35,25,20,10,10};
-			temperatureDayMin[]={-10,-6,-5,-1,5,6,7,10,5,2,-5,-10};
-			temperatureNightMax[]={5,6,8,10,13,18,26,25,15,13,8,4};
-			temperatureNightMin[]={-10,-10,-10,-5,0,4,5,6,5,0,-5,-10};
-			overcastTemperatureFactor=0.40000001;
-			blackSurfaceTemperatureDelta=5;
-			whiteSurfaceTemperatureDelta=-2;
 		};
 		class Rain
 		{
@@ -36277,8 +36270,6 @@ class RscMenuBasicLevel
 };
 class PreloadConfig
 {
-	RadioProtocolBase="*";
-	RadioProtocolDefault="*";
 	CfgVoice="*";
 	class CfgCloudlets
 	{

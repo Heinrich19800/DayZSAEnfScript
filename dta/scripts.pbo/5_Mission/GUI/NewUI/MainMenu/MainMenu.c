@@ -168,7 +168,7 @@ class MainMenu extends UIScriptedMenu
 			layoutRoot.FindAnyWidget( "news_feed_root_xbox_trial" ).Show( false );
 		#endif
 		#ifdef PLATFORM_WINDOWS
-			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( true );
+			layoutRoot.FindAnyWidget( "news_feed_root" ).Show( false );
 			layoutRoot.FindAnyWidget( "news_feed_root_xbox" ).Show( false );
 			layoutRoot.FindAnyWidget( "news_feed_root_xbox_trial" ).Show( false );
 		#endif
@@ -222,7 +222,7 @@ class MainMenu extends UIScriptedMenu
 			}
 			else if ( w == m_MessageButton )
 			{
-				OpenMessages();
+				OpenCredits();
 				return true;
 			}
 			else if ( w == m_SettingsButton )
@@ -560,6 +560,11 @@ class MainMenu extends UIScriptedMenu
 	void OpenTutorials()
 	{
 		EnterScriptedMenu(MENU_TUTORIAL);
+	}
+	
+	void OpenCredits()
+	{
+		EnterScriptedMenu(MENU_CREDITS);
 	}
 	
 	void Exit()
