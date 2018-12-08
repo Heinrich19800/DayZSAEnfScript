@@ -57,11 +57,8 @@ class PlantBase extends ItemBase
 
 		m_PlantStateIndex = -1;
 		m_CurrentPlantMaterialQuantity = 0;
-		
 		m_IsInfested = false;
-		
 		m_SprayQuantity = 0.0;
-		
 		m_HasCrops = true;
 		
 		
@@ -72,7 +69,7 @@ class PlantBase extends ItemBase
 
 	void ~PlantBase()
 	{
-		
+		RemovePlant();
 	}
 	
 	void Init( GardenBase garden_base, float fertility, float harvesting_efficiency, float water )
@@ -108,7 +105,7 @@ class PlantBase extends ItemBase
 				
 				if (GetGame().IsServer())
 				{
-					m_DeleteDryPlantTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+					m_DeleteDryPlantTimer = new Timer( CALL_CATEGORY_SYSTEM );
 					m_DeleteDryPlantTimer.Run( m_DeleteDryPlantTime, this, "DeleteDryPlantTick", NULL, false );
 				}
 			}
@@ -234,7 +231,7 @@ class PlantBase extends ItemBase
 		{
 			if (GetGame().IsServer())
 			{
-				m_GrowthTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				m_GrowthTimer = new Timer( CALL_CATEGORY_SYSTEM );
 				m_GrowthTimer.Run( m_StateChangeTime, this, "GrowthTimerTick", NULL, true );
 			}
 		}
@@ -245,7 +242,7 @@ class PlantBase extends ItemBase
 		{
 			if (GetGame().IsServer())
 			{
-				m_InfestationTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				m_InfestationTimer = new Timer( CALL_CATEGORY_SYSTEM );
 				m_InfestationTimer.Run( loadFloat, this, "InfestationTimerTick", NULL, false );
 			}
 		}
@@ -256,7 +253,7 @@ class PlantBase extends ItemBase
 		{
 			if (GetGame().IsServer())
 			{
-				m_SpoilAfterFullMaturityTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				m_SpoilAfterFullMaturityTimer = new Timer( CALL_CATEGORY_SYSTEM );
 				m_SpoilAfterFullMaturityTimer.Run( loadFloat, this, "SetSpoiled", NULL, false );
 			}
 		}
@@ -267,7 +264,7 @@ class PlantBase extends ItemBase
 		{
 			if (GetGame().IsServer())
 			{
-				m_SpoiledRemoveTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				m_SpoiledRemoveTimer = new Timer( CALL_CATEGORY_SYSTEM );
 				m_SpoiledRemoveTimer.Run( loadFloat, this, "SpoiledRemoveTimerTick", NULL, false );
 			}
 		}
@@ -278,7 +275,7 @@ class PlantBase extends ItemBase
 		{
 			if (GetGame().IsServer())
 			{
-				m_DeleteDryPlantTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				m_DeleteDryPlantTimer = new Timer( CALL_CATEGORY_SYSTEM );
 				m_DeleteDryPlantTimer.Run( loadFloat, this, "DeleteDryPlantTick", NULL, false );
 			}
 		}
@@ -477,7 +474,7 @@ class PlantBase extends ItemBase
 					if (GetGame().IsServer())
 					{
 						if (!m_InfestationTimer)
-							m_InfestationTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+							m_InfestationTimer = new Timer( CALL_CATEGORY_SYSTEM );
 						
 						m_InfestationTimer.Run( Math.RandomInt(int_infestation_time_min, int_infestation_time_max), this, "InfestationTimerTick", NULL, false );
 					}
@@ -501,7 +498,7 @@ class PlantBase extends ItemBase
 			if (GetGame().IsServer())
 			{
 				if (!m_SpoilAfterFullMaturityTimer)
-					m_SpoilAfterFullMaturityTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+					m_SpoilAfterFullMaturityTimer = new Timer( CALL_CATEGORY_SYSTEM );
 				
 				m_SpoilAfterFullMaturityTimer.Run( m_SpoilAfterFullMaturityTime, this, "SetSpoiled", NULL, false );
 			}
@@ -547,7 +544,7 @@ class PlantBase extends ItemBase
 			
 			if (GetGame().IsServer())
 			{
-				m_SpoiledRemoveTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				m_SpoiledRemoveTimer = new Timer( CALL_CATEGORY_SYSTEM );
 				m_SpoiledRemoveTimer.Run( m_SpoiledRemoveTime, this, "SpoiledRemoveTimerTick", NULL, false );
 			}
 		}
@@ -566,7 +563,7 @@ class PlantBase extends ItemBase
 			
 			if (GetGame().IsServer())
 			{
-				m_GrowthTimer = new Timer( CALL_CATEGORY_GAMEPLAY );
+				m_GrowthTimer = new Timer( CALL_CATEGORY_SYSTEM );
 				m_GrowthTimer.Run( m_StateChangeTime, this, "GrowthTimerTick", NULL, true );
 			}
 		}
@@ -601,6 +598,11 @@ class PlantBase extends ItemBase
 	{
 		if ( GetGame()  &&  GetGame().IsServer() )
 		{
+			// Unlock plant
+			InventoryLocation inventory_location = new InventoryLocation;
+			GetInventory().GetCurrentInventoryLocation( inventory_location );
+			m_GardenBase.GetInventory().SetSlotLock( inventory_location.GetSlot(), false );
+			
 			if ( m_CurrentPlantMaterialQuantity > 0.0 )
 			{
 				vector pos = GetPosition();
@@ -610,11 +612,9 @@ class PlantBase extends ItemBase
 			
 			RemoveSlot();
 		}
-		
-		GetGame().ObjectDelete( this );
 	}
 
-	string Harvest( PlayerBase player )
+	void Harvest( PlayerBase player )
 	{
 		//TODO Boris: Add soft skill 2.0
 		//PluginExperience module_exp = GetPlugin(PluginExperience);
@@ -641,8 +641,6 @@ class PlantBase extends ItemBase
 		m_HasCrops = false;
 		SetSynchDirty();
 		UpdatePlant();
-		
-		return "I've harvested the crops.";
 	}
 	
 	void SetPlantState(int state)

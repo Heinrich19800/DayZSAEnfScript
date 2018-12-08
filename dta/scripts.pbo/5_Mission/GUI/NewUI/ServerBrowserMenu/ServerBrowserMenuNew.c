@@ -228,6 +228,9 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			con_text.SetText( "#str_settings_menu_root_toolbar_bg_consoletoolbar_toggle_toggletext0" );
 			ref_text.SetText( "#server_browser_menu_refresh" );
 			res_text.SetText( "#server_browser_menu_reset_filters" );
+			con_text.Update();
+			ref_text.Update();
+			res_text.Update();
 		}
 		#endif
 	}
@@ -254,6 +257,8 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 			{
 				res_text.SetText( "#server_browser_menu_favorite" );
 			}
+			con_text.Update();
+			res_text.Update();
 		}
 		#endif
 	}
@@ -311,57 +316,58 @@ class ServerBrowserMenuNew extends UIScriptedMenu
 	
 	override void Update( float timeslice )
 	{
-		if( GetGame().GetInput().GetActionDown( UAUITabLeft, false ) )
+		if( !GetGame().GetUIManager().IsDialogVisible() )
 		{
-			m_Tabber.PreviousTab();
+			if( GetGame().GetInput().GetActionDown( UAUITabLeft, false ) )
+			{
+				m_Tabber.PreviousTab();
+			}
+			
+			if( GetGame().GetInput().GetActionDown( UAUITabRight, false ) )
+			{
+				m_Tabber.NextTab();
+			}
+			
+			if( GetGame().GetInput().GetActionDown( UAUISelect, false ) )
+			{
+				GetSelectedTab().PressA();
+			}
+			
+			if( GetGame().GetInput().GetActionDown( UAUICtrlX, false ) )
+			{
+				GetSelectedTab().PressX();
+			}
+			
+			if( GetGame().GetInput().GetActionDown( UAUICtrlY, false ) )
+			{
+				GetSelectedTab().PressY();
+			}
+			
+			if( GetGame().GetInput().GetActionDown( UAUILeft, false ) )
+			{
+				GetSelectedTab().Left();
+			}
+			
+			if( GetGame().GetInput().GetActionDown( UAUIRight, false ) )
+			{
+				GetSelectedTab().Right();
+			}
+			
+			if( GetGame().GetInput().GetActionDown( UAUIUp, false ) )
+			{
+				GetSelectedTab().Up();
+			}
+			
+			if( GetGame().GetInput().GetActionDown( UAUIDown, false ) )
+			{
+				GetSelectedTab().Down();
+			}
+	
+			if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
+			{
+				Back();
+			}
 		}
-		
-		if( GetGame().GetInput().GetActionDown( UAUITabRight, false ) )
-		{
-			m_Tabber.NextTab();
-		}
-		
-		if( GetGame().GetInput().GetActionDown( UAUISelect, false ) )
-		{
-			GetSelectedTab().PressA();
-		}
-		
-		if( GetGame().GetInput().GetActionDown( UAUICtrlX, false ) )
-		{
-			GetSelectedTab().PressX();
-		}
-		
-		if( GetGame().GetInput().GetActionDown( UAUICtrlY, false ) )
-		{
-			GetSelectedTab().PressY();
-		}
-		
-		if( GetGame().GetInput().GetActionDown( UAUILeft, false ) )
-		{
-			GetSelectedTab().Left();
-		}
-		
-		if( GetGame().GetInput().GetActionDown( UAUIRight, false ) )
-		{
-			GetSelectedTab().Right();
-		}
-		
-		if( GetGame().GetInput().GetActionDown( UAUIUp, false ) )
-		{
-			GetSelectedTab().Up();
-		}
-		
-		if( GetGame().GetInput().GetActionDown( UAUIDown, false ) )
-		{
-			GetSelectedTab().Down();
-		}
-
-		if ( GetGame().GetInput().GetActionDown(UAUIBack, false) )
-		{
-			Back();
-		}
-		
-		GetSelectedTab().Update( timeslice );
 		
 		super.Update( timeslice );
 	}

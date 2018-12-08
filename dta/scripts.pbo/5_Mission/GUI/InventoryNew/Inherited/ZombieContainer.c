@@ -213,6 +213,7 @@ class ZombieContainer: CollapsibleContainer
 						if( entity.GetInventory().GetCargo() )
 						{
 							ContainerWithCargo iwc = new ContainerWithCargo( this, -1 );
+							iwc.Get( 0 ).GetRootWidget().ClearFlags( WidgetFlags.DRAGGABLE );
 							iwc.SetEntity( entity );
 							new_showed_items.Insert( entity, iwc );
 							ipw.GetParent().SetUserID( ( new_showed_items.Count() - 1) );
@@ -225,6 +226,7 @@ class ZombieContainer: CollapsibleContainer
 						else if( entity.GetSlotsCountCorrect() > 0 )
 						{
 							ContainerWithCargoAndAttachments iwca = new ContainerWithCargoAndAttachments( this, -1 );
+							iwca.Get( 0 ).GetRootWidget().ClearFlags( WidgetFlags.DRAGGABLE );
 							iwca.SetEntity( entity );
 							new_showed_items.Insert( entity, iwca );
 							ipw.GetParent().SetUserID( ( new_showed_items.Count() - 1 ) );
@@ -247,6 +249,7 @@ class ZombieContainer: CollapsibleContainer
 			if( m_ZombieEntity.GetInventory().GetCargo() )
 			{
 				ContainerWithCargo iwcc = new ContainerWithCargo( this, -1 );
+				iwcc.Get( 0 ).GetRootWidget().ClearFlags( WidgetFlags.DRAGGABLE );
 				iwcc.SetEntity( m_ZombieEntity );
 				new_showed_items.Insert( m_ZombieEntity, iwcc );
 			}

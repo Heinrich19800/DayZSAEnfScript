@@ -22,6 +22,12 @@ class BarbedWire extends ItemBase
 	private bool m_TriggerActive;
 	private bool m_IsPlaced;
 	private bool m_IsMounted;
+	private bool m_IsMountedClient = -1;
+	
+	//mounting
+	const string 				SOUND_MOUNT	= "putDown_BarbedWire_SoundSet";
+	protected EffectSound 		m_MountSound;
+	
 	
 	void BarbedWire()
 	{
@@ -68,6 +74,15 @@ class BarbedWire extends ItemBase
 
 		//update parent (client)
 		RefreshParent();
+
+		//mounting sounds
+		if ( IsMounted() != m_IsMountedClient )
+		{
+			m_IsMountedClient = IsMounted();
+			
+			//Play sound
+			PlaySoundSet( m_MountSound, SOUND_MOUNT, 0.1, 0.1 );
+		}
 		
 		if ( IsDeploySound() )
 		{

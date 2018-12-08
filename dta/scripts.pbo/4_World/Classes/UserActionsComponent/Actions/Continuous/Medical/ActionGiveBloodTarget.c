@@ -37,7 +37,7 @@ class ActionGiveBloodTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "#give_blood";
+		return "#give_blood_person";
 	}
 	
 	override ActionData CreateActionData()

@@ -750,8 +750,15 @@ class ScriptConsole extends UIScriptedMenu
 			
 			if ( m_SelectedObject != "" )
 			{
-				float distance = m_SpawnDistanceEditBox.GetText().ToFloat();
-				m_Developer.SpawnEntityOnCursorDir(player, m_SelectedObject, 100, -1, distance );
+				if ( button == 0 )
+				{
+					float distance = m_SpawnDistanceEditBox.GetText().ToFloat();
+					m_Developer.SpawnEntityOnCursorDir(player, m_SelectedObject, 100, -1, distance );
+				}
+				else if ( button == 1 )
+				{
+					m_Developer.SpawnEntityInInventory(player, m_SelectedObject, 100, -1);
+				}
 			}
 		}
 

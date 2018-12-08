@@ -17,6 +17,8 @@ class ActionUncoverHeadSelf: ActionContinuousBase
 		m_MessageFail = "I have moved and removing sack was canceled.";
 		m_MessageCancel = "I stopped removing the sack.";
 		//m_Animation = "INJECTEPIPENS";
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_COVERHEAD_SELF;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
 	}
 	
 	override void CreateConditionComponents()  

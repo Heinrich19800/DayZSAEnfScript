@@ -37,7 +37,7 @@ class ActionBuryBody: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "#bury_the_body";
+		return "#bury";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

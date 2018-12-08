@@ -58,7 +58,7 @@ class LayoutHolder extends ScriptedWidgetEventHandler
 		}
 		else
 		{
-			delete m_MainWidget;
+			delete m_RootWidget;
 		}
 	}
 	

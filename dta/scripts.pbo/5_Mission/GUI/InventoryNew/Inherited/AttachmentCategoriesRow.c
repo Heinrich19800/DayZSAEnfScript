@@ -854,12 +854,14 @@ class AttachmentCategoriesRow: ClosableContainer
 		
 		m_CategoryIdentifier = attachment_category;
 		
-		he.SetName( attachment_category );
-		
 		ref array<string> player_ghosts_slots2 = new array<string>;
+		string category_name;
 		
 		string config_path_ghosts_slots3 = config_path_attachment_categories + " " + attachment_category + " attachmentSlots";
+		string config_path_category_name = config_path_attachment_categories + " " + attachment_category + " name";
 		GetGame().ConfigGetTextArray( config_path_ghosts_slots3, player_ghosts_slots2 );
+		GetGame().ConfigGetText( config_path_category_name, category_name );
+		he.SetName( category_name );
 		
 		array<string> slots = new array<string>;
 		foreach( string slot : player_ghosts_slots2 )

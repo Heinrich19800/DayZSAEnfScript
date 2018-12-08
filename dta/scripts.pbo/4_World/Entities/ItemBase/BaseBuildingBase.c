@@ -1,8 +1,7 @@
 //BASE BUILDING BASE
 class BaseBuildingBase extends ItemBase
 {
-	const string 	ANIMATION_DEPLOYED			= "Deployed";
-		  string 	CONSTRUCTION_KIT			= "";
+	const string 		ANIMATION_DEPLOYED			= "Deployed";
 	
 	float 				m_ConstructionKitHealth;			//stored health value for used construction kit
 
@@ -10,9 +9,11 @@ class BaseBuildingBase extends ItemBase
 	
 	bool 				m_HasBase = false;
 	//variables for synchronization of base building parts (2x31 is the current limit)
-	int 				m_SyncParts01;									//synchronization for already built parts (31)
-	int 				m_SyncParts02;									//synchronization for already built parts (62)
-
+	int 				m_SyncParts01;								//synchronization for already built parts (31)
+	int 				m_SyncParts02;								//synchronization for already built parts (62)
+	int 				m_InteractedPartId;							//construction part id that an action was performed on
+	int					m_PerformedActionId;						//action id that was performed on a construction part
+	
 	//Sounds
 	//build
 	const string SOUND_BUILD_WOOD_LOG 			= "putDown_WoodLog_SoundSet";
@@ -39,6 +40,8 @@ class BaseBuildingBase extends ItemBase
 		//synchronized variables
 		RegisterNetSyncVariableInt( "m_SyncParts01" );
 		RegisterNetSyncVariableInt( "m_SyncParts02" );
+		RegisterNetSyncVariableInt( "m_InteractedPartId" );
+		RegisterNetSyncVariableInt( "m_PerformedActionId" );
 		RegisterNetSyncVariableBool( "m_HasBase" );
 	}
 
@@ -69,6 +72,9 @@ class BaseBuildingBase extends ItemBase
 
 		//update parts
 		SetPartsFromSyncData();
+		
+		//update action on part
+		SetActionFromSyncData();
 		
 		//update visuals (client)
 		Refresh();
@@ -159,7 +165,36 @@ class BaseBuildingBase extends ItemBase
 		}			
 		
 		return false;
-	} 
+	}
+
+	protected void RegisterActionForSync( int part_id, int action_id )
+	{
+		m_InteractedPartId 	= part_id;
+		m_PerformedActionId = action_id;
+	}
+	
+	protected void ResetActionSyncData()
+	{
+		//reset data
+		m_InteractedPartId 	= -1;
+		m_PerformedActionId = -1;
+	}
+	
+	protected void SetActionFromSyncData()
+	{
+		if ( m_InteractedPartId > -1 && m_PerformedActionId > -1 )
+		{
+			ConstructionPart constrution_part = GetConstructionPartById( m_InteractedPartId );
+			int action_id = m_PerformedActionId;
+			
+			switch( action_id )
+			{
+				case AT_BUILD_PART		: OnPartBuiltClient( constrution_part.GetPartName(), action_id ); break;
+				case AT_DISMANTLE_PART	: OnPartDismantledClient( constrution_part.GetPartName(), action_id ); break;
+				case AT_DESTROY_PART	: OnPartDestroyedClient( constrution_part.GetPartName(), action_id ); break;
+			}
+		}
+	}
 	//------
 	
 	//set construction parts based on synchronized data
@@ -190,6 +225,25 @@ class BaseBuildingBase extends ItemBase
 			}
 		}
 	}
+	
+	protected ConstructionPart GetConstructionPartById( int id )
+	{
+		Construction construction = GetConstruction();
+		map<string, ref ConstructionPart> construction_parts = construction.GetConstructionParts();
+		
+		for ( int i = 0; i < construction_parts.Count(); ++i )
+		{
+			string key = construction_parts.GetKey( i );
+			ConstructionPart value = construction_parts.Get( key );
+		
+			if ( value.GetId() == id )
+			{
+				return value;
+			}
+		}
+		
+		return NULL;
+	}
 	//
 	
 	//Base
@@ -217,10 +271,24 @@ class BaseBuildingBase extends ItemBase
 	//--- CONSTRUCTION KIT
 	ItemBase CreateConstructionKit()
 	{
-		ItemBase construction_kit = ItemBase.Cast( GetGame().CreateObject( CONSTRUCTION_KIT, GetPosition() ) );
-		construction_kit.SetHealth( m_ConstructionKitHealth );
+		ItemBase construction_kit = ItemBase.Cast( GetGame().CreateObject( GetConstructionKitType(), GetKitSpawnPosition() ) );
+		if ( m_ConstructionKitHealth > 0 )
+		{
+			
+			construction_kit.SetHealth( m_ConstructionKitHealth );
+		}
 		
 		return construction_kit;
+	}
+	
+	protected vector GetKitSpawnPosition()
+	{
+		return GetPosition();
+	}
+	
+	protected string GetConstructionKitType()
+	{
+		return "";
 	}
 	
 	void DestroyConstructionKit( ItemBase construction_kit )
@@ -303,88 +371,99 @@ class BaseBuildingBase extends ItemBase
 	}
 	
 	//CONSTRUCTION EVENTS
-	void OnPartBuilt( string part_name )
+	void OnPartBuiltServer( string part_name, int action_id )
 	{
 		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		
-		if ( GetGame().IsServer() )
+		//check base state
+		if ( constrution_part.IsBase() )
 		{
-			//check base state
-			if ( constrution_part.IsBase() )
-			{
-				SetBaseState( true );
-				
-				//spawn kit
-				CreateConstructionKit();
-			}
-				
-			//register constructed parts for synchronization
-			RegisterPartForSync( constrution_part.GetId() );
+			SetBaseState( true );
 			
-			//synchronize
-			Synchronize();
+			//spawn kit
+			CreateConstructionKit();
 		}
+			
+		//register constructed parts for synchronization
+		RegisterPartForSync( constrution_part.GetId() );
 		
-		if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )
-		{
-			//play sound
-			SoundBuildStart( part_name );
-		}
+		//register action that was performed on part
+		RegisterActionForSync( constrution_part.GetId(), action_id );
+		
+		//synchronize
+		Synchronize();
+		
+		//reset action sync data
+		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( ResetActionSyncData, 100, false, this );
 	}
 	
-	void OnPartDismantled( string part_name )
+	void OnPartBuiltClient( string part_name, int action_id )
+	{
+		//play sound
+		SoundBuildStart( part_name );
+	}	
+	
+	void OnPartDismantledServer( string part_name, int action_id )
 	{
 		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		
-		if ( GetGame().IsServer() )					//Server only
+		//check base state
+		if ( constrution_part.IsBase() )
 		{
-			//check base state
-			if ( constrution_part.IsBase() )
-			{
-				//Destroy construction
-				DestroyConstruction();
-			}
-						
-			//register constructed parts for synchronization
-			UnregisterPartForSync( constrution_part.GetId() );
-			
-			//synchronize
-			Synchronize();
+			//Destroy construction
+			DestroyConstruction();
 		}
+					
+		//register constructed parts for synchronization
+		UnregisterPartForSync( constrution_part.GetId() );
 		
-		if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )		//Client or Single player
-		{
-			//play sound
-			SoundDismantleStart( part_name );
-		}
+		//register action that was performed on part
+		RegisterActionForSync( constrution_part.GetId(), action_id );
+		
+		//synchronize
+		Synchronize();
+		
+		//reset action sync data
+		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( ResetActionSyncData, 100, false, this );
 	}
 	
-	void OnPartDestroyed( string part_name )
+	void OnPartDismantledClient( string part_name, int action_id )
 	{
 		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		
-		if ( GetGame().IsServer() )					//Server only
-		{
-			//check base state
-			if ( constrution_part.IsBase() )
-			{
-				//Destroy construction
-				DestroyConstruction();
-			}
-						
-			//register constructed parts for synchronization
-			UnregisterPartForSync( constrution_part.GetId() );
-			
-			//synchronize
-			Synchronize();
-		}
+		//play sound
+		SoundDismantleStart( part_name );
+	}	
+	
+	void OnPartDestroyedServer( string part_name, int action_id )
+	{
+		ConstructionPart constrution_part = GetConstruction().GetConstructionPart( part_name );
 		
-		if ( !GetGame().IsMultiplayer() || GetGame().IsClient() )		//Client or Single player
+		//check base state
+		if ( constrution_part.IsBase() )
 		{
-			//play sound
-			SoundDestroyStart( part_name );
+			//Destroy construction
+			DestroyConstruction();
 		}
+					
+		//register constructed parts for synchronization
+		UnregisterPartForSync( constrution_part.GetId() );
+		
+		//register action that was performed on part
+		RegisterActionForSync( constrution_part.GetId(), action_id );
+		
+		//synchronize
+		Synchronize();
+		
+		//reset action sync data
+		GetGame().GetCallQueue( CALL_CATEGORY_GAMEPLAY ).CallLater( ResetActionSyncData, 100, false, this );
 	}
+	
+	void OnPartDestroyedClient( string part_name, int action_id )
+	{
+		//play sound
+		SoundDestroyStart( part_name );
+	}	
 	
 	// --- UPDATE
 	void UpdateVisuals()
@@ -608,14 +687,14 @@ class BaseBuildingBase extends ItemBase
 	
 	//--- ACTION CONDITIONS
 	//direction
-	bool IsFacingFront( PlayerBase player )
+	bool IsFacingFront( PlayerBase player, string selection )
 	{
 		return true;
 	}
 	
-	bool IsFacingBack( PlayerBase player )
+	bool IsFacingBack( PlayerBase player, string selection )
 	{
-		return true;
+		return !IsFacingFront( player, selection );
 	}
 	
 	//folding

@@ -89,19 +89,6 @@ class ActionManagerClient: ActionManagerBase
 #endif
 	}
 	
-	override void OnSyncJuncture(int pJunctureID, ParamsReadContext pCtx)
-	{
-		int AcknowledgmentID;
-		pCtx.Read(AcknowledgmentID);
-		if ( m_CurrentActionData && AcknowledgmentID == m_PendingActionAcknowledgmentID)
-		{
-			if (pJunctureID == DayZPlayerSyncJunctures.SJ_ACTION_ACK_ACCEPT)
-				m_CurrentActionData.m_State = UA_AM_ACCEPTED;
-			else if (pJunctureID == DayZPlayerSyncJunctures.SJ_ACTION_ACK_REJECT)
-				m_CurrentActionData.m_State = UA_AM_REJECTED;
-		}
-	}
-	
 	//--------------------------------------------------------
 	// Controls avaliability of contextual actions
 	//--------------------------------------------------------
@@ -968,6 +955,12 @@ class ActionManagerClient: ActionManagerBase
 				return;
 			}
 		}
+	}
+	
+	override void Interrupt()
+	{
+		if(m_CurrentActionData)
+			m_Interrupted = true;
 	}
 	
 	private ref ActionTarget m_ForceTarget;

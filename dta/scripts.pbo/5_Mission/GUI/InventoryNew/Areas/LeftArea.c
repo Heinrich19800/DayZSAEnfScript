@@ -12,6 +12,9 @@ class LeftArea: Container
 		m_VicinityContainer = new VicinityContainer( this );
 		m_Body.Insert( m_VicinityContainer );
 		m_ActiveIndex = 0;
+		
+		WidgetEventHandler.GetInstance().RegisterOnChildAdd( m_MainWidget, this, "OnChildAdd" );
+		WidgetEventHandler.GetInstance().RegisterOnChildRemove( m_MainWidget, this, "OnChildRemove" );
 	}
 	
 	override void RefreshItemPosition( EntityAI item_to_refresh )
@@ -30,6 +33,23 @@ class LeftArea: Container
 	{
 		Container active_container = Container.Cast( m_Body.Get( m_ActiveIndex ) );
 		active_container.MoveGridCursor( direction );
+		
+		float x, y, y_s, amount;
+		m_ScrollWidget.GetScreenPos( x, y );
+		m_ScrollWidget.GetScreenSize( x, y_s );
+		
+		float next_pos	= active_container.GetFocusedContainerYScreenPos() + active_container.GetFocusedContainerHeight();
+		
+		if( next_pos > ( y + y_s ) )
+		{
+			amount	= y + active_container.GetFocusedContainerYScreenPos();
+			m_ScrollWidget.VScrollToPos( m_ScrollWidget.GetVScrollPos() + active_container.GetFocusedContainerHeight() + 2 );
+		}
+		else if( active_container.GetFocusedContainerYScreenPos() < y )
+		{
+			amount = active_container.GetFocusedContainerYScreenPos() - y;
+			m_ScrollWidget.VScrollToPos( m_ScrollWidget.GetVScrollPos() + amount - 2 );
+		}
 	}
 	
 	override void SelectItem()
@@ -224,12 +244,17 @@ class LeftArea: Container
 	
 	override bool OnChildRemove( Widget w, Widget child )
 	{
+		m_MainWidget.Update();
+		m_RootWidget.Update();
+		Print( m_ScrollWidget.GetVScrollPos01() );
 		m_ScrollWidget.VScrollToPos01( m_ScrollWidget.GetVScrollPos01() );
 		return true;
 	}
 	
 	override bool OnChildAdd( Widget w, Widget child )
 	{
+		m_MainWidget.Update();
+		m_RootWidget.Update();
 		m_ScrollWidget.VScrollToPos01( m_ScrollWidget.GetVScrollPos01() );
 		return true;
 	}

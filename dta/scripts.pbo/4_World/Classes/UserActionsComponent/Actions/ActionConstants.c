@@ -44,7 +44,7 @@ class UATimeSpent
 	const float DEFIBRILATE = 3;
 	const float INJECT = 3;
 	const float MEASURE_TEMP = 12;
-	const float COVER_HEAD = 2;
+	const float COVER_HEAD = 0.5;
 	const float RESTRAIN = 10;
 	const float UNRESTRAIN = 20;
 	const float SHAVE = 3;

@@ -67,6 +67,7 @@ class ActionConstructor
 		actions.Insert(new ActionTurnOnWeaponFlashlight);
 		actions.Insert(new ActionTurnOffWeaponFlashlight);
 		actions.Insert(new ActionNextCombinationLockDial);
+		actions.Insert(new ActionAttachToConstruction);
 
 		//actions.Insert(new ActionLoadMagazineToWeapon);
 		//actions.Insert(new ActionLoadBulletToWeapon);
@@ -208,6 +209,10 @@ class ActionConstructor
 		actions.Insert(new ActionFillCoolant);
 		actions.Insert(new ActionFillOil);
 		actions.Insert(new ActionDestroyCombinationLock);
+		actions.Insert(new ActionGagSelf);
+		actions.Insert(new ActionGagTarget);
+		actions.Insert(new ActionUngagSelf);
+		actions.Insert(new ActionUngagTarget);
 		
 		// Interact actions
 		actions.Insert(new ActionPullOutPlug);

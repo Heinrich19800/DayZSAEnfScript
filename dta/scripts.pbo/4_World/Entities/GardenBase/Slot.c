@@ -106,6 +106,7 @@ class Slot
 	
 	void GiveWater( float consumed_quantity )
 	{
+		bool needed_water = NeedsWater();
 		m_WaterQuantity += consumed_quantity;
 		
 		if (m_WaterQuantity > GetWaterMax())
@@ -127,7 +128,10 @@ class Slot
 			}
 		}
 		
-		GetGarden().UpdateSlotTexture( GetSlotIndex() );
+		if ( needed_water != NeedsWater() )
+		{
+			GetGarden().UpdateSlotTexture( GetSlotIndex() );
+		}
 	}
 	
 	bool NeedsWater()

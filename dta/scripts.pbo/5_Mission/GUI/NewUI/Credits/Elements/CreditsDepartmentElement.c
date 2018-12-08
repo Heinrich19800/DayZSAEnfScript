@@ -1,16 +1,24 @@
 class CreditsDepartmentElement extends CreditsElement
 {
 	protected TextWidget								m_DepartmentTitle;
-	protected WrapSpacerWidget							m_DepartmentSections;
+	protected GridSpacerWidget							m_DepartmentSections;
 	protected ref array<ref CreditsDepartmentSection>	m_DepartmentSectionEntries = new array<ref CreditsDepartmentSection>;
 	
 	void CreditsDepartmentElement( int index, Widget parent, JsonDataCreditsDepartment department_data )
 	{
 		m_Root					= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/credits/department_element/department_element.layout", parent );
 		m_DepartmentTitle		= TextWidget.Cast( m_Root.FindAnyWidget( "department_title" ) );
-		m_DepartmentSections	= WrapSpacerWidget.Cast( m_Root.FindAnyWidget( "department_sections" ) );
+		m_DepartmentSections	= GridSpacerWidget.Cast( m_Root.FindAnyWidget( "department_sections" ) );
 		
-		m_DepartmentTitle.SetText( department_data.DepartmentName );
+		if( department_data.DepartmentName != "" )
+		{
+			m_DepartmentTitle.SetText( department_data.DepartmentName );
+		}
+		else
+		{
+			m_DepartmentTitle.Show( false );
+			m_Root.FindAnyWidget( "SeparatorPanel" ).Show( false );
+		}
 		
 		m_Root.SetSort( index );
 		LoadDataAsync( department_data.Sections );
@@ -23,6 +31,7 @@ class CreditsDepartmentElement extends CreditsElement
 			ref CreditsDepartmentSection e = new CreditsDepartmentSection( i, m_DepartmentSections, department_data.Get( i - 1 ) );
 			m_DepartmentSectionEntries.Insert( e );
 		}
+		
 		m_DepartmentSections.Update();
 	}
 }
@@ -30,16 +39,25 @@ class CreditsDepartmentElement extends CreditsElement
 class CreditsDepartmentSection extends CreditsElement
 {
 	protected TextWidget			m_SectionTitle;
-	protected WrapSpacerWidget		m_SectionSections;
+	protected GridSpacerWidget		m_SectionSections;
 	protected ref array<Widget>		m_SectionEntries = new array<Widget>;
 	
 	void CreditsDepartmentSection( int index, Widget parent, JsonDataCreditsSection section_data )
 	{
 		m_Root				= GetGame().GetWorkspace().CreateWidgets( "gui/layouts/new_ui/credits/department_element/department_section.layout", parent );
 		m_SectionTitle		= TextWidget.Cast( m_Root.FindAnyWidget( "section_title" ) );
-		m_SectionSections	= WrapSpacerWidget.Cast( m_Root.FindAnyWidget( "section_elements" ) );
+		m_SectionSections	= GridSpacerWidget.Cast( m_Root.FindAnyWidget( "section_elements" ) );
 		
-		m_SectionTitle.SetText( section_data.SectionName );
+		if( section_data.SectionName != "" )
+		{
+			m_SectionTitle.SetText( section_data.SectionName );
+		}
+		else
+		{
+			m_SectionTitle.Show( false );
+			m_Root.FindAnyWidget( "SeparatorPanel" ).Show( false );
+		}	
+		
 		LoadDataAsync( section_data.SectionLines );
 		m_Root.SetSort( index );
 	}
@@ -53,6 +71,7 @@ class CreditsDepartmentSection extends CreditsElement
 			m_Root.SetSort( i );
 			m_SectionEntries.Insert( w );
 		}
+		
 		m_SectionSections.Update();
 	}
 }

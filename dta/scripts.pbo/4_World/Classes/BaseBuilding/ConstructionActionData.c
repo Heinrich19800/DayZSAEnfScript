@@ -12,6 +12,8 @@ class ConstructionActionData
 	CombinationLock 			m_CombinationLock;
 	int 						m_DialIndex;
 	
+	//attaching
+	int 						m_SlotId;
 	
 	void ConstructionActionData()
 	{
@@ -46,7 +48,17 @@ class ConstructionActionData
 	{
 		return m_TargetPart;
 	}
-		
+	
+	void SetSlotId( int slot_id )
+	{
+		m_SlotId = slot_id;
+	}
+	
+	int GetSlotId()
+	{
+		return m_SlotId;
+	}
+	
 	void SetNextIndex()
 	{
 		if ( m_BuildParts.Count() > 1 )

@@ -4,20 +4,29 @@ class AttachmentsOutOfReach
 	
 	static bool IsAttachmentReachable(EntityAI e, string att_slot_name = "", int slot_id = -1, float range = 1.5)
 	{
-		vector pos_att;
-		if( att_slot_name != "" )
-			pos_att = e.GetPosition() + GetAttachmentPosition(e, InventorySlots.GetSlotIdFromString( att_slot_name ) );
-		else if( slot_id != -1 )
-			pos_att = e.GetPosition() + GetAttachmentPosition(e, slot_id);
-		
-		vector pos_player = GetGame().GetPlayer().GetPosition();
-		
-		if ( vector.Distance(pos_player, pos_att) <= range )
+		if( !e.IgnoreOutOfReachCondition() )
+		{
+			vector pos_att;
+			if( att_slot_name != "" )
+				pos_att = e.GetPosition() + GetAttachmentPosition(e, InventorySlots.GetSlotIdFromString( att_slot_name ) );
+			else if( slot_id != -1 )
+				pos_att = e.GetPosition() + GetAttachmentPosition(e, slot_id);
+			
+			vector pos_player = GetGame().GetPlayer().GetPosition();
+			
+			if ( vector.Distance(pos_player, pos_att) <= range )
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
 		{
 			return true;
 		}
-		
-		return false;
 	}
 	
 	static vector GetAttachmentPosition(EntityAI e, int slot_id)

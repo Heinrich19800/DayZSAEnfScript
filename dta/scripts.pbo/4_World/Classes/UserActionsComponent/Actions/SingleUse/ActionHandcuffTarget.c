@@ -22,7 +22,7 @@ class ActionHandcuffTarget: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "#handcuff";
+		return "#restrain";
 	}
 	
 	override void OnExecuteServer( ActionData action_data )

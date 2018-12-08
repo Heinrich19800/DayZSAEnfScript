@@ -35,7 +35,7 @@ class ActionSplintTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "#apply_splint";
+		return "#fix_persons_fracture";
 	}
 
 	override void OnFinishProgressServer( ActionData action_data )

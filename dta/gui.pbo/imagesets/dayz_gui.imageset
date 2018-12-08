@@ -470,14 +470,14 @@ ImageSetClass {
   }
   ImageSetDefClass continuous_action_mouse {
    Name "continuous_action_mouse"
-   Pos 344 890
-   Size 128 128
+   Pos 781 438
+   Size 64 64
    Flags 0
   }
   ImageSetDefClass continuous_action_mouse_half {
    Name "continuous_action_mouse_half"
-   Pos 881 786
-   Size 128 128
+   Pos 852 438
+   Size 64 64
    Flags 0
   }
   ImageSetDefClass cursor {
@@ -536,8 +536,8 @@ ImageSetClass {
   }
   ImageSetDefClass continuous_action_mouse_part {
    Name "continuous_action_mouse_part"
-   Pos 824 623
-   Size 128 128
+   Pos 923 438
+   Size 64 64
    Flags 0
   }
   ImageSetDefClass icon_bullet {
@@ -725,40 +725,28 @@ ImageSetClass {
      Size 25 5
      Flags 0
     }
-    ImageSetDefClass fuel_full {
-     Name "fuel_full"
-     Pos 447 480
+    ImageSetDefClass fuel {
+     Name "fuel"
+     Pos 446 480
      Size 38 38
      Flags 0
     }
-    ImageSetDefClass fuel_empty {
-     Name "fuel_empty"
-     Pos 150 425
-     Size 50 50
-     Flags 0
-    }
-    ImageSetDefClass liquid_full {
-     Name "liquid_full"
+    ImageSetDefClass oil {
+     Name "oil"
      Pos 441 519
      Size 50 38
      Flags 0
     }
-    ImageSetDefClass liquid_empty {
-     Name "liquid_empty"
-     Pos 200 425
-     Size 50 50
-     Flags 0
-    }
-    ImageSetDefClass battery_full {
-     Name "battery_full"
-     Pos 397 480
+    ImageSetDefClass liquid {
+     Name "liquid"
+     Pos 639 547
      Size 38 38
      Flags 0
     }
-    ImageSetDefClass battery_empty {
-     Name "battery_empty"
-     Pos 250 425
-     Size 50 50
+    ImageSetDefClass battery {
+     Name "battery"
+     Pos 397 480
+     Size 38 38
      Flags 0
     }
     ImageSetDefClass stance_car {
@@ -767,22 +755,22 @@ ImageSetClass {
      Size 50 50
      Flags 0
     }
-    ImageSetDefClass rpm {
-     Name "rpm"
+    ImageSetDefClass small_circle {
+     Name "small_circle"
+     Pos 499 490
+     Size 70 58
+     Flags 0
+    }
+    ImageSetDefClass large_circle {
+     Name "large_circle"
      Pos 402 558
      Size 198 166
      Flags 0
     }
-    ImageSetDefClass speed {
-     Name "speed"
-     Pos 402 558
-     Size 198 166
-     Flags 0
-    }
-    ImageSetDefClass rpm_pointer {
-     Name "rpm_pointer"
-     Pos 611 493
-     Size 17 110
+    ImageSetDefClass large_pointer {
+     Name "large_pointer"
+     Pos 610 492
+     Size 18 111
      Flags 0
     }
     ImageSetDefClass grid {
@@ -910,6 +898,24 @@ ImageSetClass {
      Pos 723 516
      Size 17 11
      Flags 3
+    }
+    ImageSetDefClass small_pointer {
+     Name "small_pointer"
+     Pos 583 500
+     Size 13 40
+     Flags 0
+    }
+    ImageSetDefClass large_circle_half {
+     Name "large_circle_half"
+     Pos 190 491
+     Size 198 166
+     Flags 0
+    }
+    ImageSetDefClass iconArrowUp {
+     Name "iconArrowUp"
+     Pos 730 499
+     Size 22 14
+     Flags 0
     }
    }
   }

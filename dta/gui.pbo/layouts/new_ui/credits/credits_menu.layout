@@ -25,7 +25,6 @@ PanelWidgetClass CreditsRoot {
     WrapSpacerWidgetClass CreditsContent {
      visible 1
      inheritalpha 0
-     position 0 0
      size 1 1
      hexactpos 1
      vexactpos 1
@@ -33,6 +32,7 @@ PanelWidgetClass CreditsRoot {
      vexactsize 0
      Padding 40
      Margin 0
+     "Size To Content H" 1
      "Size To Content V" 1
      content_halign center
      {

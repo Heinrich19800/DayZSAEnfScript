@@ -127,6 +127,7 @@ class InGameMenuXbox extends UIScriptedMenu
 					{
 						mute_text.SetText( "#xbox_ingame_menu_mute" );
 					}
+					mute_text.Update();
 				}
 				
 				if( m_ServerInfoPanel.IsGloballyMuted( uid ) )

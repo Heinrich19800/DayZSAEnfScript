@@ -285,7 +285,7 @@ PanelWidgetClass height_wrapper {
        visible 0
        clipchildren 1
        ignorepointer 0
-       color 0.7451 0.7451 0.7451 0.2941
+       color 0.6667 0.6667 0.6667 0.7843
        position 0 0
        size 1 1
        hexactpos 0
@@ -294,8 +294,10 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 0
        image0 "set:dayz_inventory image:missing"
-       mode blend
+       mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
        filter 1
       }
       PanelWidgetClass Cursor0 {
@@ -640,7 +642,7 @@ PanelWidgetClass height_wrapper {
        visible 0
        clipchildren 1
        ignorepointer 0
-       color 0.7451 0.7451 0.7451 0.2941
+       color 0.6667 0.6667 0.6667 0.7843
        position 0 0
        size 1 1
        hexactpos 0
@@ -649,8 +651,10 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 0
        image0 "set:dayz_inventory image:missing"
-       mode blend
+       mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
        filter 1
       }
       PanelWidgetClass Cursor1 {
@@ -991,7 +995,7 @@ PanelWidgetClass height_wrapper {
        visible 0
        clipchildren 1
        ignorepointer 0
-       color 0.7451 0.7451 0.7451 0.2941
+       color 0.6667 0.6667 0.6667 0.7843
        position 0 0
        size 1 1
        hexactpos 0
@@ -1000,8 +1004,10 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 0
        image0 "set:dayz_inventory image:missing"
-       mode blend
+       mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
        filter 1
       }
       PanelWidgetClass Cursor2 {
@@ -1343,7 +1349,7 @@ PanelWidgetClass height_wrapper {
        visible 0
        clipchildren 1
        ignorepointer 0
-       color 0.7451 0.7451 0.7451 0.2941
+       color 0.6667 0.6667 0.6667 0.7843
        position 0 0
        size 1 1
        hexactpos 0
@@ -1352,8 +1358,10 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 0
        image0 "set:dayz_inventory image:missing"
-       mode blend
+       mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
        filter 1
       }
       PanelWidgetClass Cursor3 {
@@ -1694,7 +1702,7 @@ PanelWidgetClass height_wrapper {
        visible 0
        clipchildren 1
        ignorepointer 0
-       color 0.7451 0.7451 0.7451 0.2941
+       color 0.6667 0.6667 0.6667 0.7843
        position 0 0
        size 1 1
        hexactpos 0
@@ -1703,8 +1711,10 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 0
        image0 "set:dayz_inventory image:missing"
-       mode blend
+       mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
        filter 1
       }
       PanelWidgetClass Cursor4 {
@@ -2045,7 +2055,7 @@ PanelWidgetClass height_wrapper {
        visible 0
        clipchildren 1
        ignorepointer 0
-       color 0.7451 0.7451 0.7451 0.2941
+       color 0.6667 0.6667 0.6667 0.7843
        position 0 0
        size 1 1
        hexactpos 0
@@ -2054,8 +2064,10 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 0
        image0 "set:dayz_inventory image:missing"
-       mode blend
+       mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
        filter 1
       }
       PanelWidgetClass Cursor5 {
@@ -2396,7 +2408,7 @@ PanelWidgetClass height_wrapper {
        visible 0
        clipchildren 1
        ignorepointer 0
-       color 0.7451 0.7451 0.7451 0.2941
+       color 0.6667 0.6667 0.6667 0.7843
        position 0 0
        size 1 1
        hexactpos 0
@@ -2405,8 +2417,10 @@ PanelWidgetClass height_wrapper {
        vexactsize 0
        draggable 0
        image0 "set:dayz_inventory image:missing"
-       mode blend
+       mode additive
        "src alpha" 1
+       "no wrap" 1
+       stretch 1
        filter 1
       }
       PanelWidgetClass Cursor6 {

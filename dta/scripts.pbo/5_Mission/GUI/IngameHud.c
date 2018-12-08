@@ -13,7 +13,8 @@ class IngameHud extends Hud
 	protected ref map<int,string>				m_BadgesWidgetNames;
 	protected ref map<int,bool>					m_BadgesWidgetDisplay;
 	protected ref map<int,ImageWidget>			m_BadgesWidgets;  // [key] ImageWidget
-
+	protected bool								m_AnyBadgeVisible;
+	
 	protected ref map<int,string>				m_VehicleGearTable;
 
 	protected Widget							m_HudPanelWidget;
@@ -21,23 +22,22 @@ class IngameHud extends Hud
 	protected ref InventoryQuickbar				m_Quickbar;
 	
 	protected Widget							m_VehiclePanel;
-	protected Widget							m_VehiclePanelRPMPointer;
 	
-	protected ImageWidget						m_VehiclePanelBatteryIcon;
-	protected ImageWidget						m_VehiclePanelLiquidIcon;
-	protected ImageWidget						m_VehiclePanelFuelIcon;
-	protected ImageWidget						m_VehiclePanelFuel2Icon;
-	protected ProgressBarWidget					m_VehiclePanelBatteryMeter;
-	protected ProgressBarWidget					m_VehiclePanelLiquidMeter;
-	protected ProgressBarWidget					m_VehiclePanelFuelMeter;
-	protected ProgressBarWidget					m_VehiclePanelFuel2Meter;
+	protected ImageWidget						m_VehicleRPMPointer;
+	protected ImageWidget						m_VehicleSpeedPointer;
+	protected ImageWidget						m_VehicleTemperaturePointer;
+	protected ImageWidget						m_VehicleFuelPointer;
 	
-	protected TextWidget						m_VehiclePanelRPMValue;
-	protected TextWidget						m_VehiclePanelSpeedValue;
-	protected TextWidget						m_VehiclePanelCurrentGearValue;
-	protected TextWidget						m_VehiclePanelNextGearValue;
-	protected TextWidget						m_VehiclePanelPrevGearValue;
-	protected ImageWidget						m_VehiclePanelEngineHealth;
+	protected TextWidget						m_VehicleSpeedValue;
+	
+	protected TextWidget						m_VehicleCurrentGearValue;
+	protected TextWidget						m_VehicleNextGearValue;
+	protected TextWidget						m_VehiclePrevGearValue;
+	
+	protected ImageWidget						m_VehicleBatteryLight;
+	protected ImageWidget						m_VehicleEngineLight;
+	protected ImageWidget						m_VehicleOilLight;
+	
 	protected bool								m_InVehicleAsDriver;
 	protected CarScript							m_CurrentVehicle;
 	
@@ -187,23 +187,21 @@ class IngameHud extends Hud
 		m_BloodType						= ImageWidget.Cast( m_HudPanelWidget.FindAnyWidget("IconBlood") );
 		
 		m_VehiclePanel					= m_HudPanelWidget.FindAnyWidget("VehiclePanel");
-		m_VehiclePanelRPMPointer		= m_VehiclePanel.FindAnyWidget("RpmPointer");
-		m_VehiclePanelRPMValue			= TextWidget.Cast( m_VehiclePanel.FindAnyWidget("RpmLabel") );
-		m_VehiclePanelSpeedValue		= TextWidget.Cast( m_VehiclePanel.FindAnyWidget("SpeedValue") );
-		m_VehiclePanelCurrentGearValue	= TextWidget.Cast( m_VehiclePanel.FindAnyWidget("Current") );
-		m_VehiclePanelNextGearValue		= TextWidget.Cast( m_VehiclePanel.FindAnyWidget("Next") );
-		m_VehiclePanelPrevGearValue		= TextWidget.Cast( m_VehiclePanel.FindAnyWidget("Prev") );
 		
-		m_VehiclePanelBatteryIcon		= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("IconBattery") );
-		m_VehiclePanelLiquidIcon		= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("IconLiquid") );
-		m_VehiclePanelFuelIcon			= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("IconFuel") );
-		m_VehiclePanelFuel2Icon			= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("IconFuel0") );
-		m_VehiclePanelBatteryMeter		= ProgressBarWidget.Cast( m_VehiclePanel.FindAnyWidget("BatteryMeter") );
-		m_VehiclePanelLiquidMeter		= ProgressBarWidget.Cast( m_VehiclePanel.FindAnyWidget("LiquidMeter") );
-		m_VehiclePanelFuelMeter			= ProgressBarWidget.Cast( m_VehiclePanel.FindAnyWidget("FuelMeter") );
-		m_VehiclePanelFuel2Meter		= ProgressBarWidget.Cast( m_VehiclePanel.FindAnyWidget("FuelMeter0") );
+		m_VehicleRPMPointer				= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("RPMPointer") );
+		m_VehicleSpeedPointer			= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("SpeedPointer") );
+		m_VehicleSpeedValue				= TextWidget.Cast( m_VehiclePanel.FindAnyWidget("SpeedValue") );
 		
-		m_VehiclePanelEngineHealth		= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("CheckEngineIcon") );
+		m_VehicleCurrentGearValue		= TextWidget.Cast( m_VehiclePanel.FindAnyWidget("Current") );
+		m_VehicleNextGearValue			= TextWidget.Cast( m_VehiclePanel.FindAnyWidget("Next") );
+		m_VehiclePrevGearValue			= TextWidget.Cast( m_VehiclePanel.FindAnyWidget("Prev") );
+		
+		m_VehicleBatteryLight			= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("BatteryLight") );
+		m_VehicleEngineLight			= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("EngineLight") );
+		m_VehicleOilLight				= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("OilLight") );
+		
+		m_VehicleTemperaturePointer		= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("TemperaturePointer") );
+		m_VehicleFuelPointer			= ImageWidget.Cast( m_VehiclePanel.FindAnyWidget("FuelPointer") );
 		
 		//Class.CastTo(m_Zeroing, m_HudPanelWidget.FindAnyWidget("Zeroing"));
 		//Class.CastTo(m_WeaponMode, m_HudPanelWidget.FindAnyWidget("WeaponMode"));
@@ -512,15 +510,18 @@ class IngameHud extends Hud
 			w.Show( false );
 		}
 		
-		string widget_name = m_StatesWidgetNames.Get( key ) + arrow_name + Math.Clamp( ( tendency + 1 ), 1, 3 );
-		Class.CastTo(w,  m_Notifiers.FindAnyWidget( widget_name ) );
-		w.Show( true );
+		if( tendency > 0 )
+		{
+			string widget_name = m_StatesWidgetNames.Get( key ) + arrow_name + Math.Clamp( tendency, 1, 3 );
+			Class.CastTo(w,  m_Notifiers.FindAnyWidget( widget_name ) );
+			w.Show( true );
+		}
 	}
 	
 	override void DisplayBadge( int key, bool show )
 	{
 		m_BadgesWidgetDisplay.Set( key, show );
-		bool any_visible = show;
+		m_AnyBadgeVisible = false;
 		int x = 0;
 		for ( int i = 0; i < m_BadgesWidgetDisplay.Count(); i++ )
 		{
@@ -535,7 +536,7 @@ class IngameHud extends Hud
 					badge_widget.SetPos ( x*0.2, 0.0, true);
 					badge_widget.Show( true );
 					x = x + 1;
-					any_visible = true;
+					m_AnyBadgeVisible = true;
 				}
 				else
 				{
@@ -543,12 +544,16 @@ class IngameHud extends Hud
 				}
 			}
 		}
-		m_BadgeNotifierDivider.Show( any_visible );
+		m_BadgeNotifierDivider.Show( m_AnyBadgeVisible );
 	}
 	
-	void SetStomachState()
+	// state 0 = empty
+	// state 1 = digesting
+	// state 2 = full
+	void SetStomachState( int state )
 	{
-		
+		ImageWidget stomach = ImageWidget.Cast( m_Badges.FindAnyWidget( "Stomach" ) );
+		stomach.LoadImageFile( 0, "set:dayz_gui image:iconStomach" + state );
 	}
 	
 	override void SetStamina( int value , int range )
@@ -802,12 +807,12 @@ class IngameHud extends Hud
 					
 					if( !m_VehicleHasOil )
 					{
-						m_VehiclePanel.FindAnyWidget( "Battery" ).Show( false );
+						m_VehicleBatteryLight.Show( false );
 					}
 					
 					if( !m_VehicleHasCoolant )
 					{
-						m_VehiclePanel.FindAnyWidget( "Liquid" ).Show( false );
+						m_VehicleOilLight.Show( false );
 					}
 					
 					m_HudPanelWidget.FindAnyWidget("PlayerPanel").Show( false );
@@ -828,6 +833,7 @@ class IngameHud extends Hud
 		
 		m_VehiclePanel.Show( false );
 		
+		m_InVehicleAsDriver	= false;
 		m_CurrentVehicle = null;
 		m_VehicleGearCount = -1;
 	}
@@ -836,10 +842,13 @@ class IngameHud extends Hud
 	{
 		if ( m_CurrentVehicle )
 		{
-			float rpm_value = ( m_CurrentVehicle.EngineGetRPM() / m_CurrentVehicle.EngineGetRPMRedline() ) ;
+			float rpm_value = ( m_CurrentVehicle.EngineGetRPM() / m_CurrentVehicle.EngineGetRPMMax() ) ;
+			float rpm_value_red = ( m_CurrentVehicle.EngineGetRPM() / m_CurrentVehicle.EngineGetRPMRedline() ) ;
+			float speed_value = ( m_CurrentVehicle.GetSpeedometer() / 200 );
 			
-			m_VehiclePanelRPMPointer.SetRotation( 0, 0, rpm_value * 100 - 20, true );
-			m_VehiclePanelSpeedValue.SetText( Math.Floor( m_CurrentVehicle.GetSpeedometer() ).ToString() );
+			m_VehicleRPMPointer.SetRotation( 0, 0, rpm_value * 290 - 130, true );
+			m_VehicleSpeedPointer.SetRotation( 0, 0, speed_value * 260 - 130, true );
+			m_VehicleSpeedValue.SetText( Math.Floor( m_CurrentVehicle.GetSpeedometer() ).ToString() );
 
 			int engaged_gear = m_CurrentVehicle.GetController().GetGear();
 			int prev_gear = engaged_gear - 1;
@@ -855,47 +864,50 @@ class IngameHud extends Hud
 				next_gear = CarGear.NEUTRAL;
 			}
 			
-			int health = m_CurrentVehicle.GetHealthLevel();
+			int health = m_CurrentVehicle.GetHealthLevel( "Engine" );
 			int color;
-			if( rpm_value > 1 )
+			if( rpm_value_red > 1 )
 			{
 				if( m_TimeSinceLastEngineLightChange > 0.35 )
 				{
-					m_VehiclePanelEngineHealth.Show( !m_VehiclePanelEngineHealth.IsVisible() );
-					m_VehiclePanelEngineHealth.SetColor( Colors.COLOR_RUINED );
-					m_VehiclePanelEngineHealth.SetAlpha( 1 );
+					m_VehicleEngineLight.Show( !m_VehicleEngineLight.IsVisible() );
+					m_VehicleEngineLight.SetColor( Colors.COLOR_RUINED );
+					m_VehicleEngineLight.SetAlpha( 1 );
 					m_TimeSinceLastEngineLightChange = 0;
 				}
 				m_TimeSinceLastEngineLightChange += timeslice;
 			}
-			else if( m_CurrentVehicle.EngineIsOn() && health > 1 && health < 5 )
+			else if( health > 1 && health < 5 )
 			{
-				m_VehiclePanelEngineHealth.Show( true );
+				m_VehicleEngineLight.Show( true );
 				color = ItemManager.GetItemHealthColor( m_CurrentVehicle, "Engine" );
 				
-				m_VehiclePanelEngineHealth.SetColor( color );
-				m_VehiclePanelEngineHealth.SetAlpha( 1 );
+				m_VehicleEngineLight.SetColor( color );
+				m_VehicleEngineLight.SetAlpha( 1 );
 			}
 			else
 			{
-				m_VehiclePanelEngineHealth.Show( false );
+				m_VehicleEngineLight.Show( false );
 			}
 			
-			m_VehiclePanelCurrentGearValue.SetText( m_VehicleGearTable.Get( engaged_gear ) );
+			m_VehicleCurrentGearValue.SetText( m_VehicleGearTable.Get( engaged_gear ) );
 			
 			if( next_gear > m_VehicleGearCount )
 			{
-				m_VehiclePanelNextGearValue.Show( false );
+				m_VehicleNextGearValue.Show( false );
 			}
 			else
 			{
-				m_VehiclePanelNextGearValue.Show( true );
+				m_VehicleNextGearValue.Show( true );
 			}
 			
 			
-			m_VehiclePanelNextGearValue.SetText( m_VehicleGearTable.Get( next_gear ) );
-			m_VehiclePanelPrevGearValue.SetText( m_VehicleGearTable.Get( prev_gear ) );
+			m_VehicleNextGearValue.SetText( m_VehicleGearTable.Get( next_gear ) );
+			m_VehiclePrevGearValue.SetText( m_VehicleGearTable.Get( prev_gear ) );
 			
+			m_VehicleFuelPointer.SetRotation( 0, 0, m_CurrentVehicle.GetFluidFraction( CarFluid.FUEL ) * 260 - 130, true );
+			m_VehicleTemperaturePointer.SetRotation( 0, 0, m_CurrentVehicle.GetFluidFraction( CarFluid.COOLANT ) * 260 - 130, true );
+			/*
 			if( !m_VehicleHasOil )
 			{
 				m_VehiclePanelBatteryMeter.SetCurrent( m_CurrentVehicle.GetFluidFraction( CarFluid.OIL ) );
@@ -912,10 +924,12 @@ class IngameHud extends Hud
 				m_VehiclePanelFuelIcon.SetAlpha( 1 );
 			}
 			
-			m_VehiclePanelFuelMeter.SetCurrent( m_CurrentVehicle.GetFluidFraction( CarFluid.FUEL ) );
+			
+			m_VehiclePanelFuelMeter.SetCurrent(  );
 			color = ItemManager.ColorFromFloat( m_CurrentVehicle.GetFluidFraction( CarFluid.FUEL ) );
 			m_VehiclePanelFuelIcon.SetColor( color );
 			m_VehiclePanelFuelIcon.SetAlpha( 1 );
+			*/
 		}
 	}
 	
@@ -1022,9 +1036,11 @@ class IngameHud extends Hud
 	void ToggleHud( bool show, bool ignore_state = false )
 	{
 		//You can add more widgets to toggle here
-		SetLeftStatsVisibility( show );
+		SetLeftStatsVisibility( show && !m_InVehicleAsDriver );
 		m_Badges.Show( show );
 		m_Notifiers.Show( show );
+		m_BadgeNotifierDivider.Show( show && m_AnyBadgeVisible );
+		m_VehiclePanel.Show( show && m_InVehicleAsDriver );
 		
 		if( !ignore_state )
 		{

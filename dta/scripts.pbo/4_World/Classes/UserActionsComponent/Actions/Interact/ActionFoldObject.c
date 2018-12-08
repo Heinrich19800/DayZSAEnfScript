@@ -19,7 +19,7 @@ class ActionFoldObject: ActionInteractBase
 
 	override string GetText()
 	{
-		return "#fold_the_object";
+		return "#fold";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

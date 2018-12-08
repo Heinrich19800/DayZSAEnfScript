@@ -46,11 +46,11 @@ class ActionFillObject: ActionContinuousBase
 	{
 		if( m_ActionState == FILLED )
 		{
-			return "#empty_the_object";
+			return "#empty";
 		}
 		else
 		{
-			return "#fill_the_object";
+			return "#fill";
 		}
 	}
 

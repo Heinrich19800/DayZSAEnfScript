@@ -16,6 +16,8 @@ class ActionCoverHeadSelf: ActionContinuousBase
 		m_MessageSuccess = "I have put sack on.";
 		m_MessageFail = "I have moved and putting sack on was canceled.";
 		m_MessageCancel = "I stopped putting sack on.";
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_COVERHEAD_SELF;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
 		//m_Animation = "INJECTEPIPENS";
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}

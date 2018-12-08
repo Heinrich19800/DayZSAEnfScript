@@ -214,8 +214,8 @@ class EmoteManager
 						m_Callback.InternalCommand(DayZPlayerConstants.CMD_ACTIONINT_END);
 					}
 				}
-				//TODO rework with new input controller; registered KeyCode.KC_PERIOD as m_HIC.IsSingleUse() for some reason
-				else
+				//HACK find a better solution
+				else if (m_CurrentGestureID != ID_EMOTE_SUICIDE || (m_CurrentGestureID == ID_EMOTE_SUICIDE && m_Callback.GetState() < 3))
 				{
 					EndCallback();
 				}
@@ -737,6 +737,7 @@ class EmoteManager
 				
 				case ID_EMOTE_CAMPFIRE :
 					CreateEmoteCallback(EmoteCB,DayZPlayerConstants.CMD_GESTUREFB_CAMPFIRE,DayZPlayerConstants.STANCEMASK_CROUCH,true);
+					HideItemInHands();
 				break;
 				
 				case ID_EMOTE_SITA :

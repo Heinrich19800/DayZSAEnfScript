@@ -36,7 +36,7 @@ class ActionCollectSampleTarget : ActionContinuousBase
 
 	override string GetText()
 	{
-		return "#collect_sample";
+		return "#collect_persons_sample";
 	}
 
 	override void OnEndServer( ActionData action_data )

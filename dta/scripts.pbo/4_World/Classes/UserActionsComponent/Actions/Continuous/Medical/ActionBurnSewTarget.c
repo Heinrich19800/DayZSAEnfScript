@@ -45,7 +45,7 @@ class ActionBurnSewTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "#close_wounds";
+		return "#treat_persons_wound";
 	}
 
 	override void OnFinishProgressServer( ActionData action_data )

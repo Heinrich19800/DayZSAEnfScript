@@ -68,7 +68,7 @@ class Construction
 	}
 	
 	//BuildPart
-	void BuildPart( string part_name )
+	void BuildPart( string part_name, int action_id )
 	{
 		if ( GetGame().IsServer() )
 		{
@@ -83,11 +83,11 @@ class Construction
 		}
 		
 		//call event
-		GetParent().OnPartBuilt( part_name );
+		GetParent().OnPartBuiltServer( part_name, action_id );
 	}
 	
 	//DismantlePart
-	void DismantlePart( string part_name )
+	void DismantlePart( string part_name, int action_id )
 	{
 		if ( GetGame().IsServer() )
 		{
@@ -99,11 +99,11 @@ class Construction
 		}
 		
 		//call event
-		GetParent().OnPartDismantled( part_name );
+		GetParent().OnPartDismantledServer( part_name, action_id );
 	}
 	
 	//DestroyPart
-	void DestroyPart( string part_name )
+	void DestroyPart( string part_name, int action_id )
 	{
 		if ( GetGame().IsServer() )
 		{
@@ -115,7 +115,7 @@ class Construction
 		}
 		
 		//call event
-		GetParent().OnPartDestroyed( part_name );
+		GetParent().OnPartDestroyedServer( part_name, action_id );
 	}	
 	
 	//============================================

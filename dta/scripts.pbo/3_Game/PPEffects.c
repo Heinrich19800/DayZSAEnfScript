@@ -22,6 +22,11 @@ class PPEffects
 	static float m_UnconsciousVignetteColor[4];
 	static float m_UnconsciousVignetteIntesity;
 	
+	static float m_ColorValueTotal[4] = {0,0,0,0};
+	static float m_ColorOverlayTotal;
+
+	static Material m_MatColors;
+	
 	static void Init()
 	{
 		if ( m_BlurValues )
@@ -29,6 +34,7 @@ class PPEffects
 			delete m_BlurValues;
 		}
 		
+		m_MatColors = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/glow");
 		m_BlurValues = new array<float>;
 		
 		// add new blur effects here
@@ -47,7 +53,6 @@ class PPEffects
 		m_ColorValues = new map<int, ref array<float>>;
 		
 		// add new color effects here
-		m_HitColor 			= RegisterColorEffect();
 		m_BurlapBlindness 	= RegisterColorEffect();
 		m_DyingEffect 		= RegisterColorEffect();
 	}
@@ -197,15 +202,16 @@ class PPEffects
 	
 	static void UpdateColor()
 	{
-		float color_value_total[4];
+		float color_value_total[4] = {0,0,0,0};
 		float color_overlay;
-		
+		/*
+		m_MatColors.ResetParam("OverlayColor");
+		m_MatColors.ResetParam("OverlayFactor");
+		*/
 		if( !GetGame() || !GetGame().GetWorld() )
 		{
 			return;
 		}
-		
-		Material matColors = GetGame().GetWorld().GetMaterial("graphics/materials/postprocess/glow");
 
 		for ( int i = 0; i < m_ColorValues.Count(); ++i )
 		{
@@ -218,9 +224,11 @@ class PPEffects
 			color_value_total[3] 	= color_value_total[3] + value[3];
 			color_overlay  			+= value[4];
 		}
-				
-		matColors.SetParam("OverlayColor", color_value_total);
-		matColors.SetParam("OverlayFactor", color_overlay);	
+		
+		m_ColorValueTotal = color_value_total;
+		m_ColorOverlayTotal = color_overlay;
+		m_MatColors.SetParam("OverlayColor", color_value_total);
+		m_MatColors.SetParam("OverlayFactor", color_overlay);	
 	}
 
 	/*!
@@ -291,10 +299,25 @@ class PPEffects
 		SetLensEffect(0,0,0,0);
 	}
 
-	static void HitEffect(float overlay)
+	static void HitEffect(float value)
 	{
-		SetColorValue(m_HitColor, 1, 0, 0, 1, overlay);
-		UpdateColor();
+		float m_HitEffectColor[4];
+		m_HitEffectColor[0] = Math.Lerp(Math.Clamp(m_ColorValueTotal[0],0,1), 1, value);
+		m_HitEffectColor[1] = 0;
+		m_HitEffectColor[2] = 0;
+		m_HitEffectColor[3] = Math.Lerp(Math.Clamp(m_ColorValueTotal[0],0,1), 1, value);
+		/*
+		Print("---------------------------");
+		Print("m_ColorValueTotal[0]: " + m_ColorValueTotal[0]);
+		Print("value: " + value);
+		Print("---------------------------");
+		Print("r: " + m_HitEffectColor[0]);
+		Print("g: " + m_HitEffectColor[1]);
+		Print("b: " + m_HitEffectColor[2]);
+		Print("a: " + m_HitEffectColor[3]);
+		*/
+		m_MatColors.SetParam("OverlayColor", m_HitEffectColor);
+		m_MatColors.SetParam("OverlayFactor", 0.05);
 	}
 	
 	static void EnableBurlapSackBlindness()
@@ -313,7 +336,7 @@ class PPEffects
 	
 	static void SetDeathDarkening(float value) 
 	{
-		SetColorValue(m_HitColor, 0, 0, 0, 0, 0); //workaround to colour addition of hit effect
+		//SetColorValue(m_HitColor, 0, 0, 0, 0, 0); //workaround to colour addition of hit effect
 		SetColorValue(m_DyingEffect, 0, 0, 0, 1, value);
 		UpdateColor();
 		if (value > 0.99)

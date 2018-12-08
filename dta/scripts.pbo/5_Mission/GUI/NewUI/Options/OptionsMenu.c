@@ -372,6 +372,10 @@ class OptionsMenu extends UIScriptedMenu
 		{
 			SliderFocus();
 		}
+		if( x == -1 && y == 2 )
+		{
+			ToggleFocus();
+		}
 		return false;
 	}
 	
@@ -381,10 +385,6 @@ class OptionsMenu extends UIScriptedMenu
 		{
 			ColorWhite( w, null );
 			return true;
-		}
-		if( x == -1 && y == 2 )
-		{
-			ToggleFocus();
 		}
 		return false;
 	}

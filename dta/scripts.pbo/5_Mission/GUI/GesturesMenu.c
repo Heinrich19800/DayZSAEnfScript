@@ -129,15 +129,7 @@ class GesturesMenu extends UIScriptedMenu
 		}
 		else
 		{
-#ifdef PLATFORM_XBOX
-		GetGestureItems( m_GestureItems, GestureCategories.CONSOLE_GESTURES );
-#else		
-#ifdef PLATFORM_PS4
-		GetGestureItems( m_GestureItems, GestureCategories.CONSOLE_GESTURES );
-#else
-		GetGestureItems( m_GestureItems, GestureCategories.CATEGORIES );
-#endif
-#endif
+			GetGestureItems( m_GestureItems, GestureCategories.CATEGORIES );
 		}		
 		CreateGestureContent();
 	}		
@@ -209,21 +201,6 @@ class GesturesMenu extends UIScriptedMenu
 			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_CLAP, 		"#STR_USRACT_ID_EMOTE_CLAP", 		GestureCategories.CATEGORY_4 ) );
 			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNTKISS, 	"#STR_USRACT_ID_EMOTE_TAUNTKISS", 	GestureCategories.CATEGORY_4 ) );
 			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SALUTE, 	"#STR_USRACT_ID_EMOTE_SALUTE", 		GestureCategories.CATEGORY_4 ) );
-		}
-		
-		//CONSOLE PLATFORM ONLY
-		//Only 1 category
-		if ( category == GestureCategories.CONSOLE_GESTURES )
-		{
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_GREETING, 	"#STR_USRACT_ID_EMOTE_GREETING", 	GestureCategories.CONSOLE_GESTURES ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_HEART, 		"#STR_USRACT_ID_EMOTE_HEART", 		GestureCategories.CONSOLE_GESTURES ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SOS, 		"#STR_USRACT_ID_EMOTE_SOS", 		GestureCategories.CONSOLE_GESTURES ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNTKISS,	"#STR_USRACT_ID_EMOTE_TAUNTKISS", 	GestureCategories.CONSOLE_GESTURES ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_SUICIDE, 	"#STR_USRACT_ID_EMOTE_SUICIDE", 	GestureCategories.CONSOLE_GESTURES ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_THROAT, 	"#STR_USRACT_ID_EMOTE_THROAT", 		GestureCategories.CONSOLE_GESTURES ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_TAUNT, 		"#STR_USRACT_ID_EMOTE_TAUNT", 		GestureCategories.CONSOLE_GESTURES ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_DANCE, 		"#STR_USRACT_ID_EMOTE_DANCE", 		GestureCategories.CONSOLE_GESTURES ) );
-			gesture_items.Insert( new GestureMenuItem( ID_EMOTE_THUMB, 		"#STR_USRACT_ID_EMOTE_THUMB", 		GestureCategories.CONSOLE_GESTURES ) );
 		}
 	}
 	

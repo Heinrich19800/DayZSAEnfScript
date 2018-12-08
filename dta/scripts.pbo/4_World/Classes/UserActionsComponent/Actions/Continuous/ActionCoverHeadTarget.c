@@ -16,6 +16,8 @@ class ActionCoverHeadTarget: ActionContinuousBase
 		m_MessageSuccess = "Player finished putting sack on your head.";
 		m_MessageFail = "Player moved and putting sack on was canceled.";
 		m_MessageCancel = "You stopped putting sack on.";
+		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_COVERHEAD_TARGET;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
 		//m_Animation = "INJECTEPIPENS";
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_LOW;
 	}
@@ -31,7 +33,7 @@ class ActionCoverHeadTarget: ActionContinuousBase
 	{
 		return AT_COVER_HEAD_T;
 	}
-		
+	
 	override string GetText()
 	{
 		return "#put_on_targets_head";

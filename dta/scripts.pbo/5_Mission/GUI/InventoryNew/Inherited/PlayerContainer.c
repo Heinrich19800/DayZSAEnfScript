@@ -750,6 +750,8 @@ class PlayerContainer: CollapsibleContainer
 				cnt.Get( m_FocusedRow ).GetMainWidget().FindAnyWidget( "Cursor" + m_FocusedColumn ).GetScreenPos( x, y );
 				ItemManager.GetInstance().PrepareTooltip( focused_item, x, y );
 			}
+			
+			ScrollToActiveContainer( cnt.Get( m_FocusedRow ) );
 		}
 	}
 	
@@ -1302,6 +1304,9 @@ class PlayerContainer: CollapsibleContainer
 	
 	override bool OnChildRemove( Widget w, Widget child )
 	{
+		w.Update();
+		float x, y;
+		w.GetScreenSize( x, y );
 		if( w == GetMainWidget() )
 		{
 			GetMainWidget().Update();

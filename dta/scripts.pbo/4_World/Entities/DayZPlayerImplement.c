@@ -891,6 +891,17 @@ class DayZPlayerImplement extends DayZPlayer
 			m_fLastHeadingDiff = 0;
 			return false;
 		}
+
+		//! if it's standing from prone on back  
+		if (m_MovementState.m_CommandTypeId == DayZPlayerConstants.COMMANDID_MOVE)
+		{
+			HumanCommandMove hcm = GetCommand_Move();
+			if (hcm.IsStandingFromBack())
+			{
+				m_fLastHeadingDiff = 0;
+				return false;
+			}
+		}
 		
 		HumanItemAccessor hia = GetItemAccessor();
 		HumanItemBehaviorCfg hibcfg = hia.GetItemInHandsBehaviourCfg();
@@ -1124,7 +1135,7 @@ class DayZPlayerImplement extends DayZPlayer
 				}
 			}
 		}
-		else if ( m_CameraIronsighs || m_CameraOptics )
+		else// if ( m_CameraIronsighs || m_CameraOptics )
 		{
 			hcw = GetCommandModifier_Weapons();
 			hia = GetItemAccessor();
@@ -1132,7 +1143,7 @@ class DayZPlayerImplement extends DayZPlayer
 			{
 				// clear ironsights when lowered
 				GetMovementState(m_MovementState);
-				if (!m_MovementState.IsRaised())
+				if (!m_MovementState.IsRaised() || m_LiftWeapon_player)
 				{
 					//Print("From ironsights and optics");
 			
@@ -1450,7 +1461,7 @@ class DayZPlayerImplement extends DayZPlayer
 	void SwitchOptics(ItemOptics optic, bool state)
 	{
 		// ready for backpack hiding, if needed...
-		//Clothing backpack;
+		Clothing clothes;
 		
 		if (state)
 		{
@@ -1459,10 +1470,20 @@ class DayZPlayerImplement extends DayZPlayer
 				optic.GetCompEM().SwitchOn();
 			optic.HideSelection("hide");
 			
-			/*if (Clothing.CastTo(backpack,FindAttachmentBySlotName("Back")))
+			if (GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT)
 			{
-				backpack.HideSelection("hide_OpticsView");
-			}*/
+				//backpack
+				if (Clothing.CastTo(clothes,FindAttachmentBySlotName("Back")))
+				{
+					clothes.SetInvisible(true);
+				}
+				//top
+				if (Clothing.CastTo(clothes,FindAttachmentBySlotName("Body")))
+				{
+					clothes.SetInvisible(true);
+				}
+			}
+			
 			optic.EnterOptics();
 			m_ForceHandleOptics = true;
 		}
@@ -1470,10 +1491,18 @@ class DayZPlayerImplement extends DayZPlayer
 		{
 			optic.ShowSelection("hide");
 			
-			/*if (Clothing.CastTo(backpack,FindAttachmentBySlotName("Back")))
+			if (GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_CLIENT)
 			{
-				backpack.ShowSelection("hide_OpticsView");
-			}*/
+				if (Clothing.CastTo(clothes,FindAttachmentBySlotName("Back")))
+				{
+					clothes.SetInvisible(false);
+				}
+				if (Clothing.CastTo(clothes,FindAttachmentBySlotName("Body")))
+				{
+					clothes.SetInvisible(false);
+				}
+			}
+			
 			optic.ExitOptics();
 			if (optic.HasEnergyManager())
 				optic.GetCompEM().SwitchOff();

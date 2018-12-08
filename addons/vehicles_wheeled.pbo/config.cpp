@@ -2308,7 +2308,7 @@ class CfgVehicles
 		class SimulationModule: SimulationModule
 		{
 			drive="DRIVE_AWD";
-			airDragCoefficient=0.88999999;
+			airDragCoefficient=0.995;
 			class Steering
 			{
 				increaseSpeed[]={0,45,60,23,100,12};

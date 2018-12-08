@@ -58,7 +58,6 @@ class PlayerBase extends ManBase
 	ref HeatComfortAnimHandler		m_HCAnimHandler;
 	bool 							m_QuickBarHold;
 	Hud 							m_Hud;
-	protected bool					m_CancelAction;
 	protected float 				m_dT;
 	protected int 					m_RecipePick;
 	protected bool					m_IsHoldingBreath;
@@ -198,7 +197,6 @@ class PlayerBase extends ManBase
 		m_CargoLoad = 0;
 		m_VisibilityCoef = 1.0;
 		m_Hud = GetGame().GetMission().GetHud();
-		m_CancelAction = false;
 		m_RecipePick = 0;
 		m_ActionQBControl = false;
 		m_QuickBarHold = false;
@@ -499,6 +497,9 @@ class PlayerBase extends ManBase
 		#endif
 		if (GetGame().IsDebugMonitor())
 			m_DebugMonitorValues.SetLastDamage(source.GetDisplayName());
+		
+		if (m_ActionManager)
+			m_ActionManager.Interrupt();
 	}
 	
 	override void EEHitByRemote(int damageType, EntityAI source, int component, string dmgZone, string ammo, vector modelPos)
@@ -801,6 +802,8 @@ class PlayerBase extends ManBase
 		actions.Insert(AT_ACTIVATE_TRAP);
 		actions.Insert(AT_FOLD_BASEBUILDING_OBJECT);
 		actions.Insert(AT_DIAL_COMBINATION_LOCK_ON_TARGET);
+		actions.Insert(AT_UNGAG_SELF);
+		actions.Insert(AT_UNGAG_TARGET);
 	}
 	
 	override void GetInteractActions(out TIntArray actions)
@@ -1877,37 +1880,6 @@ class PlayerBase extends ManBase
 			{
 				hic.LimitsDisableSprint(false);
 			}
-		}
-		//OnScheduledTick(pDt);
-		
-		if ( m_CancelAction )
-		{
-			if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER || !GetGame().IsMultiplayer() )
-			{
-				PrintString("pb INTERPUT recived - server");
-			}
-			else
-			{
-				PrintString("pb INTERPUT recived - client");
-			}
-			ActionBaseCB callback = ActionBaseCB.Cast( GetCommandModifier_Action() );
-			if (!callback)
-			{
-				callback = ActionBaseCB.Cast( GetCommand_Action() );
-			}
-			if ( callback && callback.IsUserActionCallback() )
-			{
-				if ( GetInstanceType() == DayZPlayerInstanceType.INSTANCETYPE_SERVER || !GetGame().IsMultiplayer() )
-				{
-					PrintString("pb callback found - server");
-				}
-				else
-				{
-					PrintString("pb callback found - client");
-				}
-				callback.Cancel();
-			}
-			m_CancelAction = false;
 		}
 		//ladders
 		if ( GetCommand_Ladder() && !m_IsClimbingLadder )
@@ -4524,9 +4496,6 @@ class PlayerBase extends ManBase
 				DayZPlayerSyncJunctures.ReadInjuryParams(pCtx, enable, level);
 				m_InjuryHandler.SetInjuryCommandParams(enable, level);
 				break;
-			case DayZPlayerSyncJunctures.SJ_ACTION_INTERRUPT:
-				m_CancelAction = true;
-				break;
 			case DayZPlayerSyncJunctures.SJ_PLAYER_STATES:
 				GetSymptomManager().SetAnimation(pCtx);
 				break;
@@ -4536,6 +4505,7 @@ class PlayerBase extends ManBase
 			case DayZPlayerSyncJunctures.SJ_INVENTORY:
 				GetInventory().OnInventoryJunctureFromServer(pCtx);
 				break;
+			case DayZPlayerSyncJunctures.SJ_ACTION_INTERRUPT:
 			case DayZPlayerSyncJunctures.SJ_ACTION_ACK_ACCEPT:
 			case DayZPlayerSyncJunctures.SJ_ACTION_ACK_REJECT:
 				m_ActionManager.OnSyncJuncture(pJunctureID,pCtx);
@@ -4551,9 +4521,36 @@ class PlayerBase extends ManBase
 			case DayZPlayerSyncJunctures.SJ_PLAYER_ADD_MODIFIER:
 				GetSymptomManager().SetAnimation(pCtx);
 				break;
+/*			case DayZPlayerSyncJunctures.SJ_ACTION_TARGET_START:
+			case DayZPlayerSyncJunctures.SJ_ACTION_TARGET_END:
+				OnBeActionTargetJuncture(pJunctureID,pCtx);
+				break;*/
 		}
 	}
 	
+	
+/*	void OnBeActionTargetJuncture(int pJunctureID, ParamsReadContext pCtx)
+	{
+		if (!GetGame().IsMultiplayer() || GetGame().IsClient() )
+		{
+			int action;
+			PlayerBase player;
+			
+			switch ( pJunctureID )
+			{
+				case DayZPlayerSyncJunctures.SJ_ACTION_TARGET_START:
+					pCtx.Read(action);
+					pCtx.Read(player);
+					break;
+				case DayZPlayerSyncJunctures.SJ_ACTION_TARGET_END:
+					pCtx.Read(action);
+					pCtx.Read(player);
+					break;
+			}
+		}
+	
+	}
+	*/
 	override bool	HeadingModel(float pDt, SDayZPlayerHeadingModel pModel)
 	{
 		//! during fullbody gestures - disables character turning

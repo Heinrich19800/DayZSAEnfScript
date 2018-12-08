@@ -229,6 +229,10 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		{
 			return false;
 		}
+		else if ( !IsOpened() )
+		{
+			return false;
+		}
 		
 		return true;
 	}
@@ -247,7 +251,59 @@ class BarrelHoles_ColorBase extends FireplaceBase
 		
 		return true;
 	}
+	
+	//INVENTORY DISPLAY CONDITIONS
+	override bool CanDisplayCargo()
+	{
+		//super
+		if( !super.CanDisplayCargo() )
+		{
+			return false;
+		}
+		//
 		
+		return IsOpened();
+	}
+	
+	override bool CanDisplayAttachmentSlot( string slot_name )
+	{
+		//super
+		if( !super.CanDisplayAttachmentSlot( slot_name ) )
+		{
+			return false;
+		}
+		//
+		
+		if ( slot_name == "CookingEquipment" )
+		{
+			return !IsOpened();
+		}
+		
+		return true;
+	}
+
+	override bool CanDisplayAttachmentCategory( string category_name )
+	{
+		//super
+		if( !super.CanDisplayAttachmentCategory( category_name ) )
+		{
+			return false;
+		}
+		//
+		
+		if ( category_name == "CookingEquipment" )
+		{
+			return !IsOpened();
+		}			
+		else
+		{
+			return IsOpened();
+		}
+		
+		return true;
+	}	
+	// ---	
+
 	//ACTIONS
 	bool IsOpened()
 	{

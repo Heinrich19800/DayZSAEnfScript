@@ -1,7 +1,7 @@
 MetaFileClass {
  Name "{715FE0014CAF1B89}Gui/fonts/sdf_MetronBook24.edds"
- Author "inv3256"
- ChangeDate -1629788948
+ Author "inv3672"
+ ChangeDate 483648899
  Configurations {
   TGAResourceClass PC {
    SourceFile "sdf_MetronBook24.tga"

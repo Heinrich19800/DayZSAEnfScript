@@ -49,7 +49,7 @@ class ActionConsume: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "#consume";
+		return "#eat";
 	}
 	
 	override void OnEndServer( ActionData action_data )

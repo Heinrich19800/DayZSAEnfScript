@@ -36,7 +36,7 @@ class ActionCollectBloodTarget: ActionContinuousBase
 
 	override string GetText()
 	{
-		return "#collect_blood";
+		return "#collect_persons_blood";
 	}
 
 	override void OnEndServer( ActionData action_data )

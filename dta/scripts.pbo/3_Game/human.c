@@ -336,6 +336,9 @@ class HumanCommandMove
 	//! return true if prone is on back
 	proto native bool		IsOnBack();
 
+	//! return true if prone on back is chaning to crounch/stand
+	proto native bool		IsStandingFromBack();
+
 	//! marks command to continue to combo 
 	proto native void 		StartMeleeEvade();
 

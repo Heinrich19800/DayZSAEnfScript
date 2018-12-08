@@ -23,7 +23,7 @@ class ActionHarvestCrops: ActionInteractBase
 
 	override string GetText()
 	{
-		return "#harvest_crops";
+		return "#harvest";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -51,7 +51,7 @@ class ActionHarvestCrops: ActionInteractBase
 	{
 		Object targetObject = action_data.m_Target.GetObject();
 		PlantBase plant = PlantBase.Cast( targetObject );
-		m_MessageSuccess = plant.Harvest( action_data.m_Player );
+		plant.Harvest( action_data.m_Player );
 
 		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}

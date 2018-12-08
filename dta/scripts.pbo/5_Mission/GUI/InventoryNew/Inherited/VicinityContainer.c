@@ -406,7 +406,7 @@ class VicinityContainer: CollapsibleContainer
 		if( !item.GetInventory().CanRemoveEntity() )
 			return;
 		
-		if( player.CanDropEntity( item ) )
+		if( player.CanDropEntity( item ) && !m_ShowedItems.Contains( item ) )
 		{
 			ItemBase item_base = ItemBase.Cast( item );
 			if( item_base )
@@ -437,7 +437,7 @@ class VicinityContainer: CollapsibleContainer
 
 	override void UpdateInterval()
 	{
-		//Print( m_VicinityIconsContainer.GetMainWidget().GetName() );
+		//Print( GetMainWidget().GetName() );
 		// GetObjectsInVicinity
 		PlayerBase player = PlayerBase.Cast( GetGame().GetPlayer() );
 		
@@ -671,9 +671,9 @@ class VicinityContainer: CollapsibleContainer
 	
 	override bool OnChildRemove( Widget w, Widget child )
 	{
-		m_MainWidget.Update();
+		w.Update();
 		float x, y;
-		m_MainWidget.GetScreenSize( x, y );
+		w.GetScreenSize( x, y );
 		if( w == GetMainWidget() )
 		{
 			GetMainWidget().Update();

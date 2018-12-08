@@ -750,6 +750,14 @@ class EntityAI extends Entity
 		return true;
 	}
 	
+	/**@fn		CanDisplayCargo
+	 * @return	true if cargo can be displayed in UI (inventory)
+	 **/		
+	bool CanDisplayCargo()
+	{
+		return true;
+	}	
+	
 	/**@fn		IgnoreOutOfReachCondition
 	 * @return	if true, attachment condition for out of reach (inventory) will be ignored
 	 **/		

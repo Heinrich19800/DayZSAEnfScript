@@ -1660,7 +1660,7 @@ PanelWidgetClass rootFrame {
    style ToolbarWidget
    {
     WrapSpacerWidgetClass ConsoleToolbar {
-     clipchildren 1
+     clipchildren 0
      position 0.05 0.1
      size 0.45 0.45
      halign right_ref
@@ -1676,13 +1676,14 @@ PanelWidgetClass rootFrame {
      content_valign center
      {
       GridSpacerWidgetClass Back {
-       size 220 1
+       clipchildren 0
+       size 220 30
        halign right_ref
        valign bottom_ref
        hexactpos 1
        vexactpos 1
        hexactsize 1
-       vexactsize 0
+       vexactsize 1
        Padding 4
        Margin 0
        "Size To Content H" 1
@@ -1713,15 +1714,20 @@ PanelWidgetClass rootFrame {
          nocache 0
         }
         TextWidgetClass BackText {
+         clipchildren 0
          position 40 0
-         size 60 22
+         size 60 36
          valign center_ref
          hexactpos 1
          vexactpos 1
          hexactsize 1
          vexactsize 1
          text "Back"
-         font "gui/fonts/sdf_MetronBook24"
+         font "gui/fonts/sdf_MetronLight24"
+         "exact text" 1
+         "exact text size" 22
+         "size to text h" 1
+         "size to text v" 0
          "text valign" center
         }
        }

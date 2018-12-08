@@ -1,7 +1,7 @@
 MetaFileClass {
  Name "{0D02FC3A0DCE095E}Gui/fonts/sdf_MetronLight24.edds"
- Author "inv3256"
- ChangeDate -1695324948
+ Author "inv3672"
+ ChangeDate 753132931
  Configurations {
   TGAResourceClass PC {
    SourceFile "sdf_MetronLight24.tga"

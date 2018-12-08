@@ -38,7 +38,7 @@ class ActionGiveSalineTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "#give_saline";
+		return "#give_saline_person";
 	}
 
 	override void OnFinishProgressServer( ActionData action_data )

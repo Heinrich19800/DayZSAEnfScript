@@ -77,6 +77,7 @@ class HandEventBase
 			case HandEventID.REPLACED: return new HandEventReplaced(p, e);
 			case HandEventID.ANIMEVENT_CHANGE_HIDE: return HandAnimEventChanged(p, e);
 			case HandEventID.HUMANCOMMAND_ACTION_FINISHED : return HandEventHumanCommandActionFinished(p, e);
+			case HandEventID.HUMANCOMMAND_ACTION_ABORTED : return HandEventHumanCommandActionAborted(p, e);
 		}
 		Error("[hndfsm] HandEventFactory - unregistered hand event with id=" + id);
 		return null;

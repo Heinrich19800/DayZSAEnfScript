@@ -710,11 +710,6 @@ class ServerBrowserTab extends ScriptedWidgetEventHandler
 		}
 	}
 	
-	void Update( float timeslice )
-	{
-		//m_ServerList.Update();
-	}
-	
 	void Connect( ServerBrowserEntry server )
 	{
 		if( !m_Menu )

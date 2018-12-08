@@ -23,8 +23,9 @@ class GardenBase extends Building
 	private static const int 	CHECK_RAIN_INTERVAL 			= 15;
 	
 	protected ref array<ref Slot> m_Slots;
-	protected float m_BaseFertility = 0.5;
-	ref Timer m_CheckRainTimer;
+	protected float m_DefaultFertility = 1;
+	protected float m_BaseFertility = 1;
+	ref Timer 		m_CheckRainTimer;
 	
 	private static ref map<string,string> m_map_slots; // For the 'attachment slot -> plant slot' conversion. It is possible that this will be removed later.
 	
@@ -62,17 +63,18 @@ class GardenBase extends Building
 	
 	void SetBaseFertility(float value)
 	{
-		m_BaseFertility = value;
+		m_DefaultFertility = value;
 	}
 	
 	float GetBaseFertility()
 	{
-		return m_BaseFertility;
+		return m_DefaultFertility;
 	}
 	
 	override void EOnInit(IEntity other, int extra)
 	{
 		CheckRainTick();
+		UpdateTexturesOnAllSlots();
 	}
 
 	void InitializeSlots()
@@ -82,7 +84,7 @@ class GardenBase extends Building
 		
 		for ( int i = 0; i < slots_count; i++ )
 		{
-			Slot slot = new Slot(m_BaseFertility);
+			Slot slot = new Slot(GetBaseFertility());
 			slot.SetSlotIndex(i);
 			int i1 = i + 1;
 			string name = "SeedBase_" + i1;
@@ -91,6 +93,16 @@ class GardenBase extends Building
 			slot.SetGarden(this);
 			slot.m_State = Slot.STATE_DIGGED;
 			m_Slots.Insert( slot );
+		}
+	}
+	
+	void UpdateTexturesOnAllSlots()
+	{
+		int slots_count = GetGardenSlotsCount();
+		
+		for ( int i = 0; i < slots_count; i++ )
+		{
+			UpdateSlotTexture(i);
 		}
 	}
 
@@ -315,15 +327,20 @@ class GardenBase extends Building
 		plant.SetPosition(pos);
 		slot.SetPlant(plant);
 		slot.m_State = Slot.STATE_PLANTED;
-		plant.Init( this, slot.m_Fertility, slot.m_HarvestingEfficiency, slot.GetWater() );
+		plant.Init( this, slot.GetFertility(), slot.m_HarvestingEfficiency, slot.GetWater() );
 		ShowSelection(SLOT_SELECTION_COVERED_PREFIX + (slot_index + 1).ToStringLen(2));
 		
 		GetGame().RemoteObjectTreeDelete( plant );
 		GetInventory().TakeEntityAsAttachmentEx( InventoryMode.LOCAL, plant, slot.GetSlotId() );
 		GetGame().RemoteObjectTreeCreate( plant );
+		
+		//lock plant
+		InventoryLocation inventory_location = new InventoryLocation;
+		plant.GetInventory().GetCurrentInventoryLocation( inventory_location );
+		GetInventory().SetSlotLock( inventory_location.GetSlot(), true );
 	}
 		
-	string Fertilize( PlayerBase player, ItemBase item, float consumed_quantity, string selection_component )
+	void Fertilize( PlayerBase player, ItemBase item, float consumed_quantity, string selection_component )
 	{
 		Slot slot = GetSlotBySelection( selection_component );
 		
@@ -356,17 +373,14 @@ class GardenBase extends Building
 						//PluginExperience module_exp = GetPlugin(PluginExperience);
 						//slot.m_HarvestingEfficiency = module_exp.GetExpParamNumber(player, PluginExperience.EXP_FARMER_FERTILIZATION, "efficiency");
 					}
-					
-					return "I've fertilized the ground. Now it has enough of fertilizer.";
-				}
-				else
-				{
-					return "I've fertilized the ground a bit.";
 				}
 			}
+			else
+			{
+				slot.SetFertilizerQuantity(0);
+				slot.SetFertilityType("");
+			}
 		}
-		
-		return "This slot is fertilized with another fertilizer already.";
 	}
 
 	bool IsCorrectFertilizer( ItemBase item, string selection_component )
@@ -503,10 +517,11 @@ class GardenBase extends Building
 				GetGame().ObjectDelete( slot.GetPlant() );
 			}
 			
-			slot.Init( m_BaseFertility );
+			slot.Init( GetBaseFertility() );
 			//slot.GiveWater( NULL, -9999 );
 			
 			HideSelection( SLOT_SELECTION_COVERED_PREFIX + (index + 1).ToStringLen(2) );
+			UpdateSlotTexture( index );
 		}
 	}
 

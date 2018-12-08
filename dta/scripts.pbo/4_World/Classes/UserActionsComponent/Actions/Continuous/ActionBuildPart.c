@@ -13,7 +13,7 @@ class ActionBuildPart: ActionContinuousBase
 		m_CallbackClass = ActionBuildPartCB;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_ASSEMBLE;
 		m_FullBody = true;
-		m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
+		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;
 		
 		m_MessageStartFail = "I cannot build a construction part.";
 		m_MessageStart = "I have build a construction part.";
@@ -78,7 +78,7 @@ class ActionBuildPart: ActionContinuousBase
 			}
 			*/
 
-			if ( constrution_part && base_building.IsFacingBack( player ) )
+			if ( constrution_part && base_building.IsFacingBack( player, constrution_part.GetMainPartName() ) )
 			{
 				return true;
 			}			
@@ -97,28 +97,14 @@ class ActionBuildPart: ActionContinuousBase
 		if ( !construction.IsColliding( part_name ) && construction.CanBuildPart( part_name, action_data.m_MainItem ) )
 		{
 			//build
-			construction.BuildPart( part_name );
+			construction.BuildPart( part_name, GetType() );
 			
 			//add damage to tool
-			action_data.m_MainItem.DecreaseHealth( UADamageApplied.BUILD );
+			action_data.m_MainItem.DecreaseHealth( UADamageApplied.BUILD, false );
 		}
 
 		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
-	
-	override void OnFinishProgressClient( ActionData action_data )
-	{	
-		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
-		Construction construction = base_building.GetConstruction();
-		ConstructionActionData construction_action_data = action_data.m_Player.GetConstructionActionData();
-		string part_name = construction_action_data.GetCurrentBuildPart().GetPartName();
-		
-		if ( !construction.IsColliding( part_name ) && construction.CanBuildPart( part_name, action_data.m_MainItem ) )
-		{
-			//build
-			construction.BuildPart( part_name );
-		}
-	}	
 	
 	//setup
 	override bool SetupAction( PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extra_data = NULL )
@@ -142,7 +128,7 @@ class ActionBuildPart: ActionContinuousBase
 				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DIGMANIPULATE;
 				break;
 			case Pliers:
-				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BANDAGETARGET;
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERACT;
 				break;				
 			default:
 				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_ASSEMBLE;

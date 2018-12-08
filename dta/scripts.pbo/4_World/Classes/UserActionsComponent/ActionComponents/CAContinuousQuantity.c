@@ -86,7 +86,10 @@ class CAContinuousQuantity : CAContinuousBase
 				SetACData(m_SpentUnits);
 			}
 			
-			action_data.m_MainItem.AddQuantity(- m_SpentQuantity,false,false);
+			if (action_data.m_MainItem)
+			{
+				action_data.m_MainItem.AddQuantity(- m_SpentQuantity,false,false);
+			}
 		}
 	}
 };

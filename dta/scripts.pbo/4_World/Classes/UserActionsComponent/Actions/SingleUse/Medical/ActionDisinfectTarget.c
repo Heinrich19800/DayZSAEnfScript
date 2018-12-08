@@ -46,7 +46,7 @@ class ActionDisinfectTarget: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "#disinfect";
+		return "#disinfect_person";
 	}
 
 	override void OnEndServer( ActionData action_data )

@@ -298,7 +298,7 @@ class AnimatedActionBase : ActionBase
 		{
 			OnInterruptClient(action_data);
 		}*/
-		action_data.m_State = UA_INTERRUPT;
+		action_data.m_Callback.Cancel();
 	}
 	
 	void OnJumpStart()
@@ -347,7 +347,6 @@ class AnimatedActionBase : ActionBase
 						Do(action_data, UA_CANCEL);
 					}
 					break;
-					
 				/*case UA_REPEAT:
 					if ( CanContinue(action_data) )
 					{

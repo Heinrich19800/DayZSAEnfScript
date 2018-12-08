@@ -14,8 +14,6 @@ class ActionDismantlePart: ActionContinuousBase
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DISASSEMBLE;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT;	
-		//TODO: when anims ready, uncoment crouch and erect	
-		//m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;		
 		
 		m_SpecialtyWeight = UASoftSkillsWeight.ROUGH_HIGH;
 	}
@@ -60,7 +58,7 @@ class ActionDismantlePart: ActionContinuousBase
 			Construction construction = base_building.GetConstruction();		
 			ConstructionPart construction_part = construction.GetConstructionPartToDismantle( part_name, item );
 			
-			if ( construction_part && base_building.IsFacingBack( player ) )
+			if ( construction_part && base_building.IsFacingBack( player, construction_part.GetPartName() ) )
 			{
 				//if part is base but more attachments are present
 				if ( construction_part.IsBase() && base_building.HasAttachmentsBesidesBase() )
@@ -88,29 +86,15 @@ class ActionDismantlePart: ActionContinuousBase
 		if ( construction.CanDismantlePart( construction_part.GetPartName(), action_data.m_MainItem ) )
 		{
 			//build
-			construction.DismantlePart( construction_part.GetPartName() );
+			construction.DismantlePart( construction_part.GetPartName(), GetType() );
 			
 			//add damage to tool
-			action_data.m_MainItem.DecreaseHealth( UADamageApplied.DISMANTLE );
+			action_data.m_MainItem.DecreaseHealth( UADamageApplied.DISMANTLE, false );
 		}
 
 		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
-	
-	override void OnFinishProgressClient( ActionData action_data )
-	{	
-		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
-		Construction construction = base_building.GetConstruction();
-		ConstructionActionData construction_action_data = action_data.m_Player.GetConstructionActionData();
-		ConstructionPart construction_part = construction_action_data.GetTargetPart();
 		
-		if ( construction.CanDismantlePart( construction_part.GetPartName(), action_data.m_MainItem ) )
-		{
-			//build
-			construction.DismantlePart( construction_part.GetPartName() );
-		}
-	}
-	
 	//setup
 	override bool SetupAction( PlayerBase player, ActionTarget target, ItemBase item, out ActionData action_data, Param extra_data = NULL )
 	{	
@@ -133,7 +117,7 @@ class ActionDismantlePart: ActionContinuousBase
 				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DIGMANIPULATE;
 				break;
 			case Pliers:
-				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_BANDAGETARGET;
+				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERACT;
 				break;				
 			default:
 				m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_DISASSEMBLE;

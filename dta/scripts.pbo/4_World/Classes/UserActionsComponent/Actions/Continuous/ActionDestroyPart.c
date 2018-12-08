@@ -58,7 +58,7 @@ class ActionDestroyPart: ActionContinuousBase
 			Construction construction = base_building.GetConstruction();		
 			ConstructionPart construction_part = construction.GetConstructionPartToDestroy( part_name );
 			
-			if ( construction_part && base_building.IsFacingFront( player ) )
+			if ( construction_part && base_building.IsFacingFront( player, construction_part.GetPartName() ) )
 			{
 				//if part is base but more attachments are present
 				if ( construction_part.IsBase() && base_building.HasAttachmentsBesidesBase() )
@@ -86,26 +86,12 @@ class ActionDestroyPart: ActionContinuousBase
 		if ( construction.CanDestroyPart( construction_part.GetPartName() ) )
 		{
 			//build
-			construction.DestroyPart( construction_part.GetPartName() );
+			construction.DestroyPart( construction_part.GetPartName(), GetType() );
 			
 			//add damage to tool
-			action_data.m_MainItem.DecreaseHealth( UADamageApplied.DESTROY );
+			action_data.m_MainItem.DecreaseHealth( UADamageApplied.DESTROY, false );
 		}
 
 		action_data.m_Player.GetSoftSkillsManager().AddSpecialty( m_SpecialtyWeight );
 	}
-	
-	override void OnFinishProgressClient( ActionData action_data )
-	{	
-		BaseBuildingBase base_building = BaseBuildingBase.Cast( action_data.m_Target.GetObject() );
-		Construction construction = base_building.GetConstruction();
-		ConstructionActionData construction_action_data = action_data.m_Player.GetConstructionActionData();
-		ConstructionPart construction_part = construction_action_data.GetTargetPart();
-		
-		if ( construction.CanDestroyPart( construction_part.GetPartName() ) )
-		{
-			//build
-			construction.DestroyPart( construction_part.GetPartName() );
-		}
-	}	
 }

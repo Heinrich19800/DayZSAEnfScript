@@ -36,7 +36,7 @@ class ActionBandageTarget: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "#bandage_target";
+		return "#treat_persons_wound";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

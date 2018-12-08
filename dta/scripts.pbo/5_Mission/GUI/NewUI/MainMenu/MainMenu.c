@@ -418,6 +418,15 @@ class MainMenu extends UIScriptedMenu
 				Exit();
 			#endif
 		}
+		
+		if ( GetGame().GetInput().GetActionDown(UAUICtrlY, false) )
+		{
+			BiosUserManager user_manager = GetGame().GetUserManager();
+			if( user_manager )
+			{
+				user_manager.PickUserAsync();
+			}
+		}
 	}
 	
 	void Play()

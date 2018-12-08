@@ -49,7 +49,7 @@ class ActionDialCombinationLockOnTarget: ActionContinuousBase
 			combination_lock_text = construction_action_data.GetDialNumberText();
 		}		
 
-		return "#dial_combination_lock_on_target" + " " + combination_lock_text;	
+		return "#dial_combination_lock" + " " + combination_lock_text;	
 	}
 
 	override bool ActionCondition ( PlayerBase player, ActionTarget target, ItemBase item )

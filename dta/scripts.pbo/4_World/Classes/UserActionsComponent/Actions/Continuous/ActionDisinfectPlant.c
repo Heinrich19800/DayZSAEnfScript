@@ -37,7 +37,7 @@ class ActionDisinfectPlant: ActionContinuousBase
 		
 	override string GetText()
 	{
-		return "#disinfect_plant";
+		return "#apply";
 	}
 
 	override bool ActionCondition ( PlayerBase player, ActionTarget target, ItemBase item )

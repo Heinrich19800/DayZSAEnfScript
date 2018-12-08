@@ -35,7 +35,7 @@ class CAContinuousFertilizeGardenSlot : CAContinuousQuantity
 				
 				
 				string item_type = action_data.m_MainItem.GetType();
-				float consumed_quantity = GetGame().ConfigGetFloat( "cfgVehicles " + item_type + " Horticulture ConsumedQuantity" ) / 2;
+				float consumed_quantity = GetGame().ConfigGetFloat( "cfgVehicles " + item_type + " Horticulture ConsumedQuantity" );
 				
 				float max = slot.GetFertilizerQuantityMax();
 				
@@ -61,7 +61,7 @@ class CAContinuousFertilizeGardenSlot : CAContinuousQuantity
 		}
 		else
 		{
-			if ( m_SpentQuantity < m_ItemQuantity  &&  m_SpentQuantity < m_SlotFertilizerNeed )
+			if ( m_SpentQuantity < m_ItemQuantity )
 			{
 				m_SpentQuantity += m_QuantityUsedPerSecond * action_data.m_Player.GetDeltaT();
 				float val = action_data.m_Player.GetSoftSkillsManager().AddSpecialtyBonus( m_SpentQuantity, m_Action.GetSpecialtyWeight(), true );
@@ -72,8 +72,7 @@ class CAContinuousFertilizeGardenSlot : CAContinuousQuantity
 				if (GetGame().IsServer())
 				{
 					action_data.m_MainItem.AddQuantity( -m_SpentQuantity );
-					string message = garden_base.Fertilize( action_data.m_Player, action_data.m_MainItem, val, selection );
-					m_Action.SendMessageToClient(action_data.m_Player, message);
+					garden_base.Fertilize( action_data.m_Player, action_data.m_MainItem, val, selection );
 				}
 
 				return UA_PROCESSING;

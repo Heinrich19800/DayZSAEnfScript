@@ -1768,7 +1768,7 @@ FrameWidgetClass main_menu_root {
    {
     WrapSpacerWidgetClass ConsoleToolbar {
      visible 1
-     clipchildren 1
+     clipchildren 0
      position 0.05 0.1
      size 0.45 0.45
      halign right_ref
@@ -1786,19 +1786,20 @@ FrameWidgetClass main_menu_root {
      content_valign center
      {
       GridSpacerWidgetClass Select {
-       size 120 1
+       clipchildren 0
+       position -0.00001 0
+       size 0 30
        halign right_ref
        valign bottom_ref
        hexactpos 1
        vexactpos 1
        hexactsize 1
-       vexactsize 0
-       priority 3
+       vexactsize 1
+       priority 1
        Padding 4
        Margin 0
        "Size To Content H" 1
        "Size To Content V" 1
-       content_halign center
        content_valign center
        Columns 2
        Rows 1
@@ -1807,7 +1808,6 @@ FrameWidgetClass main_menu_root {
          clipchildren 0
          inheritalpha 0
          size 36 36
-         valign center_ref
          hexactpos 1
          vexactpos 1
          hexactsize 1
@@ -1824,28 +1824,33 @@ FrameWidgetClass main_menu_root {
          nocache 0
         }
         TextWidgetClass SelectText {
-         position 40 0
-         size 80 22
-         valign center_ref
+         clipchildren 0
+         size 80 36
          hexactpos 1
          vexactpos 1
          hexactsize 1
          vexactsize 1
          text "#layout_xbox_main_menu_toolbar_select"
          font "gui/fonts/sdf_MetronLight24"
+         "exact text" 1
+         "exact text size" 22
+         "size to text h" 1
+         "size to text v" 0
          "text halign" center
          "text valign" center
         }
        }
       }
       GridSpacerWidgetClass Back {
-       size 86 1
+       visible 1
+       clipchildren 0
+       size 0 30
        halign right_ref
        valign bottom_ref
        hexactpos 1
        vexactpos 1
        hexactsize 1
-       vexactsize 0
+       vexactsize 1
        Padding 4
        Margin 0
        "Size To Content H" 1
@@ -1876,8 +1881,9 @@ FrameWidgetClass main_menu_root {
          nocache 0
         }
         TextWidgetClass BackText {
-         position 40 0
-         size 52 22
+         clipchildren 0
+         position 0 0
+         size 52 36
          valign center_ref
          hexactpos 1
          vexactpos 1
@@ -1885,6 +1891,72 @@ FrameWidgetClass main_menu_root {
          vexactsize 1
          text "#layout_xbox_main_menu_toolbar_back"
          font "gui/fonts/sdf_MetronLight24"
+         "exact text" 1
+         "exact text size" 22
+         "size to text h" 1
+         "size to text v" 0
+         "text halign" center
+         "text valign" center
+        }
+       }
+      }
+      GridSpacerWidgetClass ChooseAccount {
+       visible 1
+       clipchildren 0
+       position -0.00002 0
+       size 0 30
+       halign right_ref
+       valign bottom_ref
+       hexactpos 1
+       vexactpos 1
+       hexactsize 1
+       vexactsize 1
+       priority 2
+       "no focus" 1
+       Padding 4
+       Margin 0
+       "Size To Content H" 1
+       "Size To Content V" 1
+       content_halign center
+       content_valign center
+       Columns 2
+       Rows 1
+       {
+        ImageWidgetClass ChooseAccountIcon {
+         clipchildren 0
+         inheritalpha 0
+         size 36 36
+         valign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         scaled 1
+         image0 "set:xbox_buttons image:Y"
+         mode blend
+         "src alpha" 1
+         "no wrap" 1
+         stretch 0
+         "flip u" 0
+         "flip v" 0
+         filter 1
+         nocache 0
+        }
+        TextWidgetClass ChooseAccountText {
+         clipchildren 0
+         position 0 0
+         size 174 36
+         valign center_ref
+         hexactpos 1
+         vexactpos 1
+         hexactsize 1
+         vexactsize 1
+         text "Choose Account"
+         font "gui/fonts/sdf_MetronLight24"
+         "exact text" 1
+         "exact text size" 22
+         "size to text h" 1
+         "size to text v" 0
          "text halign" center
          "text valign" center
         }

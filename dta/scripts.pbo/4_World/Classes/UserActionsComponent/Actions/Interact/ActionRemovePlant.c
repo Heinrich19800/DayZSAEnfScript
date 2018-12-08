@@ -46,6 +46,8 @@ class ActionRemovePlant: ActionInteractBase
 		{
 			PlantBase plant = PlantBase.Cast( targetObject );
 			plant.RemovePlant();
+			
+			GetGame().ObjectDelete( plant );
 		}
 	}
 };

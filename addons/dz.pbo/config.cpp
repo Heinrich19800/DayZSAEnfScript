@@ -305,8 +305,8 @@ class CfgWorlds
 				hazeEccentricity=0.81999999;
 				brightnessAdjustment=1;
 				cloudiness=0.34999999;
-				cloudBaseKm=3.2;
-				cloudHeightKm=3;
+				cloudBaseKm=2.8499999;
+				cloudHeightKm=6;
 				directLight=1;
 				indirectLight=0.80000001;
 				ambientLight=0.80000001;
@@ -332,8 +332,6 @@ class CfgWorlds
 				{
 					overcast=0.40000001;
 					cloudiness=0.44999999;
-					cloudBaseKm=2.2;
-					cloudHeightKm=3.5;
 					directLight=0.80000001;
 					indirectLight=0.69999999;
 					ambientLight=0.69999999;
@@ -344,8 +342,6 @@ class CfgWorlds
 				{
 					overcast=0.60000002;
 					cloudiness=0.64999998;
-					cloudBaseKm=1.8;
-					cloudHeightKm=4;
 					directLight=0.80000001;
 					indirectLight=0.5;
 					ambientLight=0.5;
@@ -356,8 +352,8 @@ class CfgWorlds
 				{
 					overcast=0.80000001;
 					cloudiness=0.80000001;
-					cloudBaseKm=1.2;
-					cloudHeightKm=4.5;
+					cloudBaseKm=1.9;
+					cloudHeightKm=8;
 					directLight=0.63999999;
 					indirectLight=0.30000001;
 					ambientLight=0.30000001;
@@ -368,8 +364,8 @@ class CfgWorlds
 				{
 					overcast=1;
 					cloudiness=1;
-					cloudBaseKm=1;
-					cloudHeightKm=5;
+					cloudBaseKm=1.7;
+					cloudHeightKm=10;
 					directLight=0.44;
 					indirectLight=0.25;
 					ambientLight=0.2;

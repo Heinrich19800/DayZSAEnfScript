@@ -31,7 +31,7 @@ class ActionEmptySeedsPack: ActionSingleUseBase
 		
 	override string GetText()
 	{
-		return "#empty_the_pack";
+		return "#unbox";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
